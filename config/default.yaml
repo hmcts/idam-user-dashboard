@@ -1,0 +1,21 @@
+useCSRFProtection: true,
+security:
+  referrerPolicy: 'origin'
+appInsights:
+    instrumentationKey: false
+port: 3100
+# TODO: replace with IDAM AAT URL, and actual client ID and secret
+services:
+  api:
+    url: 'http://localhost:7060'
+  idam:
+    authorizationURL: 'http://localhost:9000/login'
+    tokenURL: 'http://localhost:7060/o/token'
+    clientID: 'idam_user_dashboard'
+    clientSecret: 'idam_user_dashboard_secret'
+    callbackURL: 'http://localhost:3100/oauth2/callback'
+session:
+  secret: 'local'
+  redis:
+    host:
+    key:

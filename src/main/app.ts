@@ -13,6 +13,9 @@ import { HTTPError } from 'HttpError';
 import { Nunjucks } from './modules/nunjucks';
 import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
+import { OidcMiddleware } from './modules/oidc';
+import { SessionStorage } from './modules/session';
+import { Container } from './modules/awilix';
 const { setupDev } = require('./development');
 
 const env = process.env.NODE_ENV || 'development';
@@ -24,9 +27,12 @@ app.locals.ENV = env;
 const logger = Logger.getLogger('app');
 
 new PropertiesVolume().enableFor(app);
+new Container().enableFor(app);
+new SessionStorage().enableFor(app);
 new AppInsights().enable();
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
+new OidcMiddleware().enableFor(app);
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
@@ -46,6 +52,7 @@ glob.sync(__dirname + '/routes/**/*.+(ts|js)')
   .forEach(route => route.default(app));
 
 setupDev(app,developmentMode);
+
 // returning "not found" page for requests with paths not resolved by the router
 app.use((req, res) => {
   res.status(404);
