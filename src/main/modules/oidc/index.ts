@@ -9,22 +9,25 @@ import jwt_decode from 'jwt-decode';
 export class OidcMiddleware {
 
   public enableFor(app: Application): void {
-    const authorizationURL: string = config.get('services.idam.authorizationURL');
-    const tokenUrl: string = config.get('services.idam.tokenURL');
+    const idamPublicUrl: string = config.get('services.idam.url');
+    const authorizationURL: string = idamPublicUrl + config.get('services.idam.endpoint.authorization');
+    const tokenUrl: string = idamPublicUrl + config.get('services.idam.endpoint.token');
     const clientId: string = config.get('services.idam.clientID');
     const clientSecret: string = config.get('services.idam.clientSecret');
     const redirectUri: string = config.get('services.idam.callbackURL');
+    const responseType = 'code';
+    const scope = 'openid profile roles';
 
     app.get('/login', (req: Request, res: Response) => {
       // Redirect to IDAM web public to get the authorization code
-      res.redirect(`${authorizationURL}?client_id=${clientId}&response_type=code&redirect_uri=${encodeURI(redirectUri)}`);
+      res.redirect(`${authorizationURL}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURI(redirectUri)}&scope=${encodeURIComponent(scope)}`);
     });
 
     app.get('/oauth2/callback', async (req: Request, res: Response) => {
-      // Get access token from IDAM API using the authorization code
+      // Get access token from IDAM using the authorization code
       const response = await Axios.post(
         tokenUrl,
-        `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&redirect_uri=${encodeURIComponent(redirectUri)}&code=${encodeURIComponent(req.query.code as string)}`,
+        `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&redirect_uri=${encodeURI(redirectUri)}&code=${encodeURIComponent(req.query.code as string)}`,
         {
           headers: {
             Accept: 'application/json',
