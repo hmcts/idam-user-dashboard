@@ -1,3 +1,4 @@
+// TO BE REMOVED
 module.exports = {
   roots: ['<rootDir>/src/test/routes'],
   "testRegex": "(/src/test/.*|\\.(test|spec))\\.(ts|js)$",
