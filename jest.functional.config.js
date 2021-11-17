@@ -1,6 +1,6 @@
 // TO BE REMOVED
 module.exports = {
-  roots: ['<rootDir>/src/test/unit'],
+  roots: ['<rootDir>/src/test/functional'],
   "testRegex": "(/src/test/.*|\\.(test|spec))\\.(ts|js)$",
   "moduleFileExtensions": [
     "ts",
