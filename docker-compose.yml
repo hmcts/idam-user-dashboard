@@ -1,8 +1,7 @@
 version: '2'
 
 services:
-  # TODO: change this name to match the name of your app
-  expressjs-template:
+  user-dashboard:
     build:
       context: .
       args:
