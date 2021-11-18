@@ -1,4 +1,4 @@
-// in this file you can append custom step methods to 'I' object
+const { actor } = require('codeceptjs');
 
 module.exports = function() {
   return actor({
@@ -7,4 +7,4 @@ module.exports = function() {
     // It is recommended to place a general 'login' function here.
 
   });
-}
+};
