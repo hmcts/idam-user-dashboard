@@ -10,7 +10,7 @@ const FileStore = FileStoreFactory(session);
 
 export class SessionStorage {
 
-  public enableFor(app: Application) {
+  public enableFor(app: Application): void {
     app.use(session({
       name: 'idam-session',
       resave: false,
@@ -24,7 +24,7 @@ export class SessionStorage {
     }));
   }
 
-  private getStore() {
+  private getStore(): session.Store {
     return !config.get('session.redis.host')
       ? new FileStore({ path: '/tmp' })
       : new RedisStore({
