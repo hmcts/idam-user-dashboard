@@ -1,4 +1,4 @@
-const { actor } = require('codeceptjs');
+import { actor } from 'codeceptjs';
 
 module.exports = function() {
   return actor({
