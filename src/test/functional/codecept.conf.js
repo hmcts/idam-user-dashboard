@@ -1,13 +1,12 @@
-//require('ts-node/register');
 require('ts-node').register({ project: 'src/test/tsconfig.json' });
 
 exports.config = {
   tests: './*_test.ts',
-  output: '../../../test-output',
+  output: '../../../functional-output/functional/reports',
   helpers: {
     Playwright: {
       url: 'http://localhost:3100',
-      show: false,
+      show: true,
       browser: 'chromium',
     },
   },
@@ -22,6 +21,10 @@ exports.config = {
     retryFailedStep: {
       enabled: true,
     },
+    allure: {
+      enabled: true,
+      project: 'tsconfig.json',
+    },
     tryTo: {
       enabled: true,
     },
@@ -30,4 +33,3 @@ exports.config = {
     },
   },
 };
-
