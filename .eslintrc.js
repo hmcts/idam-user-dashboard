@@ -11,6 +11,7 @@ module.exports = {
         "indent": ["error", 2, { "SwitchCase": 1 }],
         "linebreak-style": ["error", "unix"],
         "quotes": ["error", "single"],
+        "comma-dangle": ["error", "always-multiline"],
         "semi": ["error", "always"]
       },
       "overrides": [
@@ -34,9 +35,9 @@ module.exports = {
             "indent": ["error", 2, { "SwitchCase": 1 }],
             "linebreak-style": ["error", "unix"],
             "quotes": ["error", "single", { "avoidEscape": true }],
-            "@typescript-eslint/no-var-requires": 0
-          },
+            "comma-dangle": ["error", "only-multiline"],
+            "@typescript-eslint/no-var-requires": 0,
+          }
         }
       ]
-
 };
