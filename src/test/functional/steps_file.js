@@ -1,5 +1,3 @@
-import { actor } from 'codeceptjs';
-
 module.exports = function() {
   return actor({
 
