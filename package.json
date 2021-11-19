@@ -17,7 +17,7 @@
     "test:smoke": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.smoke.config.js",
     "test:codecept": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:codecept:docker $UID",
     "test:codecept:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs --config ./src/test/functional/codecept.conf.js run-workers 8 parallel",
-    "test:functional": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:functional:docker $UID",
+    "test:functional": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:functional:docker $UID && allure generate --clean",
     "test:functional:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs --config ./src/test/functional/codecept.conf.js run-workers 8 parallel  --grep \"(?=.*)^(?!.*@Smoke)\" ",
     "test:a11y": "echo 'nope' && exit 0",
     "sonar-scan": "sonar-scanner",
