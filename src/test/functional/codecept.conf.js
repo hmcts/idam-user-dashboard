@@ -1,4 +1,4 @@
-require('ts-node').register({ project: 'src/test/tsconfig.json' });
+require('ts-node').register({project: 'src/test/tsconfig.json'});
 
 exports.config = {
   tests: './*_test.ts',
@@ -23,7 +23,6 @@ exports.config = {
     },
     allure: {
       enabled: true,
-      project: 'tsconfig.json',
     },
     tryTo: {
       enabled: true,
