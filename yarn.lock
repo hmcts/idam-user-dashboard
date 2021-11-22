@@ -1644,13 +1644,6 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.177.tgz#f70c0d19c30fab101cad46b52be60363c43c4578"
   integrity sha512-0fDwydE2clKe9MNfvXHBHF9WEahRuj+msTuQqOmAApNORFvhMYZKNGGJdCzuhheVjMps/ti0Ak/iJPACMaevvw==
 
-"@types/memory-fs@*":
-  version "0.3.3"
-  resolved "https://registry.npmjs.org/@types/memory-fs/-/memory-fs-0.3.3.tgz"
-  integrity sha512-rLEYzl1xODshz+Lm+YX8NYws8Xw7/qcYbQInMkotl96VpLZmUvoCfYYGxfajMSiugANV02QO5Fc+R98KKeE4gQ==
-  dependencies:
-    "@types/node" "*"
-
 "@types/mime@^1":
   version "1.3.2"
   resolved "https://registry.npmjs.org/@types/mime/-/mime-1.3.2.tgz"
@@ -1794,15 +1787,14 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/webpack-dev-middleware@^3.7.0":
-  version "3.7.5"
-  resolved "https://registry.npmjs.org/@types/webpack-dev-middleware/-/webpack-dev-middleware-3.7.5.tgz"
-  integrity sha512-jHcCoRc2Hh6oDozoc27ibKAqrfn8nlewheoFV704EMJqheaOe7HxZZp9Q39bPh2eUDLtEJApLNQy6l20yT/4jA==
+"@types/webpack-dev-middleware@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@types/webpack-dev-middleware/-/webpack-dev-middleware-5.0.2.tgz#0f66566c2ca7d484891b4552c8a7b64a3044e3e2"
+  integrity sha512-S3WUtef//Vx6WETyWZkM45WqgRxWSaqbpWtPcKySNRhiQNyhCqM9EueggaMX3L9N2IbG4dJIK5PgYcAWUifUbA==
   dependencies:
     "@types/connect" "*"
-    "@types/memory-fs" "*"
-    "@types/webpack" "^4"
-    loglevel "^1.6.2"
+    tapable "^2.1.1"
+    webpack "^5.38.1"
 
 "@types/webpack-sources@*":
   version "3.2.0"
@@ -1813,7 +1805,7 @@
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
-"@types/webpack@^4", "@types/webpack@^4.41.8":
+"@types/webpack@^4.41.8":
   version "4.41.31"
   resolved "https://registry.npmjs.org/@types/webpack/-/webpack-4.41.31.tgz"
   integrity sha512-/i0J7sepXFIp1ZT7FjUGi1eXMCg8HCCzLJEQkKsOtbJFontsJLolBcDC+3qxn5pPwiCt1G0ZdRmYRzNBtvpuGQ==
@@ -7507,11 +7499,6 @@ log-symbols@4.0.0:
   dependencies:
     chalk "^4.0.0"
 
-loglevel@^1.6.2:
-  version "1.7.1"
-  resolved "https://registry.npmjs.org/loglevel/-/loglevel-1.7.1.tgz"
-  integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
-
 lolex@^5.0.0:
   version "5.1.2"
   resolved "https://registry.npmjs.org/lolex/-/lolex-5.1.2.tgz"
@@ -11435,10 +11422,10 @@ webpack@^4.41.6:
     watchpack "^1.7.4"
     webpack-sources "^1.4.1"
 
-webpack@^5, webpack@^5.1.0:
-  version "5.64.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.64.1.tgz#fd59840c16f04fe315f2b2598a85026f12dfa1bb"
-  integrity sha512-b4FHmRgaaAjP+aVOVz41a9Qa5SmkUPQ+u8FntTQ1roPHahSComB6rXnLwc976VhUY4CqTaLu5mCswuHiNhOfVw==
+webpack@^5, webpack@^5.1.0, webpack@^5.38.1:
+  version "5.64.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.64.2.tgz#152e28d4712a6223b06c06cba0d3e622a61611a0"
+  integrity sha512-4KGc0+Ozi0aS3EaLNRvEppfZUer+CaORKqL6OBjDLZOPf9YfN8leagFzwe6/PoBdHFxc/utKArl8LMC0Ivtmdg==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.50"
