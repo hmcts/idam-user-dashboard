@@ -3,9 +3,11 @@ nodejs:
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
-#  Uncomment once the vault containing the app insights key has been set up
-#  keyVaults:
-#    idam:
-#      secrets:
-#        - AppInsightsInstrumentationKey
+  keyVaults:
+    idam:
+      secrets:
+        - AppInsightsInstrumentationKey
+        - launchdarkly-sdk-key
   environment:
+    IDAM_WEB_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
+    IDAM_API_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
