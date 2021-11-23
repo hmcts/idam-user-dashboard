@@ -43,14 +43,7 @@ withPipeline(type, product, component) {
   }
 
   after('test') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "test-output/unit",
-      reportFiles          : "test-report.html",
-      reportName           : "Unit Test Report"
-    ]
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test-output/unit/*'
 
     publishHTML target: [
       allowMissing         : true,
@@ -59,6 +52,15 @@ withPipeline(type, product, component) {
       reportDir            : "coverage/lcov-report",
       reportFiles          : "index.html",
       reportName           : "Code Coverage Report"
+    ]
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "test-output/unit",
+      reportFiles          : "test-report.html",
+      reportName           : "Unit Test Report"
     ]
   }
 
@@ -85,6 +87,7 @@ withPipeline(type, product, component) {
   }
 
   after('functionalTest:idam-preview') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test-output/functional/reports/*'
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
