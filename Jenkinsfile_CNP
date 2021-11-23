@@ -43,8 +43,6 @@ withPipeline(type, product, component) {
   }
 
   after('test') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test-output/unit/*'
-
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -87,7 +85,6 @@ withPipeline(type, product, component) {
   }
 
   after('functionalTest:idam-preview') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test-output/functional/reports/*'
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
