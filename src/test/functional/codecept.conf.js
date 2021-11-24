@@ -2,7 +2,7 @@ require('ts-node').register({project: 'src/test/tsconfig.json'});
 
 exports.config = {
   tests: './*_test.ts',
-  output: '../../../functional-output/functional/reports',
+  output: '../../../test-output/functional/reports',
   helpers: {
     Playwright: {
       url: 'http://localhost:3100',

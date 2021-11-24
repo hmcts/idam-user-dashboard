@@ -9,6 +9,6 @@ userId=$2
 yarn $yarnCmd
 status=$?
 
-chown -R $userId:$userId functional-output
+chown -R $userId:$userId test-output
 
 exit $status
