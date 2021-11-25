@@ -22,6 +22,7 @@
     "test:a11y": "echo 'nope' && exit 0",
     "test:allure-report": "allure generate --clean -c test-output/functional/reports -o test-output/functional/allure",
     "sonar-scan": "sonar-scanner",
+    "fortifyScan": "./java/gradlew -p java fortifyScan",
     "cichecks": "yarn && yarn build && yarn lint  && yarn test && yarn test:routes &&  yarn test:a11y"
   },
   "dependencies": {
