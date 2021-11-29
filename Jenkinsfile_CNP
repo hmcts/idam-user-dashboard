@@ -1,6 +1,6 @@
 #!groovy
 
-@Library("Infrastructure")
+@Library("Infrastructure@idam-ubuntu-test")
 
 def type = "nodejs"
 def product = "idam"
