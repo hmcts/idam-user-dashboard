@@ -10,4 +10,12 @@ module.exports = {
     '^.+\\.ts?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  "reporters": [
+    "default",
+    ["./node_modules/jest-html-reporter", {
+      "pageTitle": "Smoke Test Report",
+      "outputPath": "./test-output/smoke/test-report.html",
+      "includeFailureMsg": true
+    }]
+  ]
 }

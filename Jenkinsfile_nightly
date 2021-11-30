@@ -1,8 +1,10 @@
 #!groovy
 
 properties([
-// H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
-pipelineTriggers([cron('H 05 * * *')])
+  pipelineTriggers([cron('H 02 * * *')]),
+  parameters([
+    string(name: 'ENVIRONMENT', defaultValue: 'aat', description: 'Environment to test')
+  ])
 ])
 
 @Library("Infrastructure")
@@ -11,6 +13,38 @@ def type = "nodejs"
 def product = "idam"
 def component = "user-dashboard"
 
-withNightlyPipeline(type, product, component) {
+def secrets = [
+  "idam-idam-${params.ENVIRONMENT}": [
+    secret('notify-api-key', 'NOTIFY_API_KEY')
+  ]
+]
 
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [$class     : 'AzureKeyVaultSecret',
+   secretType : 'Secret',
+   name       : secretName,
+   version    : '',
+   envVariable: envVar
+  ]
+}
+
+withNightlyPipeline(type, product, component) {
+  loadVaultSecrets(secrets)
+  enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
+  enableFullFunctionalTest()
+
+  after('fortify-scan') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+  }
+
+  after('fullFunctionalTest') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "test-output/functional/allure",
+      reportFiles          : "index.html",
+      reportName           : "Functional Test Report"
+    ]
+  }
 }
