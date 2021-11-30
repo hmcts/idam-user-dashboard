@@ -20,5 +20,5 @@ data "azurerm_subnet" "redis" {
 
 data "azurerm_key_vault" "idam" {
   name                = local.vault_name
-  resource_group_name = "idam-${var.env}"
+  resource_group_name = "${var.product}-${var.env}"
 }
