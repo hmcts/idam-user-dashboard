@@ -23,7 +23,9 @@
     "test:allure-report": "allure generate --clean -c test-output/functional/reports -o test-output/functional/allure",
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
-    "cichecks": "yarn && yarn build && yarn lint  && yarn test && yarn test:routes &&  yarn test:a11y"
+    "cichecks": "yarn && yarn build && yarn lint  && yarn test && yarn test:routes &&  yarn test:a11y",
+    "test:crossbrowser-functional:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-multiple --all -c ./src/test/functional/saucelabs.conf.js --steps --grep '@crossbrowser'",
+    "test:crossbrowser": "runSauceLabsTests.sh"
   },
   "dependencies": {
     "@hmcts/info-provider": "^1.0.0",
@@ -114,6 +116,7 @@
     "ts-loader": "^9.2.1",
     "tslint": "6.1.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
+    "webdriverio": "^6.12.1",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^5.2.1",

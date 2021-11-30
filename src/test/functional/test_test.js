@@ -9,7 +9,7 @@ Scenario('test1 @Nightly', ({ I }) => {
 });
 
 
-Scenario('test2 @Nightly', ({ I }) => {
+Scenario('test2 @crossbrowser', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
@@ -17,7 +17,7 @@ Scenario('test2 @Nightly', ({ I }) => {
   I.pressKey('Enter');
 });
 
-Scenario('test3', ({ I }) => {
+Scenario('test3 @crossbrowser', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
