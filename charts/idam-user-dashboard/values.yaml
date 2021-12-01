@@ -1,11 +1,22 @@
 nodejs:
   applicationPort: 3100
+  cpuLimits: 500m
+  cpuRequests: 100m
+  memoryLimits: 1024Mi
+  memoryRequests: 256Mi
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
-#  Uncomment once the vault containing the app insights key has been set up
-#  keyVaults:
-#    idam:
-#      secrets:
-#        - AppInsightsInstrumentationKey
+  keyVaults:
+    idam:
+      secrets:
+        - AppInsightsInstrumentationKey
+        - launchdarkly-sdk-key
+        - idam-user-dashboard-client-secret
   environment:
+    STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
+    STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
+  autoscaling:
+    enabled: true
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
