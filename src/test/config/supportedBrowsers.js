@@ -2,43 +2,32 @@ const LATEST_MAC = 'macOS 10.15';
 const LATEST_WINDOWS = 'Windows 10';
 
 const supportedBrowsers = {
-  microsoft: {
-    edge: {
-      browserName: 'MicrosoftEdge',
-      platformName: LATEST_WINDOWS,
-      browserVersion: 'latest',
-      'sauce:options': {
-        name: 'Win_Edge_latest',
-      },
-    },
-  },
-  safari: {
-    safari_mac_latest: {
-      browserName: 'safari',
+  webkit: {
+    webkit_mac_latest: {
+      browserName: 'webkit',
       platformName: 'macOS 10.14',
       browserVersion: 'latest',
       'sauce:options': {
-        name: 'Mac_Safari_latest',
-        seleniumVersion: '3.141.59',
+        name: 'Mac_webkit_latest',
         screenResolution: '1400x1050',
       },
     },
   },
-  chrome: {
-    chrome_win_latest: {
-      browserName: 'chrome',
+  chromium: {
+    chromium_win_latest: {
+      browserName: 'chromium',
       platformName: LATEST_WINDOWS,
       browserVersion: 'latest',
       'sauce:options': {
-        name: 'Win_Chrome_latest',
+        name: 'Win_chromium_latest',
       },
     },
-    chrome_mac_latest: {
-      browserName: 'chrome',
+    chromium_mac_latest: {
+      browserName: 'chromium',
       platformName: LATEST_MAC,
       browserVersion: 'latest',
       'sauce:options': {
-        name: 'Mac_Chrome_latest',
+        name: 'Mac_chromium_latest',
       },
     },
   },

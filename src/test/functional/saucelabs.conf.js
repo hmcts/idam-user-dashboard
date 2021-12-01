@@ -4,8 +4,9 @@ const waitForTimeout = 60000;
 const smartWait = 5000;
 
 const defaultSauceOptions = {
-  username: 'ashwinivenkatesha',
-  accessKey: 'c3425692-b94e-4159-9888-0d0a6c5b4361',
+
+  username: process.env.SAUCE_USERNAME,
+  accessKey: process.env.SAUCE_ACCESS_KEY,
   acceptSslCerts: true,
   extendedDebugging: true,
   capturePerformance: true,
@@ -33,19 +34,19 @@ function merge(intoObject, fromObject) {
 }
 
 const setupConfig = {
-  tests: './src/test/functional/test_test.js',
+  tests: 'test_test.ts',
   output: `${process.cwd()}/functional-output`,
   helpers: {
-    WebDriver: {
+
+    Playwright: {
       url: 'https://www.amazon.co.uk/',
-      browser: 'chrome',
+      browser: 'chromium',
       waitForTimeout,
       smartWait,
       cssSelectorsEnabled: 'true',
       host: 'ondemand.eu-central-1.saucelabs.com',
       port: 80,
       capabilities: {},
-
     },
     SauceLabsReportingHelper: {require: './shared/sauceLabsReportingHelper.js'},
   },
@@ -62,11 +63,11 @@ const setupConfig = {
 
 
   multiple: {
-    microsoft: {
-      browsers: getBrowserConfig('microsoft'),
+    webkit: {
+      browsers: getBrowserConfig('webkit'),
     },
-    chrome: {
-      browsers: getBrowserConfig('chrome'),
+    chromium: {
+      browsers: getBrowserConfig('chromium'),
     },
     firefox: {
       browsers: getBrowserConfig('firefox'),
