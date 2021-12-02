@@ -17,8 +17,6 @@ nodejs:
   environment:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
     STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
-    IDAM_WEB_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
-    IDAM_API_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
   autoscaling:
     enabled: true
     maxReplicas: 4
