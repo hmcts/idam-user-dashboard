@@ -15,7 +15,7 @@
     "test:coverage": "jest --coverage",
     "test:routes": "jest -c jest.routes.config.js",
     "test:smoke": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.smoke.config.js",
-    "test:fullfunctional": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:fullfunctional:docker $UID",
+    "test:fullfunctional": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:fullfunctional:docker $UID && npm run test:allure-report",
     "test:fullfunctional:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs --config ./src/test/functional/codecept.conf.js run-workers 8 parallel",
     "test:functional": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:functional:docker $UID && npm run test:allure-report",
     "test:functional:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs --config ./src/test/functional/codecept.conf.js run-workers 8 parallel  --grep \"(?=.*)^(?!.*@Nightly)\"",
