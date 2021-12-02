@@ -9,6 +9,8 @@ nodejs:
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
   keyVaults:
     idam:
+      resourceGroup: idam-idam
+      excludeEnvironmentSuffix: false
       secrets:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
