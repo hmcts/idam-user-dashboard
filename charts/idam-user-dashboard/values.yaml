@@ -8,7 +8,8 @@ nodejs:
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
   keyVaults:
-    idam:
+    "idam-idam":
+      resourceGroup: idam-idam
       secrets:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
