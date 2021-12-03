@@ -1,4 +1,4 @@
-const supportedBrowsers = require('../config/supportedBrowsers');
+const supportedBrowsers = require('./supportedBrowsers');
 
 const waitForTimeout = 60000;
 const smartWait = 5000;
