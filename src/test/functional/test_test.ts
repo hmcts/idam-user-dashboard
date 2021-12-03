@@ -25,7 +25,7 @@ Scenario('test3 @Nightly', ({ I }) => {
   I.pressKey('Enter');
 });
 
-Scenario('test4 @functional', ({ I }) => {
+Scenario('test4', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
