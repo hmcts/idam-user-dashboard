@@ -1,5 +1,6 @@
 nodejs:
   # Don't modify below here
+  releaseNameOverride: ${SERVICE_NAME}
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   autoscaling:
