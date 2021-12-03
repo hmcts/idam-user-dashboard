@@ -24,8 +24,8 @@
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
     "cichecks": "yarn && yarn build && yarn lint  && yarn test && yarn test:routes &&  yarn test:a11y",
-    "test:crossbrowser-functional:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-multiple --all -c ./src/test/functional/saucelabs.conf.js --steps --grep '@crossbrowser'",
-    "test:crossbrowser": "runSauceLabsTests.sh"
+    "test:crossbrowser:docker": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-multiple --all -c ./src/test/cross-browser/saucelabs.conf.js",
+    "test:crossbrowser": "docker run --rm --volume $PWD:/home/app --workdir='/home/app' mcr.microsoft.com/playwright:v1.15.2-focal bash -x src/test/docker-yarn.sh test:crossbrowser:docker $UID && npm run test:allure-report"
   },
   "dependencies": {
     "@hmcts/info-provider": "^1.0.0",

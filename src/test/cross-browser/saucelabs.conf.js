@@ -35,7 +35,7 @@ function merge(intoObject, fromObject) {
 
 const setupConfig = {
   tests: 'test_test.ts',
-  output: `${process.cwd()}/functional-output`,
+  output: '../../../test-output/cross-browser/reports',
   helpers: {
 
     Playwright: {
@@ -48,7 +48,6 @@ const setupConfig = {
       port: 80,
       capabilities: {},
     },
-    SauceLabsReportingHelper: {require: './shared/sauceLabsReportingHelper.js'},
   },
   plugins: {
     retryFailedStep: {
@@ -58,6 +57,9 @@ const setupConfig = {
     autoDelay: {
       enabled: true,
       delayAfter: 2000,
+    },
+    allure: {
+      enabled: true,
     },
   },
 

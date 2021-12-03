@@ -1,6 +1,6 @@
 Feature('testing');
 
-Scenario('test1 @Nightly', ({ I }) => {
+Scenario('test1', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
@@ -9,7 +9,7 @@ Scenario('test1 @Nightly', ({ I }) => {
 });
 
 
-Scenario('test2 @Nightly', ({ I }) => {
+Scenario('test2', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
@@ -17,7 +17,7 @@ Scenario('test2 @Nightly', ({ I }) => {
   I.pressKey('Enter');
 });
 
-Scenario('test3 @Nightly', ({ I }) => {
+Scenario('test3', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
@@ -25,7 +25,7 @@ Scenario('test3 @Nightly', ({ I }) => {
   I.pressKey('Enter');
 });
 
-Scenario('test4 @functional', ({ I }) => {
+Scenario('test4', ({ I }) => {
   I.amOnPage('https://www.amazon.co.uk/');
   I.resizeWindow(2200,1200);
   I.click('#twotabsearchtextbox');
