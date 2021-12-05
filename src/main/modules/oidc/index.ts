@@ -9,7 +9,7 @@ import jwt_decode from 'jwt-decode';
 export class OidcMiddleware {
 
   public enableFor(app: Application): void {
-    const idamPublicUrl: string = config.get('services.idam.url');
+    const idamPublicUrl: string = config.get('services.idam.url.public');
     const authorizationURL: string = idamPublicUrl + config.get('services.idam.endpoint.authorization');
     const tokenUrl: string = idamPublicUrl + config.get('services.idam.endpoint.token');
     const clientId: string = config.get('services.idam.clientID');
@@ -51,7 +51,7 @@ export class OidcMiddleware {
         req.scope = req.app.locals.container.createScope();
         req.scope.register({
           axios: asValue(Axios.create({
-            baseURL: config.get('services.api.url'),
+            baseURL: config.get('services.idam.url.api'),
             headers: {
               Authorization: 'Bearer ' + req.session.user.id_token
             }
