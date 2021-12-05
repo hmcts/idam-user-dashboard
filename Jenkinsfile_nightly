@@ -32,6 +32,8 @@ withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
   enableFullFunctionalTest()
+  enableCrossBrowserTest()
+
 
   after('fortify-scan') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
@@ -45,6 +47,17 @@ withNightlyPipeline(type, product, component) {
       reportDir            : "test-output/functional/allure",
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
+    ]
+  }
+
+  after('crossBrowserTest') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "test-output/cross-browser/allure",
+      reportFiles          : "index.html",
+      reportName           : "Cross browser Test Report"
     ]
   }
 }

@@ -6,10 +6,11 @@ appInsights:
 port: 3100
 # TODO: replace with IDAM AAT URL, and actual client ID and secret
 services:
-  api:
-    url: 'http://localhost:7060'
+  name: 'IDAM user dashboard'
   idam:
-    url: 'https://idam-web-public.aat.platform.hmcts.net'
+    url:
+      public: 'https://idam-web-public.aat.platform.hmcts.net'
+      api: 'https://idam-api.aat.platform.hmcts.net'
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'
@@ -21,3 +22,6 @@ session:
   redis:
     host:
     key:
+health:
+  timeout: 5000
+  deadline: 15000

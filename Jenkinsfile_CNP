@@ -16,20 +16,20 @@ env.PERFTEST_ENVIRONMENT_NAME = 'idam-perftest'
 env.ITHC_ENVIRONMENT_NAME = 'idam-ithc'
 env.NO_SKIP_IMG_BUILD = 'true'
 
-def secrets = [
-  'idam-${env}': [
-    secret('notify-api-key', 'NOTIFY_API_KEY')
-  ]
-]
-
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [$class     : 'AzureKeyVaultSecret',
    secretType : 'Secret',
    name       : secretName,
-   version    : '',
    envVariable: envVar
   ]
 }
+
+def secrets = [
+  'idam-${env}': [
+    secret('idam-user-dashboard-client-secret', 'CLIENT_SECRET'),
+    secret('launchdarkly-sdk-key', 'LD_SDK_KEY')
+  ]
+]
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
