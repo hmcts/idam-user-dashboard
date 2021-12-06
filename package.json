@@ -23,7 +23,7 @@
     "test:allure-report-crossbrowser": "allure generate --clean -c test-output/cross-browser/reports -o test-output/cross-browser/allure",
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
-    "cichecks": "yarn && yarn build && yarn lint  && yarn test && yarn test:routes &&  yarn test:a11y",
+    "cichecks": "yarn && yarn build && yarn lint  && yarn test && yarn test:routes &&  yarn test:a11y"
   },
   "dependencies": {
     "@hmcts/info-provider": "^1.0.0",
