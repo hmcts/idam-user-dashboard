@@ -12,9 +12,9 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 "reporters": [
     "default",
-    ["./test-output/pa11y/reports", {
+    ["./node_modules/jest-html-reporter", {
       "pageTitle": "Accessibility Test Report",
-      "outputPath": "./test-output/functional/test-report.html",
+      "outputPath": "./test-output/accessibility/test-report.html",
       "includeFailureMsg": true
     }]
   ]

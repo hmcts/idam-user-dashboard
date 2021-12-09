@@ -22,15 +22,7 @@ class PallyIssue {
   typeCode: number;
 }
 
-function loginPally(): Pa11yResult {
-
-  return pa11y('https://www.gov.uk/', {
-    hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
-  });
-}
-
 beforeAll((done /* call it or remove it*/) => {
-  loginPally();
   done(); // calling it
 });
 
