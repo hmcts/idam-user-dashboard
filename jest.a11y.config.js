@@ -1,7 +1,7 @@
 module.exports = {
   roots: ['<rootDir>/src/test/a11y'],
   "testRegex": "(/src/test/.*|\\.(test|spec))\\.(ts|js)$",
-   "moduleFileExtensions": [
+  "moduleFileExtensions": [
     "ts",
     "js"
   ],
@@ -10,7 +10,7 @@ module.exports = {
     '^.+\\.ts?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-"reporters": [
+  "reporters": [
     "default",
     ["./node_modules/jest-html-reporter", {
       "pageTitle": "Accessibility Test Report",
@@ -19,4 +19,3 @@ module.exports = {
     }]
   ]
 }
-
