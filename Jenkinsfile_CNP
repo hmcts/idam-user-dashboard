@@ -105,4 +105,25 @@ withPipeline(type, product, component) {
       reportName           : "Functional Test Report"
     ]
   }
+  after('accessibilityTest:idam-preview') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "test-output/accessibility",
+      reportFiles          : "test-report.html",
+      reportName           : "Accessibility Test Report"
+    ]
+  }
+
+  after('accessibilityTest:idam-aat') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "test-output/accessibility",
+      reportFiles          : "test-report.html",
+      reportName           : "Accessibility Test Report"
+    ]
+  }
 }
