@@ -1,11 +1,11 @@
-import { fail } from 'assert';
+import {fail} from 'assert';
 import Axios from 'axios';
-import { config } from '../config';
+import {config} from '../config';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const pa11y = require('pa11y');
-const axios = Axios.create({ baseURL: config.TEST_URL });
+const axios = Axios.create({baseURL: config.TEST_URL});
 
 class Pa11yResult {
   documentTitle: string;
@@ -31,7 +31,7 @@ function ensurePageCallWillSucceed(url: string): Promise<void> {
 }
 
 function runPallyWith(url: string, actions: string[]): Pa11yResult {
-  return pa11y( 'https://www.amazon.co.uk/' + url, {
+  return pa11y(config.TEST_URL + url, {
     hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
     actions: actions
   });
