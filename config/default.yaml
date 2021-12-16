@@ -9,13 +9,13 @@ services:
   name: 'IDAM user dashboard'
   idam:
     url:
-      public: 'https://idam-web-public.aat.platform.hmcts.net'
-      api: 'https://idam-api.aat.platform.hmcts.net'
+      public: 'http://localhost:9000'
+      api: 'http://localhost:7060'
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'
-    clientID: 'idam_user_dashboard_login_test'
-    clientSecret: 'idam_user_dashboard_login_test_secret'
+    clientID: 'idam_user_dashboard'
+    clientSecret: 'idam_user_dashboard_secret'
     callbackURL: 'http://localhost:3100/oauth2/callback'
 session:
   secret: 'local'

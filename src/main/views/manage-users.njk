@@ -1,0 +1,49 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    collapseOnMobile: true,
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "Manage users",
+        href: '/manage-users'
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Manage Users</h1>
+      <form method="GET" action="/user-details">
+        {{ govukInput({
+          label: {
+            text: "Search for an existing user",
+            classes: "govuk-label govuk-label--m",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Please enter the email address of the user you wish to manage"
+          },
+          errorMessage: { text: errorMessage } if hasError,
+          classes: "govuk-input govuk-!-width-three-quarters",
+          id: "email",
+          name: "email",
+          value: email
+        }) }}
+        {{ govukButton({
+          text: "Search"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

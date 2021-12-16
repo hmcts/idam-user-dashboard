@@ -38,7 +38,7 @@ export class OidcMiddleware {
 
       req.session.user = response.data;
       req.session.user.jwt = jwt_decode(response.data.id_token);
-      res.render('home');
+      res.redirect('/');
     });
 
     app.get('/logout', function(req: Request, res: Response){
