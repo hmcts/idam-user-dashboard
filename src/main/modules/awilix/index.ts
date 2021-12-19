@@ -3,7 +3,7 @@ import { Application } from 'express';
 import { UserOptionController } from '../../controllers/UserOptionController';
 import { AddUsersController } from '../../controllers/AddUsersController';
 import { ManageUsersController } from '../../controllers/ManageUsersController';
-import { UserDetailsController } from '../../controllers/UserDetailsController';
+import { UserResultsController } from '../../controllers/UserResultsController';
 
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
@@ -21,7 +21,7 @@ export class Container {
       userOptionController: asClass(UserOptionController),
       addUsersController: asClass(AddUsersController),
       manageUsersController: asClass(ManageUsersController),
-      userDetailsController: asClass(UserDetailsController)
+      userResultsController: asClass(UserResultsController),
     });
   }
 }

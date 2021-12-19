@@ -5,5 +5,5 @@ export default function(app: Application): void {
   app.post('/', app.locals.container.cradle.userOptionController.post);
   app.get('/add-users', app.locals.container.cradle.addUsersController.get);
   app.get('/manage-users', app.locals.container.cradle.manageUsersController.get);
-  app.get('/user-details', app.locals.container.cradle.userDetailsController.get);
+  app.get('/user-results', app.locals.container.cradle.userResultsController.get);
 }
