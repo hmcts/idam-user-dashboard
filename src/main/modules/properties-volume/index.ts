@@ -18,5 +18,4 @@ export class PropertiesVolume {
       set(config, toPath, get(config, fromPath));
     }
   }
-
 }

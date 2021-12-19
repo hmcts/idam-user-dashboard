@@ -46,6 +46,7 @@
     "@types/serve-favicon": "^2.5.1",
     "@types/session-file-store": "^1.2.2",
     "applicationinsights": "^2.1.9",
+    "autobind-decorator": "^2.4.0",
     "awilix": "^6.0.0",
     "axios": "^0.24.0",
     "config": "^3.3.2",
