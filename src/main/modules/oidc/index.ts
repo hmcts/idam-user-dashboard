@@ -1,10 +1,11 @@
 import {Application, NextFunction, Request, Response} from 'express';
-import {asValue} from 'awilix';
+import {asClass, asValue} from 'awilix';
 import Axios from 'axios';
 import config from 'config';
 import {AuthedRequest} from '../../types/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
+import {Api} from '../../Api';
 
 export class OidcMiddleware {
 
@@ -15,8 +16,8 @@ export class OidcMiddleware {
     const clientId: string = config.get('services.idam.clientID');
     const clientSecret: string = config.get('services.idam.clientSecret');
     const redirectUri: string = config.get('services.idam.callbackURL');
-    const responseType = 'code';
-    const scope = 'openid profile roles';
+    const responseType: string = config.get('services.idam.responseType');
+    const scope: string = config.get('services.idam.scope');
 
     app.get('/login', (req: Request, res: Response) => {
       // Redirect to IDAM web public to get the authorization code
@@ -53,9 +54,10 @@ export class OidcMiddleware {
           axios: asValue(Axios.create({
             baseURL: config.get('services.idam.url.api'),
             headers: {
-              Authorization: 'Bearer ' + req.session.user.id_token
+              Authorization: 'Bearer ' + req.session.user.access_token
             }
           })),
+          api: asClass(Api)
         });
 
         res.locals.isLoggedIn = true;
