@@ -9,7 +9,14 @@
   {{ govukHeader({
     homepageUrl: "/",
     serviceName: "IDAM User Dashboard",
-    serviceUrl: "/"
+    serviceUrl: "/",
+    navigation: [
+      {
+        href: "/login",
+        text: "Sign out",
+        active: true
+      }
+    ]
   }) }}
 {% endblock %}
 

@@ -42,24 +42,9 @@ export class OidcMiddleware {
       res.redirect('/');
     });
 
-    app.get('/logout', function(req: Request, res: Response){
-      req.session.user = undefined;
-      res.render('logout');
-    });
-
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       if (req.session.user) {
-        req.scope = req.app.locals.container.createScope();
-        req.scope.register({
-          axios: asValue(Axios.create({
-            baseURL: config.get('services.idam.url.api'),
-            headers: {
-              Authorization: 'Bearer ' + req.session.user.access_token
-            }
-          })),
-          api: asClass(Api)
-        });
-
+        this.configureApiAuthorization(req)
         res.locals.isLoggedIn = true;
         return next();
       }
@@ -69,6 +54,19 @@ export class OidcMiddleware {
       } else {
         res.redirect('/login');
       }
+    });
+  }
+
+  private configureApiAuthorization(req: AuthedRequest): void {
+    req.scope = req.app.locals.container.createScope();
+    req.scope.register({
+      axios: asValue(Axios.create({
+        baseURL: config.get('services.idam.url.api'),
+        headers: {
+          Authorization: 'Bearer ' + req.session.user.access_token
+        }
+      })),
+      api: asClass(Api)
     });
   }
 }
