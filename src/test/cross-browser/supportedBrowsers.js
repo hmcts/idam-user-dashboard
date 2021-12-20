@@ -2,10 +2,11 @@ const LATEST_MAC = 'macOS 10.15';
 const LATEST_WINDOWS = 'Windows 10';
 
 const supportedBrowsers = {
+  // This is safari browser
   webkit: {
     webkit_mac_latest: {
       browserName: 'webkit',
-      platformName: 'macOS 10.14',
+      platformName: LATEST_MAC,
       browserVersion: 'latest',
       'sauce:options': {
         name: 'Mac_webkit_latest',
