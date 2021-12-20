@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -x
 
 yarn test:crossbrowser-e2e
 cd ./test-output/cross-browser/reports
