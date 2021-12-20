@@ -9,7 +9,7 @@ describe('Api', () => {
         surname: 'test',
         email: email,
         active: true,
-        roles: 'IDAM_SUPER_USER'
+        roles: ['IDAM_SUPER_USER']
       }]
     };
     const mockAxios = {get: async () => results} as any;
