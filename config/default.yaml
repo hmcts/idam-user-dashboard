@@ -4,7 +4,6 @@ security:
 appInsights:
     instrumentationKey: false
 port: 3100
-# TODO: replace with IDAM AAT URL, and actual client ID and secret
 services:
   name: 'IDAM user dashboard'
   idam:
@@ -14,8 +13,8 @@ services:
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'
-    clientID: 'idam_user_dashboard_login_test'
-    clientSecret: 'idam_user_dashboard_login_test_secret'
+    clientID: 'idam_user_dashboard'
+    clientSecret:
     callbackURL: 'http://localhost:3100/oauth2/callback'
 session:
   secret: 'local'
@@ -25,3 +24,5 @@ session:
 health:
   timeout: 5000
   deadline: 15000
+launchdarkly:
+  sdkKey:
