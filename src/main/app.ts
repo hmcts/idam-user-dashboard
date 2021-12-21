@@ -17,6 +17,7 @@ import { OidcMiddleware } from './modules/oidc';
 import { SessionStorage } from './modules/session';
 import { Container } from './modules/awilix';
 import {HealthCheck} from './modules/health';
+import routes from './routes';
 const { setupDev } = require('./development');
 
 const env = process.env.NODE_ENV || 'development';
@@ -54,6 +55,9 @@ glob.sync(__dirname + '/routes/**/*.+(ts|js)')
   .forEach(route => route.default(app));
 
 setupDev(app,developmentMode);
+
+// remaining routes
+routes(app);
 
 // returning "not found" page for requests with paths not resolved by the router
 app.use((req, res) => {
