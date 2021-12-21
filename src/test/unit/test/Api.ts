@@ -18,7 +18,7 @@ describe('Api', () => {
   });
 
   test('Should not return results from getUsersByEmail request if error', async () => {
-    const mockAxios = {get: async () => {throw new Error ('error')}} as any;
+    const mockAxios = {get: async () => {throw new Error ('error');}} as any;
     const api = new Api(mockAxios);
     await expect(api.getUsersByEmail(email)).resolves.toEqual([]);
   });
