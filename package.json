@@ -104,7 +104,7 @@
     "jest-html-reporter": "^3.4.2",
     "mini-css-extract-plugin": "^1.6.2",
     "nock": "^13.2.1",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "nodemon": "^2.0.15",
     "pa11y": "^6.1.1",
     "playwright": "^1.15.2",
