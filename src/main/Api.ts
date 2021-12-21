@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { User } from './interfaces/UserResultData';
+import { User } from './interfaces/User';
 
 export class Api {
   constructor(
@@ -8,7 +8,7 @@ export class Api {
 
   public getUsersByEmail(email: string): Promise<User[]> {
     return this.axios
-      .get(`/api/v1/users?query=email:${email}`)
+      .get('/api/v1/users', { params: { 'query': 'email:' + email } })
       .then(results => results.data)
       .catch(err => {
         return [];

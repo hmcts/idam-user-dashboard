@@ -25,6 +25,6 @@ export class UserResultsController {
       sortRoles(result.roles);
       return res.render('user-details', result);
     }
-    return res.render('manage-users', { search: email});
+    return res.render('manage-users', { search: email });
   }
 }
