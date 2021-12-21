@@ -13,5 +13,5 @@ export class Api {
       .catch(err => {
         return [];
       });
-  }
+  };
 }

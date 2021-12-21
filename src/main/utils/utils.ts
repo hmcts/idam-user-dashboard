@@ -22,10 +22,10 @@ const compareRoles = (a: string, b: string): number => {
     return 1;
   }
   return 0;
-}
+};
 
 export const sortRoles = (roles: string[]): void => {
   if (roles.length > 1) {
     roles.sort((a: string, b: string) => compareRoles(a, b));
   }
-}
+};

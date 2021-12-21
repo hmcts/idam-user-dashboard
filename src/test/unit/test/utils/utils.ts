@@ -55,19 +55,19 @@ describe('utils', () => {
 
   describe('sortRoles', () => {
     test('Should sort IDAM super user role first', async () => {
-      let roles = ['Other User', 'IDAM_SUPER_USER', 'Other User 2'];
+      const roles = ['Other User', 'IDAM_SUPER_USER', 'Other User 2'];
       sortRoles(roles);
       expect(roles[0]).toBe('IDAM_SUPER_USER');
     });
 
     test('Should sort IDAM admin user role first', async () => {
-      let roles = ['Other User', 'Other User 2', 'IDAM_ADMIN_USER'];
+      const roles = ['Other User', 'Other User 2', 'IDAM_ADMIN_USER'];
       sortRoles(roles);
       expect(roles[0]).toBe('IDAM_ADMIN_USER');
     });
 
     test('Should sort all other roles alphabetically', async () => {
-      let roles = ['C', 'A', 'IDAM_SUPER_USER', 'B'];
+      const roles = ['C', 'A', 'IDAM_SUPER_USER', 'B'];
       sortRoles(roles);
       expect(roles[0]).toBe('IDAM_SUPER_USER');
       expect(roles[1]).toBe('A');

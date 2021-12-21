@@ -10,6 +10,7 @@ describe('User results controller', () => {
   const res = mockResponse();
 
   const mockApi = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     getUsersByEmail: () => {}
   };
   mockApi.getUsersByEmail = jest.fn();

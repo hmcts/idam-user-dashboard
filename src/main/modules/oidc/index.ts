@@ -44,7 +44,7 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       if (req.session.user) {
-        this.configureApiAuthorization(req)
+        this.configureApiAuthorization(req);
         res.locals.isLoggedIn = true;
         return next();
       }
