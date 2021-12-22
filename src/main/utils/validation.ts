@@ -1,12 +1,12 @@
-import {isEmpty, isValidEmailFormat} from './utils';
-import {invalidEmailFormat, missingEmail} from './error';
+import { isEmpty, isValidEmailFormat } from './utils';
+import { INVALID_EMAIL_FORMAT_ERROR, MISSING_EMAIL_ERROR } from './error';
 
 export function validateEmail(email: string): string {
   if (isEmpty(email)) {
-    return missingEmail;
+    return MISSING_EMAIL_ERROR;
   }
   if (!isValidEmailFormat(email)) {
-    return invalidEmailFormat;
+    return INVALID_EMAIL_FORMAT_ERROR;
   }
   return '';
 }

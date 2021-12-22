@@ -2,7 +2,7 @@ import { UserOptionController } from '../../../../main/controllers/UserOptionCon
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
-import { missingOption } from '../../../../main/utils/error';
+import { MISSING_OPTION_ERROR } from '../../../../main/utils/error';
 
 describe('User option controller', () => {
   let req: any;
@@ -22,7 +22,7 @@ describe('User option controller', () => {
     await controller.post(req, res);
     const expectedPageData: PageData = {
       hasError: true,
-      errorMessage: missingOption
+      errorMessage: MISSING_OPTION_ERROR
     };
     expect(res.render).toBeCalledWith('user-option', expectedPageData);
   });
