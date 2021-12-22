@@ -6,7 +6,7 @@ import {AuthedRequest} from '../../types/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
 import {Api} from '../../Api';
-import {LOGIN_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
+import {HOME_URL, LOGIN_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 
 export class OidcMiddleware {
 
@@ -40,7 +40,7 @@ export class OidcMiddleware {
 
       req.session.user = response.data;
       req.session.user.jwt = jwt_decode(response.data.id_token);
-      res.render('redirect');
+      res.redirect(HOME_URL);
     });
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {

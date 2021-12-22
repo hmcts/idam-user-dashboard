@@ -68,6 +68,6 @@ function testAccessibility(url: string): void {
 
 describe('Accessibility', () => {
   // testing accessibility of the home page
-  testAccessibility(HOME_URL);
+  testAccessibility('/');
   // TODO: include each path of your application in accessibility checks
 });
