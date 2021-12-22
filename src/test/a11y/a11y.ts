@@ -1,6 +1,7 @@
 import {fail} from 'assert';
 import Axios from 'axios';
 import {config} from '../config';
+import {HOME_URL} from '../../main/utils/urls';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -67,6 +68,6 @@ function testAccessibility(url: string): void {
 
 describe('Accessibility', () => {
   // testing accessibility of the home page
-  testAccessibility('/');
+  testAccessibility(HOME_URL);
   // TODO: include each path of your application in accessibility checks
 });
