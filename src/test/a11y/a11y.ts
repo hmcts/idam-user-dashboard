@@ -1,7 +1,6 @@
 import {fail} from 'assert';
 import Axios from 'axios';
 import {config} from '../config';
-import {HOME_URL} from '../../main/utils/urls';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
