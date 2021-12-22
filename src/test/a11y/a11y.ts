@@ -22,7 +22,20 @@ class PallyIssue {
   typeCode: number;
 }
 
+function loginPally(): Pa11yResult {
+  return pa11y(config.TEST_URL + '/login', {
+    hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+    actions: [
+      'set field #username to idamOwner@hmcts.net',
+      'set field #password to Pa55word11',
+      'click element .button',
+      'wait for path to be /'
+    ]
+  });
+}
+
 beforeAll((done /* call it or remove it*/) => {
+  loginPally();
   done(); // calling it
 });
 

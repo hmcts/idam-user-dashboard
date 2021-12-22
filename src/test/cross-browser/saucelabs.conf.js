@@ -1,3 +1,4 @@
+const config = require('../config');
 const supportedBrowsers = require('./supportedBrowsers');
 
 const waitForTimeout = 60000;
@@ -39,7 +40,7 @@ const setupConfig = {
   helpers: {
 
     Playwright: {
-      url: 'https://www.amazon.co.uk/',
+      url: config.config.TEST_URL,
       browser: 'chromium',
       waitForTimeout,
       smartWait,

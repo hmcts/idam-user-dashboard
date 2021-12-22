@@ -8,8 +8,10 @@ services:
   name: 'IDAM user dashboard'
   idam:
     url:
-      public: 'https://idam-web-public.aat.platform.hmcts.net'
-      api: 'https://idam-api.aat.platform.hmcts.net'
+        public: 'http://localhost:9000'
+        api: 'http://localhost:7060'
+      #'public: 'https://idam-web-public.aat.platform.hmcts.net'
+      #api: 'https://idam-api.aat.platform.hmcts.net'
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'

@@ -1,11 +1,13 @@
 require('ts-node').register({project: 'src/test/tsconfig.json'});
+const config = require('../config');
+
 
 exports.config = {
   tests: './*_test.ts',
   output: '../../../test-output/functional/reports',
   helpers: {
     Playwright: {
-      url: 'http://localhost:3100',
+      url: config.config.TEST_URL,
       show: false,
       browser: 'chromium',
     },
