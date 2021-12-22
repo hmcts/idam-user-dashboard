@@ -3,6 +3,7 @@ import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
 import { MISSING_OPTION_ERROR } from '../../../../main/utils/error';
+import { ADD_USERS_URL, MANAGER_USERS_URL } from '../../../../main/utils/urls';
 
 describe('User option controller', () => {
   let req: any;
@@ -32,7 +33,7 @@ describe('User option controller', () => {
       userAction: 'manage-users',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith('/manage-users');
+    expect(res.redirect).toBeCalledWith(MANAGER_USERS_URL);
   });
 
   test('Should redirect to the add users page when \'Add new users\' option is selected', async () => {
@@ -40,6 +41,6 @@ describe('User option controller', () => {
       userAction: 'add-users',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith('/add-users');
+    expect(res.redirect).toBeCalledWith(ADD_USERS_URL);
   });
 });

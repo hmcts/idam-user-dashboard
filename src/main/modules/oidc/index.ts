@@ -6,6 +6,7 @@ import {AuthedRequest} from '../../types/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
 import {Api} from '../../Api';
+import {LOGIN_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 
 export class OidcMiddleware {
 
@@ -19,12 +20,12 @@ export class OidcMiddleware {
     const responseType: string = config.get('services.idam.responseType');
     const scope: string = config.get('services.idam.scope');
 
-    app.get('/login', (req: Request, res: Response) => {
+    app.get(LOGIN_URL, (req: Request, res: Response) => {
       // Redirect to IDAM web public to get the authorization code
       res.redirect(`${authorizationURL}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURI(redirectUri)}&scope=${encodeURIComponent(scope)}`);
     });
 
-    app.get('/oauth2/callback', async (req: Request, res: Response) => {
+    app.get(OAUTH2_CALLBACK_URL, async (req: Request, res: Response) => {
       // Get access token from IDAM using the authorization code
       const response = await Axios.post(
         tokenUrl,
@@ -50,9 +51,9 @@ export class OidcMiddleware {
       }
 
       if (req.xhr) {
-        res.status(302).send({ url: '/login' });
+        res.status(302).send({ url: LOGIN_URL });
       } else {
-        res.redirect('/login');
+        res.redirect(LOGIN_URL);
       }
     });
   }
