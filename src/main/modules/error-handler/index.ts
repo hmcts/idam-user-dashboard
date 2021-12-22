@@ -1,9 +1,9 @@
 import express, { Application } from 'express';
 import { HTTPError } from '../../HttpError';
-import { LoggerInstance } from 'winston';
+import { Logger } from '../../interfaces/Logger';
 
 export class ErrorHandler {
-  constructor(public logger: LoggerInstance) {
+  constructor(public logger: Logger) {
     this.logger = logger;
   }
 
@@ -15,13 +15,13 @@ export class ErrorHandler {
     });
 
     // error handler
-    app.use((err: HTTPError, req: express.Request, res: express.Response) => {
-      this.logger.error(`${err.stack || err}`);
+    app.use((error: HTTPError, req: express.Request, res: express.Response) => {
+      this.logger.error(`${error.stack || error}`);
 
       // set locals, only providing error in development
-      res.locals.message = err.message;
-      res.locals.error = app.locals.ENV === 'development' ? err : {};
-      res.status(err.status || 500);
+      res.locals.message = error.message;
+      res.locals.error = app.locals.ENV === 'development' ? error : {};
+      res.status(error.status || 500);
       res.render('error');
     });
   }
