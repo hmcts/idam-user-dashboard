@@ -1,5 +1,6 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "macros/csrf.njk" import csrfProtection %}
 
 {% extends "template.njk" %}
 
@@ -7,6 +8,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form method="POST">
+        {{ csrfProtection() }}
         {{ govukRadios({
           idPrefix: "user-action",
           name: "userAction",

@@ -1,6 +1,7 @@
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "macros/csrf.njk" import csrfProtection %}
 
 {% extends "template.njk" %}
 
@@ -24,6 +25,7 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Manage Users</h1>
       <form method="GET" action="/user-results">
+        {{ csrfProtection() }}
         {{ govukInput({
           label: {
             text: "Search for an existing user",
