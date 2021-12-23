@@ -17,5 +17,6 @@ module.exports = {
       "outputPath": "./test-output/accessibility/test-report.html",
       "includeFailureMsg": true
     }]
-  ]
+  ],
+  testTimeout: 10000
 }

@@ -23,11 +23,13 @@ class PallyIssue {
 }
 
 function loginPally(): Pa11yResult {
+  const systemOwnerUsername = process.env.SMOKE_TEST_USER_USERNAME;
+  const systemOwnerPassword = process.env.SMOKE_TEST_USER_PASSWORD;
   return pa11y(config.TEST_URL + '/login', {
     hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
     actions: [
-      'set field #username to idamOwner@hmcts.net',
-      'set field #password to Pa55word11',
+      `set field #username to ${systemOwnerUsername}`,
+      `set field #password to ${systemOwnerPassword}`,
       'click element .button',
       'wait for path to be /'
     ]
