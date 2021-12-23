@@ -15,7 +15,8 @@ def component = "user-dashboard"
 
 def secrets = [
   "idam-idam-${params.ENVIRONMENT}": [
-    secret('notify-api-key', 'NOTIFY_API_KEY')
+    secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
+    secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD')
   ]
 ]
 
