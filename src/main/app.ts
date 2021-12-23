@@ -4,7 +4,6 @@ const { Logger } = require('@hmcts/nodejs-logging');
 
 import * as bodyParser from 'body-parser';
 import config = require('config');
-//import cookieParser from 'cookie-parser';
 import express from 'express';
 import { Helmet } from './modules/helmet';
 import * as path from 'path';
