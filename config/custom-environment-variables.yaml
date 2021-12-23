@@ -1,0 +1,5 @@
+services:
+  idam:
+    url:
+      public: STRATEGIC_PUBLIC_URL
+      api: STRATEGIC_SERVICE_URL

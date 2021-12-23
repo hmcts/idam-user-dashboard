@@ -1,11 +1,5 @@
 #!groovy
 
-properties([
-  parameters([
-    string(name: 'ENVIRONMENT', defaultValue: 'aat', description: 'Environment to test')
-  ])
-])
-
 @Library("Infrastructure")
 
 def type = "nodejs"
@@ -31,7 +25,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 def secrets = [
-  'idam-idam-${params.ENVIRONMENT}': [
+  'idam-${env}': [
     secret('idam-user-dashboard-client-secret', 'CLIENT_SECRET'),
     secret('launchdarkly-sdk-key', 'LD_SDK_KEY'),
     secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
