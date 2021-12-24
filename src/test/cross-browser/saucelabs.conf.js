@@ -1,4 +1,4 @@
-const config = require('../config');
+import {config} from '../config';
 const supportedBrowsers = require('./supportedBrowsers');
 
 const waitForTimeout = 60000;
@@ -40,7 +40,7 @@ const setupConfig = {
   helpers: {
 
     Playwright: {
-      url: config.config.TEST_URL,
+      url: config.TEST_URL,
       browser: 'chromium',
       waitForTimeout,
       smartWait,

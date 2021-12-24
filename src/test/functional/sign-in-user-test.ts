@@ -1,18 +1,16 @@
-const signInConfig = require('../config');
+import {config} from '../config';
+import StringOrSecret = CodeceptJS.StringOrSecret;
 
 Feature('User Sign In');
 
 Scenario('I as an user can sign in', ({I}) => {
   I.amOnPage('/login');
   I.see('Sign in');
-  I.fillField('#username', signInConfig.SMOKE_TEST_USER_USERNAME);
-  I.fillField('#password', signInConfig.SMOKE_TEST_USER_PASSWORD);
-  I.fillField('#username', 'idamOwner@hmcts.net');
-  I.fillField('#password', 'Pa55word11');
+  I.fillField('#username', config.SMOKE_TEST_USER_USERNAME as StringOrSecret);
+  I.fillField('#password', config.SMOKE_TEST_USER_PASSWORD as StringOrSecret);
   I.click('Sign in');
   I.waitForText('What do you want to do?');
-
-}).retry(signInConfig.SCENARIO_RETRY_LIMIT);
+}).retry(config.SCENARIO_RETRY_LIMIT);
 
 Scenario('I as an user try to sign in with invalid credentials', ({I}) => {
   I.amOnPage('/login');
@@ -26,4 +24,5 @@ Scenario('I as an user try to sign in with invalid credentials', ({I}) => {
   I.clearField('#password');
   I.click('Sign in');
   I.waitForText('Information is missing or invalid');
-}).retry(signInConfig.SCENARIO_RETRY_LIMIT);
+}).retry(config.SCENARIO_RETRY_LIMIT);
+

@@ -1,5 +1,5 @@
 require('ts-node').register({project: 'src/test/tsconfig.json'});
-const config = require('../config');
+import {config} from '../config';
 
 
 exports.config = {
@@ -7,7 +7,7 @@ exports.config = {
   output: '../../../test-output/functional/reports',
   helpers: {
     Playwright: {
-      url: config.config.TEST_URL,
+      url: config.TEST_URL,
       show: false,
       browser: 'chromium',
     },
