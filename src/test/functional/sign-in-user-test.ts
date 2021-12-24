@@ -8,7 +8,6 @@ Scenario('I as an user can sign in', ({I}) => {
   I.fillField('#username', signInConfig.SMOKE_TEST_USER_USERNAME);
   I.fillField('#password', signInConfig.SMOKE_TEST_USER_PASSWORD);
   I.fillField('#username', 'idamOwner@hmcts.net');
-  I.wait(5);
   I.fillField('#password', 'Pa55word11');
   I.click('Sign in');
   I.waitForText('What do you want to do?');

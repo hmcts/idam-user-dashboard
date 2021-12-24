@@ -3,7 +3,7 @@ const config = require('../config');
 
 
 exports.config = {
-  tests: './*_test.ts',
+  tests: './*-test.ts',
   output: '../../../test-output/functional/reports',
   helpers: {
     Playwright: {
