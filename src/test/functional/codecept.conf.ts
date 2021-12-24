@@ -8,6 +8,7 @@ export const config: CodeceptJS.Config = {
       url: TestConfig.TEST_URL,
       show: false,
       browser: 'chromium',
+      ignoreHTTPSErrors : true
     },
   },
   include: {
