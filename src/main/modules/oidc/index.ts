@@ -39,7 +39,7 @@ export class OidcMiddleware {
 
       req.session.user = response.data;
       req.session.user.jwt = jwt_decode(response.data.id_token);
-      res.redirect('/');
+      res.render('redirect');
     });
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
