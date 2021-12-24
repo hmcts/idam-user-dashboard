@@ -1,7 +1,6 @@
 import {fail} from 'assert';
 import Axios from 'axios';
 import {config} from '../config';
-const TestData = require('../test_data');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -24,8 +23,8 @@ class PallyIssue {
 }
 
 function loginPally(): Pa11yResult {
-  const systemOwnerUsername = TestData.SMOKE_TEST_USER_USERNAME;
-  const systemOwnerPassword = TestData.SMOKE_TEST_USER_PASSWORD;
+  const systemOwnerUsername = config.SMOKE_TEST_USER_USERNAME;
+  const systemOwnerPassword = config.SMOKE_TEST_USER_PASSWORD;
   return pa11y(config.TEST_URL + '/login', {
     hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
     actions: [
