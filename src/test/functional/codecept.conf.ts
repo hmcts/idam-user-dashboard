@@ -1,16 +1,9 @@
-import { config as TestConfig } from '../config';
+import { config as testConfig } from '../config';
 
 export const config: CodeceptJS.Config = {
   tests: './*-test.ts',
   output: '../../../test-output/functional/reports',
-  helpers: {
-    Playwright: {
-      url: TestConfig.TEST_URL,
-      show: false,
-      browser: 'chromium',
-      ignoreHTTPSErrors : true
-    },
-  },
+  helpers: testConfig.helpers,
   include: {
     I: './steps_file.js',
   },
