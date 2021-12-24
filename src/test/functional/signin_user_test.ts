@@ -4,7 +4,6 @@ Feature('User Signin');
 
 Scenario('I as an user can signin', ({ I }) => {
   I.amOnPage('/login');
-  I.wait(10);
   I.see('Sign in');
   I.fillField('#username', 'idamOwner@hmcts.net');
   I.fillField('#password', 'Pa55word11');
