@@ -4,6 +4,7 @@ export const config: CodeceptJS.Config = {
   tests: './*-test.ts',
   output: '../../../test-output/functional/reports',
   helpers: testConfig.helpers,
+  timeout: testConfig.WaitForTimeout,
   include: {
     I: './steps_file.js',
   },
