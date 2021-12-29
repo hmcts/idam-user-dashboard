@@ -83,5 +83,8 @@ function testAccessibility(url: string): void {
 describe('Accessibility', () => {
   // testing accessibility of the home page
   testAccessibility('/');
+  testAccessibility('/manage-users');
+  testAccessibility('/user-results?email='+config.SMOKE_TEST_USER_USERNAME);
+
   // TODO: include each path of your application in accessibility checks
 });
