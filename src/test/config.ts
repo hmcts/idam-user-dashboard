@@ -5,7 +5,7 @@ export const config = {
   SCENARIO_RETRY_LIMIT: 3,
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   TestSlowMo: 250,
-  WaitForTimeout: 30000,
+  WaitForTimeout: 200000,
 
   Gherkin: {
     features: './features/**/*.feature',
