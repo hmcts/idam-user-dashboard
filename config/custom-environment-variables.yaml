@@ -15,10 +15,10 @@ services:
 session:
   secret: 'local'
   redis:
-    host:
-    key:
+    host: REDIS_HOST
+    key: REDIS_KEY
 health:
   timeout: 5000
   deadline: 15000
 launchdarkly:
-  sdkKey:
+  sdkKey: LAUNCHDARKLY_SDK_KEY
