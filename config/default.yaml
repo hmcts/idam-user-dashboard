@@ -5,7 +5,7 @@ appInsights:
     instrumentationKey: false
 port: 3100
 services:
-  name: 'IDAM user dashboard'
+  name: 'IDAM User Dashboard'
   idam:
     url:
       public: 'https://idam-web-public.aat.platform.hmcts.net'

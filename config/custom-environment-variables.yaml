@@ -1,0 +1,24 @@
+services:
+  name: 'IDAM User Dashboard'
+  idam:
+    url:
+      public: STRATEGIC_SERVICE_URL
+      api: STRATEGIC_PUBLIC_URL
+    endpoint:
+      authorization: '/o/authorize'
+      token: '/o/token'
+    clientID: OAUTH_CLIENT_ID
+    clientSecret: OAUTH_CLIENT_SECRET
+    callbackURL: OAUTH_CLIENT_REDIRECT
+    scope: 'openid profile roles manage-user search-user'
+    responseType: 'code'
+session:
+  secret: 'local'
+  redis:
+    host:
+    key:
+health:
+  timeout: 5000
+  deadline: 15000
+launchdarkly:
+  sdkKey:
