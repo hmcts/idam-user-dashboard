@@ -2,8 +2,8 @@ services:
   name: 'IDAM User Dashboard'
   idam:
     url:
-      public: STRATEGIC_SERVICE_URL
-      api: STRATEGIC_PUBLIC_URL
+      public: STRATEGIC_PUBLIC_URL
+      api: STRATEGIC_SERVICE_URL
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'
