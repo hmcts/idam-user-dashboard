@@ -9,7 +9,6 @@
     "module": "commonjs",
     "strictNullChecks": true,
     "types": ["jest", "codeceptjs", "node"],
-
   }
 }
 
