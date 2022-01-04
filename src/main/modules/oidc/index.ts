@@ -21,13 +21,13 @@ export class OidcMiddleware {
 
     app.get('/login', (req: Request, res: Response) => {
       // Redirect to IDAM web public to get the authorization code
-      res.redirect(`${config.get('services.idam.url.public')}${authorizationURL}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURI(redirectUri)}&scope=${encodeURIComponent(scope)}`);
+      res.redirect(`${authorizationURL}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURI(redirectUri)}&scope=${encodeURIComponent(scope)}`);
     });
 
     app.get('/oauth2/callback', async (req: Request, res: Response) => {
       // Get access token from IDAM using the authorization code
       const response = await Axios.post(
-        config.get('services.idam.url.public') + tokenUrl,
+        tokenUrl,
         `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&redirect_uri=${encodeURI(redirectUri)}&code=${encodeURIComponent(req.query.code as string)}`,
         {
           headers: {
