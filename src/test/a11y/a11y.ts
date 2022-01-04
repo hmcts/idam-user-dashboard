@@ -22,7 +22,22 @@ class PallyIssue {
   typeCode: number;
 }
 
+function loginPally(): Pa11yResult {
+  const systemOwnerUsername = config.SMOKE_TEST_USER_USERNAME;
+  const systemOwnerPassword = config.SMOKE_TEST_USER_PASSWORD;
+  return pa11y(config.TEST_URL + '/login', {
+    hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+    actions: [
+      `set field #username to ${systemOwnerUsername}`,
+      `set field #password to ${systemOwnerPassword}`,
+      'click element .button',
+      'wait for path to be /'
+    ]
+  });
+}
+
 beforeAll((done /* call it or remove it*/) => {
+  loginPally();
   done(); // calling it
 });
 
@@ -68,5 +83,8 @@ function testAccessibility(url: string): void {
 describe('Accessibility', () => {
   // testing accessibility of the home page
   testAccessibility('/');
+  testAccessibility('/manage-users');
+  testAccessibility('/user-results?email='+config.SMOKE_TEST_USER_USERNAME);
+
   // TODO: include each path of your application in accessibility checks
 });
