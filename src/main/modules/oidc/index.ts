@@ -73,11 +73,10 @@ export class OidcMiddleware {
           .catch(error => {
             this.logger.error(error);
             return error;
-        });
-
+          });
         req.session.destroy(() => res.redirect(LOGIN_URL));
       } else {
-        res.redirect(LOGIN_URL)
+        res.redirect(LOGIN_URL);
       }
     });
 
