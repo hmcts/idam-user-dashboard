@@ -2,7 +2,7 @@ import { UserResultsController } from '../../../../main/controllers/UserResultsC
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
-import { invalidEmailFormat, missingEmail } from '../../../../main/utils/error';
+import { INVALID_EMAIL_FORMAT_ERROR, MISSING_EMAIL_ERROR } from '../../../../main/utils/error';
 import { when } from 'jest-when';
 
 describe('User results controller', () => {
@@ -54,7 +54,7 @@ describe('User results controller', () => {
     await controller.get(req, res);
     const expectedPageData: PageData = {
       hasError: true,
-      errorMessage: missingEmail
+      errorMessage: MISSING_EMAIL_ERROR
     };
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });
@@ -64,7 +64,7 @@ describe('User results controller', () => {
     await controller.get(req, res);
     const expectedPageData: PageData = {
       hasError: true,
-      errorMessage: invalidEmailFormat
+      errorMessage: INVALID_EMAIL_FORMAT_ERROR
     };
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });

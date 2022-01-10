@@ -6,8 +6,8 @@ import { execSync } from 'child_process';
 
 export class PropertiesVolume {
 
-  enableFor(server: Application): void {
-    if (server.locals.ENV !== 'development') {
+  enableFor(app: Application): void {
+    if (app.locals.ENV !== 'development') {
       propertiesVolume.addTo(config);
       this.setSecret('secrets.idam-idam.AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
       this.setSecret('secrets.idam-idam.launchdarkly-sdk-key', 'launchdarkly.sdkKey');

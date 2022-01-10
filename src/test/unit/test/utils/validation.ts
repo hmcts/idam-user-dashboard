@@ -1,5 +1,5 @@
-import {validateEmail} from '../../../../main/utils/validation';
-import {invalidEmailFormat, missingEmail} from '../../../../main/utils/error';
+import { validateEmail } from '../../../../main/utils/validation';
+import { INVALID_EMAIL_FORMAT_ERROR, MISSING_EMAIL_ERROR } from '../../../../main/utils/error';
 
 describe('validation', () => {
   describe('validateEmail', () => {
@@ -8,11 +8,11 @@ describe('validation', () => {
     });
 
     test('Should return error message if email is empty', async () => {
-      expect(validateEmail('')).toBe(missingEmail);
+      expect(validateEmail('')).toBe(MISSING_EMAIL_ERROR);
     });
 
     test('Should return error message if email is in incorrect format', async () => {
-      expect(validateEmail('test')).toBe(invalidEmailFormat);
+      expect(validateEmail('test')).toBe(INVALID_EMAIL_FORMAT_ERROR);
     });
   });
 });

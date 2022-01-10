@@ -1,15 +1,15 @@
 import { Application } from 'express';
 import session from 'express-session';
 import ConnectRedis from 'connect-redis';
-import * as redis from 'redis';
+import { createClient } from 'redis';
 import config from 'config';
 import FileStoreFactory from 'session-file-store';
 
 const RedisStore = ConnectRedis(session);
 const FileStore = FileStoreFactory(session);
+const cookieMaxAge = 21 * (60 * 1000); // 21 minutes
 
 export class SessionStorage {
-
   public enableFor(app: Application): void {
     app.use(session({
       name: 'idam-session',
@@ -18,22 +18,29 @@ export class SessionStorage {
       secret: config.get('session.secret'),
       cookie: {
         httpOnly: true,
-        sameSite: true
+        maxAge: cookieMaxAge,
       },
-      store: this.getStore()
+      rolling: true, // Renew the cookie for another 20 minutes on each request
+      store: this.getStore(app),
     }));
   }
 
-  private getStore(): session.Store {
-    return !config.get('session.redis.host')
-      ? new FileStore({ path: '/tmp' })
-      : new RedisStore({
-        client: redis.createClient({
-          host: config.get('session.redis.host') as string,
-          password: config.get('session.redis.key') as string,
-          port: 6380,
-          tls: true
-        })
+  private getStore(app: Application): session.Store {
+    const redisHost: string = config.get('session.redis.host');
+    const redisPass: string = config.get('session.redis.key');
+
+    if (redisHost && redisPass) {
+      const client = createClient({
+        host: redisHost,
+        password: redisPass,
+        port: 6380,
+        tls: true
       });
+
+      app.locals.redisClient = client;
+      return new RedisStore({ client });
+    }
+
+    return new FileStore({ path: '/tmp' });
   }
 }
