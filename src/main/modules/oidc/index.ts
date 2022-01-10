@@ -19,6 +19,7 @@ export class OidcMiddleware {
     const idamPublicUrl: string = config.get('services.idam.url.public');
     const authorizationURL: string = idamPublicUrl + config.get('services.idam.endpoint.authorization');
     const tokenUrl: string = idamPublicUrl + config.get('services.idam.endpoint.token');
+    const endSessionUrl: string = idamPublicUrl + config.get('services.idam.endpoint.endSession');
     const clientId: string = config.get('services.idam.clientID');
     const clientSecret: string = config.get('services.idam.clientSecret');
     const redirectUri: string = config.get('services.idam.callbackURL');
@@ -59,31 +60,25 @@ export class OidcMiddleware {
         };
 
         req.session.save(() => res.redirect(HOME_URL));
-      } catch (e) {
-        this.logger.error(e);
+      } catch (error) {
+        this.logger.error(error);
         return res.redirect(HOME_URL);
       }
     });
 
-    app.get(LOGOUT_URL, (req: Request, res: Response) => {
-      const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64');
+    app.get(LOGOUT_URL, async (req: Request, res: Response) => {
       if (req.session.user) {
-        await Axios.delete(
-          sessionUrl + '/' + req.session.user.access_token,
-          {
-            headers: {
-              Authorization: 'Basic ' + encode(clientId + ':' + clientSecret)
-            }
-          }
-        ).catch((error) => {
-          res.status(400);
-          return error;
+        await Axios
+          .get(endSessionUrl)
+          .catch(error => {
+            this.logger.error(error);
+            return error;
         });
 
         req.session.destroy(() => res.redirect(LOGIN_URL));
+      } else {
+        res.redirect(LOGIN_URL)
       }
-
-      res.redirect(LOGIN_URL);
     });
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {

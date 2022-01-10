@@ -7,6 +7,7 @@ services:
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'
+      endSession: '/o/endSession'
     clientID: OAUTH_CLIENT_ID
     clientSecret: OAUTH_CLIENT_SECRET
     callbackURL: OAUTH_CLIENT_REDIRECT
