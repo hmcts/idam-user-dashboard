@@ -61,13 +61,29 @@ export class OidcMiddleware {
         req.session.save(() => res.redirect(HOME_URL));
       } catch (e) {
         this.logger.error(e);
-        return res.redirect('/');
+        return res.redirect(HOME_URL);
       }
     });
 
     app.get(LOGOUT_URL, (req: Request, res: Response) => {
-      res.locals.isLoggedIn = false;
-      req.session.destroy(() => res.redirect('/'));
+      const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64');
+      if (req.session.user) {
+        await Axios.delete(
+          sessionUrl + '/' + req.session.user.access_token,
+          {
+            headers: {
+              Authorization: 'Basic ' + encode(clientId + ':' + clientSecret)
+            }
+          }
+        ).catch((error) => {
+          res.status(400);
+          return error;
+        });
+
+        req.session.destroy(() => res.redirect(LOGIN_URL));
+      }
+
+      res.redirect(LOGIN_URL);
     });
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
