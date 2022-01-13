@@ -16,7 +16,7 @@ export const config: CodeceptJS.Config = {
       ignoreHTTPSErrors: true,
     },
     IdamHelper: {
-      require: './shared/idam-helper.ts',
+      require: './shared/idam-helper.js',
     },
   },
   timeout: testConfig.WaitForTimeout,
