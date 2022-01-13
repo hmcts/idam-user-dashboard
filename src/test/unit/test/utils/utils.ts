@@ -66,6 +66,12 @@ describe('utils', () => {
       expect(roles[0]).toBe('IDAM_ADMIN_USER');
     });
 
+    test('Should sort IDAM system owner role first', async () => {
+      const roles = ['Other User', 'Other User 2', 'IDAM_SYSTEM_OWNER'];
+      sortRoles(roles);
+      expect(roles[0]).toBe('IDAM_SYSTEM_OWNER');
+    });
+
     test('Should sort all other roles alphabetically', async () => {
       const roles = ['C', 'A', 'IDAM_SUPER_USER', 'B'];
       sortRoles(roles);
