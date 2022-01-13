@@ -16,12 +16,12 @@ export const config: CodeceptJS.Config = {
       ignoreHTTPSErrors: true,
     },
     IdamHelper: {
-      require: './shared/idam-helper.js',
+      require: './shared/idam-helper.ts',
     },
   },
   timeout: testConfig.WaitForTimeout,
   include: {
-    I: './steps_file.js',
+    I: './steps_file.ts',
   },
   bootstrap: null,
   mocha: {},
