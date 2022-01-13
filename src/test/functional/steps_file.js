@@ -1,5 +1,4 @@
-import { config } from '../config';
-
+const config = require('../config.js');
 
 module.exports = function () {
   return actor({
