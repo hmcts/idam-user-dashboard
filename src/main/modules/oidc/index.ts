@@ -97,7 +97,7 @@ export class OidcMiddleware {
       axios: asValue(Axios.create({
         baseURL: config.get('services.idam.url.api'),
         headers: {
-          Authorization: 'Bearer ' + req.session.user.access_token
+          Authorization: 'Bearer ' + req.session.user.accessToken
         }
       })),
       api: asClass(Api)
