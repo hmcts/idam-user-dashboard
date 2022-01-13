@@ -14,7 +14,7 @@ def product = "idam"
 def component = "user-dashboard"
 
 def secrets = [
-  'idam-idam-${params.ENVIRONMENT}': [
+  'idam-idam-${env}': [
     secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
     secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD')
   ]

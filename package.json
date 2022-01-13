@@ -124,5 +124,8 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^5.2.2",
     "webpack-node-externals": "^3.0.0"
+  },
+  "resolutions": {
+    "axios/follow-redirects": "^1.14.7"
   }
 }
