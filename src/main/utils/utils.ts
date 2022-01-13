@@ -11,10 +11,16 @@ export const isValidEmailFormat = (email: string): boolean => {
   return filter.test(email);
 };
 
+const isDefaultRole = (role: string): boolean => {
+  return role === 'IDAM_SUPER_USER'
+    || role === 'IDAM_ADMIN_USER'
+    || role === 'IDAM_SYSTEM_OWNER';
+};
+
 const compareRoles = (a: string, b: string): number => {
-  if (a === 'IDAM_SUPER_USER' || a === 'IDAM_ADMIN_USER') {
+  if (isDefaultRole(a)) {
     return -1;
-  } else if (b === 'IDAM_SUPER_USER' || b === 'IDAM_ADMIN_USER') {
+  } else if (isDefaultRole(b)) {
     return 1;
   } else if (a < b) {
     return -1;
