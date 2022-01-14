@@ -1,6 +1,6 @@
 const config = require('../config.ts');
 
-module.exports = function () {
+export = function () {
   return actor({
 
     loginAsSystemOwner: function () {

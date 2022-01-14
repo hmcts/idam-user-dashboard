@@ -21,7 +21,7 @@ export const config: CodeceptJS.Config = {
   },
   timeout: testConfig.WaitForTimeout,
   include: {
-    I: './custom-steps.js',
+    I: './custom-steps.ts',
   },
   bootstrap: null,
   mocha: {},
