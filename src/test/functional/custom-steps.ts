@@ -1,10 +1,10 @@
-const config = require('../config.ts');
+import {config} from '../config';
 
 export = function () {
   return actor({
 
     loginAsSystemOwner: function () {
-      this.loginAs(config.config.SMOKE_TEST_USER_USERNAME, config.config.SMOKE_TEST_USER_PASSWORD);
+      this.loginAs(config.SMOKE_TEST_USER_USERNAME, config.SMOKE_TEST_USER_PASSWORD);
     },
 
     loginAs: function (username, password) {
