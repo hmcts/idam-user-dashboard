@@ -1,10 +1,10 @@
-const config = require('../config.js');
+const config = require('../config.ts');
 
 module.exports = function () {
   return actor({
 
     loginAsSystemOwner: function () {
-      this.loginAs(config.SMOKE_TEST_USER_USERNAME, config.SMOKE_TEST_USER_PASSWORD);
+      this.loginAs(config.config.SMOKE_TEST_USER_USERNAME, config.config.SMOKE_TEST_USER_PASSWORD);
     },
 
     loginAs: function (username, password) {
@@ -12,8 +12,9 @@ module.exports = function () {
       this.see('Sign in');
       this.fillField('#username', username);
       this.fillField('#password', password);
+      this.wait(5);
       this.click('Sign in');
-      this.waitForText('Choose an option');
+      this.waitForText('Please select an option to continue');
     },
   });
 };

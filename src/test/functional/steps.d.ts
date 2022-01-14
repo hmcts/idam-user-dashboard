@@ -1,7 +1,5 @@
-
-
-type stepsFile = typeof import('./steps_file');
-type CustomHelper = import('./shared/idam-helper');
+type stepsFile = typeof import('./custom-steps');
+type CustomHelper = typeof import('./shared/idam-helper');
 
 declare namespace CodeceptJS {
   interface SupportObject { I: I, stepsFile: stepsFile}
