@@ -1006,7 +1006,7 @@
 
 "@codeceptjs/helper@^1.0.2":
   version "1.0.2"
-  resolved "https://registry.npmjs.org/@codeceptjs/helper/-/helper-1.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/@codeceptjs/helper/-/helper-1.0.2.tgz#feefbdc7877e7cf98dabcda55ae313b72bda6d98"
   integrity sha512-QKuyw4cGVa78YYj+g02RXitcUYpV4qKjZDHxfCIH2w8lJIr1FQohRD3o/MpcqEnvp475HQJN/OyWhdUBstJupA==
 
 "@cspotcode/source-map-consumer@0.8.0":
