@@ -6,7 +6,7 @@ export const config: CodeceptJS.Config = {
   helpers: testConfig.helpers,
   timeout: testConfig.WaitForTimeout,
   include: {
-    I: './steps_file.js',
+    I: './custom-steps.ts',
   },
   bootstrap: null,
   mocha: {},

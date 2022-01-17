@@ -79,6 +79,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
+    "@codeceptjs/helper": "^1.0.2",
     "@types/chai-as-promised": "^7.1.1",
     "@types/copy-webpack-plugin": "^8.0.1",
     "@types/jest": "^27.0.3",
@@ -124,5 +125,8 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^5.2.2",
     "webpack-node-externals": "^3.0.0"
+  },
+  "resolutions": {
+    "axios/follow-redirects": "^1.14.7"
   }
 }

@@ -1,6 +1,7 @@
 // Exposed URLs
 export const HOME_URL = '/';
 export const LOGIN_URL = '/login';
+export const LOGOUT_URL = '/logout';
 export const OAUTH2_CALLBACK_URL = '/oauth2/callback';
 
 export const MANAGER_USERS_URL = '/manage-users';
