@@ -8,6 +8,9 @@ services:
   name: 'IDAM User Dashboard'
   idam:
     url:
+
+#      public: 'http://localhost:9000'
+#      api: 'http://localhost:7060'
       public: 'https://idam-web-public.aat.platform.hmcts.net'
       api: 'https://idam-api.aat.platform.hmcts.net'
     endpoint:
