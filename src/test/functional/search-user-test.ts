@@ -1,7 +1,6 @@
 import {config} from '../config';
 import StringOrSecret = CodeceptJS.StringOrSecret;
 
-
 Feature('Search User');
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
 incorrectEmailAddresses.add(['email']); // adding records to a table
@@ -17,9 +16,9 @@ Before(({I}) => {
   I.waitForText('Please enter the email address of the user you wish to manage');
 });
 
-Data(incorrectEmailAddresses).Scenario('I as an user should be able to see proper error message if search text is not in the right format', ({I,current}) => {
+Data(incorrectEmailAddresses).Scenario('I as an user should be able to see proper error message if search text is not in the right format', ({I, current}) => {
   I.click('#email');
-  I.fillField('#email',current.incorrectEmailAddress);
+  I.fillField('#email', current.incorrectEmailAddress);
   I.click('Search');
   I.seeElement('#email-error');
   I.waitForText('The email address is not in the correct format');
@@ -41,8 +40,8 @@ Scenario('I as an user should be able to see proper error message if search text
 
 Scenario('I as an user should be able to see proper error message if user does not exist', ({I}) => {
   I.click('#email');
-  I.fillField('#email', 'test@test.com');
+  I.fillField('#email', 'meTesting@test.com');
   I.click('Search');
-  I.waitForText('No user matches your search for \'test@test.com\'');
+  I.waitForText('No user matches your search for \'meTesting@test.com\'');
 });
 
