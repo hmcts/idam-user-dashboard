@@ -7,7 +7,6 @@ Scenario('I as an system owner should be able to manage the users', ({I}) => {
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
-  I.wait(5);
   I.click('Continue');
   I.waitForText('Please enter the email address of the user you wish to manage');
 }).retry(config.SCENARIO_RETRY_LIMIT);

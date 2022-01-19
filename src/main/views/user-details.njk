@@ -37,7 +37,7 @@
             Status
           </dd>
           <dd class="govuk-summary-list__value">
-            <p class="govuk-body-m">
+            <p class="govuk-body-m" id="status">
               {% if active %}
                 <strong class="govuk-tag">Active</strong>
               {% else %}
@@ -61,7 +61,7 @@
             Email
           </dd>
           <dd class="govuk-summary-list__value">
-            <p class="govuk-body-m">
+            <p class="govuk-body-m" id="email">
               {{ email }}
             </p>
           </dd>
@@ -76,7 +76,7 @@
             First name
           </dd>
           <dd class="govuk-summary-list__value">
-            <p class="govuk-body-m">
+            <p class="govuk-body-m" id="first-name">
               {{ forename }}
             </p>
           </dd>
@@ -91,7 +91,7 @@
             Last name
           </dd>
           <dd class="govuk-summary-list__value">
-            <p class="govuk-body-m">
+            <p class="govuk-body-m" id="last-name">
               {{ surname }}
             </p>
           </dd>
@@ -109,7 +109,7 @@
             <p class="govuk-body-m">
               <ul class="govuk-list">
                 {% for role in roles %}
-                  <li>
+                  <li id="assigned-roles">
                     {{ role }}
                   </li>
                 {% endfor %}
