@@ -3,6 +3,8 @@ import StringOrSecret = CodeceptJS.StringOrSecret;
 import * as Assert from 'assert';
 
 Feature('Search User');
+
+const userName = config.SMOKE_TEST_USER_USERNAME as StringOrSecret;
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
 incorrectEmailAddresses.add(['email']); // adding records to a table
 incorrectEmailAddresses.add(['email@']);
@@ -27,14 +29,13 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
 
 Scenario('I as an user should be able to Search for users', async ({I}) => {
   I.click('#email');
-  I.fillField('#email', config.SMOKE_TEST_USER_USERNAME as StringOrSecret);
+  I.fillField('#email', userName);
   I.click('Search');
   I.waitForText('User Details');
-  console.log('ashwini');
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(),'Active');
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), config.SMOKE_TEST_USER_USERNAME as StringOrSecret);
+  Assert.equal(email.trim(), userName);
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(),'System');
   const lastName = await I.grabTextFrom('#last-name');
