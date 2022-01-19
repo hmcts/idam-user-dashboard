@@ -34,7 +34,7 @@ Scenario('I as an user should be able to Search for users', async ({I}) => {
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(),'Active');
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(),'idamOwner@HMCTS.NET');
+  Assert.equal(email.trim(), config.SMOKE_TEST_USER_USERNAME as StringOrSecret);
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(),'System');
   const lastName = await I.grabTextFrom('#last-name');
