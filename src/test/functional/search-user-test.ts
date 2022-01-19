@@ -29,19 +29,19 @@ Scenario('I as an user should be able to Search for users', ({I}) => {
   I.fillField('#email', config.SMOKE_TEST_USER_USERNAME as StringOrSecret);
   I.click('Search');
   I.waitForText('User Details');
-});
+}).retry(config.SCENARIO_RETRY_LIMIT);
 
 Scenario('I as an user should be able to see proper error message if search text left blank', ({I}) => {
   I.click('#email');
   I.click('Search');
   I.seeElement('#email-error');
   I.waitForText('You must enter an email address');
-});
+}).retry(config.SCENARIO_RETRY_LIMIT);
 
 Scenario('I as an user should be able to see proper error message if user does not exist', ({I}) => {
   I.click('#email');
   I.fillField('#email', 'meTesting@test.com');
   I.click('Search');
   I.waitForText('No user matches your search for \'meTesting@test.com\'');
-});
+}).retry(config.SCENARIO_RETRY_LIMIT);
 
