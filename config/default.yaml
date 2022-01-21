@@ -23,6 +23,7 @@ session:
   secret: 'local'
   redis:
     host:
+    port:
     key:
 health:
   timeout: 5000
