@@ -27,13 +27,14 @@ export class SessionStorage {
 
   private getStore(app: Application): session.Store {
     const redisHost: string = config.get('session.redis.host');
+    const redisPort: number = config.get('session.redis.port');
     const redisPass: string = config.get('session.redis.key');
 
-    if (redisHost && redisPass) {
+    if (redisHost && redisPort && redisPass) {
       const client = createClient({
         host: redisHost,
         password: redisPass,
-        port: 6380,
+        port: redisPort ?? 6380,
         tls: true
       });
 

@@ -15,6 +15,9 @@ nodejs:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
         - idam-user-dashboard-client-secret
+        - redis-hostname
+        - redis-port
+        - redis-key
   environment:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
     STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
