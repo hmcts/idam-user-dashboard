@@ -12,6 +12,10 @@ export class PropertiesVolume {
       this.setSecret('secrets.idam-idam.AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
       this.setSecret('secrets.idam-idam.launchdarkly-sdk-key', 'launchdarkly.sdkKey');
       this.setSecret('secrets.idam-idam.idam-user-dashboard-client-secret', 'services.idam.clientSecret');
+      this.setSecret('secrets.idam-idam.redis-hostname', 'session.redis.host');
+      this.setSecret('secrets.idam-idam.redis-port', 'session.redis.port');
+      this.setSecret('secrets.idam-idam.redis-key', 'session.redis.key');
+      this.setSecret('secrets.idam-idam.redis-key', 'session.secret');
     } else {
       this.setLocalSecret('AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
       this.setLocalSecret('launchdarkly-sdk-key', 'launchdarkly.sdkKey');
