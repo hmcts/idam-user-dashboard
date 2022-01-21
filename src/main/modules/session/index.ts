@@ -30,7 +30,7 @@ export class SessionStorage {
     const redisPort: number = config.get('session.redis.port');
     const redisPass: string = config.get('session.redis.key');
 
-    if (redisHost && redisPort && redisPass) {
+    if (redisHost && redisPass) {
       const client = createClient({
         host: redisHost,
         password: redisPass,
