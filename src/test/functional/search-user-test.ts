@@ -10,6 +10,16 @@ incorrectEmailAddresses.add(['email']); // adding records to a table
 incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
+BeforeSuite(async ({ I }) => {
+  const superUserFirstName= 'superTest';
+  const superUserEmail ='superuser@test.com';
+  await I.createUserWithRoles(superUserEmail, superUserFirstName, 'IDAM_SUPER_USER');
+});
+
+// AfterSuite(async ({ I }) => {
+//
+// });
+
 Before(({I}) => {
   I.loginAsSystemOwner();
   I.waitForText('Add new users');

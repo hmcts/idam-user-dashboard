@@ -6,6 +6,7 @@ export const config = {
   SCENARIO_RETRY_LIMIT: 3,
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
+  IDAM_API: process.env.IDAMAPI,
 
   Gherkin: {
     features: './features/**/*.feature',
@@ -17,7 +18,8 @@ export const config = {
 config.helpers = {
   Playwright: {
     url: config.TEST_URL,
-    show: !config.TestHeadlessBrowser,
+    //show: !config.TestHeadlessBrowser,
+    show: true,
     browser: 'chromium',
     waitForTimeout: config.WaitForTimeout,
     waitForAction: 1000,
