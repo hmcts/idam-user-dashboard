@@ -51,7 +51,7 @@
     "applicationinsights": "^2.2.0",
     "autobind-decorator": "^2.4.0",
     "awilix": "^6.0.0",
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "config": "^3.3.2",
     "connect-redis": "^6.0.0",
     "cookie-parser": "^1.4.6",
@@ -127,6 +127,6 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
-    "axios/follow-redirects": "^1.14.7"
+    "applicationinsights/@azure/core-http/node-fetch": "^2.6.7"
   }
 }
