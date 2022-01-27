@@ -1,10 +1,11 @@
-import { fail } from 'assert';
+import {fail} from 'assert';
+import Axios from 'axios';
+import {config} from '../config';
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const pa11y = require('pa11y');
-import * as supertest from 'supertest';
-import { app } from '../../main/app';
-
-const agent = supertest.agent(app);
+const axios = Axios.create({baseURL: config.TEST_URL});
 
 class Pa11yResult {
   documentTitle: string;
@@ -21,26 +22,33 @@ class PallyIssue {
   typeCode: number;
 }
 
+function loginPally(): Pa11yResult {
+  const systemOwnerUsername = config.SMOKE_TEST_USER_USERNAME;
+  const systemOwnerPassword = config.SMOKE_TEST_USER_PASSWORD;
+  return pa11y(config.TEST_URL + '/login', {
+    hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+    actions: [
+      `set field #username to ${systemOwnerUsername}`,
+      `set field #password to ${systemOwnerPassword}`,
+      'click element .button',
+      'wait for path to be /'
+    ]
+  });
+}
+
 beforeAll((done /* call it or remove it*/) => {
+  loginPally();
   done(); // calling it
 });
 
 function ensurePageCallWillSucceed(url: string): Promise<void> {
-  return agent.get(url).then((res: supertest.Response) => {
-    if (res.redirect) {
-      throw new Error(
-        `Call to ${url} resulted in a redirect to ${res.get('Location')}`,
-      );
-    }
-    if (res.serverError) {
-      throw new Error(`Call to ${url} resulted in internal server error`);
-    }
-  });
+  return axios.get(url);
 }
 
-function runPally(url: string): Pa11yResult {
-  return pa11y(url, {
+function runPallyWith(url: string, actions: string[]): Pa11yResult {
+  return pa11y(config.TEST_URL + url, {
     hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+    actions: actions
   });
 }
 
@@ -53,11 +61,11 @@ function expectNoErrors(messages: PallyIssue[]): void {
   }
 }
 
-function testAccessibility(url: string): void {
+function testAccessibilityWithActions(url: string, actions: string[]): void {
   describe(`Page ${url}`, () => {
     test('should have no accessibility errors', done => {
       ensurePageCallWillSucceed(url)
-        .then(() => runPally(agent.get(url).url))
+        .then(() => runPallyWith(url, actions))
         .then((result: Pa11yResult) => {
           expectNoErrors(result.issues);
           done();
@@ -65,11 +73,18 @@ function testAccessibility(url: string): void {
         .catch((err: Error) => done(err));
     });
   });
+
+}
+
+function testAccessibility(url: string): void {
+  testAccessibilityWithActions(url, []);
 }
 
 describe('Accessibility', () => {
   // testing accessibility of the home page
   testAccessibility('/');
+  testAccessibility('/manage-users');
+  testAccessibility('/user-results?email='+config.SMOKE_TEST_USER_USERNAME);
 
   // TODO: include each path of your application in accessibility checks
 });

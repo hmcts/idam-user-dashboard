@@ -1,0 +1,22 @@
+services:
+  name: 'IDAM User Dashboard'
+  idam:
+    url:
+      public: STRATEGIC_PUBLIC_URL
+      api: STRATEGIC_SERVICE_URL
+    endpoint:
+      authorization: '/o/authorize'
+      token: '/o/token'
+      endSession: '/o/endSession'
+    clientID: OAUTH_CLIENT_ID
+    clientSecret: OAUTH_CLIENT_SECRET
+    callbackURL: OAUTH_CLIENT_REDIRECT
+    scope: 'openid profile roles manage-user search-user'
+    responseType: 'code'
+session:
+  redis:
+    host: REDIS_HOST
+    port: REDIS_PORT
+    key: REDIS_KEY
+launchdarkly:
+  sdkKey: LAUNCHDARKLY_SDK_KEY

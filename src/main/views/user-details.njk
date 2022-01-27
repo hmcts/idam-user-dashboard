@@ -1,0 +1,135 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    collapseOnMobile: true,
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "Manage users",
+        href: "/manage-users"
+      },
+      {
+        text: "User details"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">User Details</h1>
+      {{ govukButton({
+        text: "Delete user",
+        classes: "govuk-button--warning"
+      }) }}
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dd class="govuk-summary-list__key">
+            Status
+          </dd>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body-m" id="status">
+              {% if active %}
+                <strong class="govuk-tag">Active</strong>
+              {% else %}
+                <strong class="govuk-tag govuk-tag--red">Suspended</strong>
+              {% endif %}
+            </p>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#">
+              {% if active %}
+                {% set action = "Suspend user" %}
+              {% else %}
+                {% set action = "Activate user" %}
+              {% endif %}
+              {{ action }}<span class="govuk-visually-hidden">status</span>
+            </a>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dd class="govuk-summary-list__key">
+            Email
+          </dd>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body-m" id="email">
+              {{ email }}
+            </p>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#">
+              Change<span class="govuk-visually-hidden">email</span>
+            </a>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dd class="govuk-summary-list__key">
+            First name
+          </dd>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body-m" id="first-name">
+              {{ forename }}
+            </p>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#">
+              Change<span class="govuk-visually-hidden">forename</span>
+            </a>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dd class="govuk-summary-list__key">
+            Last name
+          </dd>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body-m" id="last-name">
+              {{ surname }}
+            </p>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#">
+              Change<span class="govuk-visually-hidden">surname</span>
+            </a>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dd class="govuk-summary-list__key">
+            Assigned roles
+          </dd>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body-m">
+              <ul class="govuk-list">
+                {% for role in roles %}
+                  <li id="assigned-roles">
+                    {{ role }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </p>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#">
+              Change<span class="govuk-visually-hidden">roles</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Save"
+        }) }}
+        <a class="govuk-link" href="/manage-users">Cancel</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

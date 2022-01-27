@@ -1,11 +1,11 @@
 /// <reference types='codeceptjs' />
-type steps_file = typeof import('./steps_file.js');
+type stepsFile = typeof import('./custom-steps.js');
+type IdamHelper = import('./shared/idam-helper');
 
 declare namespace CodeceptJS {
-  interface SupportObject { I: I, current: any }
-  interface Methods extends Playwright {}
-  //interface I extends ReturnType<steps_file> {}
-  interface I extends WithTranslation<Methods> {}
+  interface SupportObject { I: I, current: any}
+  interface Methods extends Playwright, IdamHelper {}
+  interface I extends ReturnType<stepsFile>, WithTranslation<Methods> {}
   namespace Translation {
     interface Actions {}
   }
