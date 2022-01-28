@@ -10,14 +10,17 @@ incorrectEmailAddresses.add(['email']); // adding records to a table
 incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
+const SUPER_USER_EMAIL = 'superusersearch@test.com';
+const ADMIN_USER_EMAIL = 'adminusersearch@test.com';
+
 BeforeSuite(async ({ I }) => {
-  await I.createUserWithRoles(config.SUPER_USER_EMAIL,config.SUPER_USER_FIRSTNAME,[config.SUPER_USER_ROLE]);
-  await I.createUserWithRoles(config.ADMIN_USER_EMAIL,config.ADMIN_USER_FIRSTNAME,[config.ADMIN_USER_ROLE]);
+  await I.createUserWithRoles(SUPER_USER_EMAIL,config.SUPER_USER_FIRSTNAME,[config.SUPER_USER_ROLE]);
+  await I.createUserWithRoles(ADMIN_USER_EMAIL,config.ADMIN_USER_FIRSTNAME,[config.ADMIN_USER_ROLE]);
 });
 
 AfterSuite(async ({ I }) => {
-  await I.deleteUser(config.SUPER_USER_EMAIL);
-  await I.deleteUser(config.ADMIN_USER_EMAIL);
+  await I.deleteUser(SUPER_USER_EMAIL);
+  await I.deleteUser(ADMIN_USER_EMAIL);
 });
 
 Data(incorrectEmailAddresses).Scenario('I as an user should be able to see proper error message if search text is not in the right format', ({I,current}) => {
@@ -65,13 +68,13 @@ Scenario('I as a SuperUser should be able to Search for users', async ({I}) => {
   I.click('Continue');
   I.waitForText('Please enter the email address of the user you wish to manage');
   I.click('#email');
-  I.fillField('#email', config.SUPER_USER_EMAIL);
+  I.fillField('#email', SUPER_USER_EMAIL);
   I.click('Search');
   I.waitForText('User Details');
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(),'Active');
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), config.SUPER_USER_EMAIL);
+  Assert.equal(email.trim(), SUPER_USER_EMAIL);
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(),config.SUPER_USER_FIRSTNAME);
   const lastName = await I.grabTextFrom('#last-name');
@@ -88,13 +91,13 @@ Scenario('I as an AdminUser should be able to Search for users', async ({I}) => 
   I.click('Continue');
   I.waitForText('Please enter the email address of the user you wish to manage');
   I.click('#email');
-  I.fillField('#email', config.ADMIN_USER_EMAIL);
+  I.fillField('#email', ADMIN_USER_EMAIL);
   I.click('Search');
   I.waitForText('User Details');
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(),'Active');
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), config.ADMIN_USER_EMAIL);
+  Assert.equal(email.trim(), ADMIN_USER_EMAIL);
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(),config.ADMIN_USER_FIRSTNAME);
   const lastName = await I.grabTextFrom('#last-name');
