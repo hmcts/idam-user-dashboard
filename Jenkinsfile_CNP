@@ -28,6 +28,7 @@ def secrets = [
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   disableLegacyDeployment()
+  enableCrossBrowserTest() //TEMPORARY, REMOVE BEFORE MERGE
 
   after('build') {
     yarnBuilder.yarn('build')
