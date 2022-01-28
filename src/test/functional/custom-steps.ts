@@ -19,7 +19,7 @@ export = function () {
       this.fillField('#username', username);
       this.fillField('#password', password);
       this.click('Sign in');
-      I.waitForText('Manage existing users');
+      this.waitForText('Manage existing users');
     },
   });
 };
