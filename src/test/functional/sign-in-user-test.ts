@@ -9,7 +9,7 @@ Scenario('I as an user can sign in', ({I}) => {
   I.fillField('#username', config.SMOKE_TEST_USER_USERNAME as StringOrSecret);
   I.fillField('#password', config.SMOKE_TEST_USER_PASSWORD as StringOrSecret);
   I.click('Sign in');
-  I.waitForText('Please select an option to continue');
+  I.waitForText('Manage existing users');
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
 Scenario('I as an user try to sign in with invalid credentials', ({I}) => {

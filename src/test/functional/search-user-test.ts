@@ -34,7 +34,7 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
   I.waitForText('The email address is not in the correct format');
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
-Scenario('I as an SystemOwner should be able to Search for users', async ({I}) => {
+Scenario('I as a SystemOwner should be able to Search for users', async ({I}) => {
   I.loginAsSystemOwner();
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
@@ -57,7 +57,7 @@ Scenario('I as an SystemOwner should be able to Search for users', async ({I}) =
   Assert.equal(assignedRoles.trim(),'IDAM_SYSTEM_OWNER');
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
-Scenario('I as an SuperUser should be able to Search for users', async ({I}) => {
+Scenario('I as a SuperUser should be able to Search for users', async ({I}) => {
   I.loginAsSuperUser();
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');

@@ -12,11 +12,11 @@ AfterSuite(async ({I}) => {
   await I.deleteUser(config.ADMIN_USER_EMAIL);
 });
 
-Scenario('I as an system owner should be able to manage the users', ({I}) => {
+Scenario('I as a system owner should be able to manage the users', ({I}) => {
   I.loginAsSystemOwner();
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
-Scenario('I as an super user should be able to manage the users', ({I}) => {
+Scenario('I as a super user should be able to manage the users', ({I}) => {
   I.loginAsSuperUser();
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
