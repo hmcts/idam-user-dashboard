@@ -1,5 +1,6 @@
 import { config } from '../config';
 import supportedBrowsers from './supportedBrowsers';
+import { event, container } from 'codeceptjs';
 
 const waitForTimeout = 60000;
 const smartWait = 5000;
@@ -17,11 +18,9 @@ const getBrowserConfig = browserGroup => {
 
   for (const candidateBrowser in supportedBrowsers[browserGroup]) {
     if (candidateBrowser) {
-      const candidateCapabilities = { ...supportedBrowsers[browserGroup][candidateBrowser],
-        'sauce:options': {
-          ...defaultSauceOptions,
-          ...supportedBrowsers[browserGroup][candidateBrowser]['sauce:options']
-        }
+      const candidateCapabilities = {
+        ...{ 'sauce:options': defaultSauceOptions },
+        ...supportedBrowsers[browserGroup][candidateBrowser]
       };
 
       browserConfig.push({
@@ -77,5 +76,10 @@ const setupConfig = {
     },
   },
 };
+
+event.dispatcher.on(event.test.before, function (test) {
+  const { Playwright } = container.helpers();
+  test.title = test.title + ' - ' + Playwright.browser._name;
+});
 
 exports.config = setupConfig;
