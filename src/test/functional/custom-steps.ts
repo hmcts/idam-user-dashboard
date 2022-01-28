@@ -6,6 +6,12 @@ export = function () {
     loginAsSystemOwner: function () {
       this.loginAs(config.SMOKE_TEST_USER_USERNAME, config.SMOKE_TEST_USER_PASSWORD);
     },
+    loginAsSuperUser: function () {
+      this.loginAs(config.SUPER_USER_EMAIL, config.PASSWORD);
+    },
+    loginAsAdminUser: function () {
+      this.loginAs(config.ADMIN_USER_EMAIL, config.PASSWORD);
+    },
 
     loginAs: function (username, password) {
       this.amOnPage('/login');

@@ -1,86 +1,93 @@
-import fetch from 'node-fetch';
+import axios from 'axios';
+import configGlobal from 'config';
+
 const Helper = require('@codeceptjs/helper');
 import {config} from '../../config';
 
-let agentToUse;
-if (process.env.PROXY_SERVER) {
-  console.log('using proxy agent: ' + process.env.PROXY_SERVER);
-  const HttpsProxyAgent = require('https-proxy-agent');
-  agentToUse = new HttpsProxyAgent(process.env.PROXY_SERVER);
-} else if (process.env.LOCAL_TEST_SERVER) {
-  // default agent
-} else {
-  console.log('using real agent');
-  const Https = require('https');
-  agentToUse = new Https.Agent({
-    rejectUnauthorized: false
-  });
-}
-const agent = agentToUse;
-const MAX_RETRIES = 5;
-
 class MyHelper extends Helper {
 
-  createUserWithRole(email, forename, userRole) {
-
-    const data = {
-      email: email,
-      forename: forename,
-      password: config.PASSWORD,
-      roles: userRole,
-      surname: 'User',
-      userGroup: {code: 'xxx_private_beta'}
-    };
-
-    return fetch(`${config.IDAM_API}/testing-support/accounts`, {
-      agent: agent,
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {'Content-Type': 'application/json'},
-    }).then(res => res.json())
-      .then((json) => {
-        return json;
-      })
-      .catch(err => err);
-  }
-
-  deleteUser(email) {
-    return fetch(`${config.IDAM_API}/testing-support/accounts/${email}`, {
-      agent: agent,
-      method: 'DELETE'
-    })
-      .catch(err => err);
-  }
-
-  async extractUrlFromNotifyEmail(searchEmail) {
-    let url;
-    let emailResponse = await this.getEmailFromNotifyWithMaxRetries(searchEmail, MAX_RETRIES);
-    const regex = '(https.+)';
-    const urlMatch = emailResponse.body.match(regex);
-    if (urlMatch[0]) {
-      url = urlMatch[0].replace(/https:\/\/idam-web-public[^\/]+/i, process).replace(')', '');
+  async createUserWithRoles(email, forename, userRoles) {
+    const codeUserRoles: any[] = [];
+    for (let i = 0; i < userRoles.length; i++) {
+      codeUserRoles.push({'code': userRoles[i]});
     }
-    return url;
+    try {
+      const res = await axios(`${configGlobal.get('services.idam.url.api')}/testing-support/accounts`, {
+        method: 'POST',
+        data: {
+          email: email,
+          forename: forename,
+          password: config.PASSWORD,
+          roles: codeUserRoles,
+          surname: config.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
+          userGroup: {code: 'xxx_private_beta'}
+        },
+        headers: {'Content-Type': 'application/json'},
+      });
+      return await res.data;
+    } catch (err) {
+      return await err;
+    }
   }
 
-  activateUserAccount(code, token) {
-    const data = {
-      code: code,
-      password: config.PASSWORD,
-      token: token
-    };
-    return fetch(`${config.IDAM_API}/activate`, {
-      agent: agent,
-      method: 'PATCH',
-      body: JSON.stringify(data),
-      headers: {'Content-Type': 'application/json'},
-    }).then(response => {
-      return response;
-    }).catch(err => {
-      console.log(err);
-      let browser = this.helpers['Puppeteer'].browser;
-      browser.close();
+  getAuthToken() {
+
+    const userName=config.SMOKE_TEST_USER_USERNAME;
+    const password = config.SMOKE_TEST_USER_PASSWORD;
+    return axios(`${configGlobal.get('services.idam.url.api')}/loginUser?username=${userName}&password=${password}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    }).then(
+      function (response) {
+        if (response.status === 200) {
+          return response.data;
+        } else {
+          console.log('Admin auth token failed first attempt with response ' + response.status + ' from ' + configGlobal.get('services.idam.url.api') + ' user: ' + userName + ' password ' + password);
+
+          // retry!
+          return axios(`${configGlobal.get('services.idam.url.api')}/loginUser?username=${userName}&password=${password}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          }).then(
+            function (response) {
+              if (response.status === 200) {
+                return response.data;
+              } else {
+                console.log('Admin auth token failed second attempt with response ' + response.status + ' from ' + configGlobal.get('services.idam.url.api') + ' user: ' + userName + ' password ' + password);
+              }
+            }
+          );
+        }
+      }
+    ).then(
+      function (json) {
+        console.log('Admin auth token received');
+        return json.api_auth_token;
+      }
+    );
+  }
+
+  async retireStaleUser(userId) {
+    const authToken = await this.getAuthToken();
+    return axios(`${configGlobal.get('services.idam.url.api')}/api/v1/staleUsers/${userId}/retire`, {
+      method: 'POST',
+      headers: {'Authorization': 'AdminApiAuthToken ' + authToken},
+    }).then((response) => {
+      if (response.status !== 200) {
+        console.log('Error retiring stale user', response.status);
+        throw new Error();
+      }
     });
+  }
+
+  async deleteUser(email) {
+    try {
+      return await axios(`${configGlobal.get('services.idam.url.api')}/testing-support/accounts/${email}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      return await err;
+    }
   }
 }
 
