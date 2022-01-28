@@ -61,7 +61,7 @@ Scenario('I as a SystemOwner should be able to Search for users', async ({I}) =>
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
 Scenario('I as a SuperUser should be able to Search for users', async ({I}) => {
-  I.loginAsSuperUser();
+  I.loginAsSuperUser(SUPER_USER_EMAIL);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -84,7 +84,7 @@ Scenario('I as a SuperUser should be able to Search for users', async ({I}) => {
 }).retry(config.SCENARIO_RETRY_LIMIT);
 
 Scenario('I as an AdminUser should be able to Search for users', async ({I}) => {
-  I.loginAsAdminUser();
+  I.loginAsAdminUser(ADMIN_USER_EMAIL);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
