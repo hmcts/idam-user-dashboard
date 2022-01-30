@@ -30,7 +30,6 @@ def branchesToSync = ['demo', 'perftest', 'ithc']
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   disableLegacyDeployment()
-  syncBranchesWithMaster(branchesToSync)
 
   after('build') {
     yarnBuilder.yarn('build')
