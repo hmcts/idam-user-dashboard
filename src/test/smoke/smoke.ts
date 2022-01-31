@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import config from 'config';
 import { config as testConfig } from '../config';
 import { constants as httpConstants } from 'http2';
@@ -18,7 +18,7 @@ describe('Smoke Test', () => {
         test(`${name}: ${parsedUrl}`, async () => {
           const checkService = async () => {
             try {
-              const response: AxiosResponse = await axios.get(parsedUrl);
+              const response = await axios.get(parsedUrl);
 
               if (response.status !== httpConstants.HTTP_STATUS_OK || response.data?.status !== 'UP') {
                 throw new Error(`Status: ${response.status} Data: '${JSON.stringify(response.data)}'`);
