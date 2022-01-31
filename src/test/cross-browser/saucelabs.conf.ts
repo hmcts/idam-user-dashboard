@@ -79,7 +79,7 @@ const setupConfig = {
 
 event.dispatcher.on(event.test.before, function (test) {
   const { Playwright } = container.helpers();
-  test.title = test.title + ' - ' + Playwright.browser._name;
+  test.title = test.title + ' - ' + Playwright.options.capabilities['sauce:options'].name;
 });
 
 exports.config = setupConfig;
