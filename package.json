@@ -93,7 +93,7 @@
     "allure-commandline": "^2.13.8",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.3",
-    "chai": "^4.2.0",
+    "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "codeceptjs": "^3.2.2",
     "copy-webpack-plugin": "^6.1.0",
