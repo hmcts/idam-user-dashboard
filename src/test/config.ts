@@ -7,24 +7,6 @@ export const config = {
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
   SUPER_ADMIN_CITIZEN_USER_LASTNAME: 'User',
-  superUser: {
-    email: 'superuser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_SUPER_USER',
-    firstName: 'superTest'
-  },
-  adminUser: {
-    email: 'adminuser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_ADMIN_USER',
-    firstName: 'adminTest'
-  },
-  civilUser: {
-    email: 'civiluser@test.com',
-    password: 'Pa55word11',
-    role: 'citizen',
-    firstName: 'civilTest'
-  },
   Gherkin: {
     features: './features/**/*.feature',
     steps: './steps/**/*.ts',
@@ -44,5 +26,26 @@ config.helpers = {
   },
   IdamHelper: {
     require: '../functional/shared/idam-helper.ts',
+  },
+};
+
+export const testAccounts = {
+  superUser: {
+    email: 'superuser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_SUPER_USER',
+    firstName: 'superTest'
+  },
+  adminUser: {
+    email: 'adminuser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_ADMIN_USER',
+    firstName: 'adminTest'
+  },
+  citizenUser: {
+    email: 'citizenuser@test.com',
+    password: 'Pa55word11',
+    role: 'citizen',
+    firstName: 'citizenTest'
   },
 };

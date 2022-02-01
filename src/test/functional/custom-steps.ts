@@ -1,16 +1,16 @@
-import { config } from '../config';
+import { config as testConfig, testAccounts } from '../config';
 
 export = function () {
   return actor({
 
     loginAsSystemOwner: function () {
-      this.loginAs(config.SMOKE_TEST_USER_USERNAME, config.SMOKE_TEST_USER_PASSWORD);
+      this.loginAs(testConfig.SMOKE_TEST_USER_USERNAME, testConfig.SMOKE_TEST_USER_PASSWORD);
     },
     loginAsSuperUser: function () {
-      this.loginAs(config.superUser.email, config.superUser.password);
+      this.loginAs(testAccounts.superUser.email, testAccounts.superUser.password);
     },
     loginAsAdminUser: function () {
-      this.loginAs(config.adminUser.email, config.adminUser.password);
+      this.loginAs(testAccounts.adminUser.email, testAccounts.adminUser.password);
     },
 
     loginAs: function (username, password) {
