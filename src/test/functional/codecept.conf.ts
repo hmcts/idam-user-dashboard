@@ -1,4 +1,5 @@
 import { config as testConfig } from '../config';
+import { createUserWithRoles, deleteUser } from './shared/apiHelpers';
 
 export const config: CodeceptJS.Config = {
   tests: './*-test.ts',
@@ -8,7 +9,16 @@ export const config: CodeceptJS.Config = {
   include: {
     I: './custom-steps.ts',
   },
-  bootstrap: null,
+  async bootstrapAll() {
+    for (const user of [testConfig.superUser, testConfig.adminUser, testConfig.civilUser]) {
+      await createUserWithRoles(user.email, user.firstName, [user.role]);
+    }
+  },
+  async teardownAll() {
+    for (const user of [testConfig.superUser, testConfig.adminUser, testConfig.civilUser]) {
+      await deleteUser(user.email);
+    }
+  },
   mocha: {},
   name: 'functional',
   plugins: {

@@ -1,4 +1,4 @@
-import {config} from '../config';
+import { config } from '../config';
 
 export = function () {
   return actor({
@@ -6,11 +6,11 @@ export = function () {
     loginAsSystemOwner: function () {
       this.loginAs(config.SMOKE_TEST_USER_USERNAME, config.SMOKE_TEST_USER_PASSWORD);
     },
-    loginAsSuperUser: function (SUPER_USER_EMAIL) {
-      this.loginAs(SUPER_USER_EMAIL, config.PASSWORD);
+    loginAsSuperUser: function () {
+      this.loginAs(config.superUser.email, config.superUser.password);
     },
-    loginAsAdminUser: function (ADMIN_USER_EMAIL) {
-      this.loginAs(ADMIN_USER_EMAIL, config.PASSWORD);
+    loginAsAdminUser: function () {
+      this.loginAs(config.adminUser.email, config.adminUser.password);
     },
 
     loginAs: function (username, password) {
