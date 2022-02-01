@@ -90,7 +90,7 @@
     "@typescript-eslint/eslint-plugin": "^2.19.2",
     "@typescript-eslint/eslint-plugin-tslint": "^5.10.2",
     "@typescript-eslint/parser": "^2.19.2",
-    "allure-commandline": "^2.13.8",
+    "allure-commandline": "^2.17.2",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.3",
     "chai": "^4.3.6",
