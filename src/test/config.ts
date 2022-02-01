@@ -6,13 +6,25 @@ export const config = {
   SCENARIO_RETRY_LIMIT: 3,
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
-  SUPER_USER_FIRSTNAME:'superTest',
-  SUPER_USER_EMAIL:'superuser@test.com',
-  ADMIN_USER_FIRSTNAME:'adminTest',
-  ADMIN_USER_EMAIL:'adminuser@test.com',
-  SUPER_USER_ROLE:'IDAM_SUPER_USER',
-  ADMIN_USER_ROLE:'IDAM_ADMIN_USER',
   SUPER_ADMIN_CITIZEN_USER_LASTNAME: 'User',
+  superUser: {
+    email: 'superuser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_SUPER_USER',
+    firstName: 'superTest'
+  },
+  adminUser: {
+    email: 'adminuser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_ADMIN_USER',
+    firstName: 'adminTest'
+  },
+  civilUser: {
+    email: 'civiluser@test.com',
+    password: 'Pa55word11',
+    role: 'citizen',
+    firstName: 'civilTest'
+  },
   Gherkin: {
     features: './features/**/*.feature',
     steps: './steps/**/*.ts',
