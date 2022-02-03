@@ -36,7 +36,7 @@ export const sortRoles = (roles: string[]): void => {
   }
 };
 
-export const convertISODateTimeToUTCFormat = (date:string) : string => {
+export const convertISODateTimeToUTCFormat = (date: string): string => {
   const result = new Date(date).toUTCString();
   return result === 'Invalid Date' ? '' : result;
-}
+};

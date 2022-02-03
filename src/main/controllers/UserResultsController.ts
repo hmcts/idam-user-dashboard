@@ -19,7 +19,7 @@ export class UserResultsController {
 
     const users = await req.scope.cradle.api.getUsersByEmail(email);
     if (users.length === 1) {
-      const user = users[0]
+      const user = users[0];
       sortRoles(user.roles);
       user.createDate = convertISODateTimeToUTCFormat(user.createDate);
       user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
