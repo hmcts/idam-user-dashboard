@@ -64,9 +64,9 @@ export class OidcMiddleware {
           await Axios.get(
             IDAM_API + endSession,
             { params: new URLSearchParams({
-                'id_token_hint': req.session.user.idToken,
-                'post_logout_redirect_uri': `${req.protocol}://${req.headers.host}`
-              })}
+              'id_token_hint': req.session.user.idToken,
+              'post_logout_redirect_uri': `${req.protocol}://${req.headers.host}`
+            })}
           );
         } catch (e) {
           this.logger.error('Failed to end IDAM session for user: ' + req.session.user.id);
