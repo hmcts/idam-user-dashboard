@@ -1,9 +1,8 @@
 import { AuthedRequest } from '../types/AuthedRequest';
 import { Response } from 'express';
 import { PageData } from '../interfaces/PageData';
-import { isEmpty, sortRoles } from '../utils/utils';
+import { convertISODateTimeToUTCFormat, isEmpty, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
-
 
 export class UserResultsController {
   public async get(req: AuthedRequest, res: Response): Promise<void> {
@@ -18,12 +17,19 @@ export class UserResultsController {
       return res.render('manage-users', data);
     }
 
-    const results = await req.scope.cradle.api.getUsersByEmail(email);
-    if (results.length) {
-      const result = results[0];
-      sortRoles(result.roles);
-      return res.render('user-details', result);
+    const users = await req.scope.cradle.api.getUsersByEmail(email);
+    if (users.length === 1) {
+      const user = users[0]
+      sortRoles(user.roles);
+      user.createDate = convertISODateTimeToUTCFormat(user.createDate);
+      user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
+      return res.render('user-details', user);
     }
-    return res.render('manage-users', { search: email });
+    // If the API returns more than one search results unexpectedly, we return an error
+    // in the manage-users page
+    return res.render('manage-users', {
+      search: email,
+      result: users
+    });
   }
 }

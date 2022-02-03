@@ -46,7 +46,32 @@ describe('User results controller', () => {
     req.query.email = email;
     req.scope.cradle.api = mockApi;
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { search: email});
+    expect(res.render).toBeCalledWith('manage-users', { search: email, result: [] });
+  });
+
+  test('Should render the manage users page when more than one search results', async () => {
+    const results = [
+      {
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER']
+      },
+      {
+        forename: 'J',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_ADMIN_USER']
+      }
+    ];
+    when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue(results);
+
+    req.query.email = email;
+    req.scope.cradle.api = mockApi;
+    await controller.get(req, res);
+    expect(res.render).toBeCalledWith('manage-users', { search: email, result: results });
   });
 
   test('Should render the manage users page with error when searching with empty email', async () => {
