@@ -6,7 +6,7 @@ import {AuthedRequest} from '../../types/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
 import {Api} from '../../Api';
-import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
+import {HOME_URL, IDAM_API, IDAM_PUBLIC, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 import {Logger} from '../../interfaces/Logger';
 
 export class OidcMiddleware {
@@ -16,38 +16,30 @@ export class OidcMiddleware {
   }
 
   public enableFor(app: Application): void {
-    const idamPublicUrl: string = config.get('services.idam.url.public');
-    const authorizationURL: string = idamPublicUrl + config.get('services.idam.endpoint.authorization');
-    const tokenUrl: string = idamPublicUrl + config.get('services.idam.endpoint.token');
-    const endSessionUrl: string = idamPublicUrl + config.get('services.idam.endpoint.endSession');
-    const clientId: string = config.get('services.idam.clientID');
-    const clientSecret: string = config.get('services.idam.clientSecret');
-    const redirectUri: string = config.get('services.idam.callbackURL');
-    const responseType: string = config.get('services.idam.responseType');
-    const scope: string = config.get('services.idam.scope');
+    const { authorization, token, endSession } = config.get('services.idam.endpoint');
+    const { clientID, clientSecret, responseType, callbackURL, scope } = config.get('services.idam');
+    const authParams = new URLSearchParams({
+      'client_id': clientID,
+      'response_type': responseType,
+      'redirect_uri': callbackURL,
+      'scope': scope
+    }).toString();
 
     app.get(LOGIN_URL, (req: Request, res: Response) => {
-      // Redirect to IDAM web public to get the authorization code
-      res.redirect(`${authorizationURL}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURI(redirectUri)}&scope=${encodeURIComponent(scope)}`);
+      res.redirect(`${IDAM_PUBLIC + authorization}?${authParams}`);
     });
 
     app.get(OAUTH2_CALLBACK_URL, async (req: Request, res: Response) => {
       try {
         const response: idamResponse = (await Axios.post(
-          tokenUrl,
+          IDAM_PUBLIC + token,
           new URLSearchParams({
-            'client_id': clientId,
+            'client_id': clientID,
             'client_secret': clientSecret,
             'grant_type': 'authorization_code',
-            'redirect_uri': redirectUri,
-            code: req.query.code as string,
-          }),
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/x-www-form-urlencoded'
-            }
-          }
+            'redirect_uri': callbackURL,
+            'code': req.query.code as string,
+          })
         )).data;
 
         const jwt: JWT = jwt_decode(response.id_token);
@@ -68,13 +60,21 @@ export class OidcMiddleware {
 
     app.get(LOGOUT_URL, async (req: Request, res: Response) => {
       if (req.session.user) {
-        await Axios
-          .get(endSessionUrl)
-          .catch(error => {
-            this.logger.error(error);
-            return error;
-          });
-        req.session.destroy(() => res.redirect(LOGIN_URL));
+        try {
+          await Axios.get(
+            IDAM_API + endSession,
+            { params: new URLSearchParams({
+              'id_token_hint': req.session.user.idToken,
+              'post_logout_redirect_uri': `${req.protocol}://${req.headers.host}`
+            })}
+          );
+        } catch (e) {
+          this.logger.error('Failed to end IDAM session for user: ' + req.session.user.id);
+        }
+
+        req.session.destroy( () =>
+          res.redirect(`${IDAM_PUBLIC + authorization}?${authParams}&prompt=login`)
+        );
       } else {
         res.redirect(LOGIN_URL);
       }
