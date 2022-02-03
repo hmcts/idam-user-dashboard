@@ -6,7 +6,7 @@ export const createUserWithRoles = async(email, password, forename, userRoles) =
   const codeUserRoles = userRoles.map(role => ({ code: role }));
 
   try {
-    return await axios.post(
+    return (await axios.post(
       `${config.get('services.idam.url.api')}/testing-support/accounts`,
       {
         email: email,
@@ -17,7 +17,7 @@ export const createUserWithRoles = async(email, password, forename, userRoles) =
       },
       {
         headers: {'Content-Type': 'application/json'},
-      }).data;
+      })).data;
 
   } catch (e) {
     throw new Error(`Failed to create user ${email} with roles ${userRoles}, http-status: ${e.response?.status}`);
@@ -25,36 +25,36 @@ export const createUserWithRoles = async(email, password, forename, userRoles) =
 };
 
 export const getAuthToken = async() => {
-   const credentials = {
-     username: testConfig.SMOKE_TEST_USER_USERNAME as string,
-     password: testConfig.SMOKE_TEST_USER_PASSWORD as string
-   };
+  const credentials = {
+    username: testConfig.SMOKE_TEST_USER_USERNAME as string,
+    password: testConfig.SMOKE_TEST_USER_PASSWORD as string
+  };
 
-   try {
-     return await axios.post(
-       `${config.get('services.idam.url.api')}/loginUser`,
-       new URLSearchParams(credentials)
-     ).data.api_auth_token;
-     
-   } catch (e) {
-     throw new Error(`Failed to get admin auth-token with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
-   }
- };
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/loginUser`,
+      new URLSearchParams(credentials)
+    )).data.api_auth_token;
 
- export const retireStaleUser = async(userId) => {
-   const authToken = await getAuthToken();
-   try {
-     await axios.post(
-       `${config.get('services.idam.url.api')}/api/v1/staleUsers/${userId}/retire`,
-       {},
-       {
-         headers: {'Authorization': 'AdminApiAuthToken ' + authToken},
-       }
-     );
-   } catch (e) {
-     throw new Error(`Failed to retire: ${userId}, http-status: ${e.response?.status}`);
-   }
- };
+  } catch (e) {
+    throw new Error(`Failed to get admin auth-token with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+  }
+};
+
+export const retireStaleUser = async(userId) => {
+  const authToken = await getAuthToken();
+  try {
+    await axios.post(
+      `${config.get('services.idam.url.api')}/api/v1/staleUsers/${userId}/retire`,
+      {},
+      {
+        headers: {'Authorization': 'AdminApiAuthToken ' + authToken},
+      }
+    );
+  } catch (e) {
+    throw new Error(`Failed to retire: ${userId}, http-status: ${e.response?.status}`);
+  }
+};
 
 export const deleteUser = async(email) => {
   try {
