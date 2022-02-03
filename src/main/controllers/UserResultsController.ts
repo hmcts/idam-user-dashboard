@@ -1,11 +1,10 @@
-import autobind from 'autobind-decorator';
 import { AuthedRequest } from '../types/AuthedRequest';
 import { Response } from 'express';
 import { PageData } from '../interfaces/PageData';
 import { isEmpty, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
 
-@autobind
+
 export class UserResultsController {
   public async get(req: AuthedRequest, res: Response): Promise<void> {
     const email  = req.query.email ? req.query.email as string : '';
