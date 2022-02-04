@@ -19,8 +19,15 @@ export class OidcMiddleware {
     const IDAM_API = config.get('services.idam.url.api');
     const IDAM_PUBLIC = config.get('services.idam.url.public');
 
-    const { authorization, token, endSession } = config.get('services.idam.endpoint');
-    const { clientID, clientSecret, responseType, callbackURL, scope } = config.get('services.idam');
+    const authorization: string = config.get('services.idam.endpoint.authorization');
+    const token: string = config.get('services.idam.endpoint.token');
+    const endSession: string = config.get('services.idam.endpoint.endSession');
+    const clientID: string = config.get('services.idam.clientID');
+    const clientSecret: string = config.get('services.idam.clientSecret');
+    const responseType: string = config.get('services.idam.responseType');
+    const callbackURL: string = config.get('services.idam.callbackURL');
+    const scope: string = config.get('services.idam.scope');
+
     const authParams = new URLSearchParams({
       'client_id': clientID,
       'response_type': responseType,
