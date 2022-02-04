@@ -6,7 +6,7 @@ import {AuthedRequest} from '../../types/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
 import {Api} from '../../Api';
-import {HOME_URL, IDAM_API, IDAM_PUBLIC, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
+import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 import {Logger} from '../../interfaces/Logger';
 
 export class OidcMiddleware {
@@ -16,6 +16,9 @@ export class OidcMiddleware {
   }
 
   public enableFor(app: Application): void {
+    const IDAM_API = config.get('services.idam.url.api');
+    const IDAM_PUBLIC = config.get('services.idam.url.public');
+
     const { authorization, token, endSession } = config.get('services.idam.endpoint');
     const { clientID, clientSecret, responseType, callbackURL, scope } = config.get('services.idam');
     const authParams = new URLSearchParams({
