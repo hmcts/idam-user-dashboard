@@ -29,7 +29,7 @@ export class OidcMiddleware {
     }).toString();
 
     app.get(LOGIN_URL, (req: Request, res: Response) => {
-      res.redirect(`${IDAM_PUBLIC + authorization}?${authParams}`);
+      res.redirect(`${IDAM_PUBLIC + authorization}?${authParams}&prompt=login`);
     });
 
     app.get(OAUTH2_CALLBACK_URL, async (req: Request, res: Response) => {
@@ -75,9 +75,10 @@ export class OidcMiddleware {
           this.logger.error('Failed to end IDAM session for user: ' + req.session.user.id);
         }
 
-        req.session.destroy( () =>
-          res.redirect(`${IDAM_PUBLIC + authorization}?${authParams}&prompt=login`)
-        );
+        req.session.destroy( () => {
+          res.clearCookie(config.get('session.cookie.name'));
+          res.redirect(LOGIN_URL);
+        });
       } else {
         res.redirect(LOGIN_URL);
       }
@@ -99,9 +100,7 @@ export class OidcMiddleware {
     req.scope.register({
       axios: asValue(Axios.create({
         baseURL: config.get('services.idam.url.api'),
-        headers: {
-          Authorization: 'Bearer ' + req.session.user.accessToken
-        }
+        headers: { Authorization: 'Bearer ' + req.session.user.accessToken }
       })),
       api: asClass(Api)
     });

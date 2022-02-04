@@ -4,6 +4,7 @@ import ConnectRedis from 'connect-redis';
 import { createClient } from 'redis';
 import config from 'config';
 import FileStoreFactory from 'session-file-store';
+import cookieParser from 'cookie-parser';
 
 const RedisStore = ConnectRedis(session);
 const FileStore = FileStoreFactory(session);
@@ -11,8 +12,10 @@ const cookieMaxAge = 21 * (60 * 1000); // 21 minutes
 
 export class SessionStorage {
   public enableFor(app: Application): void {
+    app.use(cookieParser());
+
     app.use(session({
-      name: 'idam-user-dashboard-session',
+      name: config.get('session.cookie.name'),
       resave: false,
       saveUninitialized: false,
       secret: config.get('session.secret'),
