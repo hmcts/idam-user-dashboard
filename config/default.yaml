@@ -21,6 +21,8 @@ services:
     responseType: 'code'
 session:
   secret: 'local'
+  cookie:
+    name: 'idam-user-dashboard-session'
   redis:
     host:
     port:
