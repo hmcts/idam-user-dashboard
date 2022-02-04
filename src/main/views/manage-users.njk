@@ -51,6 +51,10 @@
           <p class="govuk-body-m govuk-!-font-weight-bold">
             No user matches your search for '{{ search }}'
           </p>
+        {% elif result|length > 1 %}
+          <p class="govuk-body-m govuk-!-font-weight-bold">
+            Expected error: More than one user matches your search for '{{ search }}'
+          </p>
         {% endif %}
       {% endif %}
     </div>
