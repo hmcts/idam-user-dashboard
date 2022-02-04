@@ -34,18 +34,18 @@ describe('User results controller', () => {
     ];
     when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue(results);
 
-    req.query.email = email;
+    req.body.email = email;
     req.scope.cradle.api = mockApi;
-    await controller.get(req, res);
+    await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', results[0]);
   });
 
   test('Should render the manage users page when searching with a non-existent email', async () => {
     when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue([]);
 
-    req.query.email = email;
+    req.body.email = email;
     req.scope.cradle.api = mockApi;
-    await controller.get(req, res);
+    await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-users', { search: email, result: [] });
   });
 
@@ -68,15 +68,15 @@ describe('User results controller', () => {
     ];
     when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue(results);
 
-    req.query.email = email;
+    req.body.email = email;
     req.scope.cradle.api = mockApi;
-    await controller.get(req, res);
+    await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-users', { search: email, result: results });
   });
 
   test('Should render the manage users page with error when searching with empty email', async () => {
-    req.query.email = '';
-    await controller.get(req, res);
+    req.body.email = '';
+    await controller.post(req, res);
     const expectedPageData: PageData = {
       hasError: true,
       errorMessage: MISSING_EMAIL_ERROR
@@ -85,8 +85,8 @@ describe('User results controller', () => {
   });
 
   test('Should render the manage users page with error when searching with email with invalid format', async () => {
-    req.query.email = 'any text';
-    await controller.get(req, res);
+    req.body.email = 'any text';
+    await controller.post(req, res);
     const expectedPageData: PageData = {
       hasError: true,
       errorMessage: INVALID_EMAIL_FORMAT_ERROR
