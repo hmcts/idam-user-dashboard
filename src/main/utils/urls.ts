@@ -1,9 +1,3 @@
-import config from 'config';
-
-// External URLs
-export const IDAM_PUBLIC = config.get('services.idam.url.public') as string;
-export const IDAM_API = config.get('services.idam.url.api') as string;
-
 // Exposed URLs
 export const HOME_URL = '/';
 export const LOGIN_URL = '/login';
