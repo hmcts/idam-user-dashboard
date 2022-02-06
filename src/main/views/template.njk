@@ -12,10 +12,8 @@
     serviceName: "IDAM User Dashboard",
     serviceUrl: "/",
     navigation: [
-      {
-        href: "/logout",
-        text: "Sign out"
-      }
+      { text: user.name },
+      { text: "Sign out", href: "/logout" }
     ]
   }) }}
 {% endblock %}
