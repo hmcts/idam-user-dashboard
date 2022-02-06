@@ -1,5 +1,18 @@
 {% extends "template.njk" %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">Something went wrong</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">{{ title }}</h1>
+      {% for suggestion in suggestions %}
+        <p class="govuk-body-m">{{ suggestion }}</p>
+      {% else %}
+        <p class="govuk-body-m">Please try again later.</p>
+      {% endfor %}
+      <pre class="govuk-!-margin-top-8">Status code: {{ status }}</pre>
+      {% if errorUUID %}
+        <pre>Error UUID: {{ errorUUID }}</pre>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
