@@ -1,5 +1,6 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% block head %}
@@ -25,6 +26,31 @@
       text: "alpha"
     },
     html: 'This is a new service – your <a class="govuk-link" href="https://github.com/hmcts/idam-user-dashboard/issues">feedback</a> will help us to improve it.'
+  }) }}
+{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: "https://www.gov.uk/help",
+          text: 'Help'
+        },
+        {
+          href: "https://www.gov.uk/contact",
+          text: 'Contact'
+        },
+        {
+          href: "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/personal-information-charter#hmcts-privacy-policy",
+          text: 'Privacy'
+        },
+        {
+          href: "https://www.gov.uk/help/terms-conditions",
+          text: 'Terms and conditions'
+        }
+      ]
+    }
   }) }}
 {% endblock %}
 
