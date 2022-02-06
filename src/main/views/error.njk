@@ -1,4 +1,10 @@
+{% from "macros/breadcrumb.njk" import breadcrumb %}
 {% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([['Error']]) }}
+{% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
