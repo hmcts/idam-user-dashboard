@@ -69,7 +69,7 @@ export class ErrorHandler {
   }
 }
 
-export interface ErrorSummary {
+interface ErrorSummary {
   title: string;
   suggestions?: string[];
 }
