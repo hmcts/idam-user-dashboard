@@ -8,7 +8,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form method="POST">
-        {{ csrfProtection() }}
+        {{ csrfProtection(csrfToken) }}
         {{ govukRadios({
           idPrefix: "user-action",
           name: "userAction",

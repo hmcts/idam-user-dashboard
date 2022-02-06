@@ -25,7 +25,7 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Manage Users</h1>
       <form method="POST" action="/user-results">
-        {{ csrfProtection() }}
+        {{ csrfProtection(csrfToken) }}
         {{ govukInput({
           label: {
             text: "Search for an existing user",
