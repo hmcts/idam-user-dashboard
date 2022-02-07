@@ -5,8 +5,8 @@ import { convertISODateTimeToUTCFormat, isEmpty, sortRoles } from '../utils/util
 import { validateEmail } from '../utils/validation';
 
 export class UserResultsController {
-  public async get(req: AuthedRequest, res: Response): Promise<void> {
-    const email  = req.query.email ? req.query.email as string : '';
+  public async post(req: AuthedRequest, res: Response): Promise<void> {
+    const email  = req.body.email ? req.body.email as string : '';
     const errorMessage = validateEmail(email);
 
     if (!isEmpty(errorMessage)) {

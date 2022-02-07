@@ -24,7 +24,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Manage Users</h1>
-      <form method="GET" action="/user-results">
+      <form method="POST" action="/user-results">
         {{ csrfProtection() }}
         {{ govukInput({
           label: {
