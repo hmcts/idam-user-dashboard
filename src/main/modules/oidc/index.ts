@@ -51,6 +51,8 @@ export class OidcMiddleware {
           accessToken: response.access_token,
           idToken: response.id_token,
           id: jwt.uid,
+          name: jwt.name,
+          email: jwt.sub,
           roles: jwt.roles,
         };
 
@@ -113,6 +115,8 @@ export type AuthedUser = {
 
 type JWT = {
   uid: string;
+  sub: string;
+  name: string;
   roles: string[];
 }
 
