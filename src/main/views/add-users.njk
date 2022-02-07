@@ -1,20 +1,12 @@
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
 
 {% extends "template.njk" %}
 
 {% block beforeContent %}
-  {{ govukBreadcrumbs({
-    collapseOnMobile: true,
-    items: [
-      {
-        text: "Home",
-        href: "/"
-      },
-      {
-        text: "Add users"
-      }
-    ]
-  }) }}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Add users']
+  ]) }}
 {% endblock %}
 
 {% block content %}
