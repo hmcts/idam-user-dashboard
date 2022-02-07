@@ -1,9 +1,9 @@
 import axios from 'axios';
 import config from 'config';
-import { config as testConfig } from '../../config';
+import {config as testConfig} from '../../config';
 
-export const createUserWithRoles = async(email, password, forename, userRoles) => {
-  const codeUserRoles = userRoles.map(role => ({ code: role }));
+export const createUserWithRoles = async (email, password, forename, userRoles) => {
+  const codeUserRoles = userRoles.map(role => ({code: role}));
 
   try {
     return (await axios.post(
@@ -24,24 +24,22 @@ export const createUserWithRoles = async(email, password, forename, userRoles) =
   }
 };
 
-export const getAuthToken = async() => {
+export const getAuthToken = async () => {
   const credentials = {
     username: testConfig.SMOKE_TEST_USER_USERNAME as string,
     password: testConfig.SMOKE_TEST_USER_PASSWORD as string
   };
-
   try {
     return (await axios.post(
       `${config.get('services.idam.url.api')}/loginUser`,
       new URLSearchParams(credentials)
     )).data.api_auth_token;
-
   } catch (e) {
     throw new Error(`Failed to get admin auth-token with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
   }
 };
 
-export const retireStaleUser = async(userId) => {
+export const retireStaleUser = async (userId) => {
   const authToken = await getAuthToken();
   try {
     await axios.post(
@@ -56,7 +54,51 @@ export const retireStaleUser = async(userId) => {
   }
 };
 
-export const deleteUser = async(email) => {
+export const getOIDCToken = async () => {
+  const credentials = {
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    grant_type: 'password',
+    username: testConfig.SMOKE_TEST_USER_USERNAME as string,
+    password: testConfig.SMOKE_TEST_USER_PASSWORD as string,
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    client_secret: config.get('services.idam.clientSecret') as string,
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    client_id: config.get('services.idam.clientID') as string,
+    scope: config.get('services.idam.scope') as string
+
+  };
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/o/token`,
+      new URLSearchParams(credentials)
+    )).data.access_token;
+  } catch (e) {
+    throw new Error(`Failed to get OIDCToken with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+  }
+};
+
+export const suspendUser = async (userId) => {
+  const OIDCToken = await getOIDCToken();
+  try {
+    await axios.patch(
+      `${config.get('services.idam.url.api')}/api/v1/users/${userId}`,
+      {
+        active: 'false',
+        forename: testConfig.suspendUser.firstName,
+        surname: testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
+        email: testConfig.suspendUser.email
+      },
+      {
+        headers: {'Authorization': 'Bearer ' + OIDCToken},
+      }
+    );
+  } catch (e) {
+    throw new Error(`Failed to suspend: ${userId}, http-status: ${e.response?.status}`);
+  }
+};
+
+
+export const deleteUser = async (email) => {
   try {
     await axios.delete(
       `${config.get('services.idam.url.api')}/testing-support/accounts/${email}`
