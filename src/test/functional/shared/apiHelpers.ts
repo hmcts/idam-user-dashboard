@@ -56,14 +56,11 @@ export const retireStaleUser = async (userId) => {
 
 export const getOIDCToken = async () => {
   const credentials = {
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    grant_type: 'password',
+    'grant_type': 'password',
     username: testConfig.SMOKE_TEST_USER_USERNAME as string,
     password: testConfig.SMOKE_TEST_USER_PASSWORD as string,
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    client_secret: config.get('services.idam.clientSecret') as string,
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    client_id: config.get('services.idam.clientID') as string,
+    'client_secret': config.get('services.idam.clientSecret') as string,
+    'client_id': config.get('services.idam.clientID') as string,
     scope: config.get('services.idam.scope') as string
 
   };
