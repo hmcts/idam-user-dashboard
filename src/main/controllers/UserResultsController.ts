@@ -1,20 +1,19 @@
 import { AuthedRequest } from '../types/AuthedRequest';
 import { Response } from 'express';
-import { PageData } from '../interfaces/PageData';
-import { convertISODateTimeToUTCFormat, isEmpty, sortRoles } from '../utils/utils';
+import { convertISODateTimeToUTCFormat, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
+import { RootController } from './RootController';
 
-export class UserResultsController {
+export class UserResultsController extends RootController {
   public async post(req: AuthedRequest, res: Response): Promise<void> {
-    const email  = req.body.email ? req.body.email as string : '';
+    const email: string = req.body.email ?? '';
     const errorMessage = validateEmail(email);
+    let resultsMessage;
 
-    if (!isEmpty(errorMessage)) {
-      const data: PageData = {
-        hasError: true,
-        errorMessage: errorMessage
-      };
-      return res.render('manage-users', data);
+    if (errorMessage) {
+      return super.post(req, res, 'manage-users', { error: {
+        email: { message: errorMessage }
+      }});
     }
 
     const users = await req.scope.cradle.api.getUsersByEmail(email);
@@ -23,13 +22,19 @@ export class UserResultsController {
       sortRoles(user.roles);
       user.createDate = convertISODateTimeToUTCFormat(user.createDate);
       user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
+
       return res.render('user-details', user);
+    } else if (users.length > 1) {
+      resultsMessage = `More than one user matches your search for: ${email}. Please contact the system owner for support.`;
+    } else {
+      resultsMessage = `No user matches your search for: ${email}`;
     }
-    // If the API returns more than one search results unexpectedly, we return an error
-    // in the manage-users page
-    return res.render('manage-users', {
-      search: email,
-      result: users
+
+    super.post(req, res, 'manage-users', {
+      content: {
+        search: email,
+        result: resultsMessage
+      }
     });
   }
 }
