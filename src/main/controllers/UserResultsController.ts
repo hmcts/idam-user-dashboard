@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { convertISODateTimeToUTCFormat, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
 import { RootController } from './RootController';
+import { NO_USER_MATCHES_ERROR, TOO_MANY_USERS_ERROR } from '../utils/error';
 
 export class UserResultsController extends RootController {
   public async post(req: AuthedRequest, res: Response): Promise<void> {
@@ -25,9 +26,9 @@ export class UserResultsController extends RootController {
 
       return res.render('user-details', user);
     } else if (users.length > 1) {
-      resultsMessage = `More than one user matches your search for: ${email}. Please contact the system owner for support.`;
+      resultsMessage = TOO_MANY_USERS_ERROR + email;
     } else {
-      resultsMessage = `No user matches your search for: ${email}`;
+      resultsMessage = NO_USER_MATCHES_ERROR + email;
     }
 
     super.post(req, res, 'manage-users', {

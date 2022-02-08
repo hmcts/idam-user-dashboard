@@ -12,13 +12,14 @@ export class RootController {
   }
 
   private static render(req: AuthedRequest, res: Response, view: string, data: PageData): void {
-    const constructedData = {
-      user: {
+    const constructedData: PageData = {...data};
+
+    if(req.session?.user) {
+      constructedData.user = {
         name: req.session.user.name,
         email: req.session.user.email
-      },
-      ...data
-    };
+      };
+    }
 
     res.render(view, constructedData);
   }
