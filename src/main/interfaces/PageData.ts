@@ -1,4 +1,14 @@
 export interface PageData {
-  hasError?: boolean;
-  errorMessage?: string;
+  error?: PageError;
+  content?: PageContent;
+}
+
+export interface PageContent {
+  [key: string]: string;
+}
+
+export interface PageError {
+  [key: string]: {
+    message: string;
+  };
 }

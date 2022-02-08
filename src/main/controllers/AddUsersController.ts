@@ -1,8 +1,9 @@
 import { AuthedRequest } from '../types/AuthedRequest';
 import { Response } from 'express';
+import { RootController } from './RootController';
 
-export class AddUsersController {
+export class AddUsersController extends RootController{
   public get(req: AuthedRequest, res: Response): void {
-    res.render('add-users');
+    super.get(req, res, 'add-users');
   }
 }
