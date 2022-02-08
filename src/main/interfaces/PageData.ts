@@ -5,7 +5,7 @@ export interface PageData {
 }
 
 export interface PageContent {
-  [key: string]: string;
+  [key: string]: any;
 }
 
 export interface PageError {

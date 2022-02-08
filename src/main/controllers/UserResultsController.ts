@@ -24,7 +24,7 @@ export class UserResultsController extends RootController {
       user.createDate = convertISODateTimeToUTCFormat(user.createDate);
       user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
 
-      return res.render('user-details', user);
+      return super.post(req, res, 'user-details', { content: { user } });
     } else if (users.length > 1) {
       resultsMessage = TOO_MANY_USERS_ERROR + email;
     } else {

@@ -42,7 +42,7 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', results[0]);
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0] }});
   });
 
   test('Should render the manage users page when searching with a non-existent email', async () => {
