@@ -1,7 +1,7 @@
 import {
   convertISODateTimeToUTCFormat,
   hasProperty,
-  isEmpty,
+  isEmpty, isObjectEmpty,
   isValidEmailFormat,
   sortRoles
 } from '../../../../main/utils/utils';
@@ -56,6 +56,19 @@ describe('utils', () => {
       it('Should return ' + parameter.isValid + ' for email \'' + parameter.email + '\'', async () => {
         expect(isValidEmailFormat(parameter.email)).toBe(parameter.isValid);
       });
+    });
+  });
+
+  describe('isObjectEmpty', () => {
+    test('Should return true if object is empty', async () => {
+      const object = {};
+      const results = isObjectEmpty(object);
+      expect(results).toBe(true);
+    });
+    test('Should return false if object is not empty', async () => {
+      const object = { test: 'test' };
+      const results = isObjectEmpty(object);
+      expect(results).toBe(false);
     });
   });
 

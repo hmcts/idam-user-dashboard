@@ -17,8 +17,11 @@ export class FeatureFlags {
   };
 
   public getAllFlagValues = (defaultValue = false) => {
+    const localFlags = config.get('featureFlags.flags') as { [key: string]: boolean };
     return this.featureFlagClient.getAllFlagValues(defaultValue)
-      .then(values => { return {...values, ...config.get('featureFlags.flags')}; });
+      .then(values => {
+        return { ...values, ...localFlags };
+      });
   }
 
   public toggleRoute = (flagKey: string, defaultValue = false) => {
