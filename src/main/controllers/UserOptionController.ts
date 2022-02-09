@@ -8,11 +8,11 @@ import autobind from 'autobind-decorator';
 
 @autobind
 export class UserOptionController extends RootController {
-  public get(req: AuthedRequest, res: Response): void {
-    super.get(req, res,'user-option');
+  public get(req: AuthedRequest, res: Response) {
+    return super.get(req, res,'user-option');
   }
 
-  public post(req: AuthedRequest, res: Response): void {
+  public post(req: AuthedRequest, res: Response) {
     if (!hasProperty(req.body, 'userAction')) {
       return super.post(req, res, 'user-option', { error: {
         userAction: { message: MISSING_OPTION_ERROR }
