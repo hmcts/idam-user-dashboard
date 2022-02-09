@@ -3,8 +3,10 @@ import launchDarkly, { LDClient, LDUser } from 'launchdarkly-node-server-sdk';
 import { FeatureFlagClient } from './FeatureFlags';
 
 export class LaunchDarkly implements FeatureFlagClient {
+  private readonly client: LDClient
+  private readonly ldUser: LDUser
 
-  constructor(private readonly client: LDClient, private readonly ldUser: LDUser) {
+  constructor() {
     this.ldUser = { key: config.get('featureFlags.launchdarkly.ldUser') };
     this.client = launchDarkly.init(config.get('featureFlags.launchdarkly.sdkKey'), { diagnosticOptOut: true });
   }
