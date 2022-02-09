@@ -18,7 +18,7 @@ export class Nunjucks {
       'node_modules',
       'govuk-frontend',
     );
-    const env = nunjucks.configure(
+    nunjucks.configure(
       [path.join(__dirname, '..', '..', 'views'), govUkFrontendPath],
       {
         autoescape: true,
