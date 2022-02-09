@@ -3,8 +3,8 @@ import { INVALID_EMAIL_FORMAT_ERROR, MISSING_EMAIL_ERROR } from '../../../../mai
 
 describe('validation', () => {
   describe('validateEmail', () => {
-    test('Should return empty string if email is valid', async () => {
-      expect(validateEmail('test@test.com')).toBe('');
+    test('Should return undefined if email is valid', async () => {
+      expect(validateEmail('test@test.com')).toBe(undefined);
     });
 
     test('Should return error message if email is empty', async () => {

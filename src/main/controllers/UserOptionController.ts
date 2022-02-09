@@ -1,22 +1,20 @@
 import { AuthedRequest } from '../types/AuthedRequest';
 import { Response } from 'express';
 import { hasProperty } from '../utils/utils';
-import { PageData } from '../interfaces/PageData';
 import { MISSING_OPTION_ERROR } from '../utils/error';
 import { ADD_USERS_URL, MANAGER_USERS_URL } from '../utils/urls';
+import { RootController } from './RootController';
 
-export class UserOptionController {
+export class UserOptionController extends RootController {
   public get(req: AuthedRequest, res: Response): void {
-    res.render('user-option');
+    super.get(req, res,'user-option');
   }
 
   public post(req: AuthedRequest, res: Response): void {
     if (!hasProperty(req.body, 'userAction')) {
-      const data: PageData = {
-        hasError: true,
-        errorMessage: MISSING_OPTION_ERROR
-      };
-      return res.render('user-option', data);
+      return super.post(req, res, 'user-option', { error: {
+        userAction: { message: MISSING_OPTION_ERROR }
+      }});
     }
 
     const userAction = req.body.userAction as string;
