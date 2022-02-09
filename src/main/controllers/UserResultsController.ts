@@ -4,7 +4,9 @@ import { convertISODateTimeToUTCFormat, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
 import { RootController } from './RootController';
 import { NO_USER_MATCHES_ERROR, TOO_MANY_USERS_ERROR } from '../utils/error';
+import autobind from 'autobind-decorator';
 
+@autobind
 export class UserResultsController extends RootController {
   public async post(req: AuthedRequest, res: Response): Promise<void> {
     const email: string = req.body.email ?? '';

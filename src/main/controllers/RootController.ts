@@ -1,17 +1,19 @@
 import {AuthedRequest} from '../types/AuthedRequest';
 import {Response} from 'express';
 import { PageData } from '../interfaces/PageData';
+import autobind from 'autobind-decorator';
 
+@autobind
 export class RootController {
   public get(req: AuthedRequest, res: Response, view: string, data?: PageData): void {
-    RootController.render(req, res, view, data);
+    this.render(req, res, view, data);
   }
 
   public post(req: AuthedRequest, res: Response, view: string, data?: PageData): void {
-    RootController.render(req, res, view, data);
+    this.render(req, res, view, data);
   }
 
-  private static render(req: AuthedRequest, res: Response, view: string, data: PageData): void {
+  private render(req: AuthedRequest, res: Response, view: string, data: PageData): void {
     const constructedData: PageData = {...data};
 
     if(req.session?.user) {

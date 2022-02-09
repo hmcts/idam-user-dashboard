@@ -4,7 +4,9 @@ import { hasProperty } from '../utils/utils';
 import { MISSING_OPTION_ERROR } from '../utils/error';
 import { ADD_USERS_URL, MANAGER_USERS_URL } from '../utils/urls';
 import { RootController } from './RootController';
+import autobind from 'autobind-decorator';
 
+@autobind
 export class UserOptionController extends RootController {
   public get(req: AuthedRequest, res: Response): void {
     super.get(req, res,'user-option');
