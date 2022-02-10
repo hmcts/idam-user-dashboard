@@ -7,17 +7,6 @@ nodejs:
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
-  keyVaults:
-    "idam-idam":
-      resourceGroup: idam-idam
-      excludeEnvironmentSuffix: false
-      secrets:
-        - AppInsightsInstrumentationKey
-        - launchdarkly-sdk-key
-        - idam-user-dashboard-client-secret
-        - redis-hostname
-        - redis-port
-        - redis-key
   environment:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
     STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
