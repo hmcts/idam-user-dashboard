@@ -17,6 +17,7 @@ nodejs:
         - redis-key
   environment:
     OAUTH_CLIENT_REDIRECT: https://${SERVICE_FQDN}/oauth2/callback
+    TEST_VAR: 'PREVIEW'
 idam-pr:
   enabled: true
   redirect_uris:

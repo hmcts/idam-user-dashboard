@@ -35,3 +35,4 @@ featureFlags:
     ldUser: 'idam-user-dashboard'
     sdkKey:
   flags:   # add feature-flag overrides below
+testVar:

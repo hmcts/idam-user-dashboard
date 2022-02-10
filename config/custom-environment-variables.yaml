@@ -21,3 +21,4 @@ session:
 featureFlags:
   launchdarkly:
     sdkKey: LAUNCHDARKLY_SDK_KEY
+testVar: TEST_VAR

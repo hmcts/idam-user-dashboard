@@ -5,6 +5,7 @@ nodejs:
   aadIdentityName: idam
   environment:
     OAUTH_CLIENT_REDIRECT: https://${SERVICE_FQDN}/oauth2/callback
-    
+    TEST_VAR: 'AAT'
+
 idam-pr:
   enabled: false

@@ -17,6 +17,7 @@ export class PropertiesVolume {
       this.setSecret('secrets.idam-idam.redis-key', 'session.redis.key');
       this.setSecret('secrets.idam-idam.redis-key', 'session.secret');
 
+      console.log('TEST_VAR:' + config.get('testVar'));
       console.log('REDIS SESSION HOST:' + config.get('session.redis.host'));
       console.log('REDIS SESSION PORT:' + config.get('session.redis.port'));
 
