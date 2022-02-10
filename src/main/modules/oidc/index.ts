@@ -2,10 +2,10 @@ import {Application, NextFunction, Request, Response} from 'express';
 import {asClass, asValue} from 'awilix';
 import Axios from 'axios';
 import config from 'config';
-import {AuthedRequest} from '../../types/AuthedRequest';
+import {AuthedRequest} from '../../interfaces/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
-import {Api} from '../../Api';
+import {IdamAPI} from '../../app/idam-api/IdamAPI';
 import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 import {Logger} from '../../interfaces/Logger';
 
@@ -104,7 +104,7 @@ export class OidcMiddleware {
         baseURL: config.get('services.idam.url.api'),
         headers: { Authorization: 'Bearer ' + req.session.user.accessToken }
       })),
-      api: asClass(Api)
+      api: asClass(IdamAPI)
     });
   }
 }

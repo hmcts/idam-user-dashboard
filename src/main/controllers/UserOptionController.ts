@@ -1,4 +1,4 @@
-import { AuthedRequest } from '../types/AuthedRequest';
+import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
 import { hasProperty } from '../utils/utils';
 import { MISSING_OPTION_ERROR } from '../utils/error';
