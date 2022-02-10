@@ -103,7 +103,7 @@
     "jest": "^27.4.7",
     "jest-html-reporter": "^3.4.2",
     "mini-css-extract-plugin": "^2.5.2",
-    "nock": "^13.2.2",
+    "nock": "^13.2.4",
     "node-sass": "^7.0.1",
     "nodemon": "^2.0.15",
     "pa11y": "^6.1.1",
