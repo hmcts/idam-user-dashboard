@@ -1,8 +1,8 @@
 import { AxiosInstance } from 'axios';
-import { User } from './interfaces/User';
-import { Logger } from './interfaces/Logger';
+import { User } from '../../interfaces/User';
+import { Logger } from '../../interfaces/Logger';
 
-export class Api {
+export class IdamAPI {
   constructor(
     private readonly axios: AxiosInstance,
     private readonly logger: Logger

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { HTTPError } from '../../HttpError';
+import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
 import config from 'config';
 
@@ -29,10 +29,10 @@ export class FeatureFlags {
     return (req: Request, res: Response, next: NextFunction) => {
       this.getFlagValue(flagKey, defaultValue)
         .then(value => {
-          value ? next() : next(new HTTPError('FORBIDDEN', http.HTTP_STATUS_FORBIDDEN));
+          value ? next() : next(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
         })
         .catch(() => {
-          next(new HTTPError('SERVER_ERROR', http.HTTP_STATUS_INTERNAL_SERVER_ERROR));
+          next(new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR));
         });
     };
   }

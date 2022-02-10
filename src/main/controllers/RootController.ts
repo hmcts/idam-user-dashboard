@@ -1,4 +1,4 @@
-import { AuthedRequest } from '../types/AuthedRequest';
+import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
 import { PageData } from '../interfaces/PageData';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
