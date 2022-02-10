@@ -18,5 +18,6 @@ session:
     host: REDIS_HOST
     port: REDIS_PORT
     key: REDIS_KEY
-launchdarkly:
-  sdkKey: LAUNCHDARKLY_SDK_KEY
+featureFlags:
+  launchdarkly:
+    sdkKey: LAUNCHDARKLY_SDK_KEY

@@ -3,7 +3,6 @@ import { glob } from 'glob';
 const { Logger } = require('@hmcts/nodejs-logging');
 
 import * as bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import config = require('config');
 import express from 'express';
 import { Helmet } from './modules/helmet';
@@ -31,7 +30,6 @@ app.locals.ENV = env;
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   res.setHeader(
@@ -48,7 +46,7 @@ new AppInsights().enable();
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 new HealthCheck().enableFor(app);
-new Csrf(logger).enableFor(app);
+new Csrf().enableFor(app);
 new OidcMiddleware(logger).enableFor(app);
 
 glob.sync(__dirname + '/routes/**/*.+(ts|js)')

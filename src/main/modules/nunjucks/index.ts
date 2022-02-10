@@ -26,10 +26,5 @@ export class Nunjucks {
         express: app,
       },
     );
-
-    app.use((req, res, next) => {
-      res.locals.pagePath = req.path;
-      next();
-    });
   }
 }

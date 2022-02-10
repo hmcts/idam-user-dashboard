@@ -21,6 +21,8 @@ services:
     responseType: 'code'
 session:
   secret: 'local'
+  cookie:
+    name: 'idam-user-dashboard-session'
   redis:
     host:
     port:
@@ -28,5 +30,8 @@ session:
 health:
   timeout: 5000
   deadline: 15000
-launchdarkly:
-  sdkKey:
+featureFlags:
+  launchdarkly:
+    ldUser: 'idam-user-dashboard'
+    sdkKey:
+  flags:   # add feature-flag overrides below

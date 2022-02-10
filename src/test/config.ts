@@ -3,10 +3,22 @@ export const config = {
   SMOKE_TEST_USER_USERNAME: process.env.SMOKE_TEST_USER_USERNAME,
   SMOKE_TEST_USER_PASSWORD: process.env.SMOKE_TEST_USER_PASSWORD,
   PASSWORD: 'Pa55word11',
+  staleUser: {
+    email: 'staleUser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_SUPER_USER',
+    firstName: 'staleTest'
+  },
+  suspendUser: {
+    email: 'suspenduser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_SUPER_USER',
+    firstName: 'suspendTest'
+  },
   SCENARIO_RETRY_LIMIT: 3,
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
-
+  SUPER_ADMIN_CITIZEN_USER_LASTNAME: 'User',
   Gherkin: {
     features: './features/**/*.feature',
     steps: './steps/**/*.ts',
@@ -27,4 +39,25 @@ config.helpers = {
   IdamHelper: {
     require: '../functional/shared/idam-helper.ts',
   },
+};
+
+export const testAccounts = {
+  superUser: {
+    email: 'superuser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_SUPER_USER',
+    firstName: 'superTest'
+  },
+  adminUser: {
+    email: 'adminuser@test.com',
+    password: 'Pa55word11',
+    role: 'IDAM_ADMIN_USER',
+    firstName: 'adminTest'
+  },
+  citizenUser: {
+    email: 'citizenuser@test.com',
+    password: 'Pa55word11',
+    role: 'citizen',
+    firstName: 'citizenTest'
+  }
 };

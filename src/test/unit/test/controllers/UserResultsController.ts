@@ -2,7 +2,12 @@ import { UserResultsController } from '../../../../main/controllers/UserResultsC
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
-import { INVALID_EMAIL_FORMAT_ERROR, MISSING_EMAIL_ERROR } from '../../../../main/utils/error';
+import {
+  INVALID_EMAIL_FORMAT_ERROR,
+  MISSING_EMAIL_ERROR,
+  NO_USER_MATCHES_ERROR,
+  TOO_MANY_USERS_ERROR
+} from '../../../../main/utils/error';
 import { when } from 'jest-when';
 
 describe('User results controller', () => {
@@ -34,38 +39,65 @@ describe('User results controller', () => {
     ];
     when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue(results);
 
-    req.query.email = email;
+    req.body.email = email;
     req.scope.cradle.api = mockApi;
-    await controller.get(req, res);
-    expect(res.render).toBeCalledWith('user-details', results[0]);
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0] }});
   });
 
   test('Should render the manage users page when searching with a non-existent email', async () => {
     when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue([]);
 
-    req.query.email = email;
+    req.body.email = email;
     req.scope.cradle.api = mockApi;
-    await controller.get(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { search: email});
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
+  });
+
+  test('Should render the manage users page when more than one search results', async () => {
+    const results = [
+      {
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER']
+      },
+      {
+        forename: 'J',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_ADMIN_USER']
+      }
+    ];
+    when(mockApi.getUsersByEmail as jest.Mock).calledWith(email).mockReturnValue(results);
+
+    req.body.email = email;
+    req.scope.cradle.api = mockApi;
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
   });
 
   test('Should render the manage users page with error when searching with empty email', async () => {
-    req.query.email = '';
-    await controller.get(req, res);
-    const expectedPageData: PageData = {
-      hasError: true,
-      errorMessage: MISSING_EMAIL_ERROR
-    };
+    req.body.email = '';
+    await controller.post(req, res);
+
+    const expectedPageData: PageData = { error: {
+      email: { message: MISSING_EMAIL_ERROR }
+    }};
+
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });
 
   test('Should render the manage users page with error when searching with email with invalid format', async () => {
-    req.query.email = 'any text';
-    await controller.get(req, res);
-    const expectedPageData: PageData = {
-      hasError: true,
-      errorMessage: INVALID_EMAIL_FORMAT_ERROR
-    };
+    req.body.email = 'any text';
+    await controller.post(req, res);
+
+    const expectedPageData: PageData = { error: {
+      email: { message: INVALID_EMAIL_FORMAT_ERROR }
+    }};
+
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });
 });

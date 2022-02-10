@@ -1,4 +1,10 @@
-import {hasProperty, isEmpty, isValidEmailFormat, sortRoles} from '../../../../main/utils/utils';
+import {
+  convertISODateTimeToUTCFormat,
+  hasProperty,
+  isEmpty, isObjectEmpty,
+  isValidEmailFormat,
+  sortRoles
+} from '../../../../main/utils/utils';
 
 describe('utils', () => {
   describe('hasProperty', () => {
@@ -53,6 +59,19 @@ describe('utils', () => {
     });
   });
 
+  describe('isObjectEmpty', () => {
+    test('Should return true if object is empty', async () => {
+      const object = {};
+      const results = isObjectEmpty(object);
+      expect(results).toBe(true);
+    });
+    test('Should return false if object is not empty', async () => {
+      const object = { test: 'test' };
+      const results = isObjectEmpty(object);
+      expect(results).toBe(false);
+    });
+  });
+
   describe('sortRoles', () => {
     test('Should sort IDAM super user role first', async () => {
       const roles = ['Other User', 'IDAM_SUPER_USER', 'Other User 2'];
@@ -79,6 +98,16 @@ describe('utils', () => {
       expect(roles[1]).toBe('A');
       expect(roles[2]).toBe('B');
       expect(roles[3]).toBe('C');
+    });
+  });
+
+  describe('convertISODateTimeToUTCFormat', () => {
+    test('Should return valid date time', async () => {
+      expect(convertISODateTimeToUTCFormat('2022-01-17T16:58:28.762Z')).toBe('Mon, 17 Jan 2022 16:58:28 GMT');
+    });
+
+    test('Should not return date time with invalid input', async () => {
+      expect(convertISODateTimeToUTCFormat('20220117')).toBe('');
     });
   });
 });

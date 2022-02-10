@@ -6,6 +6,10 @@ export const isEmpty = (value: string): boolean => {
   return value === undefined || value === '';
 };
 
+export const isObjectEmpty = (obj: {}): boolean => {
+  return Object.keys(obj).length === 0;
+};
+
 export const isValidEmailFormat = (email: string): boolean => {
   const filter = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return filter.test(email);
@@ -34,4 +38,9 @@ export const sortRoles = (roles: string[]): void => {
   if (roles.length > 1) {
     roles.sort((a: string, b: string) => compareRoles(a, b));
   }
+};
+
+export const convertISODateTimeToUTCFormat = (date: string): string => {
+  const result = new Date(date).toUTCString();
+  return result === 'Invalid Date' ? '' : result;
 };

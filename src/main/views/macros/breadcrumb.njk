@@ -1,0 +1,12 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% macro breadcrumb(crumbs) %}
+  {% set items = [] %}
+  {% set items = (items.push({ text: 'Home', href: '/' if crumbs.length }),items) %}
+
+  {% for crumb in crumbs %}
+    {% set items = (items.push({ text: crumb[0], href: crumb[1] }),items) %}
+  {% endfor %}
+
+  {{ govukBreadcrumbs({ collapseOnMobile: true, items: items}) }}
+{% endmacro %}
