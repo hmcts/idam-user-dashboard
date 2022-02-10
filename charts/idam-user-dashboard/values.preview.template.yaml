@@ -5,6 +5,17 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   autoscaling:
     enabled: false
+  keyVaults:
+    "idam-idam-preview":
+      resourceGroup: idam-idam
+      excludeEnvironmentSuffix: true
+      secrets:
+        - AppInsightsInstrumentationKey
+        - launchdarkly-sdk-key
+        - idam-user-dashboard-client-secret
+        - redis-hostname
+        - redis-port
+        - redis-key
   environment:
     OAUTH_CLIENT_REDIRECT: https://${SERVICE_FQDN}/oauth2/callback
 idam-pr:
