@@ -3,14 +3,6 @@ nodejs:
   releaseNameOverride: ${SERVICE_NAME}
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
-  keyVaults:
-  idam:
-    resourceGroup: idam-idam
-    excludeEnvironmentSuffix: false
-    secrets:
-      - AppInsightsInstrumentationKey
-      - launchdarkly-sdk-key
-      - idam-user-dashboard-client-secret
   autoscaling:
     enabled: false
   environment:
