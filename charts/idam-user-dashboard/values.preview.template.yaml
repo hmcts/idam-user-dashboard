@@ -7,7 +7,6 @@ nodejs:
     enabled: false
   keyVaults:
     "idam-idam-preview":
-      resourceGroup: idam-idam
       excludeEnvironmentSuffix: true
       secrets:
         - AppInsightsInstrumentationKey
