@@ -1,24 +1,39 @@
-import {AuthedRequest} from '../types/AuthedRequest';
-import {Response} from 'express';
+import { AuthedRequest } from '../types/AuthedRequest';
+import { Response } from 'express';
 import { PageData } from '../interfaces/PageData';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import autobind from 'autobind-decorator';
+import { isObjectEmpty } from '../utils/utils';
 
+@autobind
 export class RootController {
-  public get(req: AuthedRequest, res: Response, view: string, data?: PageData): void {
-    RootController.render(req, res, view, data);
+  constructor(private featureFlags?: FeatureFlags) {
+    this.featureFlags = featureFlags;
   }
 
-  public post(req: AuthedRequest, res: Response, view: string, data?: PageData): void {
-    RootController.render(req, res, view, data);
+  public get(req: AuthedRequest, res: Response, view: string, data?: PageData): Promise<void> | void {
+    return this.render(req, res, view, data);
   }
 
-  private static render(req: AuthedRequest, res: Response, view: string, data: PageData): void {
+  public post(req: AuthedRequest, res: Response, view: string, data?: PageData): Promise<void> | void {
+    return this.render(req, res, view, data);
+  }
+
+  private async render(req: AuthedRequest, res: Response, view: string, data: PageData): Promise<void> {
     const constructedData: PageData = {...data};
 
-    if(req.session?.user) {
-      constructedData.user = {
-        name: req.session.user.name,
-        email: req.session.user.email
-      };
+    if(this.featureFlags) {
+      const featureFlags = await this.featureFlags?.getAllFlagValues();
+      if(!isObjectEmpty(featureFlags)) {
+        constructedData.featureFlags = featureFlags;
+      }
+    }
+
+    if(req.session) {
+      const user = req.session.user;
+      if(!isObjectEmpty(user)) {
+        constructedData.user = user;
+      }
     }
 
     res.render(view, constructedData);
