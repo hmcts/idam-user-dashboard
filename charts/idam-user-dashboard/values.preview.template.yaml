@@ -6,7 +6,7 @@ nodejs:
   autoscaling:
     enabled: false
   keyVaults:
-    "idam-idam-preview":
+    idam-idam-preview:
       excludeEnvironmentSuffix: true
       secrets:
         - AppInsightsInstrumentationKey
