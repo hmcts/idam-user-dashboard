@@ -8,9 +8,7 @@ nodejs:
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
   keyVaults:
-    "idam-idam":
-      resourceGroup: idam-idam
-      excludeEnvironmentSuffix: false
+    idam-idam:
       secrets:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
@@ -22,6 +20,7 @@ nodejs:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
     STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
     OAUTH_CLIENT_REDIRECT: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net/oauth2/callback'
+    TEST_VAR: 'DEFAULT'
   autoscaling:
     enabled: true
     maxReplicas: 4
