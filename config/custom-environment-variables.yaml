@@ -20,6 +20,4 @@ session:
     key: REDIS_KEY
 featureFlags:
   launchdarkly:
-    ldUser: 'idam-user-dashboard'
     sdkKey: LAUNCHDARKLY_SDK_KEY
-  flags:   # add feature-flag overrides below
