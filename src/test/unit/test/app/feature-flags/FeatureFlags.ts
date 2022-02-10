@@ -3,7 +3,8 @@ import { mockRequest } from '../../../utils/mockRequest';
 import { FeatureFlagClient, FeatureFlags } from '../../../../../main/app/feature-flags/FeatureFlags';
 import { mockResponse } from '../../../utils/mockResponse';
 import config from 'config';
-import { HTTPError } from '../../../../../main/HttpError';
+import { HTTPError } from '../../../../../main/app/errors/HttpError';
+import { constants as http } from 'http2';
 
 jest.mock('config');
 
@@ -115,6 +116,6 @@ describe('FeatureToggleService', () => {
 
     await featureFlags.toggleRoute('test-feature-flag--false')(mockReq, mockRes, mockNextController);
     expect(mockFeatureFlagClient.getFlagValue).toBeCalledWith('test-feature-flag--false', false);
-    expect(mockNextController).toBeCalledWith(new HTTPError('FORBIDDEN', 403));
+    expect(mockNextController).toBeCalledWith(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
   });
 });
