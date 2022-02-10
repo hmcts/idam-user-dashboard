@@ -13,6 +13,6 @@ describe('Manage users controller', () => {
 
   test('Should render the manage users page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('manage-users');
+    expect(res.render).toBeCalledWith('manage-users', {});
   });
 });

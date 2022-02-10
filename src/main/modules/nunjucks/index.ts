@@ -18,7 +18,7 @@ export class Nunjucks {
       'node_modules',
       'govuk-frontend',
     );
-    const env = nunjucks.configure(
+    nunjucks.configure(
       [path.join(__dirname, '..', '..', 'views'), govUkFrontendPath],
       {
         autoescape: true,
@@ -26,12 +26,5 @@ export class Nunjucks {
         express: app,
       },
     );
-
-    app.use((req, res, next) => {
-      if(req.session.user) {
-        env.addGlobal('user', req.session.user);
-      }
-      next();
-    });
   }
 }

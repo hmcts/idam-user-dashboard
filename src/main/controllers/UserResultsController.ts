@@ -1,20 +1,22 @@
 import { AuthedRequest } from '../types/AuthedRequest';
 import { Response } from 'express';
-import { PageData } from '../interfaces/PageData';
-import { convertISODateTimeToUTCFormat, isEmpty, sortRoles } from '../utils/utils';
+import { convertISODateTimeToUTCFormat, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
+import { RootController } from './RootController';
+import { NO_USER_MATCHES_ERROR, TOO_MANY_USERS_ERROR } from '../utils/error';
+import autobind from 'autobind-decorator';
 
-export class UserResultsController {
-  public async post(req: AuthedRequest, res: Response): Promise<void> {
-    const email  = req.body.email ? req.body.email as string : '';
+@autobind
+export class UserResultsController extends RootController {
+  public async post(req: AuthedRequest, res: Response) {
+    const email: string = req.body.email ?? '';
     const errorMessage = validateEmail(email);
+    let resultsMessage;
 
-    if (!isEmpty(errorMessage)) {
-      const data: PageData = {
-        hasError: true,
-        errorMessage: errorMessage
-      };
-      return res.render('manage-users', data);
+    if (errorMessage) {
+      return super.post(req, res, 'manage-users', { error: {
+        email: { message: errorMessage }
+      }});
     }
 
     const users = await req.scope.cradle.api.getUsersByEmail(email);
@@ -23,13 +25,19 @@ export class UserResultsController {
       sortRoles(user.roles);
       user.createDate = convertISODateTimeToUTCFormat(user.createDate);
       user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
-      return res.render('user-details', user);
+
+      return super.post(req, res, 'user-details', { content: { user } });
+    } else if (users.length > 1) {
+      resultsMessage = TOO_MANY_USERS_ERROR + email;
+    } else {
+      resultsMessage = NO_USER_MATCHES_ERROR + email;
     }
-    // If the API returns more than one search results unexpectedly, we return an error
-    // in the manage-users page
-    return res.render('manage-users', {
-      search: email,
-      result: users
+
+    return super.post(req, res, 'manage-users', {
+      content: {
+        search: email,
+        result: resultsMessage
+      }
     });
   }
 }

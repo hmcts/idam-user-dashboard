@@ -78,5 +78,5 @@ Scenario('I as an user should be able to see proper error message if user does n
   I.click('#email');
   I.fillField('#email', 'meTesting@test.com');
   I.click('Search');
-  I.waitForText('No user matches your search for \'meTesting@test.com\'');
+  I.waitForText('No user matches your search for: meTesting@test.com');
 });

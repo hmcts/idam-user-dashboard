@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
 
 {% extends "template.njk" %}
 
@@ -13,10 +14,11 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {{ errorSummary(error) }}
       <form method="POST">
         {{ csrfProtection(csrfToken) }}
         {{ govukRadios({
-          idPrefix: "user-action",
+          idPrefix: "userAction",
           name: "userAction",
           fieldset: {
             legend: {
@@ -28,7 +30,7 @@
           hint: {
             text: "Please select an option to continue"
           },
-          errorMessage: { text: errorMessage } if hasError,
+          errorMessage: { text: error.userAction.message } if error.userAction,
           items: [
             {
               value: "manage-users",

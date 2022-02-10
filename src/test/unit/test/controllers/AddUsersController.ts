@@ -13,6 +13,6 @@ describe('Add users controller', () => {
 
   test('Should render the add users page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('add-users');
+    expect(res.render).toBeCalledWith('add-users', {});
   });
 });

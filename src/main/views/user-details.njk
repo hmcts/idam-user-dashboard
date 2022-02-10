@@ -25,9 +25,9 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="status">
-          {% if active %}
+          {% if content.user.active %}
             <strong class="govuk-tag">Active</strong>
-          {% elif stale %}
+          {% elif content.user.stale %}
             <strong class="govuk-tag govuk-tag--green">Archived</strong>
           {% else %}
             <strong class="govuk-tag govuk-tag--red">Suspended</strong>
@@ -36,9 +36,9 @@
       </dd>
       <dd class="govuk-summary-list__actions">
         <a class="govuk-link" href="#">
-          {% if active %}
+          {% if content.user.active %}
             {% set action = "Suspend user" %}
-          {% elif stale %}
+          {% elif content.user.stale %}
             {% set action = "" %}
           {% else %}
             {% set action = "Activate user" %}
@@ -53,7 +53,7 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="user-id">
-          {{ id }}
+          {{ content.user.id }}
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
@@ -68,7 +68,7 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="email">
-          {{ email }}
+          {{ content.user.email }}
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
@@ -83,7 +83,7 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="first-name">
-          {{ forename }}
+          {{ content.user.forename }}
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
@@ -98,7 +98,7 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="last-name">
-          {{ surname }}
+          {{ content.user.surname }}
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
@@ -113,11 +113,11 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="assigned-roles">
-          {% if roles|length === 1 %}
-            {{ roles }}
+          {% if content.user.roles|length === 1 %}
+            {{ content.user.roles }}
           {% else %}
             <ul class="govuk-list">
-              {% for role in roles %}
+              {% for role in content.user.roles %}
                 <li id="assigned-roles">
                   {{ role }}
                 </li>
@@ -138,12 +138,12 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="sso-provider">
-          {{ ssoProvider }}
+          {{ content.user.ssoProvider }}
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
         <a class="govuk-link" href="#">
-          {% if ssoProvider is defined and ssoProvider !== '' %}
+          {% if content.user.ssoProvider is defined and content.user.ssoProvider !== '' %}
             Remove<span class="govuk-visually-hidden">ssoProvider</span>
           {% else %}
             <span class="govuk-visually-hidden">ssoProvider</span>
@@ -157,12 +157,12 @@
       </dd>
       <dd class="govuk-summary-list__value">
         <p class="govuk-body-m" id="sso-id">
-          {{ ssoId }}
+          {{ content.user.ssoId }}
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
         <a class="govuk-link" href="#">
-          {% if ssoId is defined and ssoId !== '' %}
+          {% if content.user.ssoId is defined and content.user.ssoId !== '' %}
             Remove<span class="govuk-visually-hidden">ssoId</span>
           {% else %}
             <span class="govuk-visually-hidden">ssoId</span>
