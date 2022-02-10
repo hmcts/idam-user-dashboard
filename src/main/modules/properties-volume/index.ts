@@ -16,6 +16,10 @@ export class PropertiesVolume {
       this.setSecret('secrets.idam-idam.redis-port', 'session.redis.port');
       this.setSecret('secrets.idam-idam.redis-key', 'session.redis.key');
       this.setSecret('secrets.idam-idam.redis-key', 'session.secret');
+
+      console.log('REDIS SESSION HOST:' + config.get('session.redis.host'));
+      console.log('REDIS SESSION PORT:' + config.get('session.redis.port'));
+
     } else {
       this.setLocalSecret('AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
       this.setLocalSecret('launchdarkly-sdk-key', 'featureFlags.launchdarkly.sdkKey');
