@@ -2,8 +2,8 @@ import {when} from 'jest-when';
 import { mockRequest } from '../../../utils/mockRequest';
 import { FeatureFlagClient, FeatureFlags } from '../../../../../main/app/feature-flags/FeatureFlags';
 import { mockResponse } from '../../../utils/mockResponse';
-import { HTTPError } from '../../../../../main/types/HttpError';
 import config from 'config';
+import { HTTPError } from '../../../../../main/HttpError';
 
 jest.mock('config');
 
