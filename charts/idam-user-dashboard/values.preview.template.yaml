@@ -5,13 +5,13 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   keyVaults:
     idam-idam:
-      secrets: []
-    idam-idam-preview:
-      excludeEnvironmentSuffix: true
       secrets:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
         - idam-user-dashboard-client-secret
+    idam-idam-preview:
+      excludeEnvironmentSuffix: true
+      secrets:
         - redis-hostname
         - redis-port
         - redis-key
