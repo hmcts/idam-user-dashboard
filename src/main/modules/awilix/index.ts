@@ -4,6 +4,8 @@ import { UserOptionController } from '../../controllers/UserOptionController';
 import { AddUsersController } from '../../controllers/AddUsersController';
 import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
+import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
+import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
@@ -17,7 +19,7 @@ export class Container {
     app.locals.container = createContainer({ injectionMode: InjectionMode.CLASSIC }).register({
       logger: asValue(logger),
       exposeErrors: asValue(app.locals.env === 'development'),
-
+      featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
       userOptionController: asClass(UserOptionController),
       addUsersController: asClass(AddUsersController),
       manageUsersController: asClass(ManageUsersController),
