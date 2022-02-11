@@ -114,6 +114,10 @@ describe('utils', () => {
 
   describe('obfuscateEmail', () => {
     test('Should return obfuscated email', async () => {
+      expect(obfuscateEmail('a@test.com')).toBe('*@test.com');
+      expect(obfuscateEmail('abc@test.com')).toBe('a**@test.com');
+      expect(obfuscateEmail('test@test.com')).toBe('te**@test.com');
+      expect(obfuscateEmail('tests@test.com')).toBe('te***@test.com');
       expect(obfuscateEmail('testUser@test.com')).toBe('tes*****@test.com');
       expect(obfuscateEmail('allTestUsers@test.com')).toBe('all*********@test.com');
     });
