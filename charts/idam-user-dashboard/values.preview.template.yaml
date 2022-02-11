@@ -4,6 +4,8 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   keyVaults:
+    idam-idam:
+      secrets: []
     idam-idam-preview:
       excludeEnvironmentSuffix: true
       secrets:
