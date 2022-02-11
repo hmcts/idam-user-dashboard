@@ -50,7 +50,7 @@ export const obfuscateEmail = (value: string): string => {
     // obfuscate at least half of the username, and leave maximum of 3 characters unobfuscated
     const elements = value.split('@');
     const usernameHalfLength = Math.floor(elements[0].length * 1 / 2);
-    const usernameLengthToKeep = usernameHalfLength > 3 ? 3 : usernameHalfLength
+    const usernameLengthToKeep = usernameHalfLength > 3 ? 3 : usernameHalfLength;
     return elements[0].split('').map((letter, index) => index + 1 > usernameLengthToKeep ? '*' : letter).join('') + '@' + elements[1];
   }
   return value;
