@@ -7,10 +7,10 @@ export = function () {
       this.loginAs(testConfig.SMOKE_TEST_USER_USERNAME, testConfig.SMOKE_TEST_USER_PASSWORD);
     },
     loginAsSuperUser: function () {
-      this.loginAs(testAccounts.superUser.email, testAccounts.superUser.password);
+      this.loginAs(testAccounts.superUser.email, testConfig.PASSWORD);
     },
     loginAsAdminUser: function () {
-      this.loginAs(testAccounts.adminUser.email, testAccounts.adminUser.password);
+      this.loginAs(testAccounts.adminUser.email, testConfig.PASSWORD);
     },
 
     loginAs: function (username, password) {
