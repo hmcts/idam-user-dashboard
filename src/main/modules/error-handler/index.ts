@@ -1,5 +1,5 @@
 import express, {Application, NextFunction} from 'express';
-import { HTTPError } from '../../HttpError';
+import { HTTPError } from '../../app/errors/HttpError';
 import { Logger } from '../../interfaces/Logger';
 import { constants as http } from 'http2';
 import { v4 as uuid } from 'uuid';
