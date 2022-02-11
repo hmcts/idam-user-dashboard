@@ -47,4 +47,4 @@ export const convertISODateTimeToUTCFormat = (date: string): string => {
 
 export const obfuscateEmail = (email: string): string => {
   return email.replace(/(?<=.{3}).(?=.*@)/g, '*');
-}
+};
