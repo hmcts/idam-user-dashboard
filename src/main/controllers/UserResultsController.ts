@@ -1,4 +1,4 @@
-import { AuthedRequest } from '../types/AuthedRequest';
+import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
 import { convertISODateTimeToUTCFormat, sortRoles } from '../utils/utils';
 import { validateEmail } from '../utils/validation';
