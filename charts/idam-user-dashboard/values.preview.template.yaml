@@ -4,21 +4,23 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   keyVaults:
-    idam-idam:
-      secrets:
-        - AppInsightsInstrumentationKey
-        - launchdarkly-sdk-key
-        - idam-user-dashboard-client-secret
     idam-idam-preview:
       excludeEnvironmentSuffix: true
       secrets:
         - redis-hostname
         - redis-port
         - redis-key
+    idam-idam:
+      secrets:
+        - AppInsightsInstrumentationKey
+        - launchdarkly-sdk-key
+        - idam-user-dashboard-client-secret
   autoscaling:
     enabled: false
   environment:
     OAUTH_CLIENT_REDIRECT: https://${SERVICE_FQDN}/oauth2/callback
+    TEST_VAR: 'PREVIEW'
+
 idam-pr:
   enabled: true
   redirect_uris:
