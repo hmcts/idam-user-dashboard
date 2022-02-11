@@ -4,9 +4,13 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   keyVaults:
-    "idam-idam":
-      resourceGroup: idam-idam
-      excludeEnvironmentSuffix: false
+    idam-idam-preview:
+      excludeEnvironmentSuffix: true
+      secrets:
+        - redis-hostname
+        - redis-port
+        - redis-key
+    idam-idam:
       secrets:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key

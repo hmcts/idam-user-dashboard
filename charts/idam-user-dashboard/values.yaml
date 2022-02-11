@@ -8,9 +8,7 @@ nodejs:
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
   keyVaults:
-    "idam-idam":
-      resourceGroup: idam-idam
-      excludeEnvironmentSuffix: false
+    idam-idam:
       secrets:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
@@ -26,11 +24,6 @@ nodejs:
     enabled: true
     maxReplicas: 4
     targetCPUUtilizationPercentage: 80
-
-global:
-  tenantId: "531ff96d-0ae9-462a-8d2d-bec7c0b42082"
-  environment: preview
-  enableKeyVaults: true
 
 idam-pr:
   enabled: false
