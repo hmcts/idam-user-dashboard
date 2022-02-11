@@ -2,6 +2,7 @@ import axios from 'axios';
 import config from 'config';
 import {config as testConfig} from '../../config';
 
+
 export const createUserWithRoles = async (email, password, forename, userRoles) => {
   const codeUserRoles = userRoles.map(role => ({code: role}));
 
@@ -18,9 +19,31 @@ export const createUserWithRoles = async (email, password, forename, userRoles) 
       {
         headers: {'Content-Type': 'application/json'},
       })).data;
-
   } catch (e) {
     throw new Error(`Failed to create user ${email} with roles ${userRoles}, http-status: ${e.response?.status}`);
+  }
+};
+
+export const createUserWithSsoId = async (email, password, forename, userRoles, ssoId) => {
+  const codeUserRoles = userRoles.map(role => ({code: role}));
+
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/testing-support/accounts`,
+      {
+        email: email,
+        password: password,
+        forename: forename,
+        surname: testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
+        ssoProvider: testConfig.SSO_PROVIDER,
+        ssoId: ssoId,
+        roles: codeUserRoles
+      },
+      {
+        headers: {'Content-Type': 'application/json'},
+      })).data;
+  } catch (e) {
+    throw new Error(`Failed to create user ${email} with ssoId ${ssoId}, http-status: ${e.response?.status}`);
   }
 };
 
@@ -54,6 +77,20 @@ export const retireStaleUser = async (userId) => {
   }
 };
 
+export const deleteStaleUser = async (userId) => {
+  const authToken = await getAuthToken();
+  try {
+    await axios.delete(
+      `${config.get('services.idam.url.api')}/api/v1/staleUsers/${userId}`,
+      {
+        headers: {'Authorization': 'AdminApiAuthToken ' + authToken},
+      }
+    );
+  } catch (e) {
+    throw new Error(`Failed to delete stale user: ${userId}, http-status: ${e.response?.status}`);
+  }
+};
+
 export const getOIDCToken = async () => {
   const credentials = {
     'grant_type': 'password',
@@ -62,7 +99,6 @@ export const getOIDCToken = async () => {
     'client_secret': config.get('services.idam.clientSecret') as string,
     'client_id': config.get('services.idam.clientID') as string,
     scope: config.get('services.idam.scope') as string
-
   };
   try {
     return (await axios.post(
@@ -74,16 +110,16 @@ export const getOIDCToken = async () => {
   }
 };
 
-export const suspendUser = async (userId) => {
+export const suspendUser = async (userId, email) => {
   const OIDCToken = await getOIDCToken();
   try {
     await axios.patch(
       `${config.get('services.idam.url.api')}/api/v1/users/${userId}`,
       {
         active: 'false',
-        forename: testConfig.suspendUser.firstName,
+        forename: testConfig.USER_FIRSTNAME,
         surname: testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
-        email: testConfig.suspendUser.email
+        email: email
       },
       {
         headers: {'Authorization': 'Bearer ' + OIDCToken},
@@ -94,6 +130,19 @@ export const suspendUser = async (userId) => {
   }
 };
 
+export const getUserDetails = async (email) => {
+  const OIDCToken = await getOIDCToken();
+  try {
+    return (await axios.get(
+      `${config.get('services.idam.url.api')}/api/v1/users?query=email:${email}`,
+      {
+        headers: {'Authorization': 'Bearer ' + OIDCToken},
+      }
+    )).data;
+  } catch (e) {
+    throw new Error(`Failed to get user deatils for ${email}, http-status: ${e.response?.status}`);
+  }
+};
 
 export const deleteUser = async (email) => {
   try {
