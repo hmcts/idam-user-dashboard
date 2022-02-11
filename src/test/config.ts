@@ -35,20 +35,14 @@ config.helpers = {
 export const testAccounts = {
   superUser: {
     email: 'superuser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_SUPER_USER',
-    firstName: 'superTest',
+    role: 'IDAM_SUPER_USER'
   },
   adminUser: {
     email: 'adminuser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_ADMIN_USER',
-    firstName: 'adminTest',
+    role: 'IDAM_ADMIN_USER'
   },
   citizenUser: {
     email: 'citizenuser@test.com',
-    password: 'Pa55word11',
-    role: 'citizen',
-    firstName: 'citizenTest',
+    role: 'citizen'
   }
 };

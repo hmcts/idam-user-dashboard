@@ -24,7 +24,7 @@ export const createUserWithRoles = async (email, password, forename, userRoles) 
   }
 };
 
-export const createUserWithSsoId = async (email, password, forename, userRoles,ssoId) => {
+export const createUserWithSsoId = async (email, password, forename, userRoles, ssoId) => {
   const codeUserRoles = userRoles.map(role => ({code: role}));
 
   try {
@@ -110,7 +110,7 @@ export const getOIDCToken = async () => {
   }
 };
 
-export const suspendUser = async (userId,email) => {
+export const suspendUser = async (userId, email) => {
   const OIDCToken = await getOIDCToken();
   try {
     await axios.patch(
@@ -128,11 +128,6 @@ export const suspendUser = async (userId,email) => {
   } catch (e) {
     throw new Error(`Failed to suspend: ${userId}, http-status: ${e.response?.status}`);
   }
-};
-
-export const convertISODateTimeToUTCFormat = (date: string): string => {
-  const result = new Date(date).toUTCString();
-  return result === 'Invalid Date' ? '' : result;
 };
 
 export const getUserDetails = async (email) => {

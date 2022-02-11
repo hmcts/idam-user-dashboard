@@ -10,8 +10,8 @@ export const config: CodeceptJS.Config = {
     I: './custom-steps.ts',
   },
   async bootstrapAll() {
-    for(const { email, password, firstName, role } of Object.values(testAccounts)) {
-      await createUserWithRoles(email, password, firstName, [role]);
+    for(const { email, role} of Object.values(testAccounts)) {
+      await createUserWithRoles(email, testConfig.PASSWORD, testConfig.USER_FIRSTNAME,[role]);
     }
   },
   async teardownAll() {
