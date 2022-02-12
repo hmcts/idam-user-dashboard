@@ -24,8 +24,8 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
 
 const credentials = new DataTable(['email', 'password']);
 credentials.add([testConfig.SMOKE_TEST_USER_USERNAME, testConfig.SMOKE_TEST_USER_PASSWORD]);
-credentials.add([testAccounts.superUser.email, testAccounts.superUser.password]);
-credentials.add([testAccounts.adminUser.email, testAccounts.adminUser.password]);
+credentials.add([testAccounts.superUser.email, testConfig.PASSWORD]);
+credentials.add([testAccounts.adminUser.email, testConfig.PASSWORD]);
 
 Data(credentials).Scenario('I should be able to search for users', async ({I, current}) => {
   I.loginAs(current.email, current.password);
@@ -46,7 +46,7 @@ Data(credentials).Scenario('I should be able to search for users', async ({I, cu
   Assert.equal(email.trim(), testAccounts.citizenUser.email);
 
   const firstName = await I.grabTextFrom('#first-name');
-  Assert.equal(firstName.trim(), testAccounts.citizenUser.firstName);
+  Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
 
   const lastName = await I.grabTextFrom('#last-name');
   Assert.equal(lastName.trim(), testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME);

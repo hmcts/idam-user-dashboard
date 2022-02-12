@@ -2,19 +2,10 @@ export const config = {
   TEST_URL: process.env.TEST_URL || 'http://localhost:3100',
   SMOKE_TEST_USER_USERNAME: process.env.SMOKE_TEST_USER_USERNAME,
   SMOKE_TEST_USER_PASSWORD: process.env.SMOKE_TEST_USER_PASSWORD,
+  USER_FIRSTNAME:'firstName',
   PASSWORD: 'Pa55word11',
-  staleUser: {
-    email: 'staleUser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_SUPER_USER',
-    firstName: 'staleTest'
-  },
-  suspendUser: {
-    email: 'suspenduser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_SUPER_USER',
-    firstName: 'suspendTest'
-  },
+  USER_ROLE_CITIZEN: 'citizen',
+  SSO_PROVIDER: 'HMCTS-SSO',
   SCENARIO_RETRY_LIMIT: 3,
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
@@ -44,20 +35,14 @@ config.helpers = {
 export const testAccounts = {
   superUser: {
     email: 'superuser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_SUPER_USER',
-    firstName: 'superTest'
+    role: 'IDAM_SUPER_USER'
   },
   adminUser: {
     email: 'adminuser@test.com',
-    password: 'Pa55word11',
-    role: 'IDAM_ADMIN_USER',
-    firstName: 'adminTest'
+    role: 'IDAM_ADMIN_USER'
   },
   citizenUser: {
     email: 'citizenuser@test.com',
-    password: 'Pa55word11',
-    role: 'citizen',
-    firstName: 'citizenTest'
+    role: 'citizen'
   }
 };
