@@ -3,6 +3,7 @@ import {
   hasProperty,
   isEmpty, isObjectEmpty,
   isValidEmailFormat,
+  obfuscateEmail,
   sortRoles
 } from '../../../../main/utils/utils';
 
@@ -108,6 +109,21 @@ describe('utils', () => {
 
     test('Should not return date time with invalid input', async () => {
       expect(convertISODateTimeToUTCFormat('20220117')).toBe('');
+    });
+  });
+
+  describe('obfuscateEmail', () => {
+    test('Should return obfuscated email', async () => {
+      expect(obfuscateEmail('a@test.com')).toBe('*@test.com');
+      expect(obfuscateEmail('abc@test.com')).toBe('a**@test.com');
+      expect(obfuscateEmail('test@test.com')).toBe('te**@test.com');
+      expect(obfuscateEmail('tests@test.com')).toBe('te***@test.com');
+      expect(obfuscateEmail('testUser@test.com')).toBe('tes*****@test.com');
+      expect(obfuscateEmail('allTestUsers@test.com')).toBe('all*********@test.com');
+    });
+
+    test('Should not return obfuscated text if not an email', async () => {
+      expect(obfuscateEmail('anything')).toBe('anything');
     });
   });
 });
