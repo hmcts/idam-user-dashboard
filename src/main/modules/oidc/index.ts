@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode';
 import {IdamAPI} from '../../app/idam-api/IdamAPI';
 import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 import {Logger} from '../../interfaces/Logger';
+import * as appInsights from 'applicationinsights';
 
 export class OidcMiddleware {
 
@@ -58,7 +59,10 @@ export class OidcMiddleware {
 
         req.session.save(() => res.redirect(HOME_URL));
       } catch (error) {
-        this.logger.error(error);
+        const message = 'Failed to sign in with the authorization code. '
+          + (error.response?.data?.error_description ? error.response.data.error_description : '');
+        appInsights.defaultClient.trackTrace({message: message});
+        this.logger.error(message);
         return res.redirect(HOME_URL);
       }
     });
@@ -74,7 +78,9 @@ export class OidcMiddleware {
             })}
           );
         } catch (e) {
-          this.logger.error('Failed to end IDAM session for user: ' + req.session.user.id);
+          const message = 'Failed to end IDAM session for user: ' + req.session.user.id;
+          appInsights.defaultClient.trackTrace({message: message});
+          this.logger.error(message);
         }
 
         req.session.destroy( () => {

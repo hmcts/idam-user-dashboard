@@ -1,4 +1,4 @@
-import { IdamAPI } from '../../../main/app/idam-api/IdamAPI';
+import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
 
 describe('Api', () => {
   const testEmail = 'test@test.com';
@@ -15,7 +15,8 @@ describe('Api', () => {
     };
     const mockAxios = {get: async () => results} as any;
     const mockLogger = {} as any;
-    const api = new IdamAPI(mockAxios, mockLogger);
+    const mockTelemetryClient = {} as any;
+    const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
     await expect(api.getUsersByEmail(testEmail)).resolves.toEqual(results.data);
   });
@@ -27,7 +28,10 @@ describe('Api', () => {
     const mockLogger = {
       error: async ( message: string ) => console.log(message)
     } as any;
-    const api = new IdamAPI(mockAxios, mockLogger);
+    const mockTelemetryClient = {
+      trackTrace: async ( message: string ) => console.log(message)
+    } as any;
+    const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
     await expect(api.getUsersByEmail(testEmail)).resolves.toEqual([]);
   });
