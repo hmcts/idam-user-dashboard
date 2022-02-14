@@ -9,6 +9,7 @@ import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
+import { defaultClient } from 'applicationinsights';
 
 /**
  * Sets up the dependency injection container
@@ -18,6 +19,7 @@ export class Container {
   public enableFor(app: Application): void {
     app.locals.container = createContainer({ injectionMode: InjectionMode.CLASSIC }).register({
       logger: asValue(logger),
+      telemetryClient: asValue(defaultClient),
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
       userOptionController: asClass(UserOptionController),
