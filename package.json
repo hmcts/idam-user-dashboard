@@ -81,7 +81,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.12",
+    "@babel/core": "^7.17.2",
     "@babel/preset-env": "^7.16.11",
     "@codeceptjs/helper": "^1.0.2",
     "@types/copy-webpack-plugin": "^10.1.0",
