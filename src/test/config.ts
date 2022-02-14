@@ -2,14 +2,15 @@ export const config = {
   TEST_URL: process.env.TEST_URL || 'http://localhost:3100',
   SMOKE_TEST_USER_USERNAME: process.env.SMOKE_TEST_USER_USERNAME,
   SMOKE_TEST_USER_PASSWORD: process.env.SMOKE_TEST_USER_PASSWORD,
-  USER_FIRSTNAME:'firstName',
+  TEST_SUITE_PREFIX: 'TEST_IDAM_',
+  USER_FIRSTNAME: 'TEST_IDAM_USER_FIRSTNAME',
+  USER_LASTNAME: 'TEST_IDAM_USER_LASTNAME',
   PASSWORD: 'Pa55word11',
   USER_ROLE_CITIZEN: 'citizen',
-  SSO_PROVIDER: 'HMCTS-SSO',
+  SSO_PROVIDER: 'TEST_HMCTS_SSO',
   SCENARIO_RETRY_LIMIT: 3,
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
-  SUPER_ADMIN_CITIZEN_USER_LASTNAME: 'User',
   Gherkin: {
     features: './features/**/*.feature',
     steps: './steps/**/*.ts',
@@ -32,17 +33,3 @@ config.helpers = {
   },
 };
 
-export const testAccounts = {
-  superUser: {
-    email: 'superuser@test.com',
-    role: 'IDAM_SUPER_USER'
-  },
-  adminUser: {
-    email: 'adminuser@test.com',
-    role: 'IDAM_ADMIN_USER'
-  },
-  citizenUser: {
-    email: 'citizenuser@test.com',
-    role: 'citizen'
-  }
-};

@@ -1,9 +1,15 @@
-import {config} from '../config';
+import {config as testConfig} from '../config';
+import {randomData} from './shared/random-data';
+import {createUserWithRoles} from './shared/apiHelpers';
 
 Feature('User Sign In');
+const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+BeforeSuite(async () => {
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+});
 
 Scenario('I as a user can sign in', ({I}) => {
-  I.loginAs(config.SMOKE_TEST_USER_USERNAME, config.SMOKE_TEST_USER_PASSWORD);
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
 });
 
 Scenario('I as an user try to sign in with invalid credentials', ({I}) => {

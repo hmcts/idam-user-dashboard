@@ -1,7 +1,16 @@
+import {config as testConfig} from '../config';
+import {randomData} from './shared/random-data';
+import {createUserWithRoles} from './shared/apiHelpers';
+
 Feature('Error Pages');
 
+const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+BeforeSuite(async () => {
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+});
+
 Before(async ({I}) => {
-  I.loginAsSystemOwner();
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
 });
 
