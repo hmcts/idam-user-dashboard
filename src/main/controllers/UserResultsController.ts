@@ -5,9 +5,14 @@ import { validateEmail } from '../utils/validation';
 import { RootController } from './RootController';
 import { NO_USER_MATCHES_ERROR, TOO_MANY_USERS_ERROR } from '../utils/error';
 import autobind from 'autobind-decorator';
+import { IdamApi } from '../app/idam-api/IdamApi';
 
 @autobind
 export class UserResultsController extends RootController {
+  constructor(private readonly idamApi: IdamApi) {
+    super();
+  }
+
   public async post(req: AuthedRequest, res: Response) {
     const email: string = req.body.email ?? '';
     const errorMessage = validateEmail(email);
@@ -19,7 +24,7 @@ export class UserResultsController extends RootController {
       }});
     }
 
-    const users = await req.scope.cradle.api.getUsersByEmail(email);
+    const users = await this.idamApi.getUsersByEmail(email);
     if (users.length === 1) {
       const user = users[0];
       sortRoles(user.roles);
