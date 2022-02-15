@@ -3,6 +3,7 @@ export interface PageData {
   error?: PageError;
   content?: PageContent;
   featureFlags?: PageFeatureFlags;
+  urls?: ServiceUrls;
 }
 
 export interface PageContent {
@@ -11,6 +12,10 @@ export interface PageContent {
 
 export interface PageFeatureFlags {
   [key: string]: boolean;
+}
+
+export interface ServiceUrls {
+  [key: string]: string;
 }
 
 export interface PageError {
