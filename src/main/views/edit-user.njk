@@ -1,0 +1,14 @@
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Edit User']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Edit Users</h1>
+{% endblock %}
