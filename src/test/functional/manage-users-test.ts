@@ -2,7 +2,6 @@ import {
   getUserDetails,
   createUserWithSsoId,
   createUserWithRoles,
-  deleteUser,
   suspendUser,
   retireStaleUser,
   deleteStaleUser
@@ -11,23 +10,22 @@ import {
 import '../../main/utils/utils';
 
 Feature('Manage Existing User');
-import {config as testConfig, testAccounts} from '../config';
+import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {convertISODateTimeToUTCFormat} from '../../main/utils/utils';
 
-const TEST_SUITE_PREFIX = 'TEST_MANAGE_USER';
-const credentials = new DataTable(['email', 'password']);
-credentials.add([testConfig.SMOKE_TEST_USER_USERNAME, testConfig.SMOKE_TEST_USER_PASSWORD]);
-credentials.add([testAccounts.superUser.email, testConfig.PASSWORD]);
-credentials.add([testAccounts.adminUser.email, testConfig.PASSWORD]);
+const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+BeforeSuite(async () => {
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+});
 
-Data(credentials).Scenario('I should be able to see the active status of an user', async ({I, current}) => {
-
-  const activeUserEmail = TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+Scenario('I should be able to see the active status of an user', async ({I}) => {
+  const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
   await createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
   const activeUser = await getUserDetails(activeUserEmail);
-  I.loginAs(current.email, current.password);
+
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -61,17 +59,14 @@ Data(credentials).Scenario('I should be able to see the active status of an user
 
   const lastModifiedDate = await I.grabTextFrom('#last-modified');
   Assert.equal(lastModifiedDate.trim(), lastModified);
-
-  await deleteUser(activeUserEmail);
 });
 
-Data(credentials).Scenario('I should be able to see the suspended status of an user', async ({I, current}) => {
-
-  const suspendUserEmail = TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+Scenario('I should be able to see the suspended status of an user', async ({I}) => {
+  const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
   const user = await createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
   await suspendUser(user.id, suspendUserEmail);
 
-  I.loginAs(current.email, current.password);
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -87,17 +82,14 @@ Data(credentials).Scenario('I should be able to see the suspended status of an u
 
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(), 'Suspended');
-
-  await deleteUser(suspendUserEmail);
 });
 
-Data(credentials).Scenario('I should be able to see the stale status of an user', async ({I, current}) => {
-
-  const staleUserEmail = TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+Scenario('I should be able to see the stale status of an user', async ({I}) => {
+  const staleUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
   const user = await createUserWithRoles(staleUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
   await retireStaleUser(user.id);
 
-  I.loginAs(current.email, current.password);
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -116,5 +108,3 @@ Data(credentials).Scenario('I should be able to see the stale status of an user'
 
   await deleteStaleUser(user.id);
 });
-
-
