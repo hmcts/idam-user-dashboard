@@ -4,6 +4,7 @@ import { PageData } from '../interfaces/PageData';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import autobind from 'autobind-decorator';
 import { isObjectEmpty } from '../utils/utils';
+import * as urls from '../utils/urls';
 
 @autobind
 export class RootController {
@@ -20,7 +21,7 @@ export class RootController {
   }
 
   private async render(req: AuthedRequest, res: Response, view: string, data: PageData): Promise<void> {
-    const constructedData: PageData = {...data};
+    const constructedData: PageData = {...data, urls};
 
     if(this.featureFlags) {
       const featureFlags = await this.featureFlags?.getAllFlagValues();

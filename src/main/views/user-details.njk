@@ -7,7 +7,7 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage users', '/manage-users'],
+    ['Manage users', urls.MANAGER_USERS_URL],
     ['User details']
   ]) }}
 {% endblock %}
@@ -206,6 +206,6 @@
     {{ govukButton({
       text: "Save"
     }) }}
-    <a class="govuk-link" href="/manage-users">Cancel</a>
+    <a class="govuk-link" href="{{ urls.MANAGER_USERS_URL }}">Cancel</a>
   </div>
 {% endblock %}

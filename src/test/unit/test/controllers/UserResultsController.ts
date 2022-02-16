@@ -9,18 +9,17 @@ import {
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
+import * as urls from '../../../../main/utils/urls';
+import { IdamApi } from '../../../../main/app/idam-api/IdamApi';
+jest.mock('../../../../main/app/idam-api/IdamApi');
 
 describe('User results controller', () => {
   let req: any;
   const res = mockResponse();
 
-  const mockApi = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    getUsersByEmail: () => {}
-  };
+  const mockApi = {} as IdamApi;
   mockApi.getUsersByEmail = jest.fn();
-
-  const controller = new UserResultsController();
+  const controller = new UserResultsController(mockApi);
   const email = 'john.smith@test.com';
 
   beforeEach(() => {
@@ -42,7 +41,7 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0] }});
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0] }, urls });
   });
 
   test('Should render the manage users page when searching with a non-existent email', async () => {
@@ -51,7 +50,7 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email }, urls });
   });
 
   test('Should render the manage users page when more than one search results', async () => {
@@ -76,16 +75,17 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email }, urls });
   });
 
   test('Should render the manage users page with error when searching with empty email', async () => {
     req.body.email = '';
     await controller.post(req, res);
 
-    const expectedPageData: PageData = { error: {
-      email: { message: MISSING_EMAIL_ERROR }
-    }};
+    const expectedPageData: PageData = {
+      error: { email: { message: MISSING_EMAIL_ERROR } },
+      urls
+    };
 
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });
@@ -94,9 +94,10 @@ describe('User results controller', () => {
     req.body.email = 'any text';
     await controller.post(req, res);
 
-    const expectedPageData: PageData = { error: {
-      email: { message: INVALID_EMAIL_FORMAT_ERROR }
-    }};
+    const expectedPageData: PageData = {
+      error: { email: { message: INVALID_EMAIL_FORMAT_ERROR } },
+      urls
+    };
 
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });

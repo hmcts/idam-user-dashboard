@@ -2,6 +2,7 @@ import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { RootController } from '../../../../main/controllers/RootController';
 import { PageData } from '../../../../main/interfaces/PageData';
+import * as urls from '../../../../main/utils/urls';
 
 
 describe('Root controller', () => {
@@ -17,7 +18,7 @@ describe('Root controller', () => {
 
   test('Should render the view with no data', async () => {
     await controller.post(req, res, 'view', {});
-    expect(res.render).toBeCalledWith('view', {});
+    expect(res.render).toBeCalledWith('view', { urls });
   });
 
   test('Should render the view with only feature flag data', async () => {
@@ -25,7 +26,10 @@ describe('Root controller', () => {
       return Promise.resolve({ 'unit-test': true });
     });
 
-    const expectedPageData: PageData = { featureFlags: { 'unit-test': true } };
+    const expectedPageData: PageData = {
+      featureFlags: { 'unit-test': true },
+      urls
+    };
 
     await controller.post(req, res, 'view', {});
     expect(res.render).toBeCalledWith('view', expectedPageData);
@@ -37,14 +41,20 @@ describe('Root controller', () => {
       email: 'johnsmith@user.test'
     };
     req.session = { user: userDetails };
-    const expectedPageData: PageData = { user: userDetails };
+    const expectedPageData: PageData = {
+      user: userDetails,
+      urls
+    };
 
     await controller.post(req, res, 'view', {});
     expect(res.render).toBeCalledWith('view', expectedPageData);
   });
 
   test('Should render the view with only view data', async () => {
-    const expectedPageData: PageData = { content: { testContent: 'test text' } };
+    const expectedPageData: PageData = {
+      content: { testContent: 'test text' },
+      urls
+    };
 
     await controller.post(req, res, 'view', {
       content: { testContent: 'test text' }
@@ -60,7 +70,8 @@ describe('Root controller', () => {
     const expectedPageData: PageData = {
       user: userDetails,
       content: pageData,
-      featureFlags: featureFlagData
+      featureFlags: featureFlagData,
+      urls
     };
 
     mockFeatureToggles.getAllFlagValues = jest.fn(() => {
