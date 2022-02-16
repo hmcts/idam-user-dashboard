@@ -34,7 +34,6 @@ export class AppInsights {
         .start();
 
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
-      appInsights.defaultClient.trackTrace({message: 'App insights activated'});
       appInsights.defaultClient.addTelemetryProcessor(preprocessAppInsightData);
     }
   }
