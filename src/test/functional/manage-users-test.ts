@@ -17,8 +17,7 @@ import {convertISODateTimeToUTCFormat} from '../../main/utils/utils';
 
 const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
 BeforeSuite(async () => {
-  const dashboardUser = await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
-  console.log(dashboardUser.id, dashboardUser.email);
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
 });
 
 Scenario('I should be able to see the active status of an user', async ({I}) => {

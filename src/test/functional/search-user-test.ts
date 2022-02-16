@@ -18,7 +18,6 @@ incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as an user should be able to see proper error message if search text is not in the right format', ({I,current}) => {
-  //I.loginAsSystemOwner();
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');

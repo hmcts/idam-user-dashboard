@@ -15,5 +15,5 @@ export const randomAlphabeticString = (length = 10) => {
 export const randomData= {
   getRandomString: randomString,
   getRandomAlphabeticString: randomAlphabeticString,
-  getRandomEmailAddress: () => randomString() + '@mailtest.gov.uk',
+  getRandomEmailAddress: () => randomString() + '@idam.test',
 };
