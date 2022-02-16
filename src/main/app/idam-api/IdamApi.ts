@@ -1,14 +1,20 @@
-import { AxiosInstance } from 'axios';
+import Axios, { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
+import config from 'config';
 
-export class IdamAPI {
+export class IdamApi {
+  private readonly axios: AxiosInstance = Axios.create({ baseURL: config.get('services.idam.url.api') });
+
   constructor(
-    private readonly axios: AxiosInstance,
     private readonly logger: Logger,
-    private readonly telemetryClient: TelemetryClient
-  ) { }
+    private readonly telemetryClient: TelemetryClient,
+  ) {}
+
+  public configureApiAuthorization(accessToken: string): void {
+    this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
+  }
 
   public getUsersByEmail(email: string): Promise<User[]> {
     return this.axios

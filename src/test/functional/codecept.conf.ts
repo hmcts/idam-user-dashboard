@@ -1,5 +1,5 @@
-import { config as testConfig, testAccounts } from '../config';
-import { createUserWithRoles, deleteUser } from './shared/apiHelpers';
+import {config as testConfig} from '../config';
+import {deleteAllTestData} from './shared/apiHelpers';
 
 export const config: CodeceptJS.Config = {
   tests: './*-test.ts',
@@ -9,15 +9,8 @@ export const config: CodeceptJS.Config = {
   include: {
     I: './custom-steps.ts',
   },
-  async bootstrapAll() {
-    for(const { email, role} of Object.values(testAccounts)) {
-      await createUserWithRoles(email, testConfig.PASSWORD, testConfig.USER_FIRSTNAME,[role]);
-    }
-  },
   async teardownAll() {
-    for (const { email } of Object.values(testAccounts)) {
-      await deleteUser(email);
-    }
+    await deleteAllTestData(testConfig.TEST_SUITE_PREFIX);
   },
   mocha: {},
   name: 'functional',

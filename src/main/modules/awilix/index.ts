@@ -10,6 +10,7 @@ import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
+import { IdamApi } from '../../app/idam-api/IdamApi';
 
 /**
  * Sets up the dependency injection container
@@ -22,6 +23,7 @@ export class Container {
       telemetryClient: asValue(defaultClient),
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
+      idamApi: asClass(IdamApi).singleton(),
       userOptionController: asClass(UserOptionController),
       addUsersController: asClass(AddUsersController),
       manageUsersController: asClass(ManageUsersController),
