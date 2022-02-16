@@ -10,16 +10,18 @@ import {
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
 import * as urls from '../../../../main/utils/urls';
-import { IdamApi } from '../../../../main/app/idam-api/IdamApi';
-jest.mock('../../../../main/app/idam-api/IdamApi');
 
 describe('User results controller', () => {
   let req: any;
   const res = mockResponse();
 
-  const mockApi = {} as IdamApi;
+  const mockApi = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    getUsersByEmail: () => {}
+  };
   mockApi.getUsersByEmail = jest.fn();
-  const controller = new UserResultsController(mockApi);
+
+  const controller = new UserResultsController();
   const email = 'john.smith@test.com';
 
   beforeEach(() => {
