@@ -1,9 +1,11 @@
 import {Application, NextFunction, Request, Response} from 'express';
+import {asClass, asValue} from 'awilix';
 import Axios from 'axios';
 import config from 'config';
 import {AuthedRequest} from '../../interfaces/AuthedRequest';
 // eslint-disable-next-line @typescript-eslint/camelcase
 import jwt_decode from 'jwt-decode';
+import {IdamAPI} from '../../app/idam-api/IdamAPI';
 import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 import {Logger} from '../../interfaces/Logger';
 import * as appInsights from 'applicationinsights';
@@ -92,11 +94,23 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       if (req.session.user) {
-        app.locals.container.cradle.idamApi.configureApiAuthorization(req.session.user.accessToken);
+        this.configureApiAuthorization(req);
+        res.locals.isLoggedIn = true;
         return next();
       }
 
       res.redirect(LOGIN_URL);
+    });
+  }
+
+  private configureApiAuthorization(req: AuthedRequest): void {
+    req.scope = req.app.locals.container.createScope();
+    req.scope.register({
+      axios: asValue(Axios.create({
+        baseURL: config.get('services.idam.url.api'),
+        headers: { Authorization: 'Bearer ' + req.session.user.accessToken }
+      })),
+      api: asClass(IdamAPI)
     });
   }
 }

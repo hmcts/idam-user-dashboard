@@ -1,10 +1,7 @@
-import { IdamApi } from '../../../../../main/app/idam-api/IdamApi';
-import axios from 'axios';
+import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
 
 describe('Api', () => {
   const testEmail = 'test@test.com';
-  const mockAxios = {} as any;
-  axios.create = jest.fn(() => mockAxios);
 
   test('Should return results from getUsersByEmail request', async () => {
     const results = {
@@ -16,24 +13,26 @@ describe('Api', () => {
         roles: ['IDAM_SUPER_USER']
       }]
     };
-
-    mockAxios.get = async() => results;
+    const mockAxios = {get: async () => results} as any;
     const mockLogger = {} as any;
     const mockTelemetryClient = {} as any;
-    const api = new IdamApi(mockLogger, mockTelemetryClient);
+    const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
     await expect(api.getUsersByEmail(testEmail)).resolves.toEqual(results.data);
   });
 
   test('Should not return results from getUsersByEmail request if error', async () => {
-    mockAxios.get = async() => { throw new Error('error'); };
-    const mockLogger = { error: jest.fn() } as any;
-    const mockTelemetryClient = { trackTrace: jest.fn() } as any;
-    const api = new IdamApi(mockLogger, mockTelemetryClient);
-
+    const mockAxios = {
+      get: async () => { throw new Error ('error'); }
+    } as any;
+    const mockLogger = {
+      error: async ( message: string ) => console.log(message)
+    } as any;
+    const mockTelemetryClient = {
+      trackTrace: async ( message: string ) => console.log(message)
+    } as any;
+    const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
     await expect(api.getUsersByEmail(testEmail)).resolves.toEqual([]);
-    expect(mockLogger.error).toBeCalledTimes(1);
-    expect(mockTelemetryClient.trackTrace).toBeCalledTimes(1);
   });
 });
