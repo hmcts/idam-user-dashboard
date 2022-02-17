@@ -55,3 +55,7 @@ export const obfuscateEmail = (value: string): string => {
   }
   return value;
 };
+
+export const possiblyEmail = (value: string): boolean => {
+  return value.includes('@');
+};

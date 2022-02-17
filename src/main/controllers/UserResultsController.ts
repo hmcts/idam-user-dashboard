@@ -1,43 +1,70 @@
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
-import { convertISODateTimeToUTCFormat, sortRoles } from '../utils/utils';
-import { validateEmail } from '../utils/validation';
+import { convertISODateTimeToUTCFormat, isEmpty, isValidEmailFormat, possiblyEmail, sortRoles } from '../utils/utils';
 import { RootController } from './RootController';
-import { NO_USER_MATCHES_ERROR, TOO_MANY_USERS_ERROR } from '../utils/error';
+import {
+  INVALID_EMAIL_FORMAT_ERROR,
+  MISSING_INPUT_ERROR,
+  NO_USER_MATCHES_ERROR,
+  TOO_MANY_USERS_ERROR
+} from '../utils/error';
 import autobind from 'autobind-decorator';
+import { User } from '../interfaces/User';
+import { SearchType } from '../utils/SearchType';
 
 @autobind
 export class UserResultsController extends RootController {
   public async post(req: AuthedRequest, res: Response) {
-    const email: string = req.body.email ?? '';
-    const errorMessage = validateEmail(email);
-    let resultsMessage;
+    const input: string = req.body.search ?? '';
 
-    if (errorMessage) {
-      return super.post(req, res, 'manage-users', { error: {
-        email: { message: errorMessage }
-      }});
+    if (isEmpty(input)) {
+      return this.postError(req, res, MISSING_INPUT_ERROR);
     }
+    const users = await this.searchForUser(req, res, input);
 
-    const users = await req.scope.cradle.api.getUsersByEmail(email);
-    if (users.length === 1) {
-      const user = users[0];
-      sortRoles(user.roles);
-      user.createDate = convertISODateTimeToUTCFormat(user.createDate);
-      user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
-
-      return super.post(req, res, 'user-details', { content: { user } });
-    } else if (users.length > 1) {
-      resultsMessage = TOO_MANY_USERS_ERROR + email;
-    } else {
-      resultsMessage = NO_USER_MATCHES_ERROR + email;
-    }
-
-    return super.post(req, res, 'manage-users', {
-      content: {
-        search: email,
-        result: resultsMessage
+    if (users) {
+      if (users.length === 1) {
+        const user = users[0];
+        this.preprocessSearchResults(user);
+        return super.post(req, res, 'user-details', {content: {user}});
       }
-    });
+
+      return super.post(req, res, 'manage-users', {
+        content: {
+          search: input,
+          result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
+        }
+      });
+    }
+  }
+
+  private async searchForUser(req: AuthedRequest, res: Response, input: string): Promise<User[]> {
+    if (possiblyEmail(input)) {
+      if (!isValidEmailFormat(input)) {
+        this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
+        return;
+      }
+      return await req.scope.cradle.api.getUserDetails(SearchType['Email'], input);
+    }
+
+    const users = await req.scope.cradle.api.getUserDetails(SearchType['UserId'], input);
+    if (users.length > 0) {
+      return users;
+    }
+
+    // only search for SSO ID if searching with the user ID does not return any result
+    return await req.scope.cradle.api.getUserDetails(SearchType['SsoId'], input);
+  }
+
+  private postError(req: AuthedRequest, res: Response, errorMessage: string) {
+    return super.post(req, res, 'manage-users', { error: {
+      search: { message: errorMessage }
+    }});
+  }
+
+  private preprocessSearchResults(user: User): void {
+    sortRoles(user.roles);
+    user.createDate = convertISODateTimeToUTCFormat(user.createDate);
+    user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
   }
 }
