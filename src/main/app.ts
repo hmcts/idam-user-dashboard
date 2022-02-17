@@ -40,9 +40,9 @@ app.use((req, res, next) => {
 });
 
 new PropertiesVolume().enableFor(app);
+new AppInsights().enable();
 new Container().enableFor(app);
 new SessionStorage().enableFor(app);
-new AppInsights().enable();
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 new HealthCheck().enableFor(app);
