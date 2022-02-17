@@ -20,7 +20,7 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
 });
 
-Scenario('I should be able to see the active status of an user', async ({I}) => {
+Scenario('@CrossBrowser I should be able to see the active status of an user', async ({I}) => {
   const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
   await createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
   const activeUser = await getUserDetails(activeUserEmail);
@@ -30,9 +30,9 @@ Scenario('I should be able to see the active status of an user', async ({I}) => 
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
-  I.fillField('#email', activeUserEmail);
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', activeUserEmail);
   I.click('Search');
   I.waitForText('User Details');
 
@@ -71,9 +71,9 @@ Scenario('I should be able to see the suspended status of an user', async ({I}) 
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
-  I.fillField('#email', suspendUserEmail);
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', suspendUserEmail);
   I.click('Search');
   I.waitForText('User Details');
 
@@ -94,9 +94,9 @@ Scenario('I should be able to see the stale status of an user', async ({I}) => {
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
-  I.fillField('#email', staleUserEmail);
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', staleUserEmail);
   I.click('Search');
   I.waitForText('User Details');
 

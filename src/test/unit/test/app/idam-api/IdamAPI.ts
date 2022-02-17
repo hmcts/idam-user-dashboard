@@ -1,27 +1,40 @@
 import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
+import {SearchType} from '../../../../../main/utils/SearchType';
 
-describe('Api', () => {
+describe('IdamAPI', () => {
   const testEmail = 'test@test.com';
+  const testUserId = '12345';
+  const testSsoId = '23456';
 
-  test('Should return results from getUsersByEmail request', async () => {
-    const results = {
-      data: [{
-        forename: 'test',
-        surname: 'test',
-        email: testEmail,
-        active: true,
-        roles: ['IDAM_SUPER_USER']
-      }]
-    };
-    const mockAxios = {get: async () => results} as any;
-    const mockLogger = {} as any;
-    const mockTelemetryClient = {} as any;
-    const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+  const parameters = [
+    { input: testEmail, searchType: SearchType['Email'] },
+    { input: testUserId, searchType: SearchType['UserId'] },
+    { input: testSsoId, searchType: SearchType['SsoId'] }
+  ];
 
-    await expect(api.getUsersByEmail(testEmail)).resolves.toEqual(results.data);
+  parameters.forEach((parameter) => {
+    it(`Should return results from getUserDetails request using ${parameter.searchType}`, async () => {
+      const results = {
+        data: [{
+          id: testUserId,
+          forename: 'test',
+          surname: 'test',
+          email: testEmail,
+          active: true,
+          roles: ['IDAM_SUPER_USER'],
+          ssoId: testSsoId
+        }]
+      };
+      const mockAxios = {get: async () => results} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+
+      await expect(api.getUserDetails(parameter.searchType, parameter.input)).resolves.toEqual(results.data);
+    });
   });
 
-  test('Should not return results from getUsersByEmail request if error', async () => {
+  test('Should not return results from getUserDetails request if error', async () => {
     const mockAxios = {
       get: async () => { throw new Error ('error'); }
     } as any;
@@ -33,6 +46,6 @@ describe('Api', () => {
     } as any;
     const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
-    await expect(api.getUsersByEmail(testEmail)).resolves.toEqual([]);
+    await expect(api.getUserDetails(SearchType['Email'], testEmail)).resolves.toEqual([]);
   });
 });
