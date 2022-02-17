@@ -13,7 +13,7 @@ export const createUserWithRoles = async (email, password, forename, userRoles) 
         email: email,
         password: password,
         forename: forename,
-        surname: testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
+        surname: testConfig.USER_LASTNAME,
         roles: codeUserRoles
       },
       {
@@ -34,7 +34,7 @@ export const createUserWithSsoId = async (email, password, forename, userRoles, 
         email: email,
         password: password,
         forename: forename,
-        surname: testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
+        surname: testConfig.USER_LASTNAME,
         ssoProvider: testConfig.SSO_PROVIDER,
         ssoId: ssoId,
         roles: codeUserRoles
@@ -118,7 +118,7 @@ export const suspendUser = async (userId, email) => {
       {
         active: 'false',
         forename: testConfig.USER_FIRSTNAME,
-        surname: testConfig.SUPER_ADMIN_CITIZEN_USER_LASTNAME,
+        surname: testConfig.USER_LASTNAME,
         email: email
       },
       {
@@ -153,3 +153,14 @@ export const deleteUser = async (email) => {
     throw new Error(`Failed to delete user with email ${email}, http-status: ${e.response?.status}`);
   }
 };
+
+export const deleteAllTestData = async (testDataPrefix = '', userNames = [], roleNames = [], serviceNames = [], async = false) => {
+  try {
+    await axios.delete(
+      `${config.get('services.idam.url.api')}/testing-support/test-data?async=${async}&userNames=${userNames.join(',')}&roleNames=${roleNames.join(',')}&testDataPrefix=${testDataPrefix}&serviceNames=${serviceNames.join(',')}`
+    );
+  } catch (e) {
+    throw new Error(`Error deleting test data with prefix  ${testDataPrefix}, response ${e.response?.status}`);
+  }
+};
+

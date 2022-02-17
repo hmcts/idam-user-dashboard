@@ -3,7 +3,7 @@ import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
 import { MISSING_OPTION_ERROR } from '../../../../main/utils/error';
-import { ADD_USERS_URL, MANAGER_USERS_URL } from '../../../../main/utils/urls';
+import * as urls from '../../../../main/utils/urls';
 
 describe('User option controller', () => {
   let req: any;
@@ -16,14 +16,15 @@ describe('User option controller', () => {
 
   test('Should render the user option page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('user-option', {});
+    expect(res.render).toBeCalledWith('user-option', { urls} );
   });
 
   test('Should render the user option page with error when posting with no option selected', async () => {
     await controller.post(req, res);
-    const expectedPageData: PageData = { error: {
-      userAction: { message: MISSING_OPTION_ERROR }
-    }};
+    const expectedPageData: PageData = {
+      error: { userAction: { message: MISSING_OPTION_ERROR }},
+      urls
+    };
 
     expect(res.render).toBeCalledWith('user-option', expectedPageData);
   });
@@ -33,7 +34,7 @@ describe('User option controller', () => {
       userAction: 'manage-users',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(MANAGER_USERS_URL);
+    expect(res.redirect).toBeCalledWith(urls.MANAGER_USERS_URL);
   });
 
   test('Should redirect to the add users page when \'Add new users\' option is selected', async () => {
@@ -41,6 +42,6 @@ describe('User option controller', () => {
       userAction: 'add-users',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(ADD_USERS_URL);
+    expect(res.redirect).toBeCalledWith(urls.ADD_USERS_URL);
   });
 });

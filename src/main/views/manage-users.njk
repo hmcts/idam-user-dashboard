@@ -18,7 +18,7 @@
     <div class="govuk-grid-column-two-thirds">
       {{ errorSummary(error) }}
       <h1 class="govuk-heading-l">Manage Users</h1>
-      <form method="POST" action="/user-results">
+      <form method="POST" action="{{ urls.USER_RESULTS_URL }}">
         {{ csrfProtection(csrfToken) }}
         {{ govukInput({
           label: {

@@ -1,6 +1,7 @@
 import { ManageUsersController } from '../../../../main/controllers/ManageUsersController';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
+import * as urls from '../../../../main/utils/urls';
 
 describe('Manage users controller', () => {
   let req: any;
@@ -13,6 +14,6 @@ describe('Manage users controller', () => {
 
   test('Should render the manage users page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('manage-users', {});
+    expect(res.render).toBeCalledWith('manage-users', { urls });
   });
 });

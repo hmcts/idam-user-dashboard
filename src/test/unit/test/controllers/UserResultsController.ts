@@ -9,6 +9,7 @@ import {
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
+import * as urls from '../../../../main/utils/urls';
 
 describe('User results controller', () => {
   let req: any;
@@ -42,7 +43,7 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0] }});
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0] }, urls });
   });
 
   test('Should render the manage users page when searching with a non-existent email', async () => {
@@ -51,7 +52,7 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email }, urls });
   });
 
   test('Should render the manage users page when more than one search results', async () => {
@@ -76,16 +77,17 @@ describe('User results controller', () => {
     req.body.email = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email }, urls });
   });
 
   test('Should render the manage users page with error when searching with empty email', async () => {
     req.body.email = '';
     await controller.post(req, res);
 
-    const expectedPageData: PageData = { error: {
-      email: { message: MISSING_EMAIL_ERROR }
-    }};
+    const expectedPageData: PageData = {
+      error: { email: { message: MISSING_EMAIL_ERROR } },
+      urls
+    };
 
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });
@@ -94,9 +96,10 @@ describe('User results controller', () => {
     req.body.email = 'any text';
     await controller.post(req, res);
 
-    const expectedPageData: PageData = { error: {
-      email: { message: INVALID_EMAIL_FORMAT_ERROR }
-    }};
+    const expectedPageData: PageData = {
+      error: { email: { message: INVALID_EMAIL_FORMAT_ERROR } },
+      urls
+    };
 
     expect(res.render).toBeCalledWith('manage-users', expectedPageData);
   });
