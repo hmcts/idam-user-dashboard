@@ -20,7 +20,7 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
 });
 
-Scenario('I should be able to see the active status of an user', async ({I}) => {
+Scenario('@CrossBrowser I should be able to see the active status of an user', async ({I}) => {
   const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
   await createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
   const activeUser = await getUserDetails(activeUserEmail);
