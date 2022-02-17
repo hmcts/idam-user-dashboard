@@ -36,7 +36,7 @@ const getBrowserConfig = browserGroup => {
 };
 
 const setupConfig = {
-  tests: './test_test.ts',
+  tests: '../functional/*-test.ts',
   name: 'idam-user-dashboard-cross-browser',
   output: '../../../test-output/cross-browser/reports',
   helpers: {
