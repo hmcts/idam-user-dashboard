@@ -10,12 +10,12 @@ export class IdamAPI {
     private readonly telemetryClient: TelemetryClient
   ) { }
 
-  public getUsersByEmail(email: string): Promise<User[]> {
+  public getUserDetails(type: string, query: string): Promise<User[]> {
     return this.axios
-      .get('/api/v1/users', { params: { 'query': 'email:' + email } })
+      .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
       .then(results => results.data)
       .catch(error => {
-        this.telemetryClient.trackTrace({message: 'Error retrieving user e-mail from IDAM API'});
+        this.telemetryClient.trackTrace({message: 'Error retrieving user details from IDAM API'});
         this.logger.error(`${error.stack || error}`);
         return [];
       });

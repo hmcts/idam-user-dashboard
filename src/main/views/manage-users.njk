@@ -15,7 +15,7 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
       <h1 class="govuk-heading-l">Manage Users</h1>
       <form method="POST" action="{{ urls.USER_RESULTS_URL }}">
@@ -27,12 +27,12 @@
             isPageHeading: true
           },
           hint: {
-            text: "Please enter the email address of the user you wish to manage"
+            text: "Please enter the email address, user ID or SSO ID of the user you wish to manage"
           },
-          errorMessage: { text: error.email.message } if error.email,
+          errorMessage: { text: error.search.message } if error.search,
           classes: "govuk-input govuk-!-width-three-quarters",
-          id: "email",
-          name: "email",
+          id: "search",
+          name: "search",
           value: search
         }) }}
         {{ govukButton({

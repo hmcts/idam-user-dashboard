@@ -4,6 +4,7 @@ import {
   isEmpty, isObjectEmpty,
   isValidEmailFormat,
   obfuscateEmail,
+  possiblyEmail,
   sortRoles
 } from '../../../../main/utils/utils';
 
@@ -124,6 +125,16 @@ describe('utils', () => {
 
     test('Should not return obfuscated text if not an email', async () => {
       expect(obfuscateEmail('anything')).toBe('anything');
+    });
+  });
+
+  describe('possiblyEmail', () => {
+    test('Should return true if input contains \'@\'', async () => {
+      expect(possiblyEmail('test@test.com')).toBe(true);
+    });
+
+    test('Should return false if input does not contain \'@\'', async () => {
+      expect(possiblyEmail('f5a15ced-0189-4b84-ab95-15c2a5fee728')).toBe(false);
     });
   });
 });
