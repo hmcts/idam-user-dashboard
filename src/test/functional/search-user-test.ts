@@ -31,7 +31,7 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
   I.waitForText('The email address is not in the correct format');
 });
 
-Scenario('I should be able to search for users', async ({I}) => {
+Scenario('@CrossBrowser I should be able to search for users', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Add new users');
   I.waitForText('Manage existing users');
