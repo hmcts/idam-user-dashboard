@@ -25,6 +25,7 @@ export class Helmet {
   private setContentSecurityPolicy(app: express.Express): void {
     app.use(
       helmet.contentSecurityPolicy({
+        useDefaults: false,
         directives: {
           connectSrc: [self],
           defaultSrc: ["'none'"],
