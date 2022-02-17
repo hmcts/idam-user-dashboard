@@ -1,6 +1,6 @@
-import { config } from '../config';
+import {config} from '../config';
 import supportedBrowsers from './supportedBrowsers';
-import { event, container } from 'codeceptjs';
+import {event, container} from 'codeceptjs';
 
 const waitForTimeout = 60000;
 const smartWait = 5000;
@@ -19,7 +19,7 @@ const getBrowserConfig = browserGroup => {
   for (const candidateBrowser in supportedBrowsers[browserGroup]) {
     if (candidateBrowser) {
       const candidateCapabilities = {
-        ...{ 'sauce:options': defaultSauceOptions },
+        ...{'sauce:options': defaultSauceOptions},
         ...supportedBrowsers[browserGroup][candidateBrowser]
       };
 
@@ -36,7 +36,7 @@ const getBrowserConfig = browserGroup => {
 };
 
 const setupConfig = {
-  tests: 'test_test.ts',
+  tests: './test_test.ts',
   name: 'idam-user-dashboard-cross-browser',
   output: '../../../test-output/cross-browser/reports',
   helpers: {
@@ -64,6 +64,9 @@ const setupConfig = {
       enabled: true,
     },
   },
+  include: {
+    I: '../functional/custom-steps.ts',
+  },
   multiple: {
     webkit: {
       browsers: getBrowserConfig('webkit'),
@@ -78,7 +81,7 @@ const setupConfig = {
 };
 
 event.dispatcher.on(event.test.before, function (test) {
-  const { Playwright } = container.helpers();
+  const {Playwright} = container.helpers();
   test.title = test.title + ' - ' + Playwright.options.capabilities['sauce:options'].name;
 });
 

@@ -8,7 +8,7 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
 });
 
-Scenario('I as a user can sign in', ({I}) => {
+Scenario('@CrossBrowser I as a user can sign in', ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
 });
 
