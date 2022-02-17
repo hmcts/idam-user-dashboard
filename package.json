@@ -63,7 +63,7 @@
     "express-session": "^1.17.2",
     "glob": "^7.1.6",
     "govuk-frontend": "^4.0.1",
-    "helmet": "4.6.0",
+    "helmet": "^5.0.2",
     "jest-when": "^3.5.1",
     "jwt-decode": "^3.1.2",
     "launchdarkly-node-server-sdk": "^6.2.3",
