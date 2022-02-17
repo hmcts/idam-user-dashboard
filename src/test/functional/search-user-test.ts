@@ -13,7 +13,7 @@ BeforeSuite(async () => {
 });
 
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
-incorrectEmailAddresses.add(['email']); // adding records to a table
+incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
 incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
@@ -23,11 +23,11 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
-  I.fillField('#email', current.incorrectEmailAddress);
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', current.incorrectEmailAddress);
   I.click('Search');
-  I.seeElement('#email-error');
+  I.seeElement('#search-error');
   I.waitForText('The email address is not in the correct format');
 });
 
@@ -37,9 +37,9 @@ Scenario('I should be able to search for users', async ({I}) => {
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
-  I.fillField('#email', citizenUserEmail);
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', citizenUserEmail);
   I.click('Search');
   I.waitForText('User Details');
 
@@ -65,10 +65,10 @@ Scenario('I as an user should be able to see proper error message if search text
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
   I.click('Search');
-  I.seeElement('#email-error');
+  I.seeElement('#search-error');
   I.waitForText('You must enter an email address');
 });
 
@@ -78,9 +78,9 @@ Scenario('I as an user should be able to see proper error message if user does n
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
-  I.waitForText('Please enter the email address of the user you wish to manage');
-  I.click('#email');
-  I.fillField('#email', 'meTesting@test.com');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', 'meTesting@test.com');
   I.click('Search');
   I.waitForText('No user matches your search for: meTesting@test.com');
 });
