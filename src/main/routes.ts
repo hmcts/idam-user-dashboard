@@ -1,5 +1,11 @@
 import { Application } from 'express';
-import { ADD_USERS_URL, EDIT_USER_URL, HOME_URL, MANAGER_USERS_URL, USER_RESULTS_URL } from './utils/urls';
+import {
+  ADD_USERS_URL,
+  HOME_URL,
+  MANAGER_USERS_URL,
+  USER_ACTIONS_URL,
+  USER_RESULTS_URL
+} from './utils/urls';
 
 export default function(app: Application): void {
   app.get(HOME_URL, app.locals.container.cradle.userOptionController.get);
@@ -7,5 +13,5 @@ export default function(app: Application): void {
   app.get(ADD_USERS_URL, app.locals.container.cradle.addUsersController.get);
   app.get(MANAGER_USERS_URL, app.locals.container.cradle.manageUsersController.get);
   app.post(USER_RESULTS_URL, app.locals.container.cradle.userResultsController.post);
-  app.post(EDIT_USER_URL, app.locals.container.cradle.editUserController.post);
+  app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);
 }
