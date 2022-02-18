@@ -20,4 +20,22 @@ export class IdamAPI {
         return [];
       });
   }
+
+  public getUserById(id: string): Promise<User> {
+    return this.axios.get('/api/v1/users/' + id)
+      .then(results => results.data)
+      .catch(error => {
+        this.telemetryClient.trackTrace({message: 'Error retrieving user by ID from IDAM API'});
+        this.logger.error(`${error.stack || error}`);
+      });
+  }
+
+  public editUserById(id: string, fields: User) {
+    return this.axios
+      .patch('/api/v1/users/' + id, fields)
+      .catch(error => {
+        this.telemetryClient.trackTrace({message: 'Error patching user details in IDAM API'});
+        this.logger.error(`${error.stack || error}`);
+      });
+  }
 }

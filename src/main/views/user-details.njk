@@ -1,6 +1,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% extends "template.njk" %}
 
@@ -14,10 +16,6 @@
 
 {% block content %}
   <h1 class="govuk-heading-l">User Details</h1>
-  {{ govukButton({
-    text: "Delete user",
-    classes: "govuk-button--warning"
-  }) }}
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -34,18 +32,6 @@
           {% endif %}
         </p>
       </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          {% if content.user.active %}
-            {% set action = "Suspend user" %}
-          {% elif content.user.stale %}
-            {% set action = "" %}
-          {% else %}
-            {% set action = "Activate user" %}
-          {% endif %}
-          {{ action }}<span class="govuk-visually-hidden">status</span>
-        </a>
-      </dd>
     </div>
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -55,11 +41,6 @@
         <p class="govuk-body-m" id="user-id">
           {{ content.user.id }}
         </p>
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          <span class="govuk-visually-hidden">id</span>
-        </a>
       </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -71,11 +52,6 @@
           {{ content.user.email }}
         </p>
       </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          <span class="govuk-visually-hidden">email</span>
-        </a>
-      </dd>
     </div>
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -86,11 +62,6 @@
           {{ content.user.forename }}
         </p>
       </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          Change<span class="govuk-visually-hidden">forename</span>
-        </a>
-      </dd>
     </div>
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -100,11 +71,6 @@
         <p class="govuk-body-m" id="last-name">
           {{ content.user.surname }}
         </p>
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          Change<span class="govuk-visually-hidden">surname</span>
-        </a>
       </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -126,11 +92,6 @@
           {% endif %}
         </p>
       </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          Change<span class="govuk-visually-hidden">roles</span>
-        </a>
-      </dd>
     </div>
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -140,15 +101,6 @@
         <p class="govuk-body-m" id="sso-provider">
           {{ content.user.ssoProvider }}
         </p>
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          {% if content.user.ssoProvider is defined and content.user.ssoProvider !== '' %}
-            Remove<span class="govuk-visually-hidden">ssoProvider</span>
-          {% else %}
-            <span class="govuk-visually-hidden">ssoProvider</span>
-          {% endif %}
-        </a>
       </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -160,15 +112,6 @@
           {{ content.user.ssoId }}
         </p>
       </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          {% if content.user.ssoId is defined and content.user.ssoId !== '' %}
-            Remove<span class="govuk-visually-hidden">ssoId</span>
-          {% else %}
-            <span class="govuk-visually-hidden">ssoId</span>
-          {% endif %}
-        </a>
-      </dd>
     </div>
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -178,11 +121,6 @@
         <p class="govuk-body-m" id="account-creation-date">
           {{ content.user.createDate }}
         </p>
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          <span class="govuk-visually-hidden">createDate</span>
-        </a>
       </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -194,18 +132,22 @@
           {{ content.user.lastModified }}
         </p>
       </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="#">
-          <span class="govuk-visually-hidden">lastModified</span>
-        </a>
-      </dd>
     </div>
   </dl>
 
   <div class="govuk-button-group">
-    {{ govukButton({
-      text: "Save"
-    }) }}
-    <a class="govuk-link" href="{{ urls.MANAGER_USERS_URL }}">Cancel</a>
+    <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="user_id" value="{{ content.user.id }}">
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Edit user", name: "action", value: "edit", classes: "govuk-button--secondary" }) }}
+        {{ govukButton({ text: "Suspend user", name: "action", value: "suspend", classes: "govuk-button--secondary" }) }}
+        {{ govukButton({ text: "Delete user", name: "action", value: "delete", classes: "govuk-button--warning" }) }}
+      </div>
+    </form>
   </div>
+  {{ govukBackLink({
+    text: "Return to search",
+    href: urls.MANAGER_USERS_URL
+  }) }}
 {% endblock %}
