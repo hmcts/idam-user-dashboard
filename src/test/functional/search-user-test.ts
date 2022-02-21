@@ -10,7 +10,7 @@ const citizenUserEmail= testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmail
 let citizenUser;
 
 BeforeSuite(async () => {
-  createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
   citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
 });
 
