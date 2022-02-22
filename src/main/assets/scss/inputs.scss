@@ -1,0 +1,11 @@
+input.govuk-input[type="text"]:disabled {
+  background-color: #f3f2f1;
+  border-color: #f3f2f1;
+}
+
+button.govuk-back-link[type="submit"] {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
