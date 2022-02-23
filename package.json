@@ -81,7 +81,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.2",
+    "@babel/core": "^7.17.5",
     "@babel/preset-env": "^7.16.11",
     "@codeceptjs/helper": "^1.0.2",
     "@types/copy-webpack-plugin": "^10.1.0",
@@ -107,7 +107,7 @@
     "node-sass": "^7.0.1",
     "nodemon": "^2.0.15",
     "pa11y": "^6.1.1",
-    "playwright": "^1.19.0",
+    "playwright": "^1.19.1",
     "sass-loader": "^12.5.0",
     "sonar-scanner": "^3.1.0",
     "style-loader": "^3.3.1",
