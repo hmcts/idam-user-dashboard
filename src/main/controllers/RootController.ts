@@ -1,10 +1,11 @@
 import { AuthedRequest } from '../interfaces/AuthedRequest';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { PageData } from '../interfaces/PageData';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import autobind from 'autobind-decorator';
 import { isObjectEmpty } from '../utils/utils';
 import * as urls from '../utils/urls';
+import asyncError from '../modules/error-handler/asyncErrorDecorator';
 
 @autobind
 export class RootController {
@@ -13,14 +14,15 @@ export class RootController {
   }
 
   public get(req: AuthedRequest, res: Response, view: string, data?: PageData): Promise<void> | void {
-    return this.render(req, res, view, data);
+    return this.render(req, res, req.next, view, data);
   }
 
   public post(req: AuthedRequest, res: Response, view: string, data?: PageData): Promise<void> | void {
-    return this.render(req, res, view, data);
+    return this.render(req, res, req.next, view, data);
   }
 
-  private async render(req: AuthedRequest, res: Response, view: string, data: PageData): Promise<void> {
+  @asyncError
+  private async render(req: AuthedRequest, res: Response, next: NextFunction, view: string, data: PageData): Promise<void> {
     const constructedData: PageData = {...data, urls};
 
     if(this.featureFlags) {
