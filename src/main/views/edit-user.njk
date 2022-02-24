@@ -39,7 +39,6 @@
     <form id="userEditForm" method="POST" action="{{ urls.USER_ACTIONS_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
-
       <div class="govuk-grid-column-one-half">
         <h3 class="govuk-heading-s">General</h3>
         {{ govukInput({
@@ -73,29 +72,6 @@
           value: content.user.email
         }) }}
       </div>
-
-      <div class="govuk-grid-column-three-quarters">
-        {% call govukFieldset({
-          legend: {
-            text: "Assigned roles",
-            classes: "govuk-fieldset__legend--m"
-          }
-        }) %}
-          <p class="govuk-hint">Select one or more roles to be assigned to the users.</p>
-            {% set items = [] %}
-            {% for role in content.roles %}
-              {% set items = (items.push({ text: role.name, value: role.name, checked: role.assigned }),items) %}
-            {% endfor %}
-
-            {{ govukCheckboxes({
-              classes: "govuk-checkboxes--two-column",
-              idPrefix: "roles",
-              name: "roles",
-              items: items
-            }) }}
-        {% endcall %}
-      </div>
-
       <div class="govuk-button-group">
         {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
       </div>

@@ -6,10 +6,8 @@ import { User } from '../interfaces/User';
 import {
   getObjectVariation,
   hasProperty,
-  isArrayEmpty,
   isEmpty,
   isObjectEmpty,
-  isString,
   isValidEmailFormat
 } from '../utils/utils';
 import {
@@ -47,24 +45,17 @@ export class UserActionsController extends RootController{
     const {roles: originalRoles, ...originalFields} = user;
     const {roles: editedRoles, ...editedFields} = editedUser as Partial<User>;
 
-    const roles = (await req.scope.cradle.api.getRoles()).map(role => {
-      role.assigned = editedRoles.includes(role.name);
-      return role;
-    });
-
     // No changes
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
-    const changedRoles = this.comparePartialRoles(originalRoles, editedRoles);
-
-    if(isObjectEmpty(changedFields) && isArrayEmpty(changedRoles)) {
+    if(isObjectEmpty(changedFields)) {
       const error = { general: { message: USER_UPDATE_NO_CHANGE_ERROR }};
-      return super.post(req, res, 'edit-user', { content: { user, roles }, error: error});
+      return super.post(req, res, 'edit-user', { content: { user }, error: error});
     }
 
     // Validation errors
     const error = this.validateFields(changedFields);
     if(!isObjectEmpty(error)) {
-      return super.post(req, res, 'edit-user', { content: { user: {...user, ...changedFields }, roles }, error});
+      return super.post(req, res, 'edit-user', { content: { user: {...user, ...changedFields } }, error});
     }
 
     try {
@@ -76,28 +67,15 @@ export class UserActionsController extends RootController{
         };
       }
 
-      if(!isArrayEmpty(changedRoles)) {
-        updatedUser = {
-          ...updatedUser,
-          ...await req.scope.cradle.api.editUserRolesById(user.id, editedRoles)
-        };
-      }
-
-      super.post(req, res, 'edit-user', { content: { user: updatedUser, roles, notification: 'User saved successfully'}});
+      super.post(req, res, 'edit-user', { content: { user: updatedUser, notification: 'User saved successfully'}});
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
-      super.post(req, res, 'edit-user', {content: { user, roles }, error });
+      super.post(req, res, 'edit-user', {content: { user }, error });
     }
   }
 
   private async editUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.getRoles()
-      .then((roles) => {
-        const userRoleSet = new Set(user.roles);
-        roles.forEach(role => role.assigned = userRoleSet.has(role.name));
-
-        super.post(req, res, 'edit-user', { content: { user, roles } });
-      });
+    super.post(req, res, 'edit-user', { content: { user } });
   }
 
   private suspendUser(req: AuthedRequest, res: Response, user: User) {
@@ -111,13 +89,6 @@ export class UserActionsController extends RootController{
   private comparePartialUsers(userA: Partial<User>, userB: Partial<User>) {
     const variation: Partial<User> = getObjectVariation(userA, userB);
     return variation;
-  }
-
-  private comparePartialRoles(rolesA: string[] | string, rolesB: string[] | string) {
-    if(isString(rolesA)) rolesA = [rolesA as string];
-    if(isString(rolesB)) rolesB = [rolesB as string];
-
-    return (rolesB as string[]).filter(role => !(rolesA as string[]).includes(role));
   }
 
   private validateFields(fields: Partial<User>): PageError {
