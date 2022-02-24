@@ -75,8 +75,11 @@ export class UserActionsController extends RootController{
   }
 
   private comparePartialUsers(userA: Partial<User>, userB: Partial<User>) {
-    const variation: Partial<User> = getObjectVariation(userA, userB);
-    return variation;
+    const variation = getObjectVariation(userA, userB).changed;
+    const changedFields: any = {};
+    variation.forEach(key => { changedFields[key] = (userB as any)[key]; } );
+
+    return changedFields;
   }
 
   private validateFields(fields: Partial<User>): PageError {

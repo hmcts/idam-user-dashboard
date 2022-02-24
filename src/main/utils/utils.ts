@@ -69,11 +69,16 @@ export const possiblyEmail = (value: string): boolean => {
 };
 
 export const getObjectVariation = (original: {[key: string]: any}, updated: {[key: string]: any}) => {
-  return Object.keys(updated).reduce((diff, key) => {
-    if (original[key] === updated[key]) {
-      return diff;
-    }
+  const variation = {
+    added: [] as string[],
+    removed: [] as string[],
+    changed: [] as string[]
+  };
 
-    return {...diff, [key]: updated[key]};
-  }, {});
+  variation.added = Object.keys(updated).filter(key => !Object.keys(original).includes(key));
+  variation.removed = Object.keys(original).filter(key => !Object.keys(updated).includes(key));
+  variation.changed = Object.keys(original).filter(key => updated[key] !== original[key]);
+  variation.changed = variation.changed.filter(key => !variation.removed.includes(key));
+
+  return variation;
 };
