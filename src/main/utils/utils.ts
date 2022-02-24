@@ -15,6 +15,14 @@ export const isValidEmailFormat = (email: string): boolean => {
   return filter.test(email);
 };
 
+export const isArrayEmpty = (value: Array<any>): boolean => {
+  return value === undefined || value.length === 0;
+};
+
+export const isString = (variable: any) => {
+  return (typeof variable === 'string' || variable instanceof String);
+};
+
 const isDefaultRole = (role: string): boolean => {
   return role === 'IDAM_SUPER_USER'
     || role === 'IDAM_ADMIN_USER'
@@ -58,4 +66,14 @@ export const obfuscateEmail = (value: string): string => {
 
 export const possiblyEmail = (value: string): boolean => {
   return value.includes('@');
+};
+
+export const getObjectVariation = (original: {[key: string]: any}, updated: {[key: string]: any}) => {
+  return Object.keys(updated).reduce((diff, key) => {
+    if (original[key] === updated[key]) {
+      return diff;
+    }
+
+    return {...diff, [key]: updated[key]};
+  }, {});
 };
