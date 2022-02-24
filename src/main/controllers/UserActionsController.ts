@@ -88,7 +88,7 @@ export class UserActionsController extends RootController{
 
     if(hasProperty(fields, 'forename') && isEmpty(forename)) errors.forename = { message: USER_EMPTY_FORENAME_ERROR };
     if(hasProperty(fields, 'surname') &&  isEmpty(surname)) errors.surname = { message: USER_EMPTY_SURNAME_ERROR };
-    if(hasProperty(fields, 'email') && isValidEmailFormat(email)) errors.email = {message: INVALID_EMAIL_FORMAT_ERROR };
+    if(hasProperty(fields, 'email') && !isValidEmailFormat(email)) errors.email = {message: INVALID_EMAIL_FORMAT_ERROR };
 
     return errors;
   }
