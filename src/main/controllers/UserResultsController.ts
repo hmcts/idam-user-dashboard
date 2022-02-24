@@ -11,9 +11,11 @@ import {
 import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
 import { SearchType } from '../utils/SearchType';
+import asyncError from '../modules/error-handler/asyncErrorDecorator';
 
 @autobind
 export class UserResultsController extends RootController {
+  @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search ?? '';
 
