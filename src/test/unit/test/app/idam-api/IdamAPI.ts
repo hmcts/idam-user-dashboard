@@ -116,15 +116,9 @@ describe('IdamAPI', () => {
   });
 
   test('Should not return results from getUserDetails request if error', async () => {
-    const mockAxios = {
-      get: async () => { throw new Error ('error'); }
-    } as any;
-    const mockLogger = {
-      error: async ( message: string ) => console.log(message)
-    } as any;
-    const mockTelemetryClient = {
-      trackTrace: async ( message: string ) => console.log(message)
-    } as any;
+    const mockAxios = { get: async () => { throw new Error ('error'); } } as any;
+    const mockLogger = { error: jest.fn() } as any;
+    const mockTelemetryClient = { trackTrace: jest.fn() } as any;
     const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
     await expect(api.getUserDetails(SearchType['Email'], testEmail)).resolves.toEqual([]);

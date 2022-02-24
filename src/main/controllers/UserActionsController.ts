@@ -44,7 +44,7 @@ export class UserActionsController extends RootController{
     // No changes
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
     if(isObjectEmpty(changedFields)) {
-      const error = { general: { message: USER_UPDATE_NO_CHANGE_ERROR }};
+      const error = { userEditForm: { message: USER_UPDATE_NO_CHANGE_ERROR }};
       return super.post(req, res, 'edit-user', { content: { user }, error: error});
     }
 
