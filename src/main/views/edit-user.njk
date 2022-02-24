@@ -20,22 +20,22 @@
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  {{ errorSummary(error) }}
+  <div class="govuk-grid-row">
+    {{ errorSummary(error) }}
 
-  {% set notificationHtml %}
-    <h3 class="govuk-notification-banner__heading">{{ content.notification }}</h3>
-    <p><a href="mailto:{{ content.user.email }}">{{ content.user.email }}</a> was updated.</p>
-  {% endset %}
+    {% set notificationHtml %}
+      <h3 class="govuk-notification-banner__heading">{{ content.notification }}</h3>
+      <p><a href="mailto:{{ content.user.email }}">{{ content.user.email }}</a> was updated.</p>
+    {% endset %}
 
-  {{ govukNotificationBanner({
-    html: notificationHtml,
-    type: 'success'
-  }) if content.notification }}
+    {{ govukNotificationBanner({
+      html: notificationHtml,
+      type: 'success'
+    }) if content.notification }}
 
-  <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">Edit Users</h1>
-  </div>
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Edit Users</h1>
+    </div>
     <form id="userEditForm" method="POST" action="{{ urls.USER_ACTIONS_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
@@ -48,22 +48,22 @@
           attributes: { disabled: true }
         }) }}
 
-        <div id="user-details-name">
+        {% call govukFieldset({
+          classes: 'govuk-fieldset--row'
+        }) %}
           {{ govukInput({
             label: { text: "First name" },
-            classes: "govuk-!-width-three-quarters",
             name: "forename",
             id: "forename",
             value: content.user.forename
           }) }}
           {{ govukInput({
             label: { text: "Last name" },
-            classes: "govuk-!-width-three-quarters",
             name: "surname",
             id: "surname",
             value: content.user.surname
           }) }}
-        </div>
+        {% endcall %}
 
         {{ govukInput({
           label: { text: "Email" },
@@ -71,16 +71,19 @@
           id: "email",
           value: content.user.email
         }) }}
-      </div>
-      <div class="govuk-button-group">
-        {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
+        </div>
       </div>
     </form>
+  </div>
 
+  <div class="govuk-grid-row">
     <form method="POST" action="{{ urls.USER_RESULTS_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="search" value="{{ content.user.email }}">
       <button type="submit" class="govuk-back-link">Return to user details</button>
     </form>
-</div>
+  </div>
 {% endblock %}
