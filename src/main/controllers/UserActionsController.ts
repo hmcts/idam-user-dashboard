@@ -32,10 +32,6 @@ export class UserActionsController extends RootController{
             return this.saveUser(req, res, user);
           case 'edit':
             return this.editUser(req, res, user);
-          case 'suspend':
-            return this.suspendUser(req, res, user);
-          case 'delete':
-            return this.deleteUser(req, res, user);
         }});
   }
 
@@ -76,14 +72,6 @@ export class UserActionsController extends RootController{
 
   private async editUser(req: AuthedRequest, res: Response, user: User) {
     super.post(req, res, 'edit-user', { content: { user } });
-  }
-
-  private suspendUser(req: AuthedRequest, res: Response, user: User) {
-    return super.post(req, res, 'edit-user');
-  }
-
-  private deleteUser(req: AuthedRequest, res: Response, user: User) {
-    return super.post(req, res, 'edit-user');
   }
 
   private comparePartialUsers(userA: Partial<User>, userB: Partial<User>) {
