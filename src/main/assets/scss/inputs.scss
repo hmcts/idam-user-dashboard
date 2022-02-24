@@ -9,3 +9,18 @@ button.govuk-back-link[type="submit"] {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.govuk-checkboxes {
+  &.govuk-checkboxes--two-column {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > .govuk-checkboxes__item {
+      width: calc(50% - 40px);
+
+      & > label {
+        word-break: break-all;
+      }
+    }
+  }
+}

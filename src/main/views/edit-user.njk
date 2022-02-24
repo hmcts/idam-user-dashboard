@@ -1,14 +1,110 @@
 {% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% extends "template.njk" %}
 
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
+    ['Manage users', urls.MANAGER_USERS_URL],
     ['Edit User']
   ]) }}
 {% endblock %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">Edit Users</h1>
+<div class="govuk-grid-row">
+  {{ errorSummary(error) }}
+
+  {% set notificationHtml %}
+    <h3 class="govuk-notification-banner__heading">{{ content.notification }}</h3>
+    <p><a href="mailto:{{ content.user.email }}">{{ content.user.email }}</a> was updated.</p>
+  {% endset %}
+
+  {{ govukNotificationBanner({
+    html: notificationHtml,
+    type: 'success'
+  }) if content.notification }}
+
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Edit Users</h1>
+  </div>
+    <form id="userEditForm" method="POST" action="{{ urls.USER_ACTIONS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="_userId" value="{{ content.user.id }}">
+
+      <div class="govuk-grid-column-one-half">
+        <h3 class="govuk-heading-s">General</h3>
+        {{ govukInput({
+          label: { text: "User ID" },
+          name: "userId",
+          value: content.user.id,
+          attributes: { disabled: true }
+        }) }}
+
+        <div id="user-details-name">
+          {{ govukInput({
+            label: { text: "First name" },
+            classes: "govuk-!-width-three-quarters",
+            name: "forename",
+            id: "forename",
+            value: content.user.forename
+          }) }}
+          {{ govukInput({
+            label: { text: "Last name" },
+            classes: "govuk-!-width-three-quarters",
+            name: "surname",
+            id: "surname",
+            value: content.user.surname
+          }) }}
+        </div>
+
+        {{ govukInput({
+          label: { text: "Email" },
+          name: "email",
+          id: "email",
+          value: content.user.email
+        }) }}
+      </div>
+
+      <div class="govuk-grid-column-three-quarters">
+        {% call govukFieldset({
+          legend: {
+            text: "Assigned roles",
+            classes: "govuk-fieldset__legend--m"
+          }
+        }) %}
+          <p class="govuk-hint">Select one or more roles to be assigned to the users.</p>
+            {% set items = [] %}
+            {% for role in content.roles %}
+              {% set items = (items.push({ text: role.name, value: role.name, checked: role.assigned }),items) %}
+            {% endfor %}
+
+            {{ govukCheckboxes({
+              classes: "govuk-checkboxes--two-column",
+              idPrefix: "roles",
+              name: "roles",
+              items: items
+            }) }}
+        {% endcall %}
+      </div>
+
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
+      </div>
+    </form>
+
+    <form method="POST" action="{{ urls.USER_RESULTS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="search" value="{{ content.user.email }}">
+      <button type="submit" class="govuk-back-link">Return to user details</button>
+    </form>
+</div>
 {% endblock %}
