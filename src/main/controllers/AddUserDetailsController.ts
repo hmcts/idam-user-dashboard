@@ -19,7 +19,7 @@ export class AddUserDetailsController extends RootController{
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-      return await this.processNewUserEmail(req, res);
+    return await this.processNewUserEmail(req, res);
   }
 
   private async processNewUserEmail(req: AuthedRequest, res: Response) {
@@ -31,7 +31,7 @@ export class AddUserDetailsController extends RootController{
     }
 
     // check if the user with the same email already exists
-    const users = await req.scope.cradle.api.getUserDetails(SearchType['Email'], email);
+    const users = await req.scope.cradle.api.getUserDetails(SearchType.Email, email);
     return users.length == 0
       ? super.post(req, res, 'add-user-details', {content: {email}})
       : this.postError(req, res, duplicatedEmailError(email));
@@ -39,7 +39,7 @@ export class AddUserDetailsController extends RootController{
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
     return super.post(req, res, 'add-users', { error: {
-        email: { message: errorMessage }
+      email: { message: errorMessage }
     }});
   }
 }
