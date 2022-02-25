@@ -1,0 +1,46 @@
+input.govuk-input[type="text"]:disabled {
+  background-color: #f3f2f1;
+  border-color: #f3f2f1;
+}
+
+button.govuk-back-link[type="submit"] {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.govuk-checkboxes {
+  &.govuk-checkboxes--two-column {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > .govuk-checkboxes__item {
+      width: calc(50% - 40px);
+
+      & > label {
+        word-break: break-all;
+      }
+    }
+  }
+}
+
+.govuk-fieldset {
+  &.govuk-fieldset--row {
+    display: flex;
+
+    & > * {
+      @include govuk-responsive-margin(6, "left");
+      @include govuk-responsive-margin(6, "right");
+      flex: auto;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}

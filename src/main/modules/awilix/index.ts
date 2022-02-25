@@ -5,6 +5,7 @@ import { AddUsersController } from '../../controllers/AddUsersController';
 import { AddUserDetailsController } from '../../controllers/AddUserDetailsController';
 import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
+import { UserActionsController } from '../../controllers/UserActionsController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 
@@ -28,6 +29,7 @@ export class Container {
       addUserDetailsController: asClass(AddUserDetailsController),
       manageUsersController: asClass(ManageUsersController),
       userResultsController: asClass(UserResultsController),
+      userActionsController: asClass(UserActionsController)
     });
   }
 }

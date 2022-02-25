@@ -1,11 +1,9 @@
-import { AuthedUser } from '../modules/oidc';
 import { Request } from 'express';
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { AwilixContainer } from 'awilix';
 
 interface Auth {
-  user?: AuthedUser;
-  isAuthenticated: () => boolean;
-  scope: AwilixContainer;
+  scope: AwilixContainer<{ api: IdamAPI }>;
 }
 
 export type AuthedRequest = Auth & Request;
