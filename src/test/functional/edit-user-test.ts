@@ -46,13 +46,13 @@ Scenario('@CrossBrowser I as an user should be able to edit and update the user-
   const email = await I.grabValueFrom('#email');
   Assert.equal(email.trim(), activeUser[0].email);
 
-  const updatedForname = testConfig.USER_FIRSTNAME+ randomData.getRandomString(5);
-  const updatedSurname = testConfig.USER_FIRSTNAME+ randomData.getRandomString(10);
-  const updatedEmail = randomData.getRandomString(3)+activeUserEmail;
+  const updatedForname = testConfig.USER_FIRSTNAME + randomData.getRandomString(5);
+  const updatedSurname = testConfig.USER_FIRSTNAME + randomData.getRandomString(10);
+  const updatedEmail = randomData.getRandomString(3) + activeUserEmail;
 
   I.fillField('#forename', updatedForname);
   I.fillField('#surname', updatedSurname);
-  I.fillField('#email',updatedEmail);
+  I.fillField('#email', updatedEmail);
 
   I.click('Save');
   I.see('Success');
