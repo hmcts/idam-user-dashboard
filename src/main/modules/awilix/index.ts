@@ -2,6 +2,7 @@ import { asClass, asValue, createContainer, InjectionMode } from 'awilix';
 import { Application } from 'express';
 import { UserOptionController } from '../../controllers/UserOptionController';
 import { AddUsersController } from '../../controllers/AddUsersController';
+import { AddUserDetailsController } from '../../controllers/AddUserDetailsController';
 import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
 import { UserActionsController } from '../../controllers/UserActionsController';
@@ -25,6 +26,7 @@ export class Container {
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
       userOptionController: asClass(UserOptionController),
       addUsersController: asClass(AddUsersController),
+      addUserDetailsController: asClass(AddUserDetailsController),
       manageUsersController: asClass(ManageUsersController),
       userResultsController: asClass(UserResultsController),
       userActionsController: asClass(UserActionsController)
