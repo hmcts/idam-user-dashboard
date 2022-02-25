@@ -104,8 +104,7 @@ export class OidcMiddleware {
   }
 
   private configureApiAuthorization(req: AuthedRequest): void {
-    req.scope = req.app.locals.container.createScope();
-    req.scope.register({
+    req.scope = req.app.locals.container.createScope().register({
       axios: asValue(Axios.create({
         baseURL: config.get('services.idam.url.api'),
         headers: { Authorization: 'Bearer ' + req.session.user.accessToken }
@@ -113,10 +112,6 @@ export class OidcMiddleware {
       api: asClass(IdamAPI)
     });
   }
-}
-
-export type AuthedUser = {
-  id_token: string;
 }
 
 type JWT = {

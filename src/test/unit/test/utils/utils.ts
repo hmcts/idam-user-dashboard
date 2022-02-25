@@ -1,11 +1,12 @@
 import {
   convertISODateTimeToUTCFormat,
-  hasProperty,
+  hasProperty, isArrayEmpty,
   isEmpty, isObjectEmpty,
   isValidEmailFormat,
   obfuscateEmail,
   possiblyEmail,
-  sortRoles
+  sortRoles,
+  isString, getObjectVariation
 } from '../../../../main/utils/utils';
 
 describe('utils', () => {
@@ -73,6 +74,118 @@ describe('utils', () => {
       expect(results).toBe(false);
     });
   });
+
+  describe('isArrayEmpty', () => {
+    test('Should return true if array is empty', async () => {
+      const array: any[] = [];
+      const results = isArrayEmpty(array);
+      expect(results).toBe(true);
+    });
+
+    test('Should return false if array is not empty', async () => {
+      const array = ['test'];
+      const results = isArrayEmpty(array);
+      expect(results).toBe(false);
+    });
+
+    test('Should return true if array is undefined', async () => {
+      const array: any = undefined;
+      const results = isArrayEmpty(array as any);
+      expect(results).toBe(true);
+    });
+  });
+
+  describe('isString', () => {
+    test('Should return true if its a string', async () => {
+      const results = isString('string');
+      expect(results).toBe(true);
+    });
+
+    test('Should return false if its not a string', async () => {
+      const results = isString(7);
+      expect(results).toBe(false);
+    });
+
+    test('Should return false if string is undefined', async () => {
+      const results = isString(undefined);
+      expect(results).toBe(false);
+    });
+  });
+
+  describe('getObjectVariation', () => {
+    test('Should return empty arrays  if objects are same', async () => {
+      const obj1 = { prop1: 'test', prop2: 'test2' };
+      const obj2 = obj1;
+      const results = getObjectVariation(obj1, obj2);
+
+      expect(results).toStrictEqual({
+        'added': [],
+        'changed': [],
+        'removed': []
+      });
+    });
+
+    test('Should return empty arrays if objects are same (deep comparison)', async () => {
+      const obj1 = { prop1: 'test', prop2: 'test2' };
+      const obj2 = { prop1: 'test', prop2: 'test2' };
+
+      const results = getObjectVariation(obj1, obj2);
+      expect(results).toStrictEqual({
+        'added': [],
+        'changed': [],
+        'removed': []
+      });
+    });
+
+    test('Should return object with added array if properties are added', async () => {
+      const obj1 = { prop1: 'test', prop2: 'test2' };
+      const obj2 = { prop1: 'test', prop2: 'test2', prop3: 'test3' };
+
+      const results = getObjectVariation(obj1, obj2);
+      expect(results).toStrictEqual({
+        'added': ['prop3'],
+        'changed': [],
+        'removed': []
+      });
+    });
+
+    test('Should return object with removed array if properties are removed', async () => {
+      const obj1 = { prop1: 'test', prop2: 'test2', prop3: 'test3' };
+      const obj2 = { prop1: 'test', prop2: 'test2' };
+
+      const results = getObjectVariation(obj1, obj2);
+      expect(results).toStrictEqual({
+        'added': [],
+        'changed': [],
+        'removed': ['prop3']
+      });
+    });
+
+    test('Should return all changed properties', async () => {
+      const obj1 = { prop1: 'test', prop2: 'test2', prop3: 'changed' };
+      const obj2 = { prop1: 'test', prop2: 'test2', prop3: 'test3' };
+
+      const results = getObjectVariation(obj1, obj2);
+      expect(results).toStrictEqual({
+        'added': [],
+        'changed': ['prop3'],
+        'removed': []
+      });
+    });
+
+    test('Should return both removed and added properties', async () => {
+      const obj1 = { prop1: 'test', prop2: 'test2', prop3: 'test3' };
+      const obj2 = { prop1: 'test', prop2: 'changed', prop4: 'test4'};
+
+      const results = getObjectVariation(obj1, obj2);
+      expect(results).toStrictEqual({
+        'added': ['prop4'],
+        'changed': ['prop2'],
+        'removed': ['prop3']
+      });
+    });
+  });
+
 
   describe('sortRoles', () => {
     test('Should sort IDAM super user role first', async () => {
