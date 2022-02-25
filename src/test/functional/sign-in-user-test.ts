@@ -1,15 +1,28 @@
 import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
-import {createUserWithRoles} from './shared/apiHelpers';
+import { createUserWithRoles } from './shared/apiHelpers';
 
 Feature('User Sign In');
 const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
 BeforeSuite(async () => {
-  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('@CrossBrowser I as a user can sign in', ({I}) => {
+Scenario('@CrossBrowser I as a user with access role can sign in', ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+});
+
+Scenario('I as a user without access role cannot access service and is shown error page', async ({I}) => {
+  const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+  await createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+
+  I.amOnPage('/login');
+  I.see('Sign in');
+  I.fillField('#username', activeUserEmail);
+  I.fillField('#password', testConfig.PASSWORD);
+  I.click('Sign in');
+  I.see('Sorry, access to this resource is forbidden');
+  I.waitForText('Status code: 403');
 });
 
 Scenario('I as an user try to sign in with invalid credentials', ({I}) => {
