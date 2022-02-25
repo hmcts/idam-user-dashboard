@@ -1,14 +1,42 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
 
 {% extends "template.njk" %}
 
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Add users']
+    ['Add user email']
   ]) }}
 {% endblock %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">Add Users</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      {{ errorSummary(error) }}
+      <h1 class="govuk-heading-l">Add a new user</h1>
+      <form method="POST" action="{{ urls.ADD_USER_DETAILS_URL }}">
+        {{ csrfProtection(csrfToken) }}
+
+        {{ govukInput({
+          label: {
+            text: "Please enter an email address"
+          },
+          errorMessage: { text: error.email.message } if error.email,
+          classes: "govuk-input govuk-!-width-three-quarters",
+          id: "email",
+          name: "email",
+          value: email
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
 {% endblock %}
