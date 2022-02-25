@@ -31,7 +31,7 @@ export class AddUserDetailsController extends RootController{
     }
 
     // check if the user with the same email already exists
-    const users = await req.scope.cradle.api.getUserDetails(SearchType['Email'], email);
+    const users = await req.scope.cradle.api.getUserDetails(SearchType.Email, email);
     return users.length == 0
       ? super.post(req, res, 'add-user-details', {content: {email}})
       : this.postError(req, res, duplicatedEmailError(email));
