@@ -41,12 +41,6 @@
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
       <div class="govuk-grid-column-one-half">
         <h3 class="govuk-heading-s">General</h3>
-        {{ govukInput({
-          label: { text: "User ID" },
-          name: "userId",
-          value: content.user.id,
-          attributes: { disabled: true }
-        }) }}
 
         {% call govukFieldset({
           classes: 'govuk-fieldset--row'
