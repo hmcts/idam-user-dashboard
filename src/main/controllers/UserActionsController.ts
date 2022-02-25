@@ -12,6 +12,7 @@ import {
 } from '../utils/utils';
 import {
   INVALID_EMAIL_FORMAT_ERROR,
+  USER_EMPTY_EMAIL_ERROR,
   USER_EMPTY_FORENAME_ERROR,
   USER_EMPTY_SURNAME_ERROR,
   USER_UPDATE_FAILED_ERROR,
@@ -66,7 +67,7 @@ export class UserActionsController extends RootController{
       super.post(req, res, 'edit-user', { content: { user: updatedUser, notification: 'User saved successfully'}});
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
-      super.post(req, res, 'edit-user', {content: { user }, error });
+      super.post(req, res, 'edit-user', { content: { user }, error } );
     }
   }
 
@@ -87,7 +88,8 @@ export class UserActionsController extends RootController{
     const errors: any = {};
 
     if(hasProperty(fields, 'forename') && isEmpty(forename)) errors.forename = { message: USER_EMPTY_FORENAME_ERROR };
-    if(hasProperty(fields, 'surname') &&  isEmpty(surname)) errors.surname = { message: USER_EMPTY_SURNAME_ERROR };
+    if(hasProperty(fields, 'surname') && isEmpty(surname)) errors.surname = { message: USER_EMPTY_SURNAME_ERROR };
+    if(hasProperty(fields, 'email') && isEmpty(email)) errors.email = {message: USER_EMPTY_EMAIL_ERROR };
     if(hasProperty(fields, 'email') && !isValidEmailFormat(email)) errors.email = {message: INVALID_EMAIL_FORMAT_ERROR };
 
     return errors;

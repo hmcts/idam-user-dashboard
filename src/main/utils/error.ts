@@ -8,3 +8,4 @@ export const USER_UPDATE_NO_CHANGE_ERROR = 'No changes to the user were made';
 
 export const USER_EMPTY_FORENAME_ERROR = 'You must enter a forename for the user';
 export const USER_EMPTY_SURNAME_ERROR = 'You must enter a surname for the user';
+export const USER_EMPTY_EMAIL_ERROR = 'You must enter an email for the user';
