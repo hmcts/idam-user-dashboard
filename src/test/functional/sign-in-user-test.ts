@@ -25,7 +25,20 @@ Scenario('I as a user without access role cannot access service and is shown err
   I.waitForText('Status code: 403');
 });
 
-Scenario('I as an user try to sign in with invalid credentials', ({I}) => {
+Scenario('I as a user with citizen role cannot access service and is shown error page', async ({I}) => {
+  const citizenUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+  await createUserWithRoles(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+
+  I.amOnPage('/login');
+  I.see('Sign in');
+  I.fillField('#username', citizenUserEmail);
+  I.fillField('#password', testConfig.PASSWORD);
+  I.click('Sign in');
+  I.see('Sorry, access to this resource is forbidden');
+  I.waitForText('Status code: 403');
+});
+
+Scenario('I as a user try to sign in with invalid credentials', ({I}) => {
   I.amOnPage('/login');
   I.see('Sign in');
   I.fillField('#username', 'wronguser@wronguser.com');
@@ -38,4 +51,5 @@ Scenario('I as an user try to sign in with invalid credentials', ({I}) => {
   I.click('Sign in');
   I.waitForText('Information is missing or invalid');
 });
+
 
