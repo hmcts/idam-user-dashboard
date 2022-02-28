@@ -9,6 +9,9 @@ export const config = {
   USER_ROLE_CITIZEN: 'citizen',
   SSO_PROVIDER: 'TEST_HMCTS_SSO',
   SCENARIO_RETRY_LIMIT: 3,
+  RBAC: {
+    access: 'idam-user-dashboard--access'
+  },
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 20000,
   Gherkin: {

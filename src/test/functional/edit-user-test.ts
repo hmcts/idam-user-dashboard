@@ -11,7 +11,7 @@ import {randomData} from './shared/random-data';
 
 const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
 BeforeSuite(async () => {
-  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
 Scenario('@CrossBrowser I as an user should be able to edit and update the user-details successfully', async ({I}) => {
