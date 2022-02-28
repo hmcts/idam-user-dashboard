@@ -30,6 +30,8 @@ session:
 health:
   timeout: 5000
   deadline: 15000
+RBAC:
+  access: 'idam-user-dashboard--access'
 featureFlags:
   launchdarkly:
     ldUser: 'idam-user-dashboard'
