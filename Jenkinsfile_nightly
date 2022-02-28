@@ -17,7 +17,8 @@ def component = "user-dashboard"
 def secrets = [
   'idam-idam-${env}': [
     secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
-    secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD')
+    secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD'),
+    secret('launchdarkly-sdk-key', 'LAUNCHDARKLY_SDK_KEY')
   ]
 ]
 

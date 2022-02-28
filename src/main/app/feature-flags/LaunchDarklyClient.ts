@@ -6,16 +6,18 @@ export class LaunchDarkly implements FeatureFlagClient {
   private readonly client: LDClient
   private readonly ldUser: LDUser
 
-  constructor() {
-    this.ldUser = { key: config.get('featureFlags.launchdarkly.ldUser') };
-    this.client = launchDarkly.init(config.get('featureFlags.launchdarkly.sdkKey'), { diagnosticOptOut: true });
+  constructor(user: string = config.get('featureFlags.launchdarkly.ldUser'), sdkKey: string = config.get('featureFlags.launchdarkly.sdkKey')) {
+    this.ldUser = { key: user };
+    this.client = launchDarkly.init(sdkKey, { diagnosticOptOut: true });
   }
 
   public async getFlagValue(flag: string, defaultValue: boolean): Promise<boolean> {
+    await this.client.waitForInitialization();
     return this.client.variation(flag, this.ldUser, defaultValue);
   }
 
   public async getAllFlagValues(defaultValue: boolean): Promise<{ [p: string]: boolean }> {
+    await this.client.waitForInitialization();
     const flagMap = (await this.client.allFlagsState(this.ldUser)).allValues();
     for (const key in flagMap) {
       flagMap[key] = flagMap[key] ?? defaultValue;
@@ -30,5 +32,9 @@ export class LaunchDarkly implements FeatureFlagClient {
     } else {
       this.client.on('update' , async () => callback(await this.getAllFlagValues(defaultValue)));
     }
+  }
+
+  public closeConnection() {
+    this.client.close();
   }
 }
