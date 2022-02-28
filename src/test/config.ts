@@ -34,5 +34,8 @@ config.helpers = {
   IdamHelper: {
     require: '../functional/shared/idam-helper.ts',
   },
+  FeatureFlagHelper: {
+    require: '../functional/shared/helpers/featureFlagHelper.ts'
+  }
 };
 

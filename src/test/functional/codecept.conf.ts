@@ -27,10 +27,6 @@ export const config: CodeceptJS.Config = {
     },
     screenshotOnFail: {
       enabled: true,
-    },
-    featureFlags: {
-      require: './shared/featureFlags',
-      enabled: true
     }
   },
 };
