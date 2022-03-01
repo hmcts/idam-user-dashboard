@@ -1,16 +1,15 @@
 import { LaunchDarkly } from '../../../../main/app/feature-flags/LaunchDarklyClient';
 import { FeatureFlags } from '../../../../main/app/feature-flags/FeatureFlags';
 import { isArrayEmpty, isObjectEmpty } from '../../../../main/utils/utils';
-const colors = require('chalk');
+import { threadId } from 'worker_threads';
+import { yellow } from 'chalk';
 
 class FeatureFlagHelper extends Helper {
-  private featureFlags: FeatureFlags;
   private flagValues: { [key: string]: boolean };
 
   async _init() {
     const launchDarkly = new LaunchDarkly('idam-user-dashboard', process.env.LAUNCHDARKLY_SDK_KEY);
-    this.featureFlags = new FeatureFlags(launchDarkly);
-    this.flagValues = await this.featureFlags.getAllFlagValues();
+    this.flagValues = await new FeatureFlags(launchDarkly).getAllFlagValues();
     launchDarkly.closeConnection();
   }
 
@@ -19,7 +18,7 @@ class FeatureFlagHelper extends Helper {
   _before(test: Mocha.Test & { opts: any }) {
     if(!isArrayEmpty(test.opts?.featureFlags) && !isObjectEmpty(this.flagValues) && !test.opts.featureFlags.every(flag => this.flagValues[flag])) {
       if(codeceptjs.config.get().name === 'functional') {
-        console.warn(`[00]   ${colors.yellow.bold('S')} ${test.title}`);
+        console.warn(`[0${threadId}]   ${yellow.bold('S')} ${test.title}`);
       }
 
       test.opts.skipInfo = { message: 'Test skipped due to one or more feature flags disabled: ' + test.opts.featureFlags };
