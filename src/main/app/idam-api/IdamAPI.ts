@@ -45,17 +45,6 @@ export class IdamAPI {
       });
   }
 
-  public getRoleByName(name: string): Promise<Role> {
-    return this.axios.get('/roles/name/' + name)
-      .then(results => results.data)
-      .catch(error => {
-        const errorMessage = 'Error retrieving role by name from IDAM API';
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
-        return Promise.reject(errorMessage);
-      });
-  }
-
   public getAllRoles(): Promise<Role[]> {
     return this.axios.get('/roles/')
       .then(results => results.data)
