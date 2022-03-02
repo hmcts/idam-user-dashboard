@@ -68,7 +68,7 @@ export class IdamAPI {
   }
 
   public async getAssignableRoles(roleNames: string[]) {
-    let rolesMap: Map<string, Role>;
+    const rolesMap: Map<string, Role> = new Map<string, Role>();
 
     function traverse(collection: Role[], role: Role): Role[] {
       if(role === undefined) return collection;
@@ -86,8 +86,8 @@ export class IdamAPI {
       // Sets up roleMap with roleid - role
       .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
 
-      // Loops over passed roles and gets Role objects from idam-api for each role
-      .then(() => Promise.all(roleNames.map(name => this.getRoleByName(name))))
+      // Map given role names to roles in rolesMap and return complete role objects.
+      .then(() => Array.from(rolesMap.values()).filter(value => roleNames.includes(value.name)))
 
       // Recursively finds each assignable role for given roles, then gets the name of each role and adds it to the array
       .then(roles => roles.flatMap(role => traverse([], role)).map(role => role.name))
