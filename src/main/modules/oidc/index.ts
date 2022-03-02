@@ -94,10 +94,15 @@ export class OidcMiddleware {
       }
     });
 
-    app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
+    app.use(async (req: AuthedRequest, res: Response, next: NextFunction) => {
       if (req.session.user) {
-        if(req.session.user.roles.includes(config.get('RBAC.access'))) {
+        if (req.session.user.roles.includes(config.get('RBAC.access'))) {
           this.configureApiAuthorization(req);
+
+          if (!req.session.user.assignableRoles) {
+            await this.storeAssignableRoles(req);
+          }
+
           return next();
         } else {
           return next(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
@@ -116,6 +121,10 @@ export class OidcMiddleware {
       })),
       api: asClass(IdamAPI)
     });
+  }
+
+  private async storeAssignableRoles(req: AuthedRequest): Promise<void> {
+    req.session.user.assignableRoles = await req.scope.cradle.api.getAssignableRoles(req.session.user.roles);
   }
 }
 
