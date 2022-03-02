@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
+import { Role } from '../../interfaces/Role';
 
 export class IdamAPI {
   constructor(
@@ -42,5 +43,56 @@ export class IdamAPI {
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
       });
+  }
+
+  public getRoleByName(name: string): Promise<Role> {
+    return this.axios.get('/roles/name/' + name)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving role by name from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public getAllRoles(): Promise<Role[]> {
+    return this.axios.get('/roles/')
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving all roles from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public async getAssignableRoles(roleNames: string[]) {
+    let rolesMap: Map<string, Role>;
+
+    function traverse(collection: Role[], role: Role): Role[] {
+      if(role === undefined) return collection;
+
+      if(role.assignableRoles?.length > 1) {
+        const assignableRoles = role.assignableRoles.filter(id => role.id !== id).map(id => rolesMap.get(id));
+        return assignableRoles.reduce(traverse, collection);
+      }
+
+      collection.push(role);
+      return collection;
+    }
+
+    return this.getAllRoles()
+      // Sets up roleMap with roleid - role
+      .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
+
+      // Loops over passed roles and gets Role objects from idam-api for each role
+      .then(() => Promise.all(roleNames.map(name => this.getRoleByName(name))))
+
+      // Recursively finds each assignable role for given roles, then gets the name of each role and adds it to the array
+      .then(roles => roles.flatMap(role => traverse([], role)).map(role => role.name))
+
+      // Creates a set from the array of assignable roles to remove duplicates, then converts it back into an array (optimise somehow?)
+      .then(assignableRoles => Array.from(new Set(assignableRoles)));
   }
 }
