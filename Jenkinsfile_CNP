@@ -80,12 +80,10 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/functional/allure",
+      reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
     ]
-
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-output/functional/reports/**/*'
 
     publishHTML target: [
       allowMissing         : true,
@@ -102,12 +100,10 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/functional/allure",
+      reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
     ]
-
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-output/functional/reports/**/*'
 
     publishHTML target: [
       allowMissing         : true,
