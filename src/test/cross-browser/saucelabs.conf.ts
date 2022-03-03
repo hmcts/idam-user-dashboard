@@ -38,7 +38,7 @@ const getBrowserConfig = browserGroup => {
 const setupConfig = {
   tests: '../functional/*-test.ts',
   name: 'cross-browser',
-  output: '../../../test-output/cross-browser/reports',
+  output: '../../../functional-output/cross-browser/reports',
   helpers: {
     Playwright: {
       url: config.TEST_URL,
