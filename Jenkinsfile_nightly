@@ -51,6 +51,8 @@ withNightlyPipeline(type, product, component) {
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
     ]
+
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-output/functional/reports/**/*'
   }
 
   after('crossBrowserTest') {
@@ -62,5 +64,7 @@ withNightlyPipeline(type, product, component) {
       reportFiles          : "index.html",
       reportName           : "Cross Browser Test Report"
     ]
+
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-output/cross-browser/reports/**/*'
   }
 }
