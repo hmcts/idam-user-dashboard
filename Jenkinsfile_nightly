@@ -17,7 +17,8 @@ def component = "user-dashboard"
 def secrets = [
   'idam-idam-${env}': [
     secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
-    secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD')
+    secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD'),
+    secret('launchdarkly-sdk-key', 'LAUNCHDARKLY_SDK_KEY')
   ]
 ]
 
@@ -46,10 +47,12 @@ withNightlyPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/functional/allure",
+      reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
     ]
+
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/functional/reports/**/*'
   }
 
   after('crossBrowserTest') {
@@ -57,9 +60,11 @@ withNightlyPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/cross-browser/allure",
+      reportDir            : "functional-output/cross-browser/allure",
       reportFiles          : "index.html",
       reportName           : "Cross Browser Test Report"
     ]
+
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/cross-browser/reports/**/*'
   }
 }

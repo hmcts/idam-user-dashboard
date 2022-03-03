@@ -9,6 +9,8 @@ import {IdamAPI} from '../../app/idam-api/IdamAPI';
 import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
 import {Logger} from '../../interfaces/Logger';
 import * as appInsights from 'applicationinsights';
+import { HTTPError } from '../../app/errors/HttpError';
+import { constants as http } from 'http2';
 
 export class OidcMiddleware {
 
@@ -94,9 +96,12 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       if (req.session.user) {
-        this.configureApiAuthorization(req);
-        res.locals.isLoggedIn = true;
-        return next();
+        if(req.session.user.roles.includes(config.get('RBAC.access'))) {
+          this.configureApiAuthorization(req);
+          return next();
+        } else {
+          return next(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
+        }
       }
 
       res.redirect(LOGIN_URL);
@@ -104,8 +109,7 @@ export class OidcMiddleware {
   }
 
   private configureApiAuthorization(req: AuthedRequest): void {
-    req.scope = req.app.locals.container.createScope();
-    req.scope.register({
+    req.scope = req.app.locals.container.createScope().register({
       axios: asValue(Axios.create({
         baseURL: config.get('services.idam.url.api'),
         headers: { Authorization: 'Bearer ' + req.session.user.accessToken }
@@ -113,10 +117,6 @@ export class OidcMiddleware {
       api: asClass(IdamAPI)
     });
   }
-}
-
-export type AuthedUser = {
-  id_token: string;
 }
 
 type JWT = {

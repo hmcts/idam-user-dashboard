@@ -37,8 +37,8 @@ const getBrowserConfig = browserGroup => {
 
 const setupConfig = {
   tests: '../functional/*-test.ts',
-  name: 'idam-user-dashboard-cross-browser',
-  output: '../../../test-output/cross-browser/reports',
+  name: 'cross-browser',
+  output: '../../../functional-output/cross-browser/reports',
   helpers: {
     Playwright: {
       url: config.TEST_URL,
@@ -49,6 +49,9 @@ const setupConfig = {
       host: 'ondemand.eu-central-1.saucelabs.com',
       port: 80,
       capabilities: {},
+    },
+    FeatureFlagHelper: {
+      require: '../functional/shared/helpers/featureFlagHelper.ts'
     },
   },
   plugins: {
