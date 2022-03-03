@@ -4,6 +4,7 @@ services:
     url:
       public: STRATEGIC_PUBLIC_URL
       api: STRATEGIC_SERVICE_URL
+      dashboard: DASHBOARD_URL
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'

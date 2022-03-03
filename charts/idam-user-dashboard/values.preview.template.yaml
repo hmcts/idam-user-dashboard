@@ -18,6 +18,7 @@ nodejs:
   autoscaling:
     enabled: false
   environment:
+    DASHBOARD_URL: https://${SERVICE_FQDN}/
     OAUTH_CLIENT_REDIRECT: https://${SERVICE_FQDN}/oauth2/callback
 idam-pr:
   enabled: true

@@ -10,6 +10,7 @@ services:
     url:
       public: 'https://idam-web-public.aat.platform.hmcts.net'
       api: 'https://idam-api.aat.platform.hmcts.net'
+      dashboard: 'http://localhost:3100'
     endpoint:
       authorization: '/o/authorize'
       token: '/o/token'
