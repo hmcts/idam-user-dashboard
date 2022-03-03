@@ -1,5 +1,7 @@
 import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
 import {SearchType} from '../../../../../main/utils/SearchType';
+import { when } from 'jest-when';
+import { Role } from '../../../../../main/interfaces/Role';
 
 describe('IdamAPI', () => {
   const testEmail = 'test@test.com';
@@ -112,6 +114,126 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.editUserById(testUserId, fields)).rejects.toEqual('Error patching user details in IDAM API');
+    });
+  });
+
+  describe('getAllRoles', () => {
+    test('Should return all users', () => {
+      const results = {
+        data: [
+          {
+            id: '1',
+            name: 'test-role-1',
+            assignableRoles: ['test-role-1', 'test-role-2']
+          },
+          {
+            id: '2',
+            name: 'test-role-2',
+            assignableRoles: ['test-role-2']
+          },
+          {
+            id: '3',
+            name: 'test-role-3',
+            assignableRoles: ['test-role-3', 'test-role-1']
+          }
+        ]
+      };
+      const mockAxios = {get: async () => results} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.getAllRoles()).resolves.toEqual(results.data);
+    });
+
+    test('Should return error if API issue', () => {
+      const mockAxios = {get: () => Promise.reject('')} as any;
+      const mockLogger = { error : jest.fn() } as any;
+      const mockTelemetryClient = { trackTrace : jest.fn() } as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.getAllRoles()).rejects.toEqual('Error retrieving all roles from IDAM API');
+    });
+  });
+
+  describe('getAssignableRoles', () => {
+    test('Should return all the assignable roles for a role', () => {
+      const getAllRolesMockResponse: Partial<Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoles: ['2'] },
+        { id: '3', name: 'test-role-3', assignableRoles: ['3', '1'] },
+        { id: '4', name: 'test-role-4', assignableRoles: ['4', '1'] }
+      ];
+      const results = ['test-role-3', 'test-role-1', 'test-role-2'];
+
+      const mockAxios = {get: async () => results} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      api.getAllRoles = jest.fn();
+
+      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      expect(api.getAssignableRoles(['test-role-3'])).resolves.toEqual(results);
+      expect(api.getAllRoles).toBeCalledTimes(1);
+    });
+
+    test('Should return all the assignable roles for a set of roles', () => {
+      const getAllRolesMockResponse: Partial<Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoles: ['2'] },
+        { id: '3', name: 'test-role-3', assignableRoles: ['3', '1'] },
+        { id: '4', name: 'test-role-4', assignableRoles: ['4', '1'] },
+        { id: '5', name: 'test-role-5', assignableRoles: ['5'] },
+        { id: '6', name: 'test-role-6', assignableRoles: ['6', '2', '5'] },
+        { id: '7', name: 'test-role-7', assignableRoles: ['7'] }
+      ];
+      const results = ['test-role-3', 'test-role-1', 'test-role-2', 'test-role-6', 'test-role-5'];
+
+      const mockAxios = {get: async () => results} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      api.getAllRoles = jest.fn();
+
+      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      expect(api.getAssignableRoles(['test-role-3', 'test-role-6'])).resolves.toEqual(results);
+      expect(api.getAllRoles).toBeCalledTimes(1);
+    });
+
+    test('Should return only itself as assignable role if no other assignable roles', () => {
+      const getAllRolesMockResponse: Partial<Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoles: ['2'] },
+      ];
+      const results = ['test-role-2'];
+
+      const mockAxios = {get: async () => results} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      api.getAllRoles = jest.fn();
+
+      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      expect(api.getAssignableRoles(['test-role-2'])).resolves.toEqual(results);
+      expect(api.getAllRoles).toBeCalledTimes(1);
+    });
+
+    test('Should return empty if no assignable roles or role undefined', () => {
+      const getAllRolesMockResponse: Partial<Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoles: [] },
+        { id: '3', name: 'test-role-3' },
+      ];
+
+      const mockAxios = {get: async () => jest.fn()} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      api.getAllRoles = jest.fn();
+
+      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      expect(api.getAssignableRoles(['test-role-2', 'test-role-3'])).resolves.toEqual([]);
+      expect(api.getAllRoles).toBeCalledTimes(1);
     });
   });
 

@@ -3,6 +3,7 @@ import { User } from '../../interfaces/User';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
 import { Role } from '../../interfaces/Role';
+import { SearchType } from '../../utils/SearchType';
 
 export class IdamAPI {
   constructor(
@@ -11,7 +12,8 @@ export class IdamAPI {
     private readonly telemetryClient: TelemetryClient
   ) { }
 
-  public getUserDetails(type: string, query: string): Promise<User[]> {
+
+  public getUserDetails(type: SearchType, query: string): Promise<User[]> {
     return this.axios
       .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
       .then(results => results.data)
@@ -60,14 +62,15 @@ export class IdamAPI {
     const rolesMap: Map<string, Role> = new Map<string, Role>();
 
     function traverse(collection: Role[], role: Role): Role[] {
-      if(role === undefined) return collection;
+      if(!role.assignableRoles || !role.assignableRoles.length) return collection;
+
+      collection.push(role);
 
       if(role.assignableRoles?.length > 1) {
         const assignableRoles = role.assignableRoles.filter(id => role.id !== id).map(id => rolesMap.get(id));
         return assignableRoles.reduce(traverse, collection);
       }
 
-      collection.push(role);
       return collection;
     }
 
