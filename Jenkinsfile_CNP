@@ -80,10 +80,11 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/functional/allure",
+      reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
     ]
+
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -99,7 +100,7 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/functional/allure",
+      reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
       reportName           : "Functional Test Report"
     ]
