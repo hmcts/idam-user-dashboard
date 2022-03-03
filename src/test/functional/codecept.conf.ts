@@ -3,7 +3,7 @@ import {deleteAllTestData} from './shared/apiHelpers';
 
 export const config: CodeceptJS.Config = {
   tests: './*-test.ts',
-  output: '../../../test-output/functional/reports',
+  output: '../../../functional-output/functional/reports',
   helpers: testConfig.helpers,
   timeout: testConfig.WaitForTimeout,
   include: {
