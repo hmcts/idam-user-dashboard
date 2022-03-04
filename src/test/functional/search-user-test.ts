@@ -24,7 +24,6 @@ incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as an user should be able to see proper error message if search text is not in the right format', ({I, current}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -38,7 +37,6 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
 
 Scenario('@CrossBrowser I should be able to search with user-email', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -66,7 +64,6 @@ Scenario('@CrossBrowser I should be able to search with user-email', async ({I})
 
 Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -94,7 +91,6 @@ Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) =>
 
 Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -122,7 +118,6 @@ Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => 
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -138,7 +133,6 @@ Scenario('When there is a collision between user-id and sso-id, user details sho
 
 Scenario('I as an user should be able to see proper error message if search text left blank', ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -151,7 +145,6 @@ Scenario('I as an user should be able to see proper error message if search text
 
 Scenario('I as an user should be able to see proper error message if user does not exist', ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');

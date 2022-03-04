@@ -26,7 +26,6 @@ Scenario('@CrossBrowser I should be able to see the active status of an user', a
   const activeUser = await getUserDetails(activeUserEmail);
 
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -67,7 +66,6 @@ Scenario('I should be able to see the suspended status of an user', async ({I}) 
   await suspendUser(user.id, suspendUserEmail);
 
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -90,7 +88,6 @@ Scenario('I should be able to see the stale status of an user', async ({I}) => {
   await retireStaleUser(user.id);
 
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Add new users');
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
