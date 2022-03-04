@@ -24,7 +24,6 @@ Scenario('@CrossBrowser I as an user should be able to edit and update the user-
     const activeUser = await getUserDetails(activeUserEmail);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-    I.waitForText('Add new users');
     I.waitForText('Manage existing users');
     I.click('Manage existing users');
     I.click('Continue');
