@@ -13,6 +13,8 @@ nodejs:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
         - idam-user-dashboard-client-secret
+        - idam-user-dashboard-systemUser-username
+        - idam-user-dashboard-systemUser-password
         - redis-hostname
         - redis-port`
         - redis-key
