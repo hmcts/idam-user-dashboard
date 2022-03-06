@@ -16,7 +16,7 @@ nodejs:
         - idam-user-dashboard-systemUser-username
         - idam-user-dashboard-systemUser-password
         - redis-hostname
-        - redis-port`
+        - redis-port
         - redis-key
   environment:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
