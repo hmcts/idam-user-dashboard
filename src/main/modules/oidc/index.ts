@@ -1,132 +1,98 @@
-import {Application, NextFunction, Request, Response} from 'express';
-import {asClass, asValue} from 'awilix';
-import Axios from 'axios';
+import { Application, NextFunction, Request, Response } from 'express';
+import { asClass, asValue } from 'awilix';
 import config from 'config';
-import {AuthedRequest} from '../../interfaces/AuthedRequest';
-// eslint-disable-next-line @typescript-eslint/camelcase
-import jwt_decode from 'jwt-decode';
-import {IdamAPI} from '../../app/idam-api/IdamAPI';
-import {HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL} from '../../utils/urls';
-import {Logger} from '../../interfaces/Logger';
-import * as appInsights from 'applicationinsights';
+import { AppSession, AuthedRequest } from '../../interfaces/AuthedRequest';
+import { HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL } from '../../utils/urls';
+import { Logger } from '../../interfaces/Logger';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
+import { IdamAuth, OIDCSession } from '../../app/idam-auth/IdamAuth';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
+import { OIDCToken } from '../../app/idam-auth/OIDCToken';
+import { defaultClient } from 'applicationinsights';
 
 export class OidcMiddleware {
 
-  constructor(public logger: Logger) {
-    this.logger = logger;
-  }
+  constructor(
+    private readonly logger: Logger
+  ) {}
 
   public enableFor(app: Application): void {
-    const IDAM_API = config.get('services.idam.url.api');
-    const IDAM_PUBLIC = config.get('services.idam.url.public');
+    const idamAuth = new IdamAuth(this.logger, defaultClient);
+    const ACCESS_ROLE: string = config.get('RBAC.access');
 
-    const { authorization, token, endSession } = config.get('services.idam.endpoint');
-    const { clientID, clientSecret, responseType, callbackURL, scope } = config.get('services.idam');
-    const authParams = new URLSearchParams({
-      'client_id': clientID,
-      'response_type': responseType,
-      'redirect_uri': callbackURL,
-      'scope': scope
-    }).toString();
+    app.get(LOGIN_URL, (req: Request, res: Response) => res.redirect(idamAuth.getAuthorizeRedirect()));
 
-    app.get(LOGIN_URL, (req: Request, res: Response) => {
-      res.redirect(`${IDAM_PUBLIC + authorization}?${authParams}&prompt=login`);
+    app.get(OAUTH2_CALLBACK_URL, (req: Request, res: Response, next: NextFunction) => {
+      return idamAuth.authorizeCode(req.query.code as string)
+        .then(newSession => this.saveConfiguredSession(newSession, req.session))
+        .then(() => res.redirect(HOME_URL))
+        .catch(error => next(error));
     });
 
-    app.get(OAUTH2_CALLBACK_URL, async (req: Request, res: Response) => {
-      try {
-        const response: idamResponse = (await Axios.post(
-          IDAM_PUBLIC + token,
-          new URLSearchParams({
-            'client_id': clientID,
-            'client_secret': clientSecret,
-            'grant_type': 'authorization_code',
-            'redirect_uri': callbackURL,
-            'code': req.query.code as string,
-          })
-        )).data;
+    app.get(LOGOUT_URL, (req: AuthedRequest, res: Response) => {
+      if (!req.session.user) return res.redirect(LOGIN_URL);
 
-        const jwt: JWT = jwt_decode(response.id_token);
+      req.session.destroy(() => {
+        res.clearCookie(config.get('session.cookie.name'));
+        res.redirect(LOGIN_URL);
+      });
+    });
 
-        req.session.user = {
-          accessToken: response.access_token,
-          idToken: response.id_token,
-          id: jwt.uid,
-          name: jwt.name,
-          email: jwt.sub,
-          roles: jwt.roles,
-        };
+    // Reject any logged out, expired or bad sessions
+    app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
+      const { user, tokens } = req.session;
 
-        req.session.save(() => res.redirect(HOME_URL));
-      } catch (error) {
-        const message = 'Failed to sign in with the authorization code. '
-          + (error.response?.data?.error_description ? error.response.data.error_description : '');
-        appInsights.defaultClient.trackTrace({message: message});
-        this.logger.error(message);
-        return res.redirect(HOME_URL);
+      if (!user) {
+        return res.redirect(LOGIN_URL);
       }
-    });
 
-    app.get(LOGOUT_URL, async (req: Request, res: Response) => {
-      if (req.session.user) {
-        try {
-          await Axios.get(
-            IDAM_API + endSession,
-            { params: new URLSearchParams({
-              'id_token_hint': req.session.user.idToken,
-              'post_logout_redirect_uri': `${req.protocol}://${req.headers.host}`
-            })}
-          );
-        } catch (e) {
-          const message = 'Failed to end IDAM session for user: ' + req.session.user.id;
-          appInsights.defaultClient.trackTrace({message: message});
-          this.logger.error(message);
-        }
-
-        req.session.destroy( () => {
+      if(OIDCToken.isExpired(tokens.accessToken)) {
+        return req.session.destroy(() => {
           res.clearCookie(config.get('session.cookie.name'));
           res.redirect(LOGIN_URL);
         });
-      } else {
-        res.redirect(LOGIN_URL);
       }
+
+      if (!user.roles.includes(ACCESS_ROLE)) {
+        return req.session.destroy(() => {
+          res.clearCookie(config.get('session.cookie.name'));
+          next(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
+        });
+      }
+
+      return next();
     });
 
+    // Refresh access token if close to expiring
+    app.use(async (req: AuthedRequest, res: Response, next: NextFunction) => {
+      const {accessToken, refreshToken} = req.session.tokens;
+
+      if (OIDCToken.isStale(accessToken)) {
+        await idamAuth.authorizeRefresh(refreshToken.raw)
+          .then(refreshedSession => this.saveConfiguredSession(refreshedSession, req.session))
+          .catch(error => next(error));
+      }
+
+      return next();
+    });
+
+    // Configure API
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      if (req.session.user) {
-        if(req.session.user.roles.includes(config.get('RBAC.access'))) {
-          this.configureApiAuthorization(req);
-          return next();
-        } else {
-          return next(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
-        }
-      }
+      req.scope = req.app.locals.container.createScope().register({
+        userAxios: asValue(idamAuth.getUserAxios(req.session.tokens.accessToken)),
+        api: asClass(IdamAPI)
+      });
 
-      res.redirect(LOGIN_URL);
+      return next();
     });
   }
 
-  private configureApiAuthorization(req: AuthedRequest): void {
-    req.scope = req.app.locals.container.createScope().register({
-      axios: asValue(Axios.create({
-        baseURL: config.get('services.idam.url.api'),
-        headers: { Authorization: 'Bearer ' + req.session.user.accessToken }
-      })),
-      api: asClass(IdamAPI)
+  private saveConfiguredSession(newSession: OIDCSession, session: Partial<AppSession>): Promise<AppSession> {
+    return new Promise((resolve) => {
+      session.user = newSession.user;
+      session.tokens = newSession.tokens;
+      session.save(() => resolve(session as AppSession));
     });
   }
-}
-
-type JWT = {
-  uid: string;
-  sub: string;
-  name: string;
-  roles: string[];
-}
-
-type idamResponse = {
-  access_token: string;
-  id_token: string;
 }
