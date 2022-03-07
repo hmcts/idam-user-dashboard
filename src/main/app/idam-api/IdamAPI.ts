@@ -49,6 +49,17 @@ export class IdamAPI {
       });
   }
 
+  public deleteUserById(id: string) {
+    return this.userAxios
+      .delete('/api/v1/users/' + id)
+      .catch(error => {
+        const errorMessage = 'Error deleting user by ID from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
+      });
+  }
+
   public getAllRoles(): Promise<Role[]> {
     return this.systemAxios
       .get('/roles/')
