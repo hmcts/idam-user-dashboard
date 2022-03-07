@@ -2,6 +2,8 @@ import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
+import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
+import { Service } from '../../interfaces/Service';
 
 export class IdamAPI {
   constructor(
@@ -38,6 +40,30 @@ export class IdamAPI {
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error patching user details in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public registerUser(user: UserRegistrationDetails): Promise<void> {
+    return this.axios
+      .post('/api/v1/users/registration', user)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error register new user in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public getAllServices(): Promise<Service[]> {
+    return this.axios
+      .get('/services')
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving all services from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
