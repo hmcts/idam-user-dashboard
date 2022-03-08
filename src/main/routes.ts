@@ -19,4 +19,5 @@ export default function(app: Application): void {
   app.get(MANAGER_USERS_URL, app.locals.container.cradle.manageUsersController.get);
   app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, featureFlags.toggleRoute(BETA_FEATURES), app.locals.container.cradle.userActionsController.post);
+  app.post(USER_DELETE_URL, app.locals.container.cradle.userDeleteController.post);
 }
