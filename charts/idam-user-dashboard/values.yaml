@@ -5,7 +5,7 @@ nodejs:
   memoryLimits: 1024Mi
   memoryRequests: 256Mi
   aadIdentityName: idam
-  ingressHost: "idam-user-dashboard.service.core-compute-{{ .Values.global.environment }}.internal"
+  ingressHost: idam-user-dashboard.service.core-compute-{{ .Values.global.environment }}.internal
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
   keyVaults:
     idam-idam:
