@@ -20,6 +20,7 @@ import {
 } from '../utils/error';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError } from '../interfaces/PageData';
+import { USER_DELETE_URL } from '../utils/urls';
 
 @autobind
 export class UserActionsController extends RootController{
@@ -33,6 +34,8 @@ export class UserActionsController extends RootController{
             return this.saveUser(req, res, user);
           case 'edit':
             return this.editUser(req, res, user);
+          case 'delete':
+            return res.redirect(307, USER_DELETE_URL);
         }});
   }
 
