@@ -15,6 +15,7 @@ describe('User actions controller', () => {
   const mockApi: Mocked<IdamAPI> = {
     getUserById: jest.fn(),
     getUserDetails: jest.fn(),
+    deleteUserById: jest.fn(),
     getAllRoles: jest.fn(),
     getAssignableRoles: jest.fn(),
     editUserById: jest.fn()
