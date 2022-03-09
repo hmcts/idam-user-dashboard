@@ -63,7 +63,7 @@ export class IdamAPI {
   }
 
   public registerUser(user: UserRegistrationDetails): Promise<void> {
-    return this.axios
+    return this.userAxios
       .post('/api/v1/users/registration', user)
       .then(results => results.data)
       .catch(error => {
@@ -75,7 +75,7 @@ export class IdamAPI {
   }
 
   public getAllServices(): Promise<Service[]> {
-    return this.axios
+    return this.userAxios
       .get('/services')
       .then(results => results.data)
       .catch(error => {

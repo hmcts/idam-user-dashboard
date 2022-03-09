@@ -31,7 +31,7 @@ describe('IdamAPI', () => {
         const mockAxios = {get: async () => results} as any;
         const mockLogger = {} as any;
         const mockTelemetryClient = {} as any;
-        const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+        const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
         await expect(api.getUserDetails(parameter.searchType, parameter.input)).resolves.toEqual(results.data);
       });
@@ -41,7 +41,7 @@ describe('IdamAPI', () => {
       const mockAxios = { get: async () => { throw new Error ('error'); } } as any;
       const mockLogger = { error: jest.fn() } as any;
       const mockTelemetryClient = { trackTrace: jest.fn() } as any;
-      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       await expect(api.getUserDetails(SearchType['Email'], testEmail)).resolves.toEqual([]);
     });
@@ -272,11 +272,21 @@ describe('IdamAPI', () => {
     });
   });
 
-  test('Should not return results from getUserDetails request if error', async () => {
-    const mockAxios = { get: async () => { throw new Error ('error'); } } as any;
-    const mockLogger = { error: jest.fn() } as any;
-    const mockTelemetryClient = { trackTrace: jest.fn() } as any;
-    const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+  describe('registerUser', () => {
+    const input = {
+      email: testEmail,
+      firstName: 'firstName',
+      lastName: 'lastName',
+      roles: ['IDAM_SUPER_USER']
+    };
+
+    test('Should register a new user', () => {
+      const testValue = 1;
+      const result = {data: testValue};
+      const mockAxios = {post: async () => Promise.resolve(result)} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.registerUser(input)).resolves.toEqual(testValue);
     });
@@ -291,7 +301,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.registerUser(input)).rejects.toEqual('Error register new user in IDAM API');
     });
@@ -315,7 +325,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getAllServices()).resolves.toEqual(results.data);
     });
@@ -330,7 +340,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getAllServices()).rejects.toEqual('Error retrieving all services from IDAM API');
     });
