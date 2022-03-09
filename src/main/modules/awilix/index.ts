@@ -14,6 +14,7 @@ const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
 import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
+import { UserEditController } from '../../controllers/UserEditController';
 
 /**
  * Sets up the dependency injection container
@@ -30,6 +31,7 @@ export class Container {
       addUsersController: asClass(AddUsersController),
       addUserDetailsController: asClass(AddUserDetailsController),
       manageUsersController: asClass(ManageUsersController),
+      userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
       userActionsController: asClass(UserActionsController)
     });
