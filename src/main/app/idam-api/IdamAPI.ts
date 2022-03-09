@@ -90,17 +90,17 @@ export class IdamAPI {
     return this.getAllRoles()
       // Sets up roleMap with roleid - role
       .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
+      .then(() => {
+        const collection: Set<string> = new Set();
 
-      // Map given role names to roles in rolesMap and return complete role objects.
-      .then(() => Array.from(rolesMap.values()).filter(value => roleNames.includes(value.name)))
+        Array.from(rolesMap.values())
+          .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+          .forEach(role => role.assignableRoles
+            .forEach(assignableRole => traverse([], rolesMap.get(assignableRole))
+              .forEach(roleName => collection.add(roleName.name))
+            ));
 
-      // Get assignable roles of given roles
-      .then(roles => roles.flatMap(role => role.assignableRoles?.map(assignableRole => rolesMap.get(assignableRole))))
-
-      // Recursively finds each assignable role for given roles, then gets the name of each role and adds it to the array
-      .then(roles => roles.flatMap(role => traverse([], role)).map(role => role.name))
-
-      // Creates a set from the array of assignable roles to remove duplicates, then converts it back into an array (optimise somehow?)
-      .then(assignableRoles => Array.from(new Set(assignableRoles)));
+        return Array.from(collection);
+      });
   }
 }
