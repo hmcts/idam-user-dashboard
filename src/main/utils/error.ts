@@ -11,5 +11,7 @@ export const USER_EMPTY_FORENAME_ERROR = 'You must enter a forename for the user
 export const USER_EMPTY_SURNAME_ERROR = 'You must enter a surname for the user';
 export const USER_EMPTY_EMAIL_ERROR = 'You must enter an email for the user';
 export const USER_DELETE_FAILED_ERROR = 'An error occurred whilst deleting this user';
+export const MISSING_USER_TYPE_ERROR = 'You must select an user type';
+export const MISSING_PRIVATE_BETA_SERVICE_ERROR = 'You must select a service';
 
 export const duplicatedEmailError = (email: string) => `The email '${email}' already exists`;

@@ -1,10 +1,12 @@
 import { Application } from 'express';
 import {
   ADD_USER_DETAILS_URL,
-  ADD_USERS_URL, USER_DELETE_URL,
+  ADD_USERS_URL,
+  USER_DELETE_URL,
   HOME_URL,
   MANAGER_USERS_URL,
-  USER_ACTIONS_URL, USER_DETAILS_URL,
+  USER_ACTIONS_URL,
+  USER_DETAILS_URL
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
 import { BETA_FEATURES } from './app/feature-flags/flags';

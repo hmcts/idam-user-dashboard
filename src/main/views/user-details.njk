@@ -135,7 +135,6 @@
     </div>
   </dl>
 
-  {% if featureFlags['idam-user-dashboard--beta-features'] %}
   <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
     {{ csrfProtection(csrfToken) }}
     <input type="hidden" name="_userId" value="{{ content.user.id }}">
@@ -145,7 +144,6 @@
       {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.showDelete }}
     </div>
   </form>
-  {% endif %}
 
   {{ govukBackLink({
     text: "Return to search",

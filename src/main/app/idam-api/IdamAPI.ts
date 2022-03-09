@@ -5,6 +5,8 @@ import { TelemetryClient } from 'applicationinsights';
 import { Role } from '../../interfaces/Role';
 import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
+import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
+import { Service } from '../../interfaces/Service';
 
 export class IdamAPI {
   constructor(
@@ -57,6 +59,30 @@ export class IdamAPI {
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         throw new Error(errorMessage);
+      });
+  }
+
+  public registerUser(user: UserRegistrationDetails): Promise<void> {
+    return this.axios
+      .post('/api/v1/users/registration', user)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error register new user in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public getAllServices(): Promise<Service[]> {
+    return this.axios
+      .get('/services')
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving all services from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
       });
   }
 

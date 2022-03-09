@@ -1,0 +1,28 @@
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['User registration completion']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      {{ govukPanel({
+        titleText: "User registered",
+      }) }}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <form method="REDIRECT" action="{{ urls.HOME_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <button type="submit" class="govuk-back-link">Return to main menu</button>
+    </form>
+  </div>
+{% endblock %}
