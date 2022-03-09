@@ -6,15 +6,14 @@ import { AddUserDetailsController } from '../../controllers/AddUserDetailsContro
 import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
 import { UserActionsController } from '../../controllers/UserActionsController';
+import { UserDeleteController } from '../../controllers/UserDeleteController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
-
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
 import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
-import { UserDeleteController } from '../../controllers/UserDeleteController';
 
 /**
  * Sets up the dependency injection container

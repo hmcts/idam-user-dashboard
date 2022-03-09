@@ -95,7 +95,6 @@ export class OidcMiddleware {
 
       return next();
     });
-  }
 
   private saveConfiguredSession(newSession: OIDCSession, session: Partial<AppSession>): Promise<AppSession> {
     return new Promise((resolve) => {
