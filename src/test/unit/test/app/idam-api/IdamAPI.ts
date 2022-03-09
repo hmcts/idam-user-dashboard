@@ -142,9 +142,11 @@ describe('IdamAPI', () => {
         { id: '4', name: 'test-role-4', assignableRoles: ['4', '1'] },
         { id: '5', name: 'test-role-5', assignableRoles: ['5'] },
         { id: '6', name: 'test-role-6', assignableRoles: ['6', '2', '5'] },
-        { id: '7', name: 'test-role-7', assignableRoles: ['7'] }
+        { id: '7', name: 'test-role-7', assignableRoles: ['7'] },
+        { id: '8', name: 'test-role-8', assignableRoles: ['9'] },
+        { id: '9', name: 'test-role-9', assignableRoles: [] }
       ];
-      const results = ['test-role-3', 'test-role-1', 'test-role-2', 'test-role-6', 'test-role-5'];
+      const results = ['test-role-3', 'test-role-1', 'test-role-2', 'test-role-6', 'test-role-5', 'test-role-9'];
 
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
@@ -153,7 +155,7 @@ describe('IdamAPI', () => {
       api.getAllRoles = jest.fn();
 
       when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
-      expect(api.getAssignableRoles(['test-role-3', 'test-role-6'])).resolves.toEqual(results);
+      expect(api.getAssignableRoles(['test-role-3', 'test-role-6', 'test-role-8'])).resolves.toEqual(results);
       expect(api.getAllRoles).toBeCalledTimes(1);
     });
 

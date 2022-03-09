@@ -76,8 +76,7 @@ export class IdamAPI {
     const rolesMap: Map<string, Role> = new Map<string, Role>();
 
     function traverse(collection: Role[], role: Role): Role[] {
-      if(!role.assignableRoles || !role.assignableRoles.length) return collection;
-
+      if(!role) return collection;
       collection.push(role);
 
       if(role.assignableRoles?.length > 1) {
@@ -94,6 +93,9 @@ export class IdamAPI {
 
       // Map given role names to roles in rolesMap and return complete role objects.
       .then(() => Array.from(rolesMap.values()).filter(value => roleNames.includes(value.name)))
+
+      // Get assignable roles of given roles
+      .then(roles => roles.flatMap(role => role.assignableRoles?.map(assignableRole => rolesMap.get(assignableRole))))
 
       // Recursively finds each assignable role for given roles, then gets the name of each role and adds it to the array
       .then(roles => roles.flatMap(role => traverse([], role)).map(role => role.name))
