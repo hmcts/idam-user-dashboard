@@ -1,5 +1,7 @@
+import { User } from './User';
+
 export interface PageData {
-  user?: PageUser;
+  user?: Partial<User>;
   error?: PageError;
   content?: PageContent;
   featureFlags?: PageFeatureFlags;
@@ -22,9 +24,4 @@ export interface PageError {
   [key: string]: {
     message: string;
   };
-}
-
-export interface PageUser {
-  name: string;
-  email: string;
 }
