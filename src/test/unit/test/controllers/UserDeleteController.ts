@@ -5,7 +5,7 @@ import { UserDeleteController } from '../../../../main/controllers/UserDeleteCon
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 import { when } from 'jest-when';
 import { MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR } from '../../../../main/utils/error';
-import { MANAGER_USERS_URL, USER_DETAILS_URL } from '../../../../main/utils/urls';
+import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
 
 type Mocked<T> = { [P in keyof T]: jest.Mock; };
 
@@ -60,7 +60,7 @@ describe('User delete controller', () => {
     when(mockApi.deleteUserById).calledWith(userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(MANAGER_USERS_URL);
+    expect(res.render).toBeCalledWith('delete-user-successful', { content: { user: userData } });
   });
 
   test('Should redirect to the user details page after cancelling delete user', async () => {
