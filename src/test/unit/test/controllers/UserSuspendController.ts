@@ -1,0 +1,121 @@
+import { mockResponse } from '../../utils/mockResponse';
+import { mockRequest } from '../../utils/mockRequest';
+import { mockRootController } from '../../utils/mockRootController';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import { when } from 'jest-when';
+import { MISSING_OPTION_ERROR, USER_UPDATE_FAILED_ERROR } from '../../../../main/utils/error';
+import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
+import { UserSuspendController } from '../../../../main/controllers/UserSuspendController';
+
+type Mocked<T> = { [P in keyof T]: jest.Mock; };
+
+describe('User suspend controller', () => {
+  mockRootController();
+  let req: any;
+  const res = mockResponse();
+  const controller = new UserSuspendController();
+  const mockApi: Mocked<IdamAPI> = {
+    getUserById: jest.fn(),
+    getUserDetails: jest.fn(),
+    editUserById: jest.fn()
+  };
+
+  beforeEach(() => {
+    req = mockRequest();
+    req.scope.cradle.api = mockApi;
+  });
+
+  test('Should render the user suspend page', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    req.body = { _userId: userData.id };
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData } });
+  });
+
+  test('Should render the user suspend successful page after suspending a user', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmRadio: 'true' };
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(userData.id, { active: false }).mockReturnValue(Promise.resolve());
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('suspend-user-successful', { content: { user: userData } });
+  });
+
+  test('Should redirect to the user details page after cancelling suspend user', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmRadio: 'false' };
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+
+    await controller.post(req, res);
+    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL);
+  });
+
+  test('Should render the suspend user page with validation errors after confirming', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    const error = { confirmRadio: { message: MISSING_OPTION_ERROR } };
+
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    req.body = { _userId: userData.id, _action: 'confirm-suspend' };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
+  });
+
+  test('Should render the suspend user page after there was an API issue', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    const error = { userSuspendForm: { message: USER_UPDATE_FAILED_ERROR } };
+
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(userData.id, { active: false }).mockReturnValue(Promise.reject('Failed'));
+
+    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmRadio: 'true' };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
+  });
+});

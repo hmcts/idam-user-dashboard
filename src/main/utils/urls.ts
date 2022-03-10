@@ -10,6 +10,4 @@ export const ADD_USER_DETAILS_URL = '/users/add/details';
 export const USER_DETAILS_URL = '/users/details';
 export const USER_ACTIONS_URL = '/users/actions';
 export const EDIT_USER_URL = '/users/edit';
-
-// Internal URLs
-export const USER_RESULTS_URL = '/user-results';
+export const USER_SUSPEND_URL = '/users/suspend';

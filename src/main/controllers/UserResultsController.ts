@@ -17,7 +17,7 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 export class UserResultsController extends RootController {
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    const input: string = req.body.search ?? '';
+    const input: string = req.body.search || req.body._userId || '';
 
     if (isEmpty(input)) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
@@ -59,9 +59,11 @@ export class UserResultsController extends RootController {
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'manage-users', { error: {
-      search: { message: errorMessage }
-    }});
+    return super.post(req, res, 'manage-users', {
+      error: {
+        search: {message: errorMessage}
+      }
+    });
   }
 
   private preprocessSearchResults(user: User): void {

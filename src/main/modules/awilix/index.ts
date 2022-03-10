@@ -15,6 +15,7 @@ import { defaultClient } from 'applicationinsights';
 import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
+import { UserSuspendController } from '../../controllers/UserSuspendController';
 
 /**
  * Sets up the dependency injection container
@@ -33,7 +34,8 @@ export class Container {
       manageUsersController: asClass(ManageUsersController),
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
-      userActionsController: asClass(UserActionsController)
+      userActionsController: asClass(UserActionsController),
+      userSuspendController: asClass(UserSuspendController)
     });
 
     /**
