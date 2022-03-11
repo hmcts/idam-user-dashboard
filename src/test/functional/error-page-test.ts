@@ -10,18 +10,18 @@ BeforeSuite(async () => {
 });
 
 Before(async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
+  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  await I.waitForText('Manage existing users');
 });
 
-Scenario('@CrossBrowser I as a system owner should be able to see Status code: 404 error code if page not exists', ({I}) => {
-  I.amOnPage('/pageNotFound');
-  I.waitForText('Page not found');
-  I.waitForText('Status code: 404');
+Scenario('@CrossBrowser I as a system owner should be able to see Status code: 404 error code if page not exists', async ({I}) => {
+  await I.amOnPage('/pageNotFound');
+  await I.waitForText('Page not found');
+  await I.waitForText('Status code: 404');
 });
 
-Scenario('@CrossBrowser I as a system owner should be able to see Status code: 403 error code if _csrf value has changed', ({I}) => {
-  I.fillField('_csrf', 'changedFieldValue');
-  I.click('Continue');
-  I.waitForText('Status code: 403');
+Scenario('@CrossBrowser I as a system owner should be able to see Status code: 403 error code if _csrf value has changed', async ({I}) => {
+  await I.fillField('_csrf', 'changedFieldValue');
+  await I.click('Continue');
+  await I.waitForText('Status code: 403');
 });
