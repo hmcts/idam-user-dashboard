@@ -101,7 +101,7 @@ Scenario('I as a user if I have the right role, should be able delete user succe
   }
 );
 
-Scenario('I as a user should be able delete users with same role successfully',
+Scenario('@CrossBrowser I as a user should be able delete users with same role successfully',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
     const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
@@ -120,8 +120,14 @@ Scenario('I as a user should be able delete users with same role successfully',
     await I.click('Yes');
     await I.click('Continue');
     await I.waitForText('User deleted successfully');
-    await I.click('Search for another user');
-    await I.waitForText('Manage Users');
+    await I.click('Return to main menu');
+    await I.click('Manage existing users');
+    await I.click('Continue');
+    await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    await I.click('#search');
+    await I.fillField('#search', deletableUserEmail);
+    await I.click('Search');
+    await I.waitForText('No user matches your search for: ' + deletableUserEmail);
   }
 );
 
