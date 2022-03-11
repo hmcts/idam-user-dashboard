@@ -23,21 +23,21 @@ Scenario('@CrossBrowser I as a user should be able to edit and update the user-d
     await createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
     const activeUser = await getUserDetails(activeUserEmail);
 
-    await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-    await I.waitForText('Manage existing users');
-    await I.click('Manage existing users');
-    await I.click('Continue');
-    await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    await I.click('#search');
-    await I.fillField('#search', activeUserEmail);
-    await I.click('Search');
-    await I.waitForText('User Details');
-    await I.click('Edit user');
-    await I.waitForText('Edit Users');
+    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage existing users');
+    I.click('Manage existing users');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+    I.click('Edit user');
+    I.waitForText('Edit Users');
 
-    await I.dontSee('Edit user');
-    await I.dontSee('Suspend user');
-    await I.dontSee('Delete user');
+    I.dontSee('Edit user');
+    I.dontSee('Suspend user');
+    I.dontSee('Delete user');
 
     //Checks whether correct user-details retrieved
     const forename = await I.grabValueFrom('#forename');
@@ -53,13 +53,13 @@ Scenario('@CrossBrowser I as a user should be able to edit and update the user-d
     const updatedSurname = testConfig.USER_FIRSTNAME + randomData.getRandomString(10);
     const updatedEmail = randomData.getRandomString(3) + activeUserEmail;
 
-    await I.fillField('#forename', updatedForname);
-    await I.fillField('#surname', updatedSurname);
-    await I.fillField('#email', updatedEmail);
+    I.fillField('#forename', updatedForname);
+    I.fillField('#surname', updatedSurname);
+    I.fillField('#email', updatedEmail);
 
-    await I.click('Save');
-    await I.see('Success');
-    await I.waitForText('User details updated successfully');
+    I.click('Save');
+    I.see('Success');
+    I.waitForText('User details updated successfully');
 
     //Checks whether updated user-details retrieved
     const forenameUpdated = await I.grabValueFrom('#forename');

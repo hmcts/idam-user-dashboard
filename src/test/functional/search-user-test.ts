@@ -23,28 +23,28 @@ incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format', async ({I, current}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', current.incorrectEmailAddress);
-  await I.click('Search');
-  await I.seeElement('#search-error');
-  await I.waitForText('The email address is not in the correct format');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', current.incorrectEmailAddress);
+  I.click('Search');
+  I.seeElement('#search-error');
+  I.waitForText('The email address is not in the correct format');
 });
 
 Scenario('@CrossBrowser I should be able to search with user-email', async ({I}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', citizenUserEmail);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', citizenUserEmail);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(), 'Active');
@@ -63,15 +63,15 @@ Scenario('@CrossBrowser I should be able to search with user-email', async ({I})
 });
 
 Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', citizenUser.id);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', citizenUser.id);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(), 'Active');
@@ -90,15 +90,15 @@ Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) =>
 });
 
 Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', citizenUser.ssoId);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', citizenUser.ssoId);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(), 'Active');
@@ -117,40 +117,40 @@ Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => 
 });
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', conflictUser.ssoId);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', conflictUser.ssoId);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const status = await I.grabTextFrom('#user-id');
   Assert.equal(status.trim(), citizenUser.id);
 });
 
 Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.click('Search');
-  await I.seeElement('#search-error');
-  await I.waitForText('You must enter an email address');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.click('Search');
+  I.seeElement('#search-error');
+  I.waitForText('You must enter an email address');
 });
 
 Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', 'meTesting@test.com');
-  await I.click('Search');
-  await I.waitForText('No user matches your search for: meTesting@test.com');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', 'meTesting@test.com');
+  I.click('Search');
+  I.waitForText('No user matches your search for: meTesting@test.com');
 });

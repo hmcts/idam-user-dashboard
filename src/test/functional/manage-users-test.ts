@@ -25,15 +25,15 @@ Scenario('@CrossBrowser I as a user should be able to see the active status of a
   await createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
   const activeUser = await getUserDetails(activeUserEmail);
 
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', activeUserEmail);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', activeUserEmail);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const createDate = convertISODateTimeToUTCFormat(activeUser[0].createDate);
   const lastModified = convertISODateTimeToUTCFormat(activeUser[0].lastModified);
@@ -65,15 +65,15 @@ Scenario('I as a user should be able to see the suspended status of a user', asy
   const user = await createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
   await suspendUser(user.id, suspendUserEmail);
 
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', suspendUserEmail);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', suspendUserEmail);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const email = await I.grabTextFrom('#email');
   Assert.equal(email.trim(), suspendUserEmail);
@@ -88,14 +88,14 @@ Scenario('I as a user should be able to see the stale status of a user', async (
   await retireStaleUser(user.id);
 
   await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  await I.waitForText('Manage existing users');
-  await I.click('Manage existing users');
-  await I.click('Continue');
-  await I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  await I.click('#search');
-  await I.fillField('#search', staleUserEmail);
-  await I.click('Search');
-  await I.waitForText('User Details');
+  I.waitForText('Manage existing users');
+  I.click('Manage existing users');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', staleUserEmail);
+  I.click('Search');
+  I.waitForText('User Details');
 
   const email = await I.grabTextFrom('#email');
   Assert.equal(email.trim(), staleUserEmail);
