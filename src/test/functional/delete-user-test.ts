@@ -60,7 +60,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
   }
 );
 
-Scenario('I as a user if I have the right role, should be able delete user successfully',
+Scenario('@CrossBrowser I as a user if I have the right role, should be able delete user successfully',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
     const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
@@ -101,7 +101,7 @@ Scenario('I as a user if I have the right role, should be able delete user succe
   }
 );
 
-Scenario('@CrossBrowser I as a user should be able delete users with same role successfully',
+Scenario('I as a user should be able delete users with same role successfully',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
     const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
