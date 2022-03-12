@@ -13,12 +13,15 @@ nodejs:
         - AppInsightsInstrumentationKey
         - launchdarkly-sdk-key
         - idam-user-dashboard-client-secret
+        - idam-user-dashboard-systemUser-username
+        - idam-user-dashboard-systemUser-password
         - redis-hostname
         - redis-port
         - redis-key
   environment:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
     STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
+    DASHBOARD_URL: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net'
     OAUTH_CLIENT_REDIRECT: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net/oauth2/callback'
   autoscaling:
     enabled: true

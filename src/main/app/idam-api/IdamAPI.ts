@@ -5,13 +5,13 @@ import { TelemetryClient } from 'applicationinsights';
 
 export class IdamAPI {
   constructor(
-    private readonly axios: AxiosInstance,
+    private readonly userAxios: AxiosInstance,
     private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
 
   public getUserDetails(type: string, query: string): Promise<User[]> {
-    return this.axios
+    return this.userAxios
       .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
       .then(results => results.data)
       .catch(error => {
@@ -22,7 +22,8 @@ export class IdamAPI {
   }
 
   public getUserById(id: string): Promise<User> {
-    return this.axios.get('/api/v1/users/' + id)
+    return this.userAxios
+      .get('/api/v1/users/' + id)
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error retrieving user by ID from IDAM API';
@@ -33,7 +34,7 @@ export class IdamAPI {
   }
 
   public editUserById(id: string, fields: Partial<User>): Promise<User> {
-    return this.axios
+    return this.userAxios
       .patch('/api/v1/users/' + id, fields)
       .then(results => results.data)
       .catch(error => {

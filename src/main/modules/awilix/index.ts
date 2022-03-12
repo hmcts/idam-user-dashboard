@@ -12,6 +12,9 @@ import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
+import { IdamAuth } from '../../app/idam-auth/IdamAuth';
+import config from 'config';
+import { UserEditController } from '../../controllers/UserEditController';
 
 /**
  * Sets up the dependency injection container
@@ -28,8 +31,33 @@ export class Container {
       addUsersController: asClass(AddUsersController),
       addUserDetailsController: asClass(AddUserDetailsController),
       manageUsersController: asClass(ManageUsersController),
+      userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
       userActionsController: asClass(UserActionsController)
     });
+
+    /**
+     * Function runs on container creation, gets system user token
+     * and creates new axios instance for use within DI.
+     * Refreshes token every 10mins if refresh failed, otherwise refreshes
+     * on half life of access token.
+     */
+    (function refreshSystemUser(): void {
+      const idamAuth = new IdamAuth(logger, defaultClient);
+      const { username, password } = config.get('services.idam.systemUser');
+      let delay = 10 * 60;
+
+      idamAuth.authorizePassword(username, password)
+        .then(({ tokens }) => {
+          app.locals.container.register({
+            systemAxios: asValue(idamAuth.getUserAxios(tokens.accessToken))
+          });
+
+          delay = tokens.accessToken.expires_in/2;
+          logger.info('Refreshed system user token. Refreshing again in: ' + delay/60 + 'mins');
+        })
+        .catch(() => logger.info('Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
+        .finally(() => setTimeout(refreshSystemUser, delay * 1000));
+    })();
   }
 }
