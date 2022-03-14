@@ -35,7 +35,7 @@ describe('User suspend controller', () => {
       roles: ['IDAM_SUPER_USER'],
     };
 
-    req.body = { _userId: userData.id };
+    req.body = { _userId: userData.id, _action: 'suspend' };
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
@@ -52,7 +52,7 @@ describe('User suspend controller', () => {
       roles: ['IDAM_SUPER_USER'],
     };
 
-    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmRadio: 'true' };
+    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'true' };
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
     when(mockApi.editUserById).calledWith(userData.id, { active: false }).mockReturnValue(Promise.resolve());
 
@@ -70,7 +70,7 @@ describe('User suspend controller', () => {
       roles: ['IDAM_SUPER_USER'],
     };
 
-    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmRadio: 'false' };
+    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'false' };
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
@@ -87,7 +87,7 @@ describe('User suspend controller', () => {
       roles: ['IDAM_SUPER_USER'],
     };
 
-    const error = { confirmRadio: { message: MISSING_OPTION_ERROR } };
+    const error = { confirmSuspendRadio: { message: MISSING_OPTION_ERROR } };
 
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
     req.body = { _userId: userData.id, _action: 'confirm-suspend' };
@@ -112,10 +112,104 @@ describe('User suspend controller', () => {
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
     when(mockApi.editUserById).calledWith(userData.id, { active: false }).mockReturnValue(Promise.reject('Failed'));
 
-    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmRadio: 'true' };
+    req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'true' };
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(userData.id);
     expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
+  });
+
+  test('Should render the user un-suspend page', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: false,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    req.body = { _userId: userData.id, _action: 'un-suspend' };
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('un-suspend-user', { content: { user: userData } });
+  });
+
+  test('Should render the user un-suspend successful page after un-suspending a user', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: false,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    req.body = { _userId: userData.id, _action: 'confirm-un-suspend', confirmUnSuspendRadio: 'true' };
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(userData.id, { active: true }).mockReturnValue(Promise.resolve());
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('un-suspend-user-successful', { content: { user: userData } });
+  });
+
+  test('Should redirect to the user details page after cancelling un-suspend user', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: false,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    req.body = { _userId: userData.id, _action: 'un-confirm-suspend', confirmSuspendRadio: 'false' };
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+
+    await controller.post(req, res);
+    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL);
+  });
+
+  test('Should render the un-suspend user page with validation errors after confirming', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: false,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    const error = { confirmUnSuspendRadio: { message: MISSING_OPTION_ERROR } };
+
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    req.body = { _userId: userData.id, _action: 'confirm-un-suspend' };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(res.render).toBeCalledWith('un-suspend-user', { content: { user: userData }, error });
+  });
+
+  test('Should render the un-suspend user page after there was an API issue', async () => {
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: false,
+      roles: ['IDAM_SUPER_USER'],
+    };
+
+    const error = { userSuspendForm: { message: USER_UPDATE_FAILED_ERROR } };
+
+    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(userData.id, { active: true }).mockReturnValue(Promise.reject('Failed'));
+
+    req.body = { _userId: userData.id, _action: 'confirm-un-suspend', confirmUnSuspendRadio: 'true' };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(res.render).toBeCalledWith('un-suspend-user', { content: { user: userData }, error });
   });
 });

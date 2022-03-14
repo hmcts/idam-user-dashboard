@@ -11,7 +11,7 @@
    {{ super() }}
    {{ breadcrumb([
      ['Manage users', urls.MANAGER_USERS_URL],
-     ['Suspend user']
+     ['Un-suspend user']
    ]) }}
  {% endblock %}
 
@@ -25,17 +25,17 @@
        <div class="govuk-grid-column-one-half">
          {{ govukRadios({
            classes: "govuk-radios--inline",
-           idPrefix: "confirmSuspendRadio",
-           name: "confirmSuspendRadio",
+           idPrefix: "confirmUnSuspendRadio",
+           name: "confirmUnSuspendRadio",
            fieldset: {
              legend: {
-               text: "Are you sure you want to suspend " + content.user.forename + " " + content.user.surname + "?",
+               text: "Are you sure you want to un-suspend " + content.user.forename + " " + content.user.surname + "?",
                isPageHeading: true,
                classes: "govuk-fieldset__legend--l"
              }
            },
            hint: {
-             text: "Are you sure you want to suspend this user?"
+             text: "Are you sure you want to un-suspend this user?"
            },
            items: [
              { value: true, text: "Yes" },
@@ -44,7 +44,7 @@
          }) }}
 
          <div class="govuk-button-group">
-           {{ govukButton({ text: "Continue", name: "_action", value: "confirm-suspend", classes: "govuk-button" }) }}
+           {{ govukButton({ text: "Continue", name: "_action", value: "confirm-un-suspend", classes: "govuk-button" }) }}
          </div>
        </div>
      </form>
