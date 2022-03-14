@@ -1,7 +1,7 @@
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {createUserWithRoles, createUserWithSsoId} from './shared/apiHelpers';
+import {createUserWithRoles, createUserWithSsoId} from './shared/testingSupportApi';
 
 Feature('Search User');
 
