@@ -6,7 +6,7 @@ import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
 
-Feature('Manage Existing User');
+Feature('Delete User');
 
 const PARENT_ROLE = testConfig.TEST_SUITE_PREFIX + randomData.getRandomString(10);
 const ASSIGNABLE_CHILD_ROLE = testConfig.TEST_SUITE_PREFIX + randomData.getRandomString(10);
@@ -27,7 +27,7 @@ Scenario('I as a user should not be able delete user if I do not have the role w
   async ({I}) => {
 
     const nonDeletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-    await createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
+    await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
     I.click('Manage existing users');
@@ -46,7 +46,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
   async ({I}) => {
 
     const nonDeletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-    await createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]);
+    await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
     I.click('Manage existing users');
@@ -64,7 +64,7 @@ Scenario('@CrossBrowser I as a user if I have the right role, should be able del
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
     const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-    const userDataBeforeDeleting = await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
+    const userDataBeforeDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
     I.click('Manage existing users');
@@ -96,7 +96,7 @@ Scenario('@CrossBrowser I as a user if I have the right role, should be able del
     I.click('Sign in');
     I.waitForText('Incorrect email or password');
 
-    const userDataAfterDeleting = await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
+    const userDataAfterDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     Assert.notEqual(userDataBeforeDeleting.id, userDataAfterDeleting.id);
   }
 );
