@@ -1,5 +1,5 @@
 import {config as testConfig} from '../config';
-import {deleteAllTestData} from './shared/apiHelpers';
+import {deleteAllTestData} from './shared/testingSupportApi';
 
 export const config: CodeceptJS.Config = {
   tests: './*-test.ts',
