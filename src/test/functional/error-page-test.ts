@@ -1,6 +1,6 @@
 import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
-import {createUserWithRoles} from './shared/apiHelpers';
+import {createUserWithRoles} from './shared/testingSupportApi';
 
 Feature('Error Pages');
 

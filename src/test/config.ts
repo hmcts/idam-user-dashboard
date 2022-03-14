@@ -31,8 +31,8 @@ config.helpers = {
     waitForNavigation: 'networkidle0',
     ignoreHTTPSErrors: true,
   },
-  IdamHelper: {
-    require: '../functional/shared/idam-helper.ts',
+  TestingSupportApiHelper: {
+    require: '../functional/shared/helpers/testingSupportApiHelper.ts',
   },
   FeatureFlagHelper: {
     require: '../functional/shared/helpers/featureFlagHelper.ts'
