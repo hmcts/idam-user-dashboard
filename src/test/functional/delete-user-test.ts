@@ -1,6 +1,6 @@
 import {
   createUserWithRoles, createAssignableRoles, assignRolesToParentRole,
-} from './shared/apiHelpers';
+} from './shared/testingSupportApi';
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
@@ -96,7 +96,7 @@ Scenario('@CrossBrowser I as a user if I have the right role, should be able del
     I.click('Sign in');
     I.waitForText('Incorrect email or password');
 
-    const userDataAfterDeleting = await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
+    const userDataAfterDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     Assert.notEqual(userDataBeforeDeleting.id, userDataAfterDeleting.id);
   }
 );
