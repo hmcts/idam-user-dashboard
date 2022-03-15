@@ -1,7 +1,5 @@
 import {
-  getUserDetails,
-  createUserWithSsoId,
-  createUserWithRoles,
+  createUserWithRoles
 } from './shared/testingSupportApi';
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
@@ -70,5 +68,98 @@ Scenario('@CrossBrowser I as a user should be able to edit and update the user-d
 
     const emailUpdated = await I.grabValueFrom('#email');
     Assert.equal(emailUpdated.trim(), updatedEmail);
+  }
+);
+
+const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
+incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
+incorrectEmailAddresses.add(['@email@']);
+incorrectEmailAddresses.add(['email@com..']);
+
+Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when email format is not correct',
+  {featureFlags: [BETA_FEATURES]},
+  async ({I, current}) => {
+
+    const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+
+    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage existing users');
+    I.click('Manage existing users');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+    I.click('Edit user');
+    I.waitForText('Edit Users');
+
+    I.fillField('#email', current.incorrectEmailAddress);
+    I.click('Save');
+    I.waitForText('The email address is not in the correct format');
+  }
+);
+
+Scenario('I as a user should see proper error message when mandatory fields left empty',
+  {featureFlags: [BETA_FEATURES]},
+  async ({I}) => {
+
+    const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+
+    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage existing users');
+    I.click('Manage existing users');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+    I.click('Edit user');
+    I.waitForText('Edit Users');
+
+    I.clearField('#forename');
+    I.clearField('#surname');
+    I.clearField('#email');
+    I.click('Save');
+    I.waitForText('There is a problem');
+    I.waitForText('You must enter a forename for the user');
+    I.waitForText('You must enter a surname for the user');
+    I.waitForText('The email address is not in the correct format');
+
+    I.fillField('#forename', '');
+    I.fillField('#surname', ' ');
+    I.fillField('#email', ' ');
+    I.click('Save');
+    I.waitForText('There is a problem');
+    I.waitForText('You must enter a forename for the user');
+    I.waitForText('You must enter a surname for the user');
+    I.waitForText('The email address is not in the correct format');
+  }
+);
+
+Scenario('I as a user should see proper error message when no changes were made before updating',
+  {featureFlags: [BETA_FEATURES]},
+  async ({I}) => {
+
+    const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+
+    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage existing users');
+    I.click('Manage existing users');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+    I.click('Edit user');
+    I.waitForText('Edit Users');
+    I.click('Save');
+    I.waitForText('There is a problem');
+    I.waitForText('No changes to the user were made');
   }
 );
