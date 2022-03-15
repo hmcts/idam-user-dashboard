@@ -15,8 +15,8 @@ button.govuk-back-link[type="submit"] {
     display: flex;
     flex-wrap: wrap;
 
-    & > .govuk-checkboxes__item {
-      width: calc(50% - 40px);
+    & .govuk-checkboxes__item {
+      width: calc(50% - 2.5rem);
 
       & > label {
         word-break: break-all;
