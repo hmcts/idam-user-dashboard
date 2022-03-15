@@ -37,7 +37,7 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Edit Users</h1>
     </div>
-    <form id="userEditForm" method="POST" action="{{ urls.USER_ACTIONS_URL }}">
+    <form id="userEditForm" method="POST" action="{{ urls.EDIT_USER_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
       <div class="govuk-grid-column-one-half">

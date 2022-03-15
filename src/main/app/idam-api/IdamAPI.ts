@@ -5,8 +5,6 @@ import { TelemetryClient } from 'applicationinsights';
 import { Role } from '../../interfaces/Role';
 import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
-import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
-import { Service } from '../../interfaces/Service';
 
 export class IdamAPI {
   constructor(
@@ -62,30 +60,6 @@ export class IdamAPI {
       });
   }
 
-  public registerUser(user: UserRegistrationDetails): Promise<void> {
-    return this.userAxios
-      .post('/api/v1/users/registration', user)
-      .then(results => results.data)
-      .catch(error => {
-        const errorMessage = 'Error register new user in IDAM API';
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
-        return Promise.reject(errorMessage);
-      });
-  }
-
-  public getAllServices(): Promise<Service[]> {
-    return this.userAxios
-      .get('/services')
-      .then(results => results.data)
-      .catch(error => {
-        const errorMessage = 'Error retrieving all services from IDAM API';
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
-        return Promise.reject(errorMessage);
-      });
-  }
-
   public getAllRoles(): Promise<Role[]> {
     return this.systemAxios
       .get('/roles/')
@@ -102,8 +76,7 @@ export class IdamAPI {
     const rolesMap: Map<string, Role> = new Map<string, Role>();
 
     function traverse(collection: Role[], role: Role): Role[] {
-      if(!role.assignableRoles || !role.assignableRoles.length) return collection;
-
+      if(!role) return collection;
       collection.push(role);
 
       if(role.assignableRoles?.length > 1) {
@@ -117,14 +90,17 @@ export class IdamAPI {
     return this.getAllRoles()
       // Sets up roleMap with roleid - role
       .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
+      .then(() => {
+        const collection: Set<string> = new Set();
 
-      // Map given role names to roles in rolesMap and return complete role objects.
-      .then(() => Array.from(rolesMap.values()).filter(value => roleNames.includes(value.name)))
+        Array.from(rolesMap.values())
+          .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+          .forEach(role => role.assignableRoles
+            .forEach(assignableRole => traverse([], rolesMap.get(assignableRole))
+              .forEach(roleName => collection.add(roleName.name))
+            ));
 
-      // Recursively finds each assignable role for given roles, then gets the name of each role and adds it to the array
-      .then(roles => roles.flatMap(role => traverse([], role)).map(role => role.name))
-
-      // Creates a set from the array of assignable roles to remove duplicates, then converts it back into an array (optimise somehow?)
-      .then(assignableRoles => Array.from(new Set(assignableRoles)));
+        return Array.from(collection);
+      });
   }
 }

@@ -1,6 +1,6 @@
 import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
-import { createUserWithRoles } from './shared/apiHelpers';
+import { createUserWithRoles } from './shared/testingSupportApi';
 
 Feature('User Sign In');
 const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
@@ -8,13 +8,13 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('@CrossBrowser I as a user with access role can sign in', ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+Scenario('@CrossBrowser I as a user with access role can sign in', async ({I}) => {
+  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
 });
 
 Scenario('I as a user without access role cannot access service and is shown error page', async ({I}) => {
   const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  await createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
+  await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, []);
 
   I.amOnPage('/login');
   I.see('Sign in');
@@ -27,7 +27,7 @@ Scenario('I as a user without access role cannot access service and is shown err
 
 Scenario('I as a user with citizen role cannot access service and is shown error page', async ({I}) => {
   const citizenUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  await createUserWithRoles(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+  await I.createUserWithRoles(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
   I.amOnPage('/login');
   I.see('Sign in');

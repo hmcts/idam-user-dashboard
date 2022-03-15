@@ -3,6 +3,7 @@ import {
   ADD_USER_DETAILS_URL,
   ADD_USER_ROLES_URL,
   ADD_USERS_URL,
+  EDIT_USER_URL,
   USER_DELETE_URL,
   HOME_URL,
   MANAGER_USERS_URL,
@@ -21,6 +22,7 @@ export default function(app: Application): void {
   app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_FEATURES), app.locals.container.cradle.addUserDetailsController.post);
   app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_FEATURES), app.locals.container.cradle.addUserRolesController.post);
   app.get(MANAGER_USERS_URL, app.locals.container.cradle.manageUsersController.get);
+  app.post(EDIT_USER_URL, featureFlags.toggleRoute(BETA_FEATURES), app.locals.container.cradle.userEditController.post);
   app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, featureFlags.toggleRoute(BETA_FEATURES), app.locals.container.cradle.userActionsController.post);
   app.post(USER_DELETE_URL, app.locals.container.cradle.userDeleteController.post);

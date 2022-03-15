@@ -5,7 +5,7 @@ import {
   suspendUser,
   retireStaleUser,
   deleteStaleUser
-} from './shared/apiHelpers';
+} from './shared/testingSupportApi';
 
 import '../../main/utils/utils';
 
@@ -20,10 +20,10 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('@CrossBrowser I should be able to see the active status of an user', async ({I}) => {
+Scenario('@CrossBrowser I as a user should be able to see the active status of a user', async ({I}) => {
   const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  await createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
-  const activeUser = await getUserDetails(activeUserEmail);
+  await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
+  const activeUser = await I.getUserDetails(activeUserEmail);
 
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
@@ -60,10 +60,10 @@ Scenario('@CrossBrowser I should be able to see the active status of an user', a
   Assert.equal(lastModifiedDate.trim(), lastModified);
 });
 
-Scenario('I should be able to see the suspended status of an user', async ({I}) => {
+Scenario('I as a user should be able to see the suspended status of a user', async ({I}) => {
   const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  const user = await createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
-  await suspendUser(user.id, suspendUserEmail);
+  const user = await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+  await I.suspendUser(user.id, suspendUserEmail);
 
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
@@ -82,12 +82,12 @@ Scenario('I should be able to see the suspended status of an user', async ({I}) 
   Assert.equal(status.trim(), 'Suspended');
 });
 
-Scenario('I should be able to see the stale status of an user', async ({I}) => {
+Scenario('I as a user should be able to see the stale status of a user', async ({I}) => {
   const staleUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  const user = await createUserWithRoles(staleUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
-  await retireStaleUser(user.id);
+  const user = await I.createUserWithRoles(staleUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+  await I.retireStaleUser(user.id);
 
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -102,6 +102,5 @@ Scenario('I should be able to see the stale status of an user', async ({I}) => {
 
   const status = await I.grabTextFrom('#status');
   Assert.equal(status.trim(), 'Archived');
-
-  await deleteStaleUser(user.id);
+  await I.deleteStaleUser(user.id);
 });

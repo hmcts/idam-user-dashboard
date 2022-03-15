@@ -41,13 +41,13 @@ export class OidcMiddleware {
 
     // Reject any logged out, expired or bad sessions
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      const { user, tokens } = req.session;
+      const {user, tokens} = req.session;
 
       if (!user) {
         return res.redirect(LOGIN_URL);
       }
 
-      if(OIDCToken.isExpired(tokens.accessToken)) {
+      if (OIDCToken.isExpired(tokens.accessToken)) {
         return req.session.destroy(() => {
           res.clearCookie(config.get('session.cookie.name'));
           res.redirect(LOGIN_URL);
