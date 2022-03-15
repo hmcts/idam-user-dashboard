@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { RootController } from './RootController';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import autobind from 'autobind-decorator';
-import { MANAGER_USERS_URL, USER_DETAILS_URL } from '../utils/urls';
+import { USER_DETAILS_URL } from '../utils/urls';
 import { PageError } from '../interfaces/PageData';
 import { isEmpty } from '../utils/utils';
 import { MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR } from '../utils/error';
@@ -37,7 +37,9 @@ export class UserDeleteController extends RootController{
 
   private deleteUser(req: AuthedRequest, res: Response, user: User) {
     return req.scope.cradle.api.deleteUserById(req.body._userId)
-      .then(() => res.redirect(MANAGER_USERS_URL))
+      .then(() => {
+        return super.post(req, res, 'delete-user-successful', { content: { user } } );
+      })
       .catch(() => {
         const error = { userDeleteForm: { message: USER_DELETE_FAILED_ERROR } };
         return super.post(req, res, 'delete-user', { content: { user }, error } );
