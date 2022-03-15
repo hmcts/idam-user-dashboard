@@ -62,48 +62,44 @@
           }) }}
         {% endcall %}
 
-        {% call govukFieldset({
-          classes: 'govuk-fieldset--row'
-        }) %}
-          <h2 class="govuk-heading-s">Select user type</h2>
-          {{ govukDetails({
-            summaryText: "Help with selection",
-            text: "Private Beta Citizen is a citizen who is trialing a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support."
-          }) }}
+        <h2 class="govuk-heading-s">Select user type</h2>
+        {{ govukDetails({
+          summaryText: "Help with selection",
+          text: "Private Beta Citizen is a citizen who is trialing a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support."
+        }) }}
 
-          {{ govukRadios({
-            idPrefix: "userType",
-            name: "userType",
-            errorMessage: { text: error.userType.message } if error.userType,
-            items: [
-              {
-                value: "citizen",
-                text: "Private Beta Citizen",
-                checked: true if content.user.userType === 'citizen'
-              },
-              {
-                value: "professional",
-                text: "Professional",
-                checked: true if content.user.userType === 'professional'
-              },
-              {
-                value: "support",
-                text: "Support",
-                checked: true if content.user.userType === 'support'
-              }
-            ]
-          }) }}
+        {{ govukRadios({
+          idPrefix: "userType",
+          name: "userType",
+          errorMessage: { text: error.userType.message } if error.userType,
+          items: [
+            {
+              value: "citizen",
+              text: "Private Beta Citizen",
+              checked: true if content.user.userType === 'citizen'
+            },
+            {
+              value: "professional",
+              text: "Professional",
+              checked: true if content.user.userType === 'professional'
+            },
+            {
+              value: "support",
+              text: "Support",
+              checked: true if content.user.userType === 'support'
+            }
+          ]
+        }) }}
 
-          <h2 class="govuk-heading-s">Select a service</h2>
-          {{ govukSelect({
-            id: "service",
-            name: "service",
-            items: content.services | selectFilter(content.selectedService)
-          }) }}
-        {% endcall %}
+{#        <h2 class="govuk-heading-s">Select a service</h2>#}
+{#        {{ govukSelect({#}
+{#          id: "service",#}
+{#          name: "service",#}
+{#          items: content.services | selectFilter(content.selectedService)#}
+{#        }) }}#}
 
         {{ govukButton({
-          text: "Save"
+          text: "Continue"
         }) }}
       </div>
     </form>

@@ -6,7 +6,7 @@ import { hasProperty, isEmpty, isObjectEmpty, isValidEmailFormat } from '../util
 import {
   duplicatedEmailError,
   INVALID_EMAIL_FORMAT_ERROR,
-  MISSING_EMAIL_ERROR, MISSING_PRIVATE_BETA_SERVICE_ERROR,
+  MISSING_EMAIL_ERROR,
   MISSING_USER_TYPE_ERROR,
   USER_EMPTY_FORENAME_ERROR,
   USER_EMPTY_SURNAME_ERROR
@@ -14,12 +14,13 @@ import {
 import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError} from '../interfaces/PageData';
-import { SelectItem } from '../interfaces/SelectItem';
-import { Service } from '../interfaces/Service';
-import { UserType } from '../utils/UserType';
-
-const PRIVATE_BETA_CITIZEN_ROLE = 'citizen';
-const SERVICE_PRIVATE_BETA_ROLE_SUFFIX = '-private-beta';
+import { constructRoleAssignment } from '../utils/roleUtils';
+// import { SelectItem } from '../interfaces/SelectItem';
+// import { Service } from '../interfaces/Service';
+// import { UserType } from '../utils/UserType';
+//
+// const PRIVATE_BETA_CITIZEN_ROLE = 'citizen';
+// const SERVICE_PRIVATE_BETA_ROLE_SUFFIX = '-private-beta';
 
 @autobind
 export class AddUserDetailsController extends RootController{
@@ -46,12 +47,12 @@ export class AddUserDetailsController extends RootController{
     // check if the user with the same email already exists
     const users = await req.scope.cradle.api.getUserDetails(SearchType.Email, email);
     if (users.length == 0) {
-      const services = await this.getServicesWithPrivateBetaRole(req);
+      //const services = await this.getServicesWithPrivateBetaRole(req);
       return super.post(req, res, 'add-user-details', {content: {
         user: {
           email: email
         },
-        services: this.getServicesForSelect(services)
+        // services: this.getServicesForSelect(services)
       }});
     }
 
@@ -60,24 +61,26 @@ export class AddUserDetailsController extends RootController{
 
   private async processNewUserDetails(req: AuthedRequest, res: Response) {
     const fields = req.body;
-    const services = await this.getServicesWithPrivateBetaRole(req);
+    //const services = await this.getServicesWithPrivateBetaRole(req);
     const error = this.validateFields(fields);
+    const user = await this.constructUserDetails(fields);
     if(!isObjectEmpty(error)) {
-      const value = await this.constructUserDetails(req, fields, services);
       return super.post(req, res, 'add-user-details', {
-        content: value,
+        content: {
+          user: user,
+          // services: this.getServicesForSelect(services),
+          // selectedService: fields.service
+        },
         error
       });
     }
 
-    await req.scope.cradle.api.registerUser({
-      email: '',
-      firstName: fields.forename,
-      lastName: fields.surname,
-      roles: this.constructUserRoles(fields)
-    });
-
-    super.post(req, res, 'add-user-completion');
+    const allRoles = await req.scope.cradle.api.getAllRoles();
+    const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
+    super.post(req, res, 'add-user-roles', { content: {
+      user: user,
+      roles: roleAssignment
+    }});
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
@@ -87,46 +90,42 @@ export class AddUserDetailsController extends RootController{
   }
 
   private validateFields(fields: any): PageError {
-    const { forename, surname, service } = fields;
+    const { forename, surname } = fields;
     const error: PageError = {};
 
     if (hasProperty(fields, 'forename') && isEmpty(forename)) error.forename = { message: USER_EMPTY_FORENAME_ERROR };
     if (hasProperty(fields, 'surname') && isEmpty(surname)) error.surname = { message: USER_EMPTY_SURNAME_ERROR };
     if (!hasProperty(fields, 'userType')) error.userType = { message: MISSING_USER_TYPE_ERROR };
-    if (hasProperty(fields, 'userType') && isEmpty(service)) error.service = { message: MISSING_PRIVATE_BETA_SERVICE_ERROR };
+    //if (hasProperty(fields, 'userType') && isEmpty(service)) error.service = { message: MISSING_PRIVATE_BETA_SERVICE_ERROR };
 
     return error;
   }
 
-  private async getServicesWithPrivateBetaRole(req: AuthedRequest): Promise<Service[]> {
-    const services = await req.scope.cradle.api.getAllServices();
-    return services.filter( service => service.onboardingRoles.length > 0);
-  }
+  // private async getServicesWithPrivateBetaRole(req: AuthedRequest): Promise<Service[]> {
+  //   const services = await req.scope.cradle.api.getAllServices();
+  //   return services.filter( service => service.onboardingRoles.length > 0);
+  // }
+  //
+  // private getServicesForSelect(services: Service[]): SelectItem[] {
+  //   return services.map((service) => (
+  //     {value: service.label, text: service.label, selected: false}));
+  // }
+  //
+  // private constructUserRoles(fields: any): string[] {
+  //   const roles: string[] = [];
+  //   if (fields.userType === UserType.Citizen) {
+  //     roles.push(PRIVATE_BETA_CITIZEN_ROLE);
+  //     roles.push(fields.service + SERVICE_PRIVATE_BETA_ROLE_SUFFIX);
+  //   }
+  //   return roles;
+  // }
 
-  private getServicesForSelect(services: Service[]): SelectItem[] {
-    return services.map((service) => (
-      {value: service.label, text: service.label, selected: false}));
-  }
-
-  private constructUserRoles(fields: any): string[] {
-    const roles: string[] = [];
-    if (fields.userType === UserType.Citizen) {
-      roles.push(PRIVATE_BETA_CITIZEN_ROLE);
-      roles.push(fields.service + SERVICE_PRIVATE_BETA_ROLE_SUFFIX);
-    }
-    return roles;
-  }
-
-  private async constructUserDetails(req: AuthedRequest, fields: any, services: Service[]): Promise<any> {
+  private async constructUserDetails(fields: any): Promise<any> {
     return {
-      user : {
-        email: fields._email,
-        forename: fields.forename,
-        surname: fields.surname,
-        userType: this.getUserType(fields)
-      },
-      services: this.getServicesForSelect(services),
-      selectedService: fields.service
+      email: fields._email,
+      forename: fields.forename,
+      surname: fields.surname,
+      userType: this.getUserType(fields)
     };
   }
 

@@ -1,0 +1,82 @@
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Add user email', urls.ADD_USERS_URL],
+    ['Add user roles']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Add a new user</h1>
+
+  <div id='container'>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        {{ errorSummary(error) }}
+
+        {{ govukInput({
+          attributes: {
+            placeholder: ' Seacrh roles to assign to the user'
+          },
+          prefix: {
+            text: '🔎'
+          },
+          classes: "govuk-input--width-22",
+          id: "search",
+          name: "search"
+        }) }}
+      </div>
+    </div>
+
+    <div id='numberofRoles' class='govuk-hint'></div>
+
+    <form id="addUserRolesForm" method="POST" action="{{ urls.ADD_USER_ROLES_URL }}">
+      {{ csrfProtection(csrfToken) }}
+
+      <input type="hidden" name="_email" value="{{ content.user.email }}">
+      <input type="hidden" name="_forename" value="{{ content.user.forename }}">
+      <input type="hidden" name="_surname" value="{{ content.user.surname }}">
+
+      {% set roleItems = [] %}
+      {% for role in content.roles %}
+        {% set id = role.name | lower %}
+        {% set roleItems =
+          (roleItems.push({
+          'text': role.name,
+          'value': role.name,
+          'id': id,
+          'checked': false,
+          'disabled': not role.assignable
+        }), roleItems) %}
+      {% endfor %}
+
+      <div id="roleList" class="govuk-grid-row scrollable visible-scrollbar role: scrollbar">
+        {%- for items in roleItems | slice(2) %}
+          <div class="govuk-grid-column-one-half">
+            {{ govukCheckboxes({
+              idPrefix: "roles",
+              name: "roles",
+              classes: "govuk-checkboxes--small",
+              items: items
+            }) }}
+          </div>
+        {%- endfor %}
+      </div>
+
+      {{ govukButton({
+        text: "Save"
+      }) }}
+    </form>
+  </div>
+{% endblock %}

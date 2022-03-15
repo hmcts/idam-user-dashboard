@@ -1,11 +1,16 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
 
 {% extends "template.njk" %}
 
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
+    ['Add users', urls.ADD_USERS_URL],
     ['User registration completion']
   ]) }}
 {% endblock %}
@@ -14,8 +19,11 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {{ govukPanel({
-        titleText: "User registered",
+        titleText: "User registered"
       }) }}
+      <br>
+      <p>The user has been registered and should now receive an email.</p>
+      <p>They will need to activate their account using the link in this email before they can sign-in.</p>
     </div>
   </div>
 
