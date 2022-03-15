@@ -36,9 +36,9 @@ describe('utils', () => {
 
     test('Should set assignable flags to true for assignable roles', async () => {
       const results = constructRoleAssignment(allRoles, [role2, role3]);
-      expect(results[0].assignable).toBe(false);
-      expect(results[1].assignable).toBe(true);
-      expect(results[2].assignable).toBe(true);
+      expect(results[0]).toStrictEqual({name: 'role2', assignable: true});
+      expect(results[1]).toStrictEqual({name: 'role3', assignable: true});
+      expect(results[2]).toStrictEqual({name: 'role1', assignable: false});
     });
 
     test('Should set all assignable flags to false if no roles are assignable', async () => {

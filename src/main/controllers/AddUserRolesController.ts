@@ -23,11 +23,13 @@ export class AddUserRolesController extends RootController {
     }
 
     const fields = req.body;
+    const roles = fields.roles;
+    const rolesArray = Array.isArray(roles) ? roles : roles.split(/\r?\n/);
     await req.scope.cradle.api.registerUser({
       email: fields._email,
       firstName: fields._forename,
       lastName: fields._surname,
-      roles: fields.roles as string[]
+      roles: rolesArray
     });
     return super.post(req, res, 'add-user-completion');
   }
