@@ -84,15 +84,6 @@ export class OidcMiddleware {
         api: asClass(IdamAPI)
       });
 
-      if (!req.session.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.session.user.roles)
-          .then(assignableRoles => {
-            req.session.user.assignableRoles = assignableRoles;
-            next();
-          })
-          .catch(err => next(err));
-      }
-
       return next();
     });
   }

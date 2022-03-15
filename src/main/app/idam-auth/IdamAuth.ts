@@ -105,7 +105,7 @@ export class IdamAuth {
     roles: idToken.roles,
   })
 
-  public getUserAxios(accessToken: OIDCToken) {
+  public getUserAxios(accessToken: { raw: string }) {
     return axios.create({
       baseURL: config.get('services.idam.url.api'),
       headers: { Authorization: 'Bearer ' + accessToken.raw }

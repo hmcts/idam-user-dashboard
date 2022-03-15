@@ -2,16 +2,10 @@ import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
-import { Role } from '../../interfaces/Role';
-import { HTTPError } from '../errors/HttpError';
-import { constants as http } from 'http2';
-import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
-import { Service } from '../../interfaces/Service';
 
 export class IdamAPI {
   constructor(
-    private readonly userAxios: AxiosInstance,
-    private readonly systemAxios: AxiosInstance,
+    private readonly axios: AxiosInstance,
     private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
@@ -48,17 +42,6 @@ export class IdamAPI {
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
-      });
-  }
-
-  public deleteUserById(id: string) {
-    return this.userAxios
-      .delete('/api/v1/users/' + id)
-      .catch(error => {
-        const errorMessage = 'Error deleting user by ID from IDAM API';
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
-        throw new Error(errorMessage);
       });
   }
 
