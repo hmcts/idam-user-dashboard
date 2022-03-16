@@ -2,10 +2,14 @@ import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
+import { Role } from '../../interfaces/Role';
+import { HTTPError } from '../errors/HttpError';
+import { constants as http } from 'http2';
 
 export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
+    private readonly systemAxios: AxiosInstance,
     private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
@@ -42,6 +46,61 @@ export class IdamAPI {
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
+      });
+  }
+
+  public deleteUserById(id: string) {
+    return this.userAxios
+      .delete('/api/v1/users/' + id)
+      .catch(error => {
+        const errorMessage = 'Error deleting user by ID from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
+      });
+  }
+
+  public getAllRoles(): Promise<Role[]> {
+    return this.systemAxios
+      .get('/roles/')
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving all roles from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      });
+  }
+
+  public async getAssignableRoles(roleNames: string[]) {
+    const rolesMap: Map<string, Role> = new Map<string, Role>();
+
+    function traverse(collection: Role[], role: Role): Role[] {
+      if(!role) return collection;
+      collection.push(role);
+
+      if(role.assignableRoles?.length > 1) {
+        const assignableRoles = role.assignableRoles.filter(id => role.id !== id).map(id => rolesMap.get(id));
+        return assignableRoles.reduce(traverse, collection);
+      }
+
+      return collection;
+    }
+
+    return this.getAllRoles()
+      // Sets up roleMap with roleid - role
+      .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
+      .then(() => {
+        const collection: Set<string> = new Set();
+
+        Array.from(rolesMap.values())
+          .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+          .forEach(role => role.assignableRoles
+            .forEach(assignableRole => traverse([], rolesMap.get(assignableRole))
+              .forEach(roleName => collection.add(roleName.name))
+            ));
+
+        return Array.from(collection);
       });
   }
 }

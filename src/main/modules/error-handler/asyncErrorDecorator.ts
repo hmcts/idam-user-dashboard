@@ -17,7 +17,8 @@ export function wrapMethod(
       await fn.apply(this, args);
     } catch (err) {
       // call next() function with err
-      args[2](err);
+      if(args[2]) return args[2](err);
+      if(typeof args[0].next === 'function') return args[0].next(err);
     }
   };
 

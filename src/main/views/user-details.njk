@@ -142,7 +142,7 @@
     <div class="govuk-button-group">
       {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
       {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) }}
-      {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) }}
+      {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.showDelete }}
     </div>
   </form>
   {% endif %}
