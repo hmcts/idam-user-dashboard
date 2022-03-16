@@ -91,7 +91,7 @@ Scenario('@CrossBrowser I as a user should be able to suspend and un-suspend use
   }
 );
 
-Scenario('I as a user, if selected no to suspend user I should be redirected to user-details page',
+Scenario('I as a user should be redirected to user-details page if I select no when suspending a user',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
@@ -119,7 +119,7 @@ Scenario('I as a user, if selected no to suspend user I should be redirected to 
   }
 );
 
-Scenario('I as a user, if selected no to un-suspend user I should be redirected to user-details page',
+Scenario('I as a user should be redirected to user-details page if I select no when un-suspending a user',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 

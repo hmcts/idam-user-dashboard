@@ -19,7 +19,7 @@
    <div class="govuk-grid-row">
      {{ errorSummary(error) }}
 
-     <form id="userSuspendForm" method="POST" action="{{ urls.USER_DELETE_URL }}">
+     <form id="userSuspendForm" method="POST" action="{{ urls.USER_SUSPEND_URL }}">
        {{ csrfProtection(csrfToken) }}
        <input type="hidden" name="_userId" value="{{ content.user.id }}">
        <div class="govuk-grid-column-one-half">
