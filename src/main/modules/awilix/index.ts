@@ -7,6 +7,7 @@ import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
 import { UserActionsController } from '../../controllers/UserActionsController';
 import { UserDeleteController } from '../../controllers/UserDeleteController';
+import { UserSuspendController } from '../../controllers/UserSuspendController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 const { Logger } = require('@hmcts/nodejs-logging');
@@ -34,7 +35,8 @@ export class Container {
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
       userActionsController: asClass(UserActionsController),
-      userDeleteController: asClass(UserDeleteController)
+      userDeleteController: asClass(UserDeleteController),
+      userSuspendController: asClass(UserSuspendController)
     });
 
     /**
