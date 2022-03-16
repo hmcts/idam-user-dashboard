@@ -135,7 +135,7 @@
     </div>
   </dl>
 
-  {% if featureFlags['idam-user-dashboard--beta-features'] %}
+  {% if featureFlags['idam-user-dashboard--beta-features'] and not content.user.stale %}
   <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
     {{ csrfProtection(csrfToken) }}
     <input type="hidden" name="_userId" value="{{ content.user.id }}">
