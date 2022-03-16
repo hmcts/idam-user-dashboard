@@ -28,7 +28,9 @@ export class UserResultsController extends RootController {
       if (users.length === 1) {
         const user = users[0];
         this.preprocessSearchResults(user);
-        return super.post(req, res, 'user-details', {content: {user}});
+        return super.post(req, res, 'user-details', {
+          content: { user, showDelete: this.canDeleteUser(req.session.user, user)}
+        });
       }
 
       return super.post(req, res, 'manage-users', {
@@ -70,5 +72,9 @@ export class UserResultsController extends RootController {
     sortRoles(user.roles);
     user.createDate = convertISODateTimeToUTCFormat(user.createDate);
     user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
+  }
+
+  private canDeleteUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
+    return userB.roles.every(role => userA.assignableRoles.includes(role));
   }
 }

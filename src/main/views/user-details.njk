@@ -143,7 +143,7 @@
       {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
       {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.user.active }}
       {{ govukButton({ text: "Un-suspend user", name: "_action", value: "un-suspend", classes: "govuk-button--secondary" }) if not content.user.active }}
-      {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) }}
+      {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.showDelete }}
     </div>
   </form>
   {% endif %}
