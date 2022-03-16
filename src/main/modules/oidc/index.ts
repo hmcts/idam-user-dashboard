@@ -41,13 +41,13 @@ export class OidcMiddleware {
 
     // Reject any logged out, expired or bad sessions
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      const { user, tokens } = req.session;
+      const {user, tokens} = req.session;
 
       if (!user) {
         return res.redirect(LOGIN_URL);
       }
 
-      if(OIDCToken.isExpired(tokens.accessToken)) {
+      if (OIDCToken.isExpired(tokens.accessToken)) {
         return req.session.destroy(() => {
           res.clearCookie(config.get('session.cookie.name'));
           res.redirect(LOGIN_URL);
@@ -83,6 +83,15 @@ export class OidcMiddleware {
         userAxios: asValue(idamAuth.getUserAxios(req.session.tokens.accessToken)),
         api: asClass(IdamAPI)
       });
+
+      if (!req.session.user.assignableRoles) {
+        return req.scope.cradle.api.getAssignableRoles(req.session.user.roles)
+          .then(assignableRoles => {
+            req.session.user.assignableRoles = assignableRoles;
+            next();
+          })
+          .catch(err => next(err));
+      }
 
       return next();
     });

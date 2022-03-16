@@ -11,6 +11,8 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   retireStaleUser = TestingSupportAPI.retireStaleUser
   suspendUser = TestingSupportAPI.suspendUser
   getUserDetails = TestingSupportAPI.getUserDetails
+  createAssignableRoles = TestingSupportAPI.createAssignableRoles
+  assignRolesToParentRole = TestingSupportAPI.assignRolesToParentRole
 }
 
 export = TestingSupportApi;

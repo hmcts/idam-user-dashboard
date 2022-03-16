@@ -8,8 +8,8 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('@CrossBrowser I as a user with access role can sign in', ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+Scenario('@CrossBrowser I as a user with access role can sign in', async ({I}) => {
+  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
 });
 
 Scenario('I as a user without access role cannot access service and is shown error page', async ({I}) => {

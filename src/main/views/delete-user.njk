@@ -1,0 +1,60 @@
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Manage users', urls.MANAGER_USERS_URL],
+    ['Delete User']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    {{ errorSummary(error) }}
+
+    <form id="userDeleteForm" method="POST" action="{{ urls.USER_DELETE_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="_userId" value="{{ content.user.id }}">
+      <div class="govuk-grid-column-one-half">
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          idPrefix: "confirmRadio",
+          name: "confirmDelete",
+          fieldset: {
+            legend: {
+              text: "Are you sure you want to delete " + content.user.forename + " " + content.user.surname + "?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "Are you sure you want to delete this user? This action is not reversible."
+          },
+          items: [
+            { value: true, text: "Yes" },
+            { value: false, text: "No" }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Continue", name: "_action", value: "confirm-delete", classes: "govuk-button" }) }}
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="govuk-grid-row">
+    <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="search" value="{{ content.user.email }}">
+      <button type="submit" class="govuk-back-link">Return to user details</button>
+    </form>
+  </div>
+{% endblock %}
