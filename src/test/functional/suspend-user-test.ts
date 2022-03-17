@@ -14,7 +14,7 @@ BeforeSuite(async () => {
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('@CrossBrowser I as a user should be able to suspend and un-suspend user',
+Scenario('I as a user should be able to suspend and un-suspend user',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
@@ -89,7 +89,7 @@ Scenario('@CrossBrowser I as a user should be able to suspend and un-suspend use
     I.click('Search');
     I.waitForText('User Details');
   }
-);
+).tag('@CrossBrowser');
 
 Scenario('I as a user should be redirected to user-details page if I select no when suspending a user',
   {featureFlags: [BETA_FEATURES]},
