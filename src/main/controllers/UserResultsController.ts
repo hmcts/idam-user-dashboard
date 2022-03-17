@@ -61,9 +61,11 @@ export class UserResultsController extends RootController {
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'manage-users', { error: {
-      search: { message: errorMessage }
-    }});
+    return super.post(req, res, 'manage-users', {
+      error: {
+        search: {message: errorMessage}
+      }
+    });
   }
 
   private preprocessSearchResults(user: User): void {

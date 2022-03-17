@@ -1,5 +1,5 @@
 import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
-import { SearchType } from '../../../../../main/utils/SearchType';
+import {SearchType} from '../../../../../main/utils/SearchType';
 import { Role } from '../../../../../main/interfaces/Role';
 import { when } from 'jest-when';
 
@@ -272,6 +272,15 @@ describe('IdamAPI', () => {
       expect(mockAxios.delete).toBeCalledWith('/api/v1/users/-1');
       expect(mockLogger.error).toBeCalledWith('Delete failed');
     });
+  });
+
+  test('Should not return results from getUserDetails request if error', async () => {
+    const mockAxios = { get: async () => { throw new Error ('error'); } } as any;
+    const mockLogger = { error: jest.fn() } as any;
+    const mockTelemetryClient = { trackTrace: jest.fn() } as any;
+    const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+    await expect(api.getUserDetails(SearchType['Email'], testEmail)).resolves.toEqual([]);
   });
 
   describe('registerUser', () => {

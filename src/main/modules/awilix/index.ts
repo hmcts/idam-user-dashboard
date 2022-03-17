@@ -8,8 +8,7 @@ import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
 import { UserActionsController } from '../../controllers/UserActionsController';
 import { UserDeleteController } from '../../controllers/UserDeleteController';
-import { UserEditController } from '../../controllers/UserEditController';
-
+import { UserSuspendController } from '../../controllers/UserSuspendController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 const { Logger } = require('@hmcts/nodejs-logging');
@@ -17,6 +16,7 @@ const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
 import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
+import { UserEditController } from '../../controllers/UserEditController';
 
 /**
  * Sets up the dependency injection container
@@ -37,7 +37,8 @@ export class Container {
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
       userActionsController: asClass(UserActionsController),
-      userDeleteController: asClass(UserDeleteController)
+      userDeleteController: asClass(UserDeleteController),
+      userSuspendController: asClass(UserSuspendController)
     });
 
     /**

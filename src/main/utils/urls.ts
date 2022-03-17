@@ -12,5 +12,5 @@ export const ADD_USER_COMPLETION_URL = '/users/add/completed';
 export const USER_DETAILS_URL = '/users/details';
 export const USER_ACTIONS_URL = '/users/actions';
 export const EDIT_USER_URL = '/users/edit';
-
+export const USER_SUSPEND_URL = '/users/suspend';
 export const USER_DELETE_URL = '/users/delete';
