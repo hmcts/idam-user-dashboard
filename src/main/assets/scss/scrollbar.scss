@@ -1,0 +1,31 @@
+// sass-lint:disable property-sort-order
+.scrollable {
+  max-height: 448px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+$track-background: #f1f1f1;
+$thumb-background: #888;
+
+.visible-scrollbar {
+  // sass-lint:disable no-vendor-prefixes
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  // sass-lint:disable no-vendor-prefixes
+  &::-webkit-scrollbar-track {
+    background: $track-background;
+    border-radius: 8px;
+  }
+
+  // sass-lint:disable no-vendor-prefixes
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-background;
+    border-radius: 8px;
+  }
+}

@@ -15,11 +15,11 @@ import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError} from '../interfaces/PageData';
 import { constructRoleAssignment } from '../utils/roleUtils';
+import {UserType} from '../utils/UserType';
 // import { SelectItem } from '../interfaces/SelectItem';
 // import { Service } from '../interfaces/Service';
 // import { UserType } from '../utils/UserType';
 //
-// const PRIVATE_BETA_CITIZEN_ROLE = 'citizen';
 // const SERVICE_PRIVATE_BETA_ROLE_SUFFIX = '-private-beta';
 
 @autobind
@@ -74,13 +74,17 @@ export class AddUserDetailsController extends RootController{
         error
       });
     }
-
-    const allRoles = await req.scope.cradle.api.getAllRoles();
-    const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
-    super.post(req, res, 'add-user-roles', { content: {
-      user: user,
-      roles: roleAssignment
-    }});
+    if (fields.userType === UserType.Professional || fields.userType === UserType.Support) {
+      const allRoles = await req.scope.cradle.api.getAllRoles();
+      const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
+      super.post(req, res, 'add-user-roles', {
+        content: {
+          user: user,
+          roles: roleAssignment
+        }
+      });
+    }
+    return;
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
@@ -114,7 +118,7 @@ export class AddUserDetailsController extends RootController{
   // private constructUserRoles(fields: any): string[] {
   //   const roles: string[] = [];
   //   if (fields.userType === UserType.Citizen) {
-  //     roles.push(PRIVATE_BETA_CITIZEN_ROLE);
+  //     roles.push(UserType.Citizen);
   //     roles.push(fields.service + SERVICE_PRIVATE_BETA_ROLE_SUFFIX);
   //   }
   //   return roles;
