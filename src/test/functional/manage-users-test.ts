@@ -1,10 +1,5 @@
 import {
-  getUserDetails,
-  createUserWithSsoId,
-  createUserWithRoles,
-  suspendUser,
-  retireStaleUser,
-  deleteStaleUser
+  createUserWithRoles
 } from './shared/testingSupportApi';
 
 import '../../main/utils/utils';
