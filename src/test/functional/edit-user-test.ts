@@ -8,17 +8,17 @@ import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
 
 Feature('Manage Existing User');
 
-const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+const dashboardUserEMAIL = randomData.getRandomEmailAddress();
 BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('@CrossBrowser I as a user should be able to edit and update the user-details successfully',
+Scenario('I as a user should be able to edit and update the user-details successfully',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
-    const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-    await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
+    const activeUserEmail = randomData.getRandomEmailAddress();
+    await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
     const activeUser = await I.getUserDetails(activeUserEmail);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
@@ -69,7 +69,7 @@ Scenario('@CrossBrowser I as a user should be able to edit and update the user-d
     const emailUpdated = await I.grabValueFrom('#email');
     Assert.equal(emailUpdated.trim(), updatedEmail);
   }
-);
+).tag('@CrossBrowser');
 
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
 incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
@@ -105,7 +105,7 @@ Scenario('I as a user should see proper error message when mandatory fields left
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
-    const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
@@ -144,7 +144,7 @@ Scenario('I as a user should see proper error message when no changes were made 
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
-    const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
