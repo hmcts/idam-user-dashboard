@@ -29,6 +29,8 @@ Scenario('I as a user should be able to see the active status of a user', async 
   I.fillField('#search', activeUserEmail);
   I.click('Search');
   I.waitForText('User Details');
+  I.see('Edit user');
+  I.see('Suspend user');
 
   const createDate = convertISODateTimeToUTCFormat(activeUser[0].createDate);
   const lastModified = convertISODateTimeToUTCFormat(activeUser[0].lastModified);
@@ -69,6 +71,8 @@ Scenario('I as a user should be able to see the suspended status of a user', asy
   I.fillField('#search', suspendUserEmail);
   I.click('Search');
   I.waitForText('User Details');
+  I.see('Edit user');
+  I.see('Un-suspend user');
 
   const email = await I.grabTextFrom('#email');
   Assert.equal(email.trim(), suspendUserEmail);
@@ -91,6 +95,8 @@ Scenario('I as a user should be able to see the stale status of a user', async (
   I.fillField('#search', staleUserEmail);
   I.click('Search');
   I.waitForText('User Details');
+  I.dontSee('Edit user');
+  I.dontSee('Suspend user');
 
   const email = await I.grabTextFrom('#email');
   Assert.equal(email.trim(), staleUserEmail);
