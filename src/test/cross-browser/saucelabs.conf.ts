@@ -40,6 +40,7 @@ const setupConfig = {
   name: 'cross-browser',
   output: '../../../functional-output/cross-browser/reports',
   helpers: {
+    ...config.helpers,
     Playwright: {
       url: config.TEST_URL,
       browser: 'chromium',
@@ -49,9 +50,6 @@ const setupConfig = {
       host: 'ondemand.eu-central-1.saucelabs.com',
       port: 80,
       capabilities: {},
-    },
-    FeatureFlagHelper: {
-      require: '../functional/shared/helpers/featureFlagHelper.ts'
     },
   },
   plugins: {

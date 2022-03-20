@@ -8,10 +8,10 @@ import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
 
 Feature('Delete User');
 
-const PARENT_ROLE = testConfig.TEST_SUITE_PREFIX + randomData.getRandomString(10);
-const ASSIGNABLE_CHILD_ROLE = testConfig.TEST_SUITE_PREFIX + randomData.getRandomString(10);
-const INDEPENDANT_CHILD_ROLE = testConfig.TEST_SUITE_PREFIX + randomData.getRandomString(10);
-const PARENT_ROLE_EMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+const PARENT_ROLE = randomData.getRandomRole();
+const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
+const INDEPENDANT_CHILD_ROLE = randomData.getRandomRole();
+const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
 BeforeSuite(async () => {
   await createAssignableRoles(PARENT_ROLE);
@@ -26,7 +26,7 @@ Scenario('I as a user should not be able delete user if I do not have the role w
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
-    const nonDeletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const nonDeletableUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
@@ -45,7 +45,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
 
-    const nonDeletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const nonDeletableUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
@@ -60,10 +60,10 @@ Scenario('I as a user should not be able delete user with both deletable and oth
   }
 );
 
-Scenario('@CrossBrowser I as a user if I have the right role, should be able delete user successfully',
+Scenario('I as a user if I have the right role, should be able delete user successfully',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
-    const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const deletableUserEmail = randomData.getRandomEmailAddress();
     const userDataBeforeDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
@@ -99,12 +99,12 @@ Scenario('@CrossBrowser I as a user if I have the right role, should be able del
     const userDataAfterDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     Assert.notEqual(userDataBeforeDeleting.id, userDataAfterDeleting.id);
   }
-);
+).tag('@CrossBrowser');
 
 Scenario('I as a user should be able delete users with same role successfully',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
-    const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const deletableUserEmail = randomData.getRandomEmailAddress();
     await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [PARENT_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
@@ -134,7 +134,7 @@ Scenario('I as a user should be able delete users with same role successfully',
 Scenario('I as a user should not delete user if I select No',
   {featureFlags: [BETA_FEATURES]},
   async ({I}) => {
-    const deletableUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+    const deletableUserEmail = randomData.getRandomEmailAddress();
     await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage existing users');
