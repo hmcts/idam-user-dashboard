@@ -153,7 +153,7 @@ export const deleteUser = async (email) => {
   }
 };
 
-export const deleteAllTestData = async (testDataPrefix = '', userNames = [], roleNames = [], serviceNames = [], async = false) => {
+export const deleteAllTestData = async (testDataPrefix = '', userNames = [], roleNames = [], serviceNames = [], async = true) => {
   try {
     await axios.delete(
       `${config.get('services.idam.url.api')}/testing-support/test-data?async=${async}&userNames=${userNames.join(',')}&roleNames=${roleNames.join(',')}&testDataPrefix=${testDataPrefix}&serviceNames=${serviceNames.join(',')}`
