@@ -28,8 +28,9 @@ export class UserResultsController extends RootController {
       if (users.length === 1) {
         const user = users[0];
         this.preprocessSearchResults(user);
+        const show = this.canDeleteUser(req.session.user, user);
         return super.post(req, res, 'user-details', {
-          content: { user, showDelete: this.canDeleteUser(req.session.user, user)}
+          content: { user, showDelete: show}
         });
       }
 

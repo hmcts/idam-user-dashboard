@@ -12,6 +12,7 @@ import {
   USER_EMPTY_SURNAME_ERROR
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
+import {UserType} from '../../../../main/utils/UserType';
 
 describe('Add user details controller', () => {
   let req: any;
@@ -243,7 +244,7 @@ describe('Add user details controller', () => {
     req.body._email = email;
     req.body.forename = name;
     req.body.surname = name;
-    req.body.userType = citizenUserType;
+    req.body.userType = UserType.Professional;
     //req.body.service = serviceName;
     req.session = { user: { assignableRoles: [] } };
     req.scope.cradle.api = mockApi;
@@ -263,7 +264,7 @@ describe('Add user details controller', () => {
         email: email,
         forename: name,
         surname: name,
-        userType: citizenUserType
+        userType: UserType.Professional
       }
     };
 

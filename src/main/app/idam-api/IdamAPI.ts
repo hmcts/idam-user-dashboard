@@ -99,34 +99,16 @@ export class IdamAPI {
   }
 
   public async getAssignableRoles(roleNames: string[]) {
-    const rolesMap: Map<string, Role> = new Map<string, Role>();
+    const allRoles = await this.getAllRoles();
+    const rolesMap = new Map(allRoles.map((role): [string, Role] => [role.id, role]));
 
-    function traverse(collection: Role[], role: Role): Role[] {
-      if(!role) return collection;
-      collection.push(role);
+    const collection: Set<string> = new Set();
+    Array.from(rolesMap.values())
+      .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+      .forEach(role => role.assignableRoles
+        .forEach(r => collection.add(rolesMap.get(r).name))
+      );
 
-      if(role.assignableRoles?.length > 1) {
-        const assignableRoles = role.assignableRoles.filter(id => role.id !== id).map(id => rolesMap.get(id));
-        return assignableRoles.reduce(traverse, collection);
-      }
-
-      return collection;
-    }
-
-    return this.getAllRoles()
-      // Sets up roleMap with roleid - role
-      .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
-      .then(() => {
-        const collection: Set<string> = new Set();
-
-        Array.from(rolesMap.values())
-          .filter(role => roleNames.includes(role.name) && role.assignableRoles)
-          .forEach(role => role.assignableRoles
-            .forEach(assignableRole => traverse([], rolesMap.get(assignableRole))
-              .forEach(roleName => collection.add(roleName.name))
-            ));
-
-        return Array.from(collection);
-      });
+    return Array.from(collection);
   }
 }

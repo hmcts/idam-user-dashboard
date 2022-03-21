@@ -132,7 +132,7 @@ describe('IdamAPI', () => {
         { id: '3', name: 'test-role-3', assignableRoles: ['3', '1'] },
         { id: '4', name: 'test-role-4', assignableRoles: ['4', '1'] }
       ];
-      const results = ['test-role-3', 'test-role-1', 'test-role-2'];
+      const results = ['test-role-3', 'test-role-1'];
 
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
@@ -157,7 +157,7 @@ describe('IdamAPI', () => {
         { id: '8', name: 'test-role-8', assignableRoles: ['9'] },
         { id: '9', name: 'test-role-9', assignableRoles: [] }
       ];
-      const results = ['test-role-3', 'test-role-1', 'test-role-2', 'test-role-6', 'test-role-5', 'test-role-9'];
+      const results = ['test-role-3', 'test-role-1', 'test-role-6', 'test-role-2', 'test-role-5', 'test-role-9'];
 
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
