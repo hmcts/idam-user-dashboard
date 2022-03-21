@@ -100,7 +100,7 @@ export class IdamAPI {
 
   public async getAssignableRoles(roleNames: string[]) {
     const allRoles = await this.getAllRoles();
-    const rolesMap = new Map(allRoles.map((role): [string, Role] => [role.id, role]));
+    const rolesMap = new Map(allRoles.map(role => [role.id, role]));
 
     const collection: Set<string> = new Set();
     Array.from(rolesMap.values())
