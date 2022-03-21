@@ -12,7 +12,7 @@ import {
   USER_EMPTY_SURNAME_ERROR
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
-import {UserType} from '../../../../main/utils/UserType';
+import { UserType } from '../../../../main/utils/UserType';
 
 describe('Add user details controller', () => {
   let req: any;
@@ -28,14 +28,6 @@ describe('Add user details controller', () => {
       onboardingRoles: ['private-beta']
     }
   ];
-  // const serviceSelectItems = [
-  //   {
-  //     value: serviceName,
-  //     text: serviceName,
-  //     selected: false
-  //   }
-  // ];
-  const citizenUserType = 'citizen';
 
   const mockApi = {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -114,13 +106,10 @@ describe('Add user details controller', () => {
   });
 
   test('Should render the add user details page with error when forename not populated', async () => {
-    //when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
-
     req.body._email = email;
     req.body.forename = '';
     req.body.surname = name;
-    req.body.userType = citizenUserType;
-    //req.body.service = serviceName;
+    req.body.userType = UserType.Support;
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
@@ -130,7 +119,7 @@ describe('Add user details controller', () => {
           email: email,
           forename: '',
           surname: name,
-          userType: citizenUserType
+          userType: UserType.Support
         }
       },
       error: { forename: {
@@ -141,13 +130,10 @@ describe('Add user details controller', () => {
   });
 
   test('Should render the add user details page with error when surname not populated', async () => {
-    //when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
-
     req.body._email = email;
     req.body.forename = name;
     req.body.surname = '';
-    req.body.userType = citizenUserType;
-    //req.body.service = serviceName;
+    req.body.userType = UserType.Support;
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
@@ -157,7 +143,7 @@ describe('Add user details controller', () => {
           email: email,
           forename: name,
           surname: '',
-          userType: citizenUserType
+          userType: UserType.Support
         }
       },
       error: { surname: {
@@ -168,12 +154,9 @@ describe('Add user details controller', () => {
   });
 
   test('Should render the add user details page with error when user type not selected', async () => {
-    //when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
-
     req.body._email = email;
     req.body.forename = name;
     req.body.surname = name;
-    //req.body.service = '';
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
@@ -192,32 +175,6 @@ describe('Add user details controller', () => {
       urls
     });
   });
-
-  // test('Should render the add user details page with error when service for citizen user type not selected', async () => {
-  //   when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
-  //
-  //   req.body.forename = name;
-  //   req.body.surname = name;
-  //   req.body.userType = citizenUserType;
-  //   req.body.service = '';
-  //   req.scope.cradle.api = mockApi;
-  //   await controller.post(req, res);
-  //   expect(res.render).toBeCalledWith('add-user-details', {
-  //     content: {
-  //       user : {
-  //         forename: name,
-  //         surname: name,
-  //         userType: citizenUserType
-  //       },
-  //       services: serviceSelectItems,
-  //       selectedService: ''
-  //     },
-  //     error: { service: {
-  //       message: MISSING_PRIVATE_BETA_SERVICE_ERROR
-  //     }},
-  //     urls
-  //   });
-  // });
 
   test('Should render the add user completion page when all fields populated', async () => {
     const role1 = 'role1';
@@ -239,13 +196,11 @@ describe('Add user details controller', () => {
     ];
 
     when(mockApi.getAllRoles as jest.Mock).calledWith().mockReturnValue(allRoles);
-    //when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
 
     req.body._email = email;
     req.body.forename = name;
     req.body.surname = name;
     req.body.userType = UserType.Professional;
-    //req.body.service = serviceName;
     req.session = { user: { assignableRoles: [] } };
     req.scope.cradle.api = mockApi;
 

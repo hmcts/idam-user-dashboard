@@ -74,12 +74,6 @@
           errorMessage: { text: error.userType.message } if error.userType,
           items: [
             {
-              value: "citizen",
-              text: "Private Beta Citizen",
-              checked: true if content.user.userType === 'citizen',
-              disabled: true
-            },
-            {
               value: "professional",
               text: "Professional",
               checked: true if content.user.userType === 'professional'
@@ -91,13 +85,6 @@
             }
           ]
         }) }}
-
-{#        <h2 class="govuk-heading-s">Select a service</h2>#}
-{#        {{ govukSelect({#}
-{#          id: "service",#}
-{#          name: "service",#}
-{#          items: content.services | selectFilter(content.selectedService)#}
-{#        }) }}#}
 
         {{ govukButton({
           text: "Continue"

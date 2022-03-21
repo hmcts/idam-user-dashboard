@@ -15,12 +15,6 @@ import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError} from '../interfaces/PageData';
 import { constructRoleAssignment } from '../utils/roleUtils';
-import {UserType} from '../utils/UserType';
-// import { SelectItem } from '../interfaces/SelectItem';
-// import { Service } from '../interfaces/Service';
-// import { UserType } from '../utils/UserType';
-//
-// const SERVICE_PRIVATE_BETA_ROLE_SUFFIX = '-private-beta';
 
 @autobind
 export class AddUserDetailsController extends RootController{
@@ -47,12 +41,10 @@ export class AddUserDetailsController extends RootController{
     // check if the user with the same email already exists
     const users = await req.scope.cradle.api.getUserDetails(SearchType.Email, email);
     if (users.length == 0) {
-      //const services = await this.getServicesWithPrivateBetaRole(req);
       return super.post(req, res, 'add-user-details', {content: {
         user: {
           email: email
         },
-        // services: this.getServicesForSelect(services)
       }});
     }
 
@@ -61,29 +53,26 @@ export class AddUserDetailsController extends RootController{
 
   private async processNewUserDetails(req: AuthedRequest, res: Response) {
     const fields = req.body;
-    //const services = await this.getServicesWithPrivateBetaRole(req);
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
     if(!isObjectEmpty(error)) {
       return super.post(req, res, 'add-user-details', {
         content: {
-          user: user,
-          // services: this.getServicesForSelect(services),
-          // selectedService: fields.service
+          user: user
         },
         error
       });
     }
-    if (fields.userType === UserType.Professional || fields.userType === UserType.Support) {
-      const allRoles = await req.scope.cradle.api.getAllRoles();
-      const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
-      super.post(req, res, 'add-user-roles', {
-        content: {
-          user: user,
-          roles: roleAssignment
-        }
-      });
-    }
+
+    const allRoles = await req.scope.cradle.api.getAllRoles();
+    const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
+    super.post(req, res, 'add-user-roles', {
+      content: {
+        user: user,
+        roles: roleAssignment
+      }
+    });
+
     return;
   }
 
@@ -100,29 +89,9 @@ export class AddUserDetailsController extends RootController{
     if (hasProperty(fields, 'forename') && isEmpty(forename)) error.forename = { message: USER_EMPTY_FORENAME_ERROR };
     if (hasProperty(fields, 'surname') && isEmpty(surname)) error.surname = { message: USER_EMPTY_SURNAME_ERROR };
     if (!hasProperty(fields, 'userType')) error.userType = { message: MISSING_USER_TYPE_ERROR };
-    //if (hasProperty(fields, 'userType') && isEmpty(service)) error.service = { message: MISSING_PRIVATE_BETA_SERVICE_ERROR };
 
     return error;
   }
-
-  // private async getServicesWithPrivateBetaRole(req: AuthedRequest): Promise<Service[]> {
-  //   const services = await req.scope.cradle.api.getAllServices();
-  //   return services.filter( service => service.onboardingRoles.length > 0);
-  // }
-  //
-  // private getServicesForSelect(services: Service[]): SelectItem[] {
-  //   return services.map((service) => (
-  //     {value: service.label, text: service.label, selected: false}));
-  // }
-  //
-  // private constructUserRoles(fields: any): string[] {
-  //   const roles: string[] = [];
-  //   if (fields.userType === UserType.Citizen) {
-  //     roles.push(UserType.Citizen);
-  //     roles.push(fields.service + SERVICE_PRIVATE_BETA_ROLE_SUFFIX);
-  //   }
-  //   return roles;
-  // }
 
   private async constructUserDetails(fields: any): Promise<any> {
     return {
