@@ -5,15 +5,15 @@ import {createUserWithRoles, createUserWithSsoId} from './shared/testingSupportA
 
 Feature('Search User');
 
-const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-const citizenUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-const conflictUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+const dashboardUserEMAIL = randomData.getRandomEmailAddress();
+const citizenUserEmail = randomData.getRandomEmailAddress();
+const conflictUserEmail = randomData.getRandomEmailAddress();
 let citizenUser;
 let conflictUser;
 
 BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
-  citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(10));
+  citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
   conflictUser = await createUserWithSsoId(conflictUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], citizenUser.id);
 });
 
@@ -35,7 +35,7 @@ Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper
   I.waitForText('The email address is not in the correct format');
 });
 
-Scenario('@CrossBrowser I should be able to search with user-email', async ({I}) => {
+Scenario('I should be able to search with user-email', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -60,9 +60,9 @@ Scenario('@CrossBrowser I should be able to search with user-email', async ({I})
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
-Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) => {
+Scenario('I should be able to search with user-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -87,9 +87,9 @@ Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) =>
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
-Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => {
+Scenario('I should be able to search with sso-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -114,7 +114,7 @@ Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => 
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
