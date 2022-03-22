@@ -121,6 +121,8 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
-    "applicationinsights/@azure/core-http/node-fetch": "^2.6.7"
+    "applicationinsights/@azure/core-http/node-fetch": "^2.6.7",
+    "tsconfig-paths/minimist": "1.2.6",
+    "config/json5/minimist": "1.2.6"
   }
 }
