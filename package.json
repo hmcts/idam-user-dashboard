@@ -76,7 +76,7 @@
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "ts-node": "^10.7.0",
-    "tsconfig-paths": "^3.14.0",
+    "tsconfig-paths": "^3.14.1",
     "typescript": "^4.6.2",
     "uuid": "^8.3.2"
   },
@@ -89,7 +89,7 @@
     "@types/mini-css-extract-plugin": "^2.5.1",
     "@types/webpack-dev-middleware": "^5.3.0",
     "@typescript-eslint/eslint-plugin": "^2.19.2",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.15.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.16.0",
     "@typescript-eslint/parser": "^2.19.2",
     "allure-commandline": "^2.17.2",
     "babel-eslint": "^10.1.0",
@@ -121,7 +121,6 @@
   },
   "resolutions": {
     "applicationinsights/@azure/core-http/node-fetch": "^2.6.7",
-    "tsconfig-paths/minimist": "1.2.6",
     "config/json5/minimist": "1.2.6"
   }
 }
