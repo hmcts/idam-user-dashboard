@@ -15,12 +15,10 @@
 {% endblock %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">Add a new user</h1>
-
-  <div id='container'>
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-half">
+      <div class="govuk-grid-column-three-quarters">
         {{ errorSummary(error) }}
+        <h1 class="govuk-heading-l">Add a new user</h1>
       </div>
     </div>
 
@@ -33,7 +31,17 @@
           <input type="hidden" name="_forename" value="{{ content.user.forename }}">
           <input type="hidden" name="_surname" value="{{ content.user.surname }}">
 
-          {{ roleList({ roles: content.roles }) }}
+          {{ roleList({
+            roles: content.roles,
+            name: 'roles',
+            searchBox: {
+              placeholder: 'Search roles to assign to the user',
+              classes: 'govuk-!-width-one-half'
+            },
+            list: {
+              classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+            }
+          }) }}
 
           <div class="govuk-button-group">
             {{ govukButton({ text: "Save" }) }}
@@ -48,5 +56,4 @@
         <button type="submit" class="govuk-back-link">Return to main menu</button>
       </form>
     </div>
-  </div>
 {% endblock %}

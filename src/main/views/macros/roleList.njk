@@ -4,12 +4,10 @@
 {% macro roleList(params) %}
   {% set roleItems = [] %}
   {% for role in params.roles %}
-    {% set id = role.name | lower %}
     {% set roleItems =
       (roleItems.push({
       'text': role.name,
       'value': role.name,
-      'id': id,
       'checked': false,
       'disabled': not role.assignable,
       'attributes': {
@@ -18,24 +16,21 @@
     }), roleItems) %}
   {% endfor %}
 
-  <div class="role-list" data-module="role-list">
+  <div class="role-list {%- if params.classes %} {{ params.classes }}{% endif -%}" data-module="role-list" id="{{ params.id }}">
     {{ govukInput({
       attributes: {
-        placeholder: ' Seacrh roles to assign to the user'
+        placeholder: params.searchBox.placeholder
       },
-      prefix: { text: '🔎' },
-      classes: "role-list__search-box govuk-input--width-22 govuk-!-width-one-half",
-      id: "search",
-      name: "search"
+      prefix: { text: params.searchBox.prefix|default('🔎', true) },
+      classes: "role-list__search-box " + params.searchBox.classes
     }) }}
 
     <p class='role-list__number-of-roles govuk-hint'></p>
 
     <div class="role-list__list">
       {{ govukCheckboxes({
-        idPrefix: "roles",
-        name: "roles",
-        classes: "govuk-checkboxes--small govuk-checkboxes--two-column",
+        name: params.name,
+        classes: params.list.classes,
         items: roleItems
       }) }}
     </div>
