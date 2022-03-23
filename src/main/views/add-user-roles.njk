@@ -1,12 +1,8 @@
-{% from "macros/csrf.njk" import csrfProtection %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/errorSummary.njk" import errorSummary %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "macros/roleList.njk" import roleList %}
 
 {% extends "template.njk" %}
 
@@ -25,22 +21,8 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-half">
         {{ errorSummary(error) }}
-
-        {{ govukInput({
-          attributes: {
-            placeholder: ' Seacrh roles to assign to the user'
-          },
-          prefix: {
-            text: '🔎'
-          },
-          classes: "govuk-input--width-22",
-          id: "search",
-          name: "search"
-        }) }}
       </div>
     </div>
-
-    <div id='numberofRoles' class='govuk-hint'></div>
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
@@ -51,27 +33,7 @@
           <input type="hidden" name="_forename" value="{{ content.user.forename }}">
           <input type="hidden" name="_surname" value="{{ content.user.surname }}">
 
-          {% set roleItems = [] %}
-          {% for role in content.roles %}
-            {% set id = role.name | lower %}
-            {% set roleItems =
-              (roleItems.push({
-              'text': role.name,
-              'value': role.name,
-              'id': id,
-              'checked': false,
-              'disabled': not role.assignable
-            }), roleItems) %}
-          {% endfor %}
-
-          <div id="roleList" class="scrollable visible-scrollbar role: scrollbar">
-              {{ govukCheckboxes({
-                idPrefix: "roles",
-                name: "roles",
-                classes: "govuk-checkboxes--small govuk-checkboxes--two-column",
-                items: roleItems
-              }) }}
-          </div>
+          {{ roleList({ roles: content.roles }) }}
 
           <div class="govuk-button-group">
             {{ govukButton({ text: "Save" }) }}
@@ -81,11 +43,10 @@
     </div>
 
     <div class="govuk-grid-row">
-      <form method="REDIRECT" action="{{ urls.HOME_URL }}">
+      <form method="post" action="{{ urls.HOME_URL }}">
         {{ csrfProtection(csrfToken) }}
         <button type="submit" class="govuk-back-link">Return to main menu</button>
       </form>
     </div>
-
   </div>
 {% endblock %}
