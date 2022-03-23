@@ -66,7 +66,7 @@
     "helmet": "^5.0.2",
     "jest-when": "^3.5.1",
     "jwt-decode": "^3.1.2",
-    "launchdarkly-node-server-sdk": "^6.3.0",
+    "launchdarkly-node-server-sdk": "^6.4.0",
     "lodash": "^4.17.20",
     "npm-run-all": "^4.1.5",
     "nunjucks": "^3.2.2",
