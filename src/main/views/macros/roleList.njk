@@ -1,0 +1,43 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% macro roleList(params) %}
+  {% set roleItems = [] %}
+  {% for role in params.roles %}
+    {% set id = role.name | lower %}
+    {% set roleItems =
+      (roleItems.push({
+      'text': role.name,
+      'value': role.name,
+      'id': id,
+      'checked': false,
+      'disabled': not role.assignable,
+      'attributes': {
+        'data-role': role.name|lower
+      }
+    }), roleItems) %}
+  {% endfor %}
+
+  <div class="role-list" data-module="role-list">
+    {{ govukInput({
+      attributes: {
+        placeholder: ' Seacrh roles to assign to the user'
+      },
+      prefix: { text: '🔎' },
+      classes: "role-list__search-box govuk-input--width-22 govuk-!-width-one-half",
+      id: "search",
+      name: "search"
+    }) }}
+
+    <p class='role-list__number-of-roles govuk-hint'></p>
+
+    <div class="role-list__list">
+      {{ govukCheckboxes({
+        idPrefix: "roles",
+        name: "roles",
+        classes: "govuk-checkboxes--small govuk-checkboxes--two-column",
+        items: roleItems
+      }) }}
+    </div>
+  </div>
+{% endmacro %}
