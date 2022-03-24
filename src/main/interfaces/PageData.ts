@@ -1,4 +1,5 @@
 import { User } from './User';
+import * as flags from '../../main/app/feature-flags/flags';
 
 export interface PageData {
   user?: Partial<User>;
@@ -13,7 +14,10 @@ export interface PageContent {
 }
 
 export interface PageFeatureFlags {
-  [key: string]: boolean;
+  values: {
+    [key: string]: boolean;
+  };
+  flags: typeof flags;
 }
 
 export interface ServiceUrls {

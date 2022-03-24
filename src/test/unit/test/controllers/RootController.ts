@@ -3,6 +3,7 @@ import { mockRequest } from '../../utils/mockRequest';
 import { RootController } from '../../../../main/controllers/RootController';
 import { PageData } from '../../../../main/interfaces/PageData';
 import * as urls from '../../../../main/utils/urls';
+import * as flags from '../../../../main/app/feature-flags/flags';
 
 
 describe('Root controller', () => {
@@ -27,7 +28,10 @@ describe('Root controller', () => {
     });
 
     const expectedPageData: PageData = {
-      featureFlags: { 'unit-test': true },
+      featureFlags: {
+        flags,
+        values: { 'unit-test': true }
+      },
       urls
     };
 
@@ -65,7 +69,10 @@ describe('Root controller', () => {
   test('Should render the view with view, user and feature flag data', async () => {
     const userDetails = { name: 'JOHN SMITH', email: 'johnsmith@user.test' };
     const pageData = { testContent: 'test text' };
-    const featureFlagData = { 'unit-test': true };
+    const featureFlagData = {
+      flags,
+      values: { 'unit-test': true }
+    };
 
     const expectedPageData: PageData = {
       user: userDetails,
@@ -75,7 +82,7 @@ describe('Root controller', () => {
     };
 
     mockFeatureToggles.getAllFlagValues = jest.fn(() => {
-      return Promise.resolve(featureFlagData);
+      return Promise.resolve({ 'unit-test': true });
     });
     req.session = { user: userDetails };
 
