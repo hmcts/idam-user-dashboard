@@ -48,16 +48,16 @@ export class UserResultsController extends RootController {
         this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
         return;
       }
-      return await req.scope.cradle.api.getUserDetails(SearchType['Email'], input);
+      return await req.scope.cradle.api.getUserDetails(SearchType.Email, input);
     }
 
-    const users = await req.scope.cradle.api.getUserDetails(SearchType['UserId'], input);
+    const users = await req.scope.cradle.api.getUserDetails(SearchType.UserId, input);
     if (users.length > 0) {
       return users;
     }
 
     // only search for SSO ID if searching with the user ID does not return any result
-    return await req.scope.cradle.api.getUserDetails(SearchType['SsoId'], input);
+    return await req.scope.cradle.api.getUserDetails(SearchType.SsoId, input);
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {

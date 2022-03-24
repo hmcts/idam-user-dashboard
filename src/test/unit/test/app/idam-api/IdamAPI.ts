@@ -9,9 +9,9 @@ describe('IdamAPI', () => {
   const testSsoId = '23456';
 
   const parameters = [
-    { input: testEmail, searchType: SearchType['Email'] },
-    { input: testUserId, searchType: SearchType['UserId'] },
-    { input: testSsoId, searchType: SearchType['SsoId'] }
+    { input: testEmail, searchType: SearchType.Email },
+    { input: testUserId, searchType: SearchType.UserId },
+    { input: testSsoId, searchType: SearchType.SsoId }
   ];
 
   describe('getUserDetails', () => {
@@ -43,7 +43,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = { trackTrace: jest.fn() } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      await expect(api.getUserDetails(SearchType['Email'], testEmail)).resolves.toEqual([]);
+      await expect(api.getUserDetails(SearchType.Email, testEmail)).resolves.toEqual([]);
     });
   });
 

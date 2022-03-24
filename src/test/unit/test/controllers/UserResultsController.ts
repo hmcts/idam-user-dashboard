@@ -46,7 +46,7 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['Email'], email).mockReturnValue(results);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue(results);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -67,8 +67,8 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['UserId'], userId).mockReturnValue(results);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['SsoId'], userId).mockReturnValue([]);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, userId).mockReturnValue(results);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, userId).mockReturnValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
@@ -89,8 +89,8 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['UserId'], ssoId).mockReturnValue([]);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['SsoId'], ssoId).mockReturnValue(results);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, ssoId).mockReturnValue([]);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, ssoId).mockReturnValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
@@ -100,7 +100,7 @@ describe('User results controller', () => {
   });
 
   test('Should render the manage users page when searching with a non-existent email', async () => {
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['Email'], email).mockReturnValue([]);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue([]);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -109,8 +109,8 @@ describe('User results controller', () => {
   });
 
   test('Should render the manage users page when searching with a non-existent ID', async () => {
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['UserId'], userId).mockReturnValue([]);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['SsoId'], userId).mockReturnValue([]);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, userId).mockReturnValue([]);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, userId).mockReturnValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
@@ -139,7 +139,7 @@ describe('User results controller', () => {
         ssoId: userId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['Email'], email).mockReturnValue(results);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue(results);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -168,7 +168,7 @@ describe('User results controller', () => {
         ssoId: ssoId2
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['UserId'], userId).mockReturnValue(results);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, userId).mockReturnValue(results);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
@@ -197,8 +197,8 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['UserId'], ssoId).mockReturnValue([]);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType['SsoId'], ssoId).mockReturnValue(results);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, ssoId).mockReturnValue([]);
+    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, ssoId).mockReturnValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
