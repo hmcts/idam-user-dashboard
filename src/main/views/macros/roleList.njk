@@ -1,0 +1,38 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% macro roleList(params) %}
+  {% set roleItems = [] %}
+  {% for role in params.roles %}
+    {% set roleItems =
+      (roleItems.push({
+      'text': role.name,
+      'value': role.name,
+      'checked': false,
+      'disabled': not role.assignable,
+      'attributes': {
+        'data-role': role.name|lower
+      }
+    }), roleItems) %}
+  {% endfor %}
+
+  <div class="role-list {%- if params.classes %} {{ params.classes }}{% endif -%}" data-module="role-list" id="{{ params.id }}">
+    {{ govukInput({
+      attributes: {
+        placeholder: params.searchBox.placeholder
+      },
+      prefix: { text: params.searchBox.prefix|default('🔎', true) },
+      classes: "role-list__search-box " + params.searchBox.classes
+    }) }}
+
+    <p class='role-list__number-of-roles govuk-hint'></p>
+
+    <div class="role-list__list">
+      {{ govukCheckboxes({
+        name: params.name,
+        classes: params.list.classes,
+        items: roleItems
+      }) }}
+    </div>
+  </div>
+{% endmacro %}

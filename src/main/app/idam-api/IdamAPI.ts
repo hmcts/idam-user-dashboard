@@ -5,6 +5,8 @@ import { TelemetryClient } from 'applicationinsights';
 import { Role } from '../../interfaces/Role';
 import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
+import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
+import { Service } from '../../interfaces/Service';
 
 export class IdamAPI {
   constructor(
@@ -60,6 +62,30 @@ export class IdamAPI {
       });
   }
 
+  public registerUser(user: UserRegistrationDetails): Promise<void> {
+    return this.userAxios
+      .post('/api/v1/users/registration', user)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error register new user in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public getAllServices(): Promise<Service[]> {
+    return this.userAxios
+      .get('/services')
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving all services from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
   public getAllRoles(): Promise<Role[]> {
     return this.systemAxios
       .get('/roles/')
@@ -73,34 +99,16 @@ export class IdamAPI {
   }
 
   public async getAssignableRoles(roleNames: string[]) {
-    const rolesMap: Map<string, Role> = new Map<string, Role>();
+    const allRoles = await this.getAllRoles();
+    const rolesMap = new Map(allRoles.map(role => [role.id, role]));
 
-    function traverse(collection: Role[], role: Role): Role[] {
-      if(!role) return collection;
-      collection.push(role);
+    const collection: Set<string> = new Set();
+    Array.from(rolesMap.values())
+      .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+      .forEach(role => role.assignableRoles
+        .forEach(r => collection.add(rolesMap.get(r).name))
+      );
 
-      if(role.assignableRoles?.length > 1) {
-        const assignableRoles = role.assignableRoles.filter(id => role.id !== id).map(id => rolesMap.get(id));
-        return assignableRoles.reduce(traverse, collection);
-      }
-
-      return collection;
-    }
-
-    return this.getAllRoles()
-      // Sets up roleMap with roleid - role
-      .then(roles => roles.forEach(role => rolesMap.set(role.id, role)))
-      .then(() => {
-        const collection: Set<string> = new Set();
-
-        Array.from(rolesMap.values())
-          .filter(role => roleNames.includes(role.name) && role.assignableRoles)
-          .forEach(role => role.assignableRoles
-            .forEach(assignableRole => traverse([], rolesMap.get(assignableRole))
-              .forEach(roleName => collection.add(roleName.name))
-            ));
-
-        return Array.from(collection);
-      });
+    return Array.from(collection);
   }
 }

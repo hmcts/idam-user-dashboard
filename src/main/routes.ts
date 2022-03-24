@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import {
   ADD_USER_DETAILS_URL,
+  ADD_USER_ROLES_URL,
   ADD_USERS_URL,
   EDIT_USER_URL,
   USER_DELETE_URL,
@@ -20,6 +21,7 @@ export default function(app: Application): void {
   app.post(HOME_URL, app.locals.container.cradle.userOptionController.post);
   app.get(ADD_USERS_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUsersController.get);
   app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserDetailsController.post);
+  app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserRolesController.post);
   app.get(MANAGER_USERS_URL, app.locals.container.cradle.manageUsersController.get);
   app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);

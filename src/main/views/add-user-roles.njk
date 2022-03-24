@@ -1,0 +1,59 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+{% from "macros/roleList.njk" import roleList %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Add users', urls.ADD_USERS_URL],
+    ['Add user roles']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters">
+        {{ errorSummary(error) }}
+        <h1 class="govuk-heading-l">Add a new user</h1>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <form id="addUserRolesForm" method="POST" action="{{ urls.ADD_USER_ROLES_URL }}">
+          {{ csrfProtection(csrfToken) }}
+
+          <input type="hidden" name="_email" value="{{ content.user.email }}">
+          <input type="hidden" name="_forename" value="{{ content.user.forename }}">
+          <input type="hidden" name="_surname" value="{{ content.user.surname }}">
+
+          {{ roleList({
+            roles: content.roles,
+            name: 'roles',
+            searchBox: {
+              placeholder: 'Search roles to assign to the user',
+              classes: 'govuk-!-width-one-half'
+            },
+            list: {
+              classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+            }
+          }) }}
+
+          <div class="govuk-button-group">
+            {{ govukButton({ text: "Save" }) }}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <form method="post" action="{{ urls.HOME_URL }}">
+        {{ csrfProtection(csrfToken) }}
+        <button type="submit" class="govuk-back-link">Return to main menu</button>
+      </form>
+    </div>
+{% endblock %}
