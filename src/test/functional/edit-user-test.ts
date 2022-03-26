@@ -4,7 +4,7 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
+import { BETA_EDIT } from '../../main/app/feature-flags/flags';
 
 Feature('Manage Existing User');
 
@@ -14,7 +14,7 @@ BeforeSuite(async () => {
 });
 
 Scenario('I as a user should be able to edit and update the user-details successfully',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_EDIT]},
   async ({I}) => {
 
     const activeUserEmail = randomData.getRandomEmailAddress();
@@ -77,7 +77,7 @@ incorrectEmailAddresses.add(['@email@']);
 incorrectEmailAddresses.add(['email@com..']);
 
 Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when email format is not correct',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_EDIT]},
   async ({I, current}) => {
 
     const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
@@ -102,7 +102,7 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
 );
 
 Scenario('I as a user should see proper error message when mandatory fields left empty',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_EDIT]},
   async ({I}) => {
 
     const activeUserEmail = randomData.getRandomEmailAddress();
@@ -141,7 +141,7 @@ Scenario('I as a user should see proper error message when mandatory fields left
 );
 
 Scenario('I as a user should see proper error message when no changes were made before updating',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_EDIT]},
   async ({I}) => {
 
     const activeUserEmail = randomData.getRandomEmailAddress();

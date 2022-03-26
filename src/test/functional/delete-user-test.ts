@@ -4,7 +4,7 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
+import { BETA_DELETE } from '../../main/app/feature-flags/flags';
 
 Feature('Delete User');
 
@@ -23,7 +23,7 @@ BeforeSuite(async () => {
 });
 
 Scenario('I as a user should not be able delete user if I do not have the role with right to delete',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
 
     const nonDeletableUserEmail = randomData.getRandomEmailAddress();
@@ -42,7 +42,7 @@ Scenario('I as a user should not be able delete user if I do not have the role w
 );
 
 Scenario('I as a user should not be able delete user with both deletable and other non-deletable roles',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
 
     const nonDeletableUserEmail = randomData.getRandomEmailAddress();
@@ -61,7 +61,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
 );
 
 Scenario('I as a user if I have the right role, should be able delete user successfully',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
     const deletableUserEmail = randomData.getRandomEmailAddress();
     const userDataBeforeDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
@@ -102,7 +102,7 @@ Scenario('I as a user if I have the right role, should be able delete user succe
 ).tag('@CrossBrowser');
 
 Scenario('I as a user should be able delete users with same role successfully',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
     const deletableUserEmail = randomData.getRandomEmailAddress();
     await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [PARENT_ROLE]);
@@ -132,7 +132,7 @@ Scenario('I as a user should be able delete users with same role successfully',
 );
 
 Scenario('I as a user should not delete user if I select No',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
     const deletableUserEmail = randomData.getRandomEmailAddress();
     await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
