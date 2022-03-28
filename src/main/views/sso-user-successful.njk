@@ -1,0 +1,35 @@
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% extends "template.njk" %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Manage users', urls.MANAGER_USERS_URL],
+    ['Remove SSO']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters">
+        {{ govukPanel({ titleText: "Single sign on has been removed" }) }}
+
+        <div class="govuk-!-margin-bottom-9">
+          <p class="govuk-body-m govuk-!-margin-bottom-0">Single sign on has been removed for the following account: </p>
+          <p class="govuk-body-m"><strong>{{ content.user.email }}</strong></p>
+        </div>
+
+        <div class="govuk-button-group">
+          <a href="{{ urls.HOME_URL }}">
+            {{ govukButton({ text: "Return to main menu", classes: "govuk-button" }) }}
+          </a>
+        </div>
+      </div>
+  </div>
+{% endblock %}

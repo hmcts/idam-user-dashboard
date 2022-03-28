@@ -41,3 +41,8 @@ featureFlags:
     ldUser: 'idam-user-dashboard'
     sdkKey:
   flags:   # add feature-flag overrides below
+    idam-user-dashboard--beta-add: true
+    idam-user-dashboard--beta-edit: true
+    idam-user-dashboard--beta-suspend: true
+    idam-user-dashboard--beta-delete: true
+    idam-user-dashboard--beta-sso: true
