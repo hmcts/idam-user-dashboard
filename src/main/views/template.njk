@@ -53,24 +53,6 @@
 {% endblock %}
 
 {% block bodyEnd %}
-  <script>
-    function pushToDataLayer(selection, pageName) {
-      const buttons = document.getElementsByName(selection);
-      for (let i = 0; i < buttons.length; i++) {
-        if (buttons[i].checked) {
-          const val_id = buttons[i].id;
-          const selector = 'label[for=' + val_id + ']';
-          const label = document.querySelector(selector);
-          const label_text = label.innerText;
-          window.dataLayer.push({
-            'event': 'Page selections',
-            'Page': pageName ,
-            'selection': label_text,
-          });
-        }
-      }
-    }
-  </script>
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   {% include "webpack/js.njk" %}
 {% endblock %}

@@ -5,7 +5,6 @@ export interface HelmetConfig {
   referrerPolicy: string;
 }
 
-const googleAnalyticsDomain = '*.google-analytics.com';
 const self = "'self'";
 
 /**
@@ -23,6 +22,13 @@ export class Helmet {
   }
 
   private setContentSecurityPolicy(app: express.Express): void {
+    const scriptSrc = [self];
+
+    if (app.locals.ENV === 'development') {
+      scriptSrc.push("'unsafe-inline'");
+      scriptSrc.push("'unsafe-eval'");
+    }
+
     app.use(
       helmet.contentSecurityPolicy({
         useDefaults: false,
@@ -30,9 +36,9 @@ export class Helmet {
           connectSrc: [self],
           defaultSrc: ["'none'"],
           fontSrc: [self, 'data:'],
-          imgSrc: [self, googleAnalyticsDomain],
+          imgSrc: [self],
           objectSrc: [self],
-          scriptSrc: [self, googleAnalyticsDomain, "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='"],
+          scriptSrc: scriptSrc,
           styleSrc: [self]
         }
       })
