@@ -18,6 +18,7 @@
 
   <div class="role-list {%- if params.classes %} {{ params.classes }}{% endif -%}" data-module="role-list" id="{{ params.id }}">
     {{ govukInput({
+      id: params.searchBox.id,
       attributes: {
         placeholder: params.searchBox.placeholder
       },
