@@ -10,7 +10,7 @@ Feature('Manage Existing User');
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_EDIT} from '../../main/app/feature-flags/flags';
+import {BETA_ADD} from '../../main/app/feature-flags/flags';
 
 
 const PARENT_ROLE = randomData.getRandomRole();
@@ -28,7 +28,7 @@ BeforeSuite(async () => {
 });
 
 Scenario('I as a user should be able to register new user',
-  {featureFlags: [BETA_EDIT]},
+  {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
@@ -74,7 +74,7 @@ Scenario('I as a user should be able to register new user',
 
 
 Scenario('I as a user should be able to search for roles',
-  {featureFlags: [BETA_EDIT]},
+  {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
@@ -110,7 +110,7 @@ Scenario('I as a user should be able to search for roles',
   });
 
 Scenario('I as a user should be shown proper error message when no role is selected',
-  {featureFlags: [BETA_EDIT]},
+  {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
