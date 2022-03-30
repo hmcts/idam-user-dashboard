@@ -18,7 +18,8 @@ def secrets = [
   'idam-idam-${env}': [
     secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
     secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD'),
-    secret('launchdarkly-sdk-key', 'LAUNCHDARKLY_SDK_KEY')
+    secret('launchdarkly-sdk-key', 'LAUNCHDARKLY_SDK_KEY'),
+    secret('notify-api-key', 'NOTIFY_API_KEY')
   ]
 ]
 

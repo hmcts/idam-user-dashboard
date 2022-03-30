@@ -2,6 +2,11 @@ import axios from 'axios';
 import config from 'config';
 import {config as testConfig} from '../../config';
 
+const NotifyClient = require('notifications-node-client').NotifyClient;
+const notifyClient = new NotifyClient(testConfig.NOTIFY_API_KEY);
+//max notify results pages to search
+const MAX_NOTIFY_PAGES = 3;
+
 const getAuthToken = async () => {
   const credentials = {
     username: testConfig.SMOKE_TEST_USER_USERNAME as string,
@@ -196,3 +201,55 @@ export const assignRolesToParentRole = async (parentRoleId, assignableRoleIds) =
     throw new Error(`Failed to assign roles ${assignableRoleIds} to parent role ${parentRoleId}, http-status: ${e.response?.status}`);
   }
 };
+
+const searchForEmailInNotifyResults = async (notifications, searchEmail) => {
+  const result = notifications.find(currentItem => {
+    if (currentItem.email_address === searchEmail) {
+      return true;
+    }
+    return false;
+  });
+  return result;
+};
+
+export const extractUrlFromNotifyEmail = async (searchEmail) => {
+  let url;
+  let notificationsResponse = await notifyClient.getNotifications('email', null);
+  let emailResponse = await searchForEmailInNotifyResults(notificationsResponse.body.notifications, searchEmail);
+  let i = 1;
+  while (i < MAX_NOTIFY_PAGES && !emailResponse && notificationsResponse.body.links.next) {
+    const nextPageLink = notificationsResponse.body.links.next;
+    const nextPageLinkUrl = new URL(nextPageLink);
+    const olderThanId = nextPageLinkUrl.searchParams.get('older_than');
+    notificationsResponse = await notifyClient.getNotifications('email', null, null, olderThanId);
+    emailResponse = await searchForEmailInNotifyResults(notificationsResponse.body.notifications, searchEmail);
+    i++;
+  }
+  const regex = '(https.+)';
+  const urlMatch = emailResponse.body.match(regex);
+  if (urlMatch[0]) {
+    url = urlMatch[0];
+  }
+  return url;
+};
+
+export const activateUserAccount = async (code, token) => {
+  const data = {
+    code: code,
+    password: testConfig.PASSWORD,
+    token: token
+  };
+  try {
+    await axios.patch(
+      `${config.get('services.idam.url.api')}/activate`,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json'},
+      }
+    );
+  } catch (e) {
+    throw new Error(`Failed to activate user, http-status: ${e.response?.status}`);
+  }
+};
+
+
