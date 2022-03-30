@@ -143,7 +143,10 @@ Scenario('I as a user should be able to see proper error messages when add-user 
     I.click('Continue');
     I.waitForText('There is a problem');
     I.waitForText('You must enter an email address');
-    I.click('#email');
+    I.fillField('#email', ' ');
+    I.click('Continue');
+    I.waitForText('There is a problem');
+    I.waitForText('You must enter an email address');
     I.fillField('#email', DASHBOARD_USER_EMAIL);
     I.click('Continue');
     I.waitForText(`The email '${DASHBOARD_USER_EMAIL}' already exists`);

@@ -137,7 +137,10 @@ Scenario('I as a user should be able to see proper error message if search text 
   I.click('Manage existing users');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  I.click('#search');
+  I.click('Search');
+  I.seeElement('#search-error');
+  I.waitForText('You must enter an email address');
+  I.fillField('#search', ' ');
   I.click('Search');
   I.seeElement('#search-error');
   I.waitForText('You must enter an email address');
