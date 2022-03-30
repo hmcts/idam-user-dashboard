@@ -8,6 +8,7 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% extends "template.njk" %}
 
@@ -40,7 +41,7 @@
     <form id="userEditForm" method="POST" action="{{ urls.EDIT_USER_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
-      <div class="govuk-grid-column-one-half">
+      <div class="govuk-grid-column-one-half govuk-!-margin-bottom-5">
         <h3 class="govuk-heading-s">General</h3>
 
         {% call govukFieldset({
@@ -66,11 +67,38 @@
           id: "email",
           value: content.user.email
         }) }}
-
-        <div class="govuk-button-group">
-          {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
-        </div>
       </div>
+
+      <div class="govuk-grid-column-full">
+        <h3 class="govuk-heading-s">Assigned roles</h3>
+
+        {% set roleItems = [] %}
+        {% for role in content.roles %}
+          {% set id = role.name | lower %}
+          {% set roleItems =
+            (roleItems.push({
+            'text': role.name,
+            'value': role.name,
+            'id': id,
+            'checked': role.assigned,
+            'disabled': not role.assignable
+          }), roleItems) %}
+        {% endfor %}
+
+        <div id="roleList" class="scrollable visible-scrollbar role: scrollbar">
+          {{ govukCheckboxes({
+            idPrefix: "roles",
+            name: "roles",
+            classes: "govuk-checkboxes--small govuk-checkboxes--two-column",
+            items: roleItems
+          }) }}
+        </div>
+
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
+      </div>
+      </div>
+
     </form>
   </div>
 

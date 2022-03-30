@@ -1,29 +1,17 @@
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockRootController } from '../../utils/mockRootController';
-import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 import { when } from 'jest-when';
 import { MISSING_OPTION_ERROR, USER_UPDATE_FAILED_ERROR } from '../../../../main/utils/error';
-import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
+import { USER_DETAILS_URL } from '../../../../main/utils/urls';
 import { UserSuspendController } from '../../../../main/controllers/UserSuspendController';
-
-type Mocked<T> = { [P in keyof T]: jest.Mock; };
+import { mockApi } from '../../utils/mockApi';
 
 describe('User suspend controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new UserSuspendController();
-  const mockApi: Mocked<IdamAPI> = {
-    getUserById: jest.fn(),
-    getUserDetails: jest.fn(),
-    editUserById: jest.fn(),
-    deleteUserById: jest.fn(),
-    getAllRoles: jest.fn(),
-    getAssignableRoles: jest.fn(),
-    registerUser: jest.fn(),
-    getAllServices: jest.fn()
-  };
 
   beforeEach(() => {
     req = mockRequest();

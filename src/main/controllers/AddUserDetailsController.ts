@@ -14,7 +14,7 @@ import {
 import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError} from '../interfaces/PageData';
-import { constructRoleAssignment } from '../utils/roleUtils';
+import { constructAllRoleAssignments } from '../utils/roleUtils';
 
 @autobind
 export class AddUserDetailsController extends RootController{
@@ -65,7 +65,7 @@ export class AddUserDetailsController extends RootController{
     }
 
     const allRoles = await req.scope.cradle.api.getAllRoles();
-    const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
+    const roleAssignment = constructAllRoleAssignments(allRoles, req.session.user.assignableRoles);
     super.post(req, res, 'add-user-roles', {
       content: {
         user: user,

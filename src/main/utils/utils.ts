@@ -82,3 +82,23 @@ export const getObjectVariation = (original: {[key: string]: any}, updated: {[ke
 
   return variation;
 };
+
+export const convertToArray = (value: string | string[]): string[] => {
+  return Array.isArray(value) ? value : value.split(/\r?\n/);
+};
+
+export const findAddedElements = (existingElements: string[], newElements: string[]): string[] => {
+  const addedElements: string[] = [];
+  newElements
+    .filter(e => !existingElements.includes(e))
+    .forEach(e => addedElements.push(e));
+  return addedElements;
+};
+
+export const findRemovedElements = (existingElements: string[], newElements: string[]): string[] => {
+  const removedElements: string[] = [];
+  existingElements
+    .filter(e => !newElements.includes(e))
+    .forEach(e => removedElements.push(e));
+  return removedElements;
+};

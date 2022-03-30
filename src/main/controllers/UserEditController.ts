@@ -4,7 +4,16 @@ import { RootController } from './RootController';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { User } from '../interfaces/User';
-import { getObjectVariation, hasProperty, isEmpty, isObjectEmpty, isValidEmailFormat } from '../utils/utils';
+import {
+  convertToArray,
+  findAddedElements,
+  findRemovedElements,
+  getObjectVariation,
+  hasProperty,
+  isEmpty,
+  isObjectEmpty,
+  isValidEmailFormat
+} from '../utils/utils';
 import {
   INVALID_EMAIL_FORMAT_ERROR,
   USER_EMPTY_EMAIL_ERROR,
@@ -14,6 +23,9 @@ import {
   USER_UPDATE_NO_CHANGE_ERROR
 } from '../utils/error';
 import { PageError } from '../interfaces/PageData';
+import { constructUserRoleAssignments, determineUserNonAssignableRoles } from '../utils/roleUtils';
+import { RoleDefinition } from '../interfaces/RoleDefinition';
+import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 
 
 @autobind
@@ -23,49 +35,67 @@ export class UserEditController extends RootController {
   public post(req: AuthedRequest, res: Response) {
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
+        const roleAssignments = constructUserRoleAssignments(req.session.user.assignableRoles, user.roles);
 
         if(req.body._action === 'save') {
-          return this.saveUser(req, res, user);
+          return this.saveUser(req, res, user, roleAssignments);
         }
 
-        return super.post(req, res, 'edit-user', { content: { user } });
+        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments } });
       });
   }
 
-  private async saveUser(req: AuthedRequest, res: Response, user: User) {
+  private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
     const {_action, _csrf, _userId, ...editedUser} = req.body;
 
     const {roles: originalRoles, ...originalFields} = user;
     const {roles: editedRoles, ...editedFields} = editedUser as Partial<User>;
 
-    // No changes
+    const newRoleList = this.getUserRolesAfterUpdate(req, originalRoles, editedRoles);
+    const rolesAdded = findAddedElements(originalRoles, newRoleList);
+    const rolesRemoved = findRemovedElements(originalRoles, newRoleList);
+    const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0;
+
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
-    if(isObjectEmpty(changedFields)) {
+
+    // No changes
+    if (isObjectEmpty(changedFields) && !rolesChanged) {
       const error = { userEditForm: { message: USER_UPDATE_NO_CHANGE_ERROR }};
-      return super.post(req, res, 'edit-user', { content: { user }, error: error});
+      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments },
+        error: error });
     }
 
     Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
 
     // Validation errors
     const error = this.validateFields(changedFields);
-    if(!isObjectEmpty(error)) {
-      return super.post(req, res, 'edit-user', { content: { user: {...user, ...changedFields } }, error});
+    if (!isObjectEmpty(error)) {
+      return super.post(req, res, 'edit-user', { content: {
+        user: {...user, ...changedFields},
+        roles: roleAssignments
+      },
+      error });
     }
 
     try {
       let updatedUser = { ...originalFields, roles: originalRoles };
-      if(!isObjectEmpty(changedFields)) {
+      if (!isObjectEmpty(changedFields)) {
         updatedUser = {
           ...updatedUser,
           ...await req.scope.cradle.api.editUserById(user.id, changedFields)
         };
       }
 
-      return super.post(req, res, 'edit-user', { content: { user: updatedUser, notification: 'User saved successfully'}});
+      if (rolesChanged) {
+        updatedUser = { ...updatedUser, roles: newRoleList };
+        await this.updateUserRoles(req, user, rolesAdded, rolesRemoved);
+        roleAssignments = await this.reconstructRoleAssignments(req, _userId, newRoleList);
+      }
+      return super.post(req, res, 'edit-user', { content: { user: updatedUser, roles: roleAssignments, notification: 'User saved successfully'}});
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
-      return super.post(req, res, 'edit-user', { content: { user }, error } );
+      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments },
+        error });
     }
   }
 
@@ -87,5 +117,44 @@ export class UserEditController extends RootController {
     if(hasProperty(fields, 'email') && !isValidEmailFormat(email)) errors.email = {message: INVALID_EMAIL_FORMAT_ERROR };
 
     return errors;
+  }
+
+  private getUserRolesAfterUpdate(req: AuthedRequest, originalRoles: string[], editedRoles: string[]): string[] {
+    const nonAssignableRoles = determineUserNonAssignableRoles(req.session.user.assignableRoles, originalRoles);
+    const rolesToAssign = editedRoles ? convertToArray(editedRoles) : [];
+
+    const newRoleList = [];
+    newRoleList.push(...rolesToAssign, ...nonAssignableRoles);
+    return newRoleList;
+  }
+
+  private convertRolesToDefinitions(roles: string[]): RoleDefinition[] {
+    const roleDefinitions: RoleDefinition[] = [];
+    roles.forEach(r => roleDefinitions.push({name: r}));
+    return roleDefinitions;
+  }
+
+  private async updateUserRoles(req: AuthedRequest, user: User, rolesAdded: string[], rolesRemoved: string[]) {
+    if (rolesAdded.length > 0) {
+      await req.scope.cradle.api.grantRolesToUser(user.id, this.convertRolesToDefinitions(rolesAdded));
+    }
+
+    if (rolesRemoved.length > 0) {
+      const allRoles = await req.scope.cradle.api.getAllRoles();
+      const rolesMap = new Map(allRoles.map(role => [role.name, role]));
+      for (const r of rolesRemoved) {
+        await req.scope.cradle.api.removeRoleFromUser(user.id, rolesMap.get(r).id);
+      }
+    }
+  }
+
+  private async reconstructRoleAssignments(req: AuthedRequest, userId: string, newRoles: string[]): Promise<UserRoleAssignment[]> {
+    // if the users are editing their owned roles, we need to get the users' new assignable roles again as these might have changed
+    // after their roles are updated
+    if (req.session.user.id === userId) {
+      const newAssignableRoles = await req.scope.cradle.api.getAssignableRoles(newRoles);
+      return constructUserRoleAssignments(newAssignableRoles, newRoles);
+    }
+    return constructUserRoleAssignments(req.session.user.assignableRoles, newRoles);
   }
 }

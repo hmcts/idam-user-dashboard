@@ -347,4 +347,69 @@ describe('IdamAPI', () => {
       expect(api.getAllServices()).rejects.toEqual('Error retrieving all services from IDAM API');
     });
   });
+
+  describe('grantRolesToUser', () => {
+    const roleDefinitions = [
+      {
+        name: 'role1'
+      },
+      {
+        name: 'role2'
+      }
+    ];
+
+    test('Should grant roles to user', () => {
+      const testValue = 1;
+      const result = {data: testValue};
+      const mockAxios = {post: async () => Promise.resolve(result)} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.grantRolesToUser(testUserId, roleDefinitions)).resolves.toEqual(testValue);
+    });
+
+    test('Should not grant roles to user when error', () => {
+      const mockAxios = {post: () => Promise.reject('')} as any;
+      const mockLogger = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error : () => {}
+      } as any;
+      const mockTelemetryClient = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        trackTrace : () => {}
+      } as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.grantRolesToUser(testUserId, roleDefinitions)).rejects.toEqual('Error granting user roles in IDAM API');
+    });
+  });
+
+  describe('removeRoleFromUser', () => {
+    test('Should remove roles from user', () => {
+      const testValue = 1;
+      const result = {data: testValue};
+      const mockAxios = {delete: async () => Promise.resolve(result)} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.removeRoleFromUser(testUserId, 'role1')).resolves.toEqual(testValue);
+    });
+
+    test('Should not remove roles from user when error', () => {
+      const mockAxios = {delete: () => Promise.reject('')} as any;
+      const mockLogger = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error : () => {}
+      } as any;
+      const mockTelemetryClient = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        trackTrace : () => {}
+      } as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.removeRoleFromUser(testUserId, 'role1')).rejects.toEqual('Error deleting user role in IDAM API');
+    });
+  });
 });
