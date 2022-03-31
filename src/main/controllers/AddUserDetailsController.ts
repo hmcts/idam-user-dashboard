@@ -32,7 +32,7 @@ export class AddUserDetailsController extends RootController{
 
   private async processNewUserEmail(req: AuthedRequest, res: Response) {
     const email = req.body.email as string;
-    if (isEmpty(email)) {
+    if (isEmpty(email.trim())) {
       return this.postError(req, res, MISSING_EMAIL_ERROR);
     } else if (!isValidEmailFormat(email)) {
       return this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
@@ -53,6 +53,7 @@ export class AddUserDetailsController extends RootController{
 
   private async processNewUserDetails(req: AuthedRequest, res: Response) {
     const fields = req.body;
+    Object.keys(fields).forEach(field => fields[field] = (typeof fields[field] === 'string') ? fields[field].trim(): fields[field]);
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
     if(!isObjectEmpty(error)) {

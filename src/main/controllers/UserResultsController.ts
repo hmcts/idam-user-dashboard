@@ -19,7 +19,7 @@ export class UserResultsController extends RootController {
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
 
-    if (isEmpty(input)) {
+    if (isEmpty(input.trim())) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
     const users = await this.searchForUser(req, res, input);

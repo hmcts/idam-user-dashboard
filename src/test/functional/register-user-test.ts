@@ -3,15 +3,13 @@ import {
   createAssignableRoles,
   createUserWithRoles
 } from './shared/testingSupportApi';
-
 import '../../main/utils/utils';
-
-Feature('Manage Existing User');
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {BETA_ADD} from '../../main/app/feature-flags/flags';
 
+Feature('Register New User');
 
 const PARENT_ROLE = randomData.getRandomRole();
 const ASSIGNABLE_CHILD_ROLE1 = randomData.getRandomRole();
@@ -109,7 +107,27 @@ Scenario('I as a user should be able to search for roles',
     });
   });
 
-Scenario('I as a user should be shown proper error message when no role is selected',
+const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
+incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
+incorrectEmailAddresses.add(['@email@']);
+incorrectEmailAddresses.add(['email@com..']);
+
+Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when register users email format is not correct',
+  {featureFlags: [BETA_ADD]},
+  async ({I, current}) => {
+    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage existing users');
+    I.waitForText('Add new users');
+    I.click('Add new users');
+    I.click('Continue');
+    I.waitForText('Please enter an email address');
+    I.click('#email');
+    I.fillField('#email', current.incorrectEmailAddress);
+    I.click('Continue');
+    I.waitForText('The email address is not in the correct format');
+  });
+
+Scenario('I as a user should be able to see proper error messages when add-user validations are not met',
   {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
@@ -119,12 +137,32 @@ Scenario('I as a user should be shown proper error message when no role is selec
     I.click('Add new users');
     I.click('Continue');
     I.waitForText('Please enter an email address');
-    I.click('#email');
+    I.click('Continue');
+    I.waitForText('There is a problem');
+    I.waitForText('You must enter an email address');
+    I.fillField('#email', ' ');
+    I.click('Continue');
+    I.waitForText('There is a problem');
+    I.waitForText('You must enter an email address');
+    I.fillField('#email', DASHBOARD_USER_EMAIL);
+    I.click('Continue');
+    I.waitForText(`The email '${DASHBOARD_USER_EMAIL}' already exists`);
+    I.clearField('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
     I.see('First name');
     I.see('Last name');
     I.see('Select user type');
+    I.click('Continue');
+    I.waitForText('You must enter a forename for the user');
+    I.waitForText('You must enter a surname for the user');
+    I.waitForText('You must select an user type');
+    I.fillField('#forename', ' ');
+    I.fillField('#surname', ' ');
+    I.click('Support');
+    I.click('Continue');
+    I.waitForText('You must enter a forename for the user');
+    I.waitForText('You must enter a surname for the user');
     I.fillField('#forename', testConfig.USER_FIRSTNAME);
     I.fillField('#surname', testConfig.USER_LASTNAME);
     I.click('Support');
@@ -136,5 +174,4 @@ Scenario('I as a user should be shown proper error message when no role is selec
     I.waitForText('There is a problem');
     I.waitForText('A user must have at least one role assigned to be able to create them');
   });
-
 
