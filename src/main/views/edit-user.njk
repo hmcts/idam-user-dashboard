@@ -1,6 +1,7 @@
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/errorSummary.njk" import errorSummary %}
+{% from "macros/roleList.njk" import roleList %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -75,34 +76,18 @@
 
       <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-s">Assigned roles</h3>
+        {{ roleList({
+          roles: content.roles,
+          name: 'roles',
+          list: {
+            classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+          }
+        }) }}
 
-        {% set roleItems = [] %}
-        {% for role in content.roles %}
-          {% set id = role.name | lower %}
-          {% set roleItems =
-            (roleItems.push({
-            'text': role.name,
-            'value': role.name,
-            'id': id,
-            'checked': role.assigned,
-            'disabled': not role.assignable
-          }), roleItems) %}
-        {% endfor %}
-
-        <div id="roleList" class="scrollable visible-scrollbar role: scrollbar">
-          {{ govukCheckboxes({
-            idPrefix: "roles",
-            name: "roles",
-            classes: "govuk-checkboxes--small govuk-checkboxes--two-column",
-            items: roleItems
-          }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
         </div>
-
-      <div class="govuk-button-group">
-        {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
       </div>
-      </div>
-
     </form>
   </div>
 
