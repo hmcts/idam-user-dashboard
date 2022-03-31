@@ -99,8 +99,8 @@ describe('Add user details controller', () => {
 
     expect(res.render).toBeCalledWith('add-users', {
       error: { email: {
-          message: MISSING_EMAIL_ERROR
-        }},
+        message: MISSING_EMAIL_ERROR
+      }},
       urls
     });
   });
