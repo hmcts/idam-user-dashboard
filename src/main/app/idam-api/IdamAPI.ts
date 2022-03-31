@@ -7,6 +7,7 @@ import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
 import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
 import { Service } from '../../interfaces/Service';
+import { RoleDefinition } from '../../interfaces/RoleDefinition';
 
 export class IdamAPI {
   constructor(
@@ -110,5 +111,29 @@ export class IdamAPI {
       );
 
     return Array.from(collection);
+  }
+
+  public grantRolesToUser(id: string, roleDefinitions: RoleDefinition[]): Promise<void> {
+    return this.userAxios
+      .post('/api/v1/users/' + id + '/roles', roleDefinitions)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error granting user roles in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public removeRoleFromUser(id: string, roleName: string): Promise<void> {
+    return this.userAxios
+      .delete('/api/v1/users/' + id + '/roles/' + roleName)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error deleting user role in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
   }
 }
