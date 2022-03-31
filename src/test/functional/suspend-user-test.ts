@@ -4,7 +4,7 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
+import { BETA_SUSPEND } from '../../main/app/feature-flags/flags';
 
 Feature('Suspend and Un-suspend User');
 
@@ -15,7 +15,7 @@ BeforeSuite(async () => {
 });
 
 Scenario('I as a user should be able to suspend and un-suspend user',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_SUSPEND]},
   async ({I}) => {
 
     const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
@@ -92,7 +92,7 @@ Scenario('I as a user should be able to suspend and un-suspend user',
 ).tag('@CrossBrowser');
 
 Scenario('I as a user should be redirected to user-details page if I select no when suspending a user',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_SUSPEND]},
   async ({I}) => {
 
     const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
@@ -120,7 +120,7 @@ Scenario('I as a user should be redirected to user-details page if I select no w
 );
 
 Scenario('I as a user should be redirected to user-details page if I select no when un-suspending a user',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_SUSPEND]},
   async ({I}) => {
 
     const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();

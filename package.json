@@ -55,7 +55,7 @@
     "awilix": "^7.0.0",
     "axios": "^0.26.0",
     "config": "^3.3.7",
-    "connect-redis": "^6.1.2",
+    "connect-redis": "^6.1.3",
     "cookie-parser": "^1.4.6",
     "csurf": "^1.11.0",
     "express": "^4.17.3",
@@ -66,7 +66,7 @@
     "helmet": "^5.0.2",
     "jest-when": "^3.5.1",
     "jwt-decode": "^3.1.2",
-    "launchdarkly-node-server-sdk": "^6.3.0",
+    "launchdarkly-node-server-sdk": "^6.4.0",
     "lodash": "^4.17.20",
     "npm-run-all": "^4.1.5",
     "nunjucks": "^3.2.2",
@@ -76,20 +76,21 @@
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "ts-node": "^10.7.0",
-    "tsconfig-paths": "^3.14.0",
+    "tsconfig-paths": "^3.14.1",
     "typescript": "^4.6.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
+    "notifications-node-client": "^4.7.3",
     "@codeceptjs/helper": "^1.0.2",
     "@types/copy-webpack-plugin": "^10.1.0",
     "@types/jest": "^27.4.1",
     "@types/mini-css-extract-plugin": "^2.5.1",
     "@types/webpack-dev-middleware": "^5.3.0",
     "@typescript-eslint/eslint-plugin": "^2.19.2",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.14.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.17.0",
     "@typescript-eslint/parser": "^2.19.2",
     "allure-commandline": "^2.17.2",
     "babel-eslint": "^10.1.0",
@@ -107,7 +108,7 @@
     "node-sass": "^7.0.1",
     "nodemon": "^2.0.15",
     "pa11y": "^6.1.1",
-    "playwright": "^1.19.2",
+    "playwright": "^1.20.1",
     "sass-loader": "^12.6.0",
     "sonar-scanner": "^3.1.0",
     "style-loader": "^3.3.1",
@@ -121,7 +122,6 @@
   },
   "resolutions": {
     "applicationinsights/@azure/core-http/node-fetch": "^2.6.7",
-    "tsconfig-paths/minimist": "1.2.6",
     "config/json5/minimist": "1.2.6"
   }
 }

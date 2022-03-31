@@ -20,7 +20,9 @@ describe('User delete controller', () => {
     deleteUserById: jest.fn(),
     getAllRoles: jest.fn(),
     getAssignableRoles: jest.fn(),
-    editUserById: jest.fn()
+    editUserById: jest.fn(),
+    registerUser: jest.fn(),
+    getAllServices: jest.fn()
   };
 
   beforeEach(() => {

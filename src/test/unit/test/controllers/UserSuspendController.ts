@@ -20,7 +20,9 @@ describe('User suspend controller', () => {
     editUserById: jest.fn(),
     deleteUserById: jest.fn(),
     getAllRoles: jest.fn(),
-    getAssignableRoles: jest.fn()
+    getAssignableRoles: jest.fn(),
+    registerUser: jest.fn(),
+    getAllServices: jest.fn()
   };
 
   beforeEach(() => {

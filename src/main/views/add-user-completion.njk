@@ -1,0 +1,41 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  Added User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Add users', urls.ADD_USERS_URL],
+    ['User registration completion']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      {{ govukPanel({
+        titleText: "User registered"
+      }) }}
+      <div class="govuk-!-margin-top-5 govuk-!-margin-bottom-5">
+        <p class="govuk-body-m govuk-!-margin-bottom-3">The user has been registered and should now receive an email.</p>
+        <p class="govuk-body-m">They will need to activate their account using the link in this email before they can sign in.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <form method="REDIRECT" action="{{ urls.HOME_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <button type="submit" class="govuk-back-link">Return to main menu</button>
+    </form>
+  </div>
+{% endblock %}
