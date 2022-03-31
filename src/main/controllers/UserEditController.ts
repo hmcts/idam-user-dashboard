@@ -6,8 +6,7 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { User } from '../interfaces/User';
 import {
   convertToArray,
-  findAddedElements,
-  findRemovedElements,
+  findDifferentElements,
   getObjectVariation,
   hasProperty,
   isEmpty,
@@ -52,8 +51,8 @@ export class UserEditController extends RootController {
     const {roles: editedRoles, ...editedFields} = editedUser as Partial<User>;
 
     const newRoleList = this.getUserRolesAfterUpdate(req, originalRoles, editedRoles);
-    const rolesAdded = findAddedElements(originalRoles, newRoleList);
-    const rolesRemoved = findRemovedElements(originalRoles, newRoleList);
+    const rolesAdded = findDifferentElements(newRoleList, originalRoles);
+    const rolesRemoved = findDifferentElements(originalRoles, newRoleList);
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0;
 
     const changedFields = this.comparePartialUsers(originalFields, editedFields);

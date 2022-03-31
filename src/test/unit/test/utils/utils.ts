@@ -10,7 +10,8 @@ import {
   sortRoles,
   isString,
   getObjectVariation,
-  convertToArray, findAddedElements, findRemovedElements
+  convertToArray,
+  findDifferentElements
 } from '../../../../main/utils/utils';
 
 describe('utils', () => {
@@ -266,31 +267,29 @@ describe('utils', () => {
     });
   });
 
-  describe('findAddedElements', () => {
+  describe('findDifferentElements', () => {
     test('Should return new added elements only', async () => {
-      expect(findAddedElements(['a', 'b', 'd'], ['a', 'c', 'd'])).toStrictEqual(['c']);
+      expect(findDifferentElements(['a', 'c', 'd'], ['a', 'b', 'd'])).toStrictEqual(['c']);
     });
 
     test('Should return all new elements if all elements are new', async () => {
-      expect(findAddedElements(['a', 'b', 'c'], ['d', 'e'])).toStrictEqual(['d', 'e']);
+      expect(findDifferentElements(['d', 'e'], ['a', 'b', 'c'])).toStrictEqual(['d', 'e']);
     });
 
     test('Should return nothing if no existing elements added', async () => {
-      expect(findAddedElements(['a', 'b', 'd'], ['a', 'b'])).toStrictEqual([]);
+      expect(findDifferentElements(['a', 'b'], ['a', 'b', 'd'])).toStrictEqual([]);
     });
-  });
 
-  describe('findRemovedElements', () => {
     test('Should return removed elements only', async () => {
-      expect(findRemovedElements(['a', 'b', 'd'], ['a', 'c', 'd'])).toStrictEqual(['b']);
+      expect(findDifferentElements(['a', 'b', 'd'], ['a', 'c', 'd'])).toStrictEqual(['b']);
     });
 
     test('Should return all existing elements if all new elements are different', async () => {
-      expect(findRemovedElements(['a', 'b', 'c'], ['d', 'e'])).toStrictEqual(['a', 'b', 'c']);
+      expect(findDifferentElements(['a', 'b', 'c'], ['d', 'e'])).toStrictEqual(['a', 'b', 'c']);
     });
 
     test('Should return nothing if no existing elements removed', async () => {
-      expect(findRemovedElements(['a', 'b', 'd'], ['a', 'b', 'c', 'd'])).toStrictEqual([]);
+      expect(findDifferentElements(['a', 'b', 'd'], ['a', 'b', 'c', 'd'])).toStrictEqual([]);
     });
   });
 });
