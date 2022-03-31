@@ -9,6 +9,7 @@ export const config = {
   USER_ROLE_CITIZEN: 'citizen',
   SSO_PROVIDER: 'TEST_HMCTS_SSO',
   SCENARIO_RETRY_LIMIT: 3,
+  NOTIFY_API_KEY: process.env.NOTIFY_API_KEY,
   RBAC: {
     access: 'idam-user-dashboard--access'
   },
