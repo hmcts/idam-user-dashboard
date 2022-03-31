@@ -3,15 +3,13 @@ import {
   createAssignableRoles,
   createUserWithRoles
 } from './shared/testingSupportApi';
-
 import '../../main/utils/utils';
-
-Feature('Manage Existing User');
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_ADD, BETA_EDIT} from '../../main/app/feature-flags/flags';
+import {BETA_ADD} from '../../main/app/feature-flags/flags';
 
+Feature('Register New User');
 
 const PARENT_ROLE = randomData.getRandomRole();
 const ASSIGNABLE_CHILD_ROLE1 = randomData.getRandomRole();
@@ -114,7 +112,7 @@ incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
 incorrectEmailAddresses.add(['@email@']);
 incorrectEmailAddresses.add(['email@com..']);
 
-Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when email format is not correct',
+Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when register users email format is not correct',
   {featureFlags: [BETA_ADD]},
   async ({I, current}) => {
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
@@ -127,8 +125,7 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
     I.fillField('#email', current.incorrectEmailAddress);
     I.click('Continue');
     I.waitForText('The email address is not in the correct format');
-  }
-);
+  });
 
 Scenario('I as a user should be able to see proper error messages when add-user validations are not met',
   {featureFlags: [BETA_ADD]},

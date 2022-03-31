@@ -5,16 +5,16 @@ import {createUserWithRoles, createUserWithSsoId} from './shared/testingSupportA
 
 Feature('Search User');
 
-const dashboardUserEMAIL = randomData.getRandomEmailAddress();
-const citizenUserEmail = randomData.getRandomEmailAddress();
-const conflictUserEmail = randomData.getRandomEmailAddress();
+const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
+const CITIZEN_USER_EMAIL = randomData.getRandomEmailAddress();
+const CONFLICT_USER_EMAIL = randomData.getRandomEmailAddress();
 let citizenUser;
 let conflictUser;
 
 BeforeSuite(async () => {
-  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
-  citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
-  conflictUser = await createUserWithSsoId(conflictUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], citizenUser.id);
+  await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
+  citizenUser = await createUserWithSsoId(CITIZEN_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
+  conflictUser = await createUserWithSsoId(CONFLICT_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], citizenUser.id);
 });
 
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
@@ -23,7 +23,7 @@ incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format', async ({I, current}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -36,13 +36,13 @@ Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper
 });
 
 Scenario('I should be able to search with user-email', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
-  I.fillField('#search', citizenUserEmail);
+  I.fillField('#search', CITIZEN_USER_EMAIL);
   I.click('Search');
   I.waitForText('User Details');
 
@@ -50,7 +50,7 @@ Scenario('I should be able to search with user-email', async ({I}) => {
   Assert.equal(status.trim(), 'Active');
 
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), citizenUserEmail);
+  Assert.equal(email.trim(), CITIZEN_USER_EMAIL);
 
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
@@ -63,7 +63,7 @@ Scenario('I should be able to search with user-email', async ({I}) => {
 }).tag('@CrossBrowser');
 
 Scenario('I should be able to search with user-id', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -77,7 +77,7 @@ Scenario('I should be able to search with user-id', async ({I}) => {
   Assert.equal(status.trim(), 'Active');
 
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), citizenUserEmail);
+  Assert.equal(email.trim(), CITIZEN_USER_EMAIL);
 
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
@@ -90,7 +90,7 @@ Scenario('I should be able to search with user-id', async ({I}) => {
 }).tag('@CrossBrowser');
 
 Scenario('I should be able to search with sso-id', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -104,7 +104,7 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
   Assert.equal(status.trim(), 'Active');
 
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), citizenUserEmail);
+  Assert.equal(email.trim(), CITIZEN_USER_EMAIL);
 
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
@@ -117,7 +117,7 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
 }).tag('@CrossBrowser');
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -132,7 +132,7 @@ Scenario('When there is a collision between user-id and sso-id, user details sho
 });
 
 Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
@@ -147,7 +147,7 @@ Scenario('I as a user should be able to see proper error message if search text 
 });
 
 Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
   I.click('Continue');
