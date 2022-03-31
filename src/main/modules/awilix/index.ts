@@ -3,12 +3,14 @@ import { Application } from 'express';
 import { UserOptionController } from '../../controllers/UserOptionController';
 import { AddUsersController } from '../../controllers/AddUsersController';
 import { AddUserDetailsController } from '../../controllers/AddUserDetailsController';
+import { AddUserRolesController } from '../../controllers/AddUserRolesController';
 import { ManageUsersController } from '../../controllers/ManageUsersController';
 import { UserResultsController } from '../../controllers/UserResultsController';
 import { UserActionsController } from '../../controllers/UserActionsController';
+import { UserDeleteController } from '../../controllers/UserDeleteController';
+import { UserSuspendController } from '../../controllers/UserSuspendController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
-
 const { Logger } = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
@@ -30,10 +32,13 @@ export class Container {
       userOptionController: asClass(UserOptionController),
       addUsersController: asClass(AddUsersController),
       addUserDetailsController: asClass(AddUserDetailsController),
+      addUserRolesController: asClass(AddUserRolesController),
       manageUsersController: asClass(ManageUsersController),
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
-      userActionsController: asClass(UserActionsController)
+      userActionsController: asClass(UserActionsController),
+      userDeleteController: asClass(UserDeleteController),
+      userSuspendController: asClass(UserSuspendController)
     });
 
     /**

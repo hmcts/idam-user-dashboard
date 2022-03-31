@@ -6,6 +6,7 @@ import autobind from 'autobind-decorator';
 import { isObjectEmpty } from '../utils/utils';
 import * as urls from '../utils/urls';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
+import * as flags from '../../main/app/feature-flags/flags';
 
 @autobind
 export class RootController {
@@ -28,7 +29,7 @@ export class RootController {
     if(this.featureFlags) {
       const featureFlags = await this.featureFlags?.getAllFlagValues();
       if(!isObjectEmpty(featureFlags)) {
-        constructedData.featureFlags = featureFlags;
+        constructedData.featureFlags = { values: featureFlags, flags };
       }
     }
 

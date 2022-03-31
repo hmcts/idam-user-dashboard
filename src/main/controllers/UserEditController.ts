@@ -45,6 +45,8 @@ export class UserEditController extends RootController {
       return super.post(req, res, 'edit-user', { content: { user }, error: error});
     }
 
+    Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
+
     // Validation errors
     const error = this.validateFields(changedFields);
     if(!isObjectEmpty(error)) {

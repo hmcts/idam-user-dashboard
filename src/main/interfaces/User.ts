@@ -12,4 +12,5 @@ export interface User {
   ssoId: string;
   lastModified: string;
   createDate: string;
+  assignableRoles?: string[];
 }

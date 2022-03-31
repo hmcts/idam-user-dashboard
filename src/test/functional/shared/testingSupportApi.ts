@@ -2,6 +2,11 @@ import axios from 'axios';
 import config from 'config';
 import {config as testConfig} from '../../config';
 
+const NotifyClient = require('notifications-node-client').NotifyClient;
+const notifyClient = new NotifyClient(testConfig.NOTIFY_API_KEY);
+//max notify results pages to search
+const MAX_NOTIFY_PAGES = 3;
+
 const getAuthToken = async () => {
   const credentials = {
     username: testConfig.SMOKE_TEST_USER_USERNAME as string,
@@ -153,7 +158,7 @@ export const deleteUser = async (email) => {
   }
 };
 
-export const deleteAllTestData = async (testDataPrefix = '', userNames = [], roleNames = [], serviceNames = [], async = false) => {
+export const deleteAllTestData = async (testDataPrefix = '', userNames = [], roleNames = [], serviceNames = [], async = true) => {
   try {
     await axios.delete(
       `${config.get('services.idam.url.api')}/testing-support/test-data?async=${async}&userNames=${userNames.join(',')}&roleNames=${roleNames.join(',')}&testDataPrefix=${testDataPrefix}&serviceNames=${serviceNames.join(',')}`
@@ -162,4 +167,89 @@ export const deleteAllTestData = async (testDataPrefix = '', userNames = [], rol
     throw new Error(`Error deleting test data with prefix  ${testDataPrefix}, response ${e.response?.status}`);
   }
 };
+
+export const createAssignableRoles = async (roleName) => {
+  try {
+    const authToken = await getAuthToken();
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/roles`,
+      {
+        assignableRoles: [null],
+        conflictingRoles: [null],
+        description: 'assignable role',
+        id: roleName,
+        name: roleName
+      },
+      {
+        headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken},
+      })).data;
+  } catch (e) {
+    throw new Error(`Failed to create assignable role ${roleName}, http-status: ${e.response?.status}`);
+  }
+};
+
+export const assignRolesToParentRole = async (parentRoleId, assignableRoleIds) => {
+  try {
+    const authToken = await getAuthToken();
+    return (await axios.put(
+      `${config.get('services.idam.url.api')}/roles/${parentRoleId}/assignableRoles`,
+      assignableRoleIds,
+      {
+        headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken},
+      }));
+  } catch (e) {
+    throw new Error(`Failed to assign roles ${assignableRoleIds} to parent role ${parentRoleId}, http-status: ${e.response?.status}`);
+  }
+};
+
+const searchForEmailInNotifyResults = async (notifications, searchEmail) => {
+  const result = notifications.find(currentItem => {
+    if (currentItem.email_address === searchEmail) {
+      return true;
+    }
+    return false;
+  });
+  return result;
+};
+
+export const extractUrlFromNotifyEmail = async (searchEmail) => {
+  let url;
+  let notificationsResponse = await notifyClient.getNotifications('email', null);
+  let emailResponse = await searchForEmailInNotifyResults(notificationsResponse.body.notifications, searchEmail);
+  let i = 1;
+  while (i < MAX_NOTIFY_PAGES && !emailResponse && notificationsResponse.body.links.next) {
+    const nextPageLink = notificationsResponse.body.links.next;
+    const nextPageLinkUrl = new URL(nextPageLink);
+    const olderThanId = nextPageLinkUrl.searchParams.get('older_than');
+    notificationsResponse = await notifyClient.getNotifications('email', null, null, olderThanId);
+    emailResponse = await searchForEmailInNotifyResults(notificationsResponse.body.notifications, searchEmail);
+    i++;
+  }
+  const regex = '(https.+)';
+  const urlMatch = emailResponse.body.match(regex);
+  if (urlMatch[0]) {
+    url = urlMatch[0];
+  }
+  return url;
+};
+
+export const activateUserAccount = async (code, token) => {
+  const data = {
+    code: code,
+    password: testConfig.PASSWORD,
+    token: token
+  };
+  try {
+    await axios.patch(
+      `${config.get('services.idam.url.api')}/activate`,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json'},
+      }
+    );
+  } catch (e) {
+    throw new Error(`Failed to activate user, http-status: ${e.response?.status}`);
+  }
+};
+
 

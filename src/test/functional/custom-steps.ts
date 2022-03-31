@@ -6,7 +6,6 @@ export = function () {
       this.fillField('#username', username);
       this.fillField('#password', password);
       this.click('Sign in');
-      this.waitForText('Manage existing users');
     },
   });
 };

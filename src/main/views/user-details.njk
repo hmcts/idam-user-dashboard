@@ -135,16 +135,25 @@
     </div>
   </dl>
 
-  {% if featureFlags['idam-user-dashboard--beta-features'] %}
-  <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
-    {{ csrfProtection(csrfToken) }}
-    <input type="hidden" name="_userId" value="{{ content.user.id }}">
-    <div class="govuk-button-group">
-      {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
-      {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) }}
-      {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) }}
-    </div>
-  </form>
+  {% if not content.user.stale %}
+    <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="_userId" value="{{ content.user.id }}">
+      <div class="govuk-button-group">
+        {% if featureFlags.values[featureFlags.flags.BETA_EDIT] %}
+          {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
+        {% endif %}
+
+        {% if featureFlags.values[featureFlags.flags.BETA_SUSPEND] %}
+          {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.user.active }}
+          {{ govukButton({ text: "Un-suspend user", name: "_action", value: "un-suspend", classes: "govuk-button--secondary" }) if not content.user.active }}
+        {% endif %}
+
+        {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
+          {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.showDelete }}
+        {% endif %}
+      </div>
+    </form>
   {% endif %}
 
   {{ govukBackLink({

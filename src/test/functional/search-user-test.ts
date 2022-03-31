@@ -5,15 +5,15 @@ import {createUserWithRoles, createUserWithSsoId} from './shared/testingSupportA
 
 Feature('Search User');
 
-const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-const citizenUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-const conflictUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+const dashboardUserEMAIL = randomData.getRandomEmailAddress();
+const citizenUserEmail = randomData.getRandomEmailAddress();
+const conflictUserEmail = randomData.getRandomEmailAddress();
 let citizenUser;
 let conflictUser;
 
 BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
-  citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(10));
+  citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
   conflictUser = await createUserWithSsoId(conflictUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], citizenUser.id);
 });
 
@@ -22,7 +22,7 @@ incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
 incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
-Data(incorrectEmailAddresses).Scenario('I as an user should be able to see proper error message if search text is not in the right format', ({I, current}) => {
+Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format', async ({I, current}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -35,7 +35,7 @@ Data(incorrectEmailAddresses).Scenario('I as an user should be able to see prope
   I.waitForText('The email address is not in the correct format');
 });
 
-Scenario('@CrossBrowser I should be able to search with user-email', async ({I}) => {
+Scenario('I should be able to search with user-email', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -60,9 +60,9 @@ Scenario('@CrossBrowser I should be able to search with user-email', async ({I})
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
-Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) => {
+Scenario('I should be able to search with user-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -87,9 +87,9 @@ Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) =>
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
-Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => {
+Scenario('I should be able to search with sso-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -114,7 +114,7 @@ Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => 
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
@@ -131,7 +131,7 @@ Scenario('When there is a collision between user-id and sso-id, user details sho
   Assert.equal(status.trim(), citizenUser.id);
 });
 
-Scenario('I as an user should be able to see proper error message if search text left blank', ({I}) => {
+Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');
@@ -143,7 +143,7 @@ Scenario('I as an user should be able to see proper error message if search text
   I.waitForText('You must enter an email address');
 });
 
-Scenario('I as an user should be able to see proper error message if user does not exist', ({I}) => {
+Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.waitForText('Manage existing users');
   I.click('Manage existing users');

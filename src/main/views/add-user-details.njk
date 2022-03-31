@@ -1,12 +1,21 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
 
 {% extends "template.njk" %}
 
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Add user email', urls.ADD_USERS_URL],
+    ['Add users', urls.ADD_USERS_URL],
     ['Add user details']
   ]) }}
 {% endblock %}
@@ -14,7 +23,80 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
+      {{ errorSummary(error) }}
       <h1 class="govuk-heading-l">Add a new user</h1>
     </div>
+
+    <form id="addUserDetailsForm" method="POST" action="{{ urls.ADD_USER_DETAILS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <input type="hidden" name="_email" value="{{ content.user.email }}">
+      <div class="govuk-grid-column-one-half">
+        {{ govukInput({
+          label: { text: "Email" },
+          classes: "govuk-input--width-22",
+          id: "email",
+          name: "email",
+          value: content.user.email,
+          attributes: { disabled: true }
+        }) }}
+
+        {% call govukFieldset({
+          classes: 'govuk-fieldset--row'
+        }) %}
+          {{ govukInput({
+            label: { text: "First name" },
+            classes: "govuk-input--width-22",
+            errorMessage: { text: error.forename.message } if error.forename,
+            id: "forename",
+            name: "forename",
+            value: content.user.forename
+          }) }}
+
+          {{ govukInput({
+            label: { text: "Last name" },
+            classes: "govuk-input--width-22",
+            errorMessage: { text: error.surname.message } if error.surname,
+            id: "surname",
+            name: "surname",
+            value: content.user.surname
+          }) }}
+        {% endcall %}
+
+        <h2 class="govuk-heading-s">Select user type</h2>
+        {{ govukDetails({
+          summaryText: "Help with selection",
+          text: "Private Beta Citizen is a citizen who is trialing a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support."
+        }) }}
+
+        {{ govukRadios({
+          idPrefix: "userType",
+          name: "userType",
+          errorMessage: { text: error.userType.message } if error.userType,
+          items: [
+            {
+              value: "professional",
+              text: "Professional",
+              checked: true if content.user.userType === 'professional'
+            },
+            {
+              value: "support",
+              text: "Support",
+              checked: true if content.user.userType === 'support'
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+
+  <div class="govuk-grid-row">
+    <form method="REDIRECT" action="{{ urls.ADD_USERS_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <button type="submit" class="govuk-back-link">Return to add users</button>
+    </form>
   </div>
 {% endblock %}
