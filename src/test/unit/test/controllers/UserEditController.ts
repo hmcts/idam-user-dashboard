@@ -12,24 +12,6 @@ describe('User edit controller', () => {
   const res = mockResponse();
   const controller = new UserEditController();
 
-  const allRoles = [
-    {
-      id: 1,
-      name: 'IDAM_SUPER_USER',
-      description: 'IDAM_SUPER_USER'
-    },
-    {
-      id: 2,
-      name: 'IDAM_ADMIN_USER',
-      description: 'IDAM_ADMIN_USER'
-    },
-    {
-      id: 3,
-      name: 'IDAM_TEST_USER',
-      description: 'IDAM_TEST_USER'
-    }
-  ];
-
   beforeEach(() => {
     req = mockRequest();
     req.scope.cradle.api = mockApi;
@@ -190,13 +172,12 @@ describe('User edit controller', () => {
     };
 
     when(mockApi.getUserById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    when(mockApi.getAllRoles as jest.Mock).calledWith().mockReturnValue(allRoles);
     req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.session = { user: { assignableRoles: ['IDAM_ADMIN_USER'] } };
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
-    expect(mockApi.removeRoleFromUser).toBeCalledWith(originalUserData.id, allRoles[1].id);
+    expect(mockApi.removeRoleFromUser).toBeCalledWith(originalUserData.id, 'IDAM_ADMIN_USER');
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -244,14 +225,13 @@ describe('User edit controller', () => {
     };
 
     when(mockApi.getUserById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    when(mockApi.getAllRoles as jest.Mock).calledWith().mockReturnValue(allRoles);
     req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.session = { user: { assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_TEST_USER'] } };
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
     expect(mockApi.grantRolesToUser).toBeCalledWith(originalUserData.id, [{name: 'IDAM_TEST_USER'}]);
-    expect(mockApi.removeRoleFromUser).toBeCalledWith(originalUserData.id, allRoles[1].id);
+    expect(mockApi.removeRoleFromUser).toBeCalledWith(originalUserData.id, 'IDAM_ADMIN_USER');
 
     const expectedUserData = {
       id: originalUserData.id,

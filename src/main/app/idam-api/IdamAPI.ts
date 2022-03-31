@@ -125,9 +125,9 @@ export class IdamAPI {
       });
   }
 
-  public removeRoleFromUser(id: string, roleId: string): Promise<void> {
+  public removeRoleFromUser(id: string, roleName: string): Promise<void> {
     return this.userAxios
-      .delete('/api/v1/users/' + id + '/roles/' + roleId)
+      .delete('/api/v1/users/' + id + '/roles/' + roleName)
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error deleting user role in IDAM API';

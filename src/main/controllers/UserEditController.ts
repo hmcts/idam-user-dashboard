@@ -139,12 +139,8 @@ export class UserEditController extends RootController {
       await req.scope.cradle.api.grantRolesToUser(user.id, this.convertRolesToDefinitions(rolesAdded));
     }
 
-    if (rolesRemoved.length > 0) {
-      const allRoles = await req.scope.cradle.api.getAllRoles();
-      const rolesMap = new Map(allRoles.map(role => [role.name, role]));
-      for (const r of rolesRemoved) {
-        await req.scope.cradle.api.removeRoleFromUser(user.id, rolesMap.get(r).id);
-      }
+    for (const r of rolesRemoved) {
+      await req.scope.cradle.api.removeRoleFromUser(user.id, r);
     }
   }
 
