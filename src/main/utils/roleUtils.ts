@@ -1,4 +1,3 @@
-
 import { Role } from '../interfaces/Role';
 import {UserRoleAssignment} from '../interfaces/UserRoleAssignment';
 
@@ -43,7 +42,7 @@ export const constructUserRoleAssignments = (assignableRoles: string[], assigned
   });
 
   return [...new Map(userRoleAssignments.map(item => [item.name, item])).values()]
-    .sort((a, b) => sortRolesByName(a.name.toLowerCase(), b.name.toLowerCase()));
+    .sort((a, b) => sortRolesByAssignableAndName(a, b));
 };
 
 export const determineUserNonAssignableRoles = (assignableRoles: string[], assignedRoles: string[]): string[] => {

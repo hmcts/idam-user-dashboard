@@ -102,5 +102,25 @@ describe('utils', () => {
       const results = constructUserRoleAssignments([role1, role2, role3], [role5, role3, role1]);
       expect(results).toStrictEqual(expectedResults);
     });
+
+    test('Should return all roles with assignable roles sorted first', async () => {
+      const expectedResults = [
+        {
+          name: role2, assignable: true, assigned: false
+        },
+        {
+          name: role4, assignable: true, assigned: true
+        },
+        {
+          name: role1, assignable: false, assigned: true
+        },
+        {
+          name: role3, assignable: false, assigned: true
+        }
+      ];
+
+      const results = constructUserRoleAssignments([role2, role4], [role3, role1, role4]);
+      expect(results).toStrictEqual(expectedResults);
+    });
   });
 });
