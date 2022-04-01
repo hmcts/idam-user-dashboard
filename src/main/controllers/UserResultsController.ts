@@ -50,10 +50,10 @@ export class UserResultsController extends RootController {
       return await req.scope.cradle.api.searchUsersByEmail(input);
     }
 
-    const user = await req.scope.cradle.api.getUserById(input);
-
     // only search for SSO ID if searching with the user ID does not return any result
-    return user ? [user] : await req.scope.cradle.api.searchUsersBySsoId(input);
+    return await req.scope.cradle.api.getUserById(input)
+      .then(user => { return [user]; })
+      .catch(() => { return req.scope.cradle.api.searchUsersBySsoId(input); });
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {

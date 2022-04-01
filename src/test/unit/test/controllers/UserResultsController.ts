@@ -106,7 +106,7 @@ describe('User results controller', () => {
   });
 
   test('Should render the manage users page when searching with a non-existent ID', async () => {
-    when(mockApi.getUserById).calledWith(userId).mockReturnValue(Promise.resolve());
+    when(mockApi.getUserById).calledWith(userId).mockReturnValue(Promise.reject('Not found'));
     when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
 
     req.body.search = userId;
@@ -165,7 +165,7 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue(Promise.resolve());
+    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue(Promise.reject('Not found'));
     when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockReturnValue(results);
 
     req.body.search = ssoId;
