@@ -58,8 +58,8 @@ describe('User results controller', () => {
         active: true,
         roles: ['IDAM_SUPER_USER'],
         ssoId: ssoId,
-        createDate: "",
-        lastModified: ""
+        createDate: '',
+        lastModified: ''
       }
     ];
     when(mockApi.getUserById).calledWith(userId).mockReturnValue(results);
@@ -82,8 +82,8 @@ describe('User results controller', () => {
         active: true,
         roles: ['IDAM_SUPER_USER'],
         ssoId: ssoId,
-        createDate: "",
-        lastModified: ""
+        createDate: '',
+        lastModified: ''
       }
     ];
     when(mockApi.getUserById).calledWith(ssoId).mockReturnValue([]);
