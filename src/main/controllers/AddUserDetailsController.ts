@@ -11,13 +11,12 @@ import {
   USER_EMPTY_FORENAME_ERROR,
   USER_EMPTY_SURNAME_ERROR
 } from '../utils/error';
-import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError} from '../interfaces/PageData';
 import { constructAllRoleAssignments } from '../utils/roleUtils';
 
 @autobind
-export class AddUserDetailsController extends RootController{
+export class AddUserDetailsController extends RootController {
   public get(req: AuthedRequest, res: Response) {
     return super.get(req, res, 'add-user-details');
   }
@@ -39,7 +38,7 @@ export class AddUserDetailsController extends RootController{
     }
 
     // check if the user with the same email already exists
-    const users = await req.scope.cradle.api.getUserDetails(SearchType.Email, email);
+    const users = await req.scope.cradle.api.searchUsersByEmail(email);
     if (users.length == 0) {
       return super.post(req, res, 'add-user-details', {content: {
         user: {
