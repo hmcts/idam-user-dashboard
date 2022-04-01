@@ -249,13 +249,13 @@ describe('User edit controller', () => {
         assigned: false
       },
       {
-        name: 'IDAM_SUPER_USER',
-        assignable: false,
+        name: 'IDAM_TEST_USER',
+        assignable: true,
         assigned: true
       },
       {
-        name: 'IDAM_TEST_USER',
-        assignable: true,
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
         assigned: true
       }
     ];
@@ -308,14 +308,14 @@ describe('User edit controller', () => {
         assigned: true
       },
       {
-        name: 'IDAM_SUPER_USER',
-        assignable: false,
-        assigned: true
-      },
-      {
         name: 'IDAM_TEST_USER',
         assignable: true,
         assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
       }
     ];
 
