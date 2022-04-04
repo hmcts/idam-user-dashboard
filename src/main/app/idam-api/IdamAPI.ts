@@ -7,6 +7,8 @@ import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
 import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
 import { Service } from '../../interfaces/Service';
+import { SearchType } from '../../utils/SearchType';
+import { RoleDefinition } from '../../interfaces/RoleDefinition';
 
 export class IdamAPI {
   constructor(
@@ -16,15 +18,24 @@ export class IdamAPI {
     private readonly telemetryClient: TelemetryClient
   ) { }
 
-  public getUserDetails(type: string, query: string): Promise<User[]> {
+  private getUserDetails(type: string, query: string): Promise<User[]> {
     return this.userAxios
       .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
       .then(results => results.data)
       .catch(error => {
-        this.telemetryClient.trackTrace({message: 'Error retrieving user details from IDAM API'});
+        const errorMessage = `Error retrieving user by ${type} from IDAM API`;
+        this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
-        return [];
+        return Promise.reject(errorMessage);
       });
+  }
+
+  public searchUsersByEmail(email: string): Promise<User[]> {
+    return this.getUserDetails(SearchType.Email, email);
+  }
+
+  public searchUsersBySsoId(id: string): Promise<User[]> {
+    return this.getUserDetails(SearchType.SsoId, id);
   }
 
   public getUserById(id: string): Promise<User> {
@@ -38,6 +49,8 @@ export class IdamAPI {
         return Promise.reject(errorMessage);
       });
   }
+
+
 
   public editUserById(id: string, fields: Partial<User>): Promise<User> {
     return this.userAxios
@@ -110,5 +123,29 @@ export class IdamAPI {
       );
 
     return Array.from(collection);
+  }
+
+  public grantRolesToUser(id: string, roleDefinitions: RoleDefinition[]): Promise<void> {
+    return this.userAxios
+      .post('/api/v1/users/' + id + '/roles', roleDefinitions)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error granting user roles in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public removeRoleFromUser(id: string, roleName: string): Promise<void> {
+    return this.userAxios
+      .delete('/api/v1/users/' + id + '/roles/' + roleName)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error deleting user role in IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
   }
 }

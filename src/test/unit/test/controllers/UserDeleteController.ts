@@ -2,28 +2,16 @@ import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockRootController } from '../../utils/mockRootController';
 import { UserDeleteController } from '../../../../main/controllers/UserDeleteController';
-import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 import { when } from 'jest-when';
 import { MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR } from '../../../../main/utils/error';
-import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
-
-type Mocked<T> = { [P in keyof T]: jest.Mock; };
+import { USER_DETAILS_URL } from '../../../../main/utils/urls';
+import { mockApi } from '../../utils/mockApi';
 
 describe('User delete controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new UserDeleteController();
-  const mockApi: Mocked<IdamAPI> = {
-    getUserById: jest.fn(),
-    getUserDetails: jest.fn(),
-    deleteUserById: jest.fn(),
-    getAllRoles: jest.fn(),
-    getAssignableRoles: jest.fn(),
-    editUserById: jest.fn(),
-    registerUser: jest.fn(),
-    getAllServices: jest.fn()
-  };
 
   beforeEach(() => {
     req = mockRequest();

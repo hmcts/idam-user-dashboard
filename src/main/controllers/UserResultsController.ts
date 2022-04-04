@@ -10,7 +10,6 @@ import {
 } from '../utils/error';
 import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
-import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 
 @autobind
@@ -19,7 +18,7 @@ export class UserResultsController extends RootController {
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
 
-    if (isEmpty(input)) {
+    if (isEmpty(input.trim())) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
     const users = await this.searchForUser(req, res, input);
@@ -48,16 +47,13 @@ export class UserResultsController extends RootController {
         this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
         return;
       }
-      return await req.scope.cradle.api.getUserDetails(SearchType.Email, input);
-    }
-
-    const users = await req.scope.cradle.api.getUserDetails(SearchType.UserId, input);
-    if (users.length > 0) {
-      return users;
+      return await req.scope.cradle.api.searchUsersByEmail(input);
     }
 
     // only search for SSO ID if searching with the user ID does not return any result
-    return await req.scope.cradle.api.getUserDetails(SearchType.SsoId, input);
+    return await req.scope.cradle.api.getUserById(input)
+      .then(user => { return [user]; })
+      .catch(() => { return req.scope.cradle.api.searchUsersBySsoId(input); });
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
