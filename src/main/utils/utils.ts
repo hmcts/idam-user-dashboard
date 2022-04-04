@@ -82,3 +82,15 @@ export const getObjectVariation = (original: {[key: string]: any}, updated: {[ke
 
   return variation;
 };
+
+export const convertToArray = (value: string | string[]): string[] => {
+  return Array.isArray(value) ? value : value.split(/\r?\n/);
+};
+
+export const findDifferentElements = (arrayA: string[], arrayB: string[]): string[] => {
+  const differentElements: string[] = [];
+  arrayA
+    .filter(e => !arrayB.includes(e))
+    .forEach(e => differentElements.push(e));
+  return differentElements;
+};

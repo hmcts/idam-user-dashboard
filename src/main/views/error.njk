@@ -1,6 +1,10 @@
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  {{ status }} Error - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([['Error']]) }}
