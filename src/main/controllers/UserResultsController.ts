@@ -10,7 +10,6 @@ import {
 } from '../utils/error';
 import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
-import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 
 @autobind
@@ -33,7 +32,7 @@ export class UserResultsController extends RootController {
         });
       }
 
-      return super.post(req, res, 'manage-users', {
+      return super.post(req, res, 'manage-user', {
         content: {
           search: input,
           result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
@@ -48,20 +47,17 @@ export class UserResultsController extends RootController {
         this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
         return;
       }
-      return await req.scope.cradle.api.getUserDetails(SearchType.Email, input);
-    }
-
-    const users = await req.scope.cradle.api.getUserDetails(SearchType.UserId, input);
-    if (users.length > 0) {
-      return users;
+      return await req.scope.cradle.api.searchUsersByEmail(input);
     }
 
     // only search for SSO ID if searching with the user ID does not return any result
-    return await req.scope.cradle.api.getUserDetails(SearchType.SsoId, input);
+    return await req.scope.cradle.api.getUserById(input)
+      .then(user => { return [user]; })
+      .catch(() => { return req.scope.cradle.api.searchUsersBySsoId(input); });
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'manage-users', {
+    return super.post(req, res, 'manage-user', {
       error: {
         search: {message: errorMessage}
       }

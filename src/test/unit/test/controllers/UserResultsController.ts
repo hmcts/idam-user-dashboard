@@ -8,8 +8,8 @@ import {
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
-import {SearchType} from '../../../../main/utils/SearchType';
 import { mockRootController } from '../../utils/mockRootController';
+import { mockApi } from '../../utils/mockApi';
 
 
 describe('User results controller', () => {
@@ -17,18 +17,11 @@ describe('User results controller', () => {
   let req: any;
   const res = mockResponse();
 
-  const mockApi = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    getUserDetails: () => {}
-  };
-  mockApi.getUserDetails = jest.fn();
-
   const controller = new UserResultsController();
   const email = 'john.smith@test.com';
   const userId = '123';
   const userId2 = '234';
   const ssoId = '456';
-  const ssoId2 = '567';
 
   beforeEach(() => {
     req = mockRequest();
@@ -46,7 +39,7 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue(results);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(results);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -64,11 +57,13 @@ describe('User results controller', () => {
         email: email,
         active: true,
         roles: ['IDAM_SUPER_USER'],
-        ssoId: ssoId
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, userId).mockReturnValue(results);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, userId).mockReturnValue([]);
+    when(mockApi.getUserById).calledWith(userId).mockReturnValue(results);
+    when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
@@ -86,11 +81,13 @@ describe('User results controller', () => {
         email: email,
         active: true,
         roles: ['IDAM_SUPER_USER'],
-        ssoId: ssoId
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, ssoId).mockReturnValue([]);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, ssoId).mockReturnValue(results);
+    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue([]);
+    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockReturnValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
@@ -99,26 +96,26 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
   });
 
-  test('Should render the manage users page when searching with a non-existent email', async () => {
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue([]);
+  test('Should render the manage user page when searching with a non-existent email', async () => {
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
   });
 
-  test('Should render the manage users page when searching with a non-existent ID', async () => {
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, userId).mockReturnValue([]);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, userId).mockReturnValue([]);
+  test('Should render the manage user page when searching with a non-existent ID', async () => {
+    when(mockApi.getUserById).calledWith(userId).mockReturnValue(Promise.reject('Not found'));
+    when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: userId, result: NO_USER_MATCHES_ERROR + userId } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: userId, result: NO_USER_MATCHES_ERROR + userId } });
   });
 
-  test('Should render the manage users page when more than one emails matches the search input', async () => {
+  test('Should render the manage user page when more than one emails matches the search input', async () => {
     const results = [
       {
         id: userId,
@@ -139,44 +136,15 @@ describe('User results controller', () => {
         ssoId: userId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue(results);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(results);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
   });
 
-  test('Should render the manage users page when more than one user IDs matches the search input', async () => {
-    const results = [
-      {
-        id: userId,
-        forename: 'John',
-        surname: 'Smith',
-        email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
-        ssoId: ssoId
-      },
-      {
-        id: userId,
-        forename: 'Mike',
-        surname: 'Green',
-        email: email,
-        active: false,
-        roles: ['IDAM_ADMIN_USER'],
-        ssoId: ssoId2
-      }
-    ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, userId).mockReturnValue(results);
-
-    req.body.search = userId;
-    req.scope.cradle.api = mockApi;
-    await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: userId, result: TOO_MANY_USERS_ERROR + userId } });
-  });
-
-  test('Should render the manage users page when more than one SSO IDs matches the search input', async () => {
+  test('Should render the manage user page when more than one SSO IDs matches the search input', async () => {
     const results = [
       {
         id: userId,
@@ -197,24 +165,24 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.UserId, ssoId).mockReturnValue([]);
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.SsoId, ssoId).mockReturnValue(results);
+    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue(Promise.reject('Not found'));
+    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockReturnValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: ssoId, result: TOO_MANY_USERS_ERROR + ssoId } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: ssoId, result: TOO_MANY_USERS_ERROR + ssoId } });
   });
 
-  test('Should render the manage users page with error when searching with empty input', async () => {
+  test('Should render the manage user page with error when searching with empty input', async () => {
     req.body.search = '';
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { error: { search: { message: MISSING_INPUT_ERROR } } });
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: MISSING_INPUT_ERROR } } });
   });
 
-  test('Should render the manage users page with error when searching with email with invalid format', async () => {
+  test('Should render the manage user page with error when searching with email with invalid format', async () => {
     req.body.search = 'test@test';
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { error: { search: { message: INVALID_EMAIL_FORMAT_ERROR } }});
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: INVALID_EMAIL_FORMAT_ERROR } }});
   });
 });

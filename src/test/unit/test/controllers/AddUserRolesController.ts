@@ -4,16 +4,12 @@ import { mockResponse } from '../../utils/mockResponse';
 import { AddUserRolesController } from '../../../../main/controllers/AddUserRolesController';
 import { mockRequest } from '../../utils/mockRequest';
 import {MISSING_ROLE_ASSIGNMENT_ERROR} from '../../../../main/utils/error';
+import {mockApi} from '../../utils/mockApi';
 
 describe('Add user roles controller', () => {
   let req: any;
   const res = mockResponse();
   const controller = new AddUserRolesController();
-
-  const mockApi = {
-    registerUser: jest.fn(),
-    getAllRoles: jest.fn()
-  };
 
   const email = 'test@test.com';
   const forename = 'test';
@@ -34,7 +30,7 @@ describe('Add user roles controller', () => {
       roles: role
     };
 
-    when(mockApi.registerUser as jest.Mock).calledWith(userRegistrationDetails).mockReturnValue({});
+    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue({});
 
     req.body._email = email;
     req.body._forename = forename;
@@ -53,7 +49,7 @@ describe('Add user roles controller', () => {
       roles: roleArray
     };
 
-    when(mockApi.registerUser as jest.Mock).calledWith(userRegistrationDetails).mockReturnValue({});
+    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue({});
 
     req.body._email = email;
     req.body._forename = forename;
@@ -83,7 +79,7 @@ describe('Add user roles controller', () => {
       }
     ];
 
-    when(mockApi.getAllRoles as jest.Mock).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body._email = email;
     req.body._forename = forename;

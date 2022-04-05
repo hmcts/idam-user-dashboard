@@ -1,6 +1,7 @@
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/errorSummary.njk" import errorSummary %}
+{% from "macros/roleList.njk" import roleList %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -8,6 +9,7 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% extends "template.njk" %}
 
@@ -18,8 +20,8 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage users', urls.MANAGER_USERS_URL],
-    ['Edit User']
+    ['Manage user', urls.MANAGER_USER_URL],
+    ['Edit user']
   ]) }}
 {% endblock %}
 
@@ -39,12 +41,12 @@
     }) if content.notification }}
 
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Edit Users</h1>
+      <h1 class="govuk-heading-l">Edit User</h1>
     </div>
     <form id="userEditForm" method="POST" action="{{ urls.EDIT_USER_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
-      <div class="govuk-grid-column-one-half">
+      <div class="govuk-grid-column-one-half govuk-!-margin-bottom-5">
         <h3 class="govuk-heading-s">General</h3>
 
         {% call govukFieldset({
@@ -69,6 +71,17 @@
           name: "email",
           id: "email",
           value: content.user.email
+        }) }}
+      </div>
+
+      <div class="govuk-grid-column-full">
+        <h3 class="govuk-heading-s">Assigned roles</h3>
+        {{ roleList({
+          roles: content.roles,
+          name: 'roles',
+          list: {
+            classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+          }
         }) }}
 
         <div class="govuk-button-group">

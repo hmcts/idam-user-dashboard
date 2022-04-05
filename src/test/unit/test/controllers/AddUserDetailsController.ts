@@ -2,7 +2,6 @@ import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import * as urls from '../../../../main/utils/urls';
 import { AddUserDetailsController } from '../../../../main/controllers/AddUserDetailsController';
-import { SearchType } from '../../../../main/utils/SearchType';
 import {
   duplicatedEmailError,
   INVALID_EMAIL_FORMAT_ERROR,
@@ -13,6 +12,7 @@ import {
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
 import { UserType } from '../../../../main/utils/UserType';
+import { mockApi } from '../../utils/mockApi';
 
 describe('Add user details controller', () => {
   let req: any;
@@ -29,20 +29,13 @@ describe('Add user details controller', () => {
     }
   ];
 
-  const mockApi = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    getUserDetails: jest.fn(),
-    getAllRoles: jest.fn(),
-    getAllServices: jest.fn()
-  };
-
   beforeEach(() => {
     req = mockRequest();
   });
 
   test('Should render the add user details page when adding a non-existing user\'s email', async () => {
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue([]);
-    when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
+    when(mockApi.getAllServices).calledWith().mockReturnValue(services);
 
     req.body.email = email;
     req.scope.cradle.api = mockApi;
@@ -56,7 +49,7 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a pre-existing user\'s email', async () => {
+  test('Should render the add user page with error when adding a pre-existing user\'s email', async () => {
     const users = [
       {
         id: '123',
@@ -67,13 +60,13 @@ describe('Add user details controller', () => {
         roles: ['IDAM_SUPER_USER']
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue(users);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(users);
 
     req.body.email = email;
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: duplicatedEmailError(email)
       }},
@@ -81,11 +74,11 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a user with empty email', async () => {
+  test('Should render the add user page with error when adding a user with empty email', async () => {
     req.body.email = '';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
@@ -93,11 +86,11 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a user\'s email with spaces only', async () => {
+  test('Should render the add user page with error when adding a user\'s email with spaces only', async () => {
     req.body.email = '  ';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
@@ -105,11 +98,11 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a user with invalid email format', async () => {
+  test('Should render the add user page with error when adding a user with invalid email format', async () => {
     req.body.email = 'test@test';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: INVALID_EMAIL_FORMAT_ERROR
       }},
@@ -230,7 +223,7 @@ describe('Add user details controller', () => {
       }
     ];
 
-    when(mockApi.getAllRoles as jest.Mock).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body._email = email;
     req.body.forename = name;
