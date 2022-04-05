@@ -1,27 +1,37 @@
 import {
+  assignRolesToParentRole,
+  createAssignableRoles,
   createUserWithRoles
 } from './shared/testingSupportApi';
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import { BETA_EDIT } from '../../main/app/feature-flags/flags';
+import {BETA_EDIT} from '../../main/app/feature-flags/flags';
 
-Feature('Manage Existing User');
+Feature('Edit User');
 
-const dashboardUserEMAIL = randomData.getRandomEmailAddress();
+const PARENT_ROLE = randomData.getRandomRole();
+const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
+const INDEPENDANT_CHILD_ROLE = randomData.getRandomRole();
+const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
+
 BeforeSuite(async () => {
-  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
+  await createAssignableRoles(PARENT_ROLE);
+  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
+  await createAssignableRoles(INDEPENDANT_CHILD_ROLE);
+  // Assigning self role with the child role so the this user can also delete same level users
+  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
+  await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
 });
 
 Scenario('I as a user should be able to edit and update the user-details successfully',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
-
     const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
     const activeUser = await I.getUserDetails(activeUserEmail);
 
-    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
     I.click('Continue');
@@ -32,7 +42,6 @@ Scenario('I as a user should be able to edit and update the user-details success
     I.waitForText('User Details');
     I.click('Edit user');
     I.waitForText('Edit User');
-
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
 
@@ -53,7 +62,6 @@ Scenario('I as a user should be able to edit and update the user-details success
     I.fillField('#forename', updatedForename);
     I.fillField('#surname', updatedSurname);
     I.fillField('#email', updatedEmail);
-
     I.click('Save');
     I.see('Success');
     I.waitForText('User details updated successfully');
@@ -67,8 +75,8 @@ Scenario('I as a user should be able to edit and update the user-details success
 
     const emailUpdated = await I.grabValueFrom('#email');
     Assert.equal(emailUpdated.trim(), updatedEmail);
-  }
-).tag('@CrossBrowser');
+
+  }).tag('@CrossBrowser');
 
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
 incorrectEmailAddresses.add(['email..@test.com']); // adding records to a table
@@ -78,11 +86,10 @@ incorrectEmailAddresses.add(['email@com..']);
 Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when email format is not correct',
   {featureFlags: [BETA_EDIT]},
   async ({I, current}) => {
-
     const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
-    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
     I.click('Continue');
@@ -93,21 +100,18 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
     I.waitForText('User Details');
     I.click('Edit user');
     I.waitForText('Edit User');
-
     I.fillField('#email', current.incorrectEmailAddress);
     I.click('Save');
     I.waitForText('The email address is not in the correct format');
-  }
-);
+  });
 
 Scenario('I as a user should see proper error message when mandatory fields left empty',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
-
     const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
-    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
     I.click('Continue');
@@ -118,7 +122,6 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.waitForText('User Details');
     I.click('Edit user');
     I.waitForText('Edit User');
-
     I.clearField('#forename');
     I.clearField('#surname');
     I.clearField('#email');
@@ -127,7 +130,6 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.waitForText('You must enter a forename for the user');
     I.waitForText('You must enter a surname for the user');
     I.waitForText('The email address is not in the correct format');
-
     I.fillField('#forename', '');
     I.fillField('#surname', ' ');
     I.fillField('#email', ' ');
@@ -136,17 +138,15 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.waitForText('You must enter a forename for the user');
     I.waitForText('You must enter a surname for the user');
     I.waitForText('The email address is not in the correct format');
-  }
-);
+  });
 
 Scenario('I as a user should see proper error message when no changes were made before updating',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
-
     const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
-    I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
     I.click('Continue');
@@ -160,5 +160,45 @@ Scenario('I as a user should see proper error message when no changes were made 
     I.click('Save');
     I.waitForText('There is a problem');
     I.waitForText('No changes to the user were made');
-  }
-);
+  });
+
+Scenario('I as a user should be able to edit roles only if I have the permission to do so',
+  {featureFlags: [BETA_EDIT]},
+  async ({I}) => {
+    const activeUserEmail = randomData.getRandomEmailAddress();
+    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
+
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+
+    const assignedRoles = await I.grabTextFromAll('#assigned-roles');
+    Assert.equal(assignedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
+    Assert.equal(assignedRoles.includes(ASSIGNABLE_CHILD_ROLE), false);
+
+    I.click('Edit user');
+    I.waitForText('Edit User');
+    I.see(ASSIGNABLE_CHILD_ROLE);
+    I.see(INDEPENDANT_CHILD_ROLE);
+
+    //Checking the role which user doesn't have permission to assign is disabled
+    const disabledRoles = await I.grabValueFromAll(locate('//input[@name=\'roles\' and @disabled]'));
+    Assert.equal(disabledRoles.includes(INDEPENDANT_CHILD_ROLE), true);
+
+    I.click(ASSIGNABLE_CHILD_ROLE);
+    I.click('Save');
+    I.see('Success');
+    I.waitForText('User details updated successfully');
+    I.click('Return to user details');
+    I.see('User Details');
+
+    const updatedRoles = await I.grabTextFromAll('#assigned-roles');
+    Assert.equal(updatedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
+    Assert.equal(updatedRoles.includes(ASSIGNABLE_CHILD_ROLE), true);
+  });
