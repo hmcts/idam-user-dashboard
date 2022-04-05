@@ -32,8 +32,8 @@ Scenario('I as a user should be able to edit and update the user-details success
     const activeUser = await I.getUserDetails(activeUserEmail);
 
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing user');
-    I.click('Manage existing user');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -42,7 +42,6 @@ Scenario('I as a user should be able to edit and update the user-details success
     I.waitForText('User Details');
     I.click('Edit user');
     I.waitForText('Edit User');
-    I.dontSee('Edit user');
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
 
@@ -87,13 +86,12 @@ incorrectEmailAddresses.add(['email@com..']);
 Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when email format is not correct',
   {featureFlags: [BETA_EDIT]},
   async ({I, current}) => {
-
     const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing user');
-    I.click('Manage existing user');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -102,7 +100,6 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
     I.waitForText('User Details');
     I.click('Edit user');
     I.waitForText('Edit User');
-
     I.fillField('#email', current.incorrectEmailAddress);
     I.click('Save');
     I.waitForText('The email address is not in the correct format');
@@ -115,8 +112,8 @@ Scenario('I as a user should see proper error message when mandatory fields left
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing user');
-    I.click('Manage existing user');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -125,7 +122,6 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.waitForText('User Details');
     I.click('Edit user');
     I.waitForText('Edit User');
-
     I.clearField('#forename');
     I.clearField('#surname');
     I.clearField('#email');
@@ -134,7 +130,6 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.waitForText('You must enter a forename for the user');
     I.waitForText('You must enter a surname for the user');
     I.waitForText('The email address is not in the correct format');
-
     I.fillField('#forename', '');
     I.fillField('#surname', ' ');
     I.fillField('#email', ' ');
@@ -152,8 +147,8 @@ Scenario('I as a user should see proper error message when no changes were made 
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing user');
-    I.click('Manage existing user');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -174,8 +169,8 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
 
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -188,7 +183,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     Assert.equal(assignedRoles.includes(ASSIGNABLE_CHILD_ROLE), false);
 
     I.click('Edit user');
-    I.waitForText('Edit Users');
+    I.waitForText('Edit User');
     I.see(ASSIGNABLE_CHILD_ROLE);
     I.see(INDEPENDANT_CHILD_ROLE);
 
