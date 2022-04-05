@@ -1,8 +1,10 @@
 import { AccessibilityStatementController } from '../../../../main/controllers/AccessibilityStatementController';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
+import { mockRootController } from '../../utils/mockRootController';
 
 describe('Manage accessibility controller', () => {
+  mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new AccessibilityStatementController();
