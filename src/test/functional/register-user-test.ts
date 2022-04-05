@@ -30,9 +30,9 @@ Scenario('I as a user should be able to register new user',
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.waitForText('Add new users');
-    I.click('Add new users');
+    I.waitForText('Manage an existing user');
+    I.waitForText('Add a new user');
+    I.click('Add a new user');
     I.click('Continue');
     I.waitForText('Please enter an email address');
     I.click('#email');
@@ -59,7 +59,7 @@ Scenario('I as a user should be able to register new user',
     await I.activateUserAccount(code, token);
 
     I.click('Return to main menu');
-    I.click('Manage existing users');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -77,9 +77,9 @@ Scenario('I as a user should be able to search for roles',
     const registerUserEmail = randomData.getRandomEmailAddress();
     const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.waitForText('Add new users');
-    I.click('Add new users');
+    I.waitForText('Manage an existing user');
+    I.waitForText('Add a new user');
+    I.click('Add a new user');
     I.click('Continue');
     I.waitForText('Please enter an email address');
     I.click('#email');
@@ -116,9 +116,9 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
   {featureFlags: [BETA_ADD]},
   async ({I, current}) => {
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.waitForText('Add new users');
-    I.click('Add new users');
+    I.waitForText('Manage an existing user');
+    I.waitForText('Add a new user');
+    I.click('Add a new user');
     I.click('Continue');
     I.waitForText('Please enter an email address');
     I.click('#email');
@@ -132,9 +132,9 @@ Scenario('I as a user should be able to see proper error messages when add-user 
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.waitForText('Add new users');
-    I.click('Add new users');
+    I.waitForText('Manage an existing user');
+    I.waitForText('Add a new user');
+    I.click('Add a new user');
     I.click('Continue');
     I.waitForText('Please enter an email address');
     I.click('Continue');

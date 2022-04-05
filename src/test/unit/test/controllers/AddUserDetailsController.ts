@@ -49,7 +49,7 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a pre-existing user\'s email', async () => {
+  test('Should render the add user page with error when adding a pre-existing user\'s email', async () => {
     const users = [
       {
         id: '123',
@@ -66,7 +66,7 @@ describe('Add user details controller', () => {
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: duplicatedEmailError(email)
       }},
@@ -74,11 +74,11 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a user with empty email', async () => {
+  test('Should render the add user page with error when adding a user with empty email', async () => {
     req.body.email = '';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
@@ -86,11 +86,11 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a user\'s email with spaces only', async () => {
+  test('Should render the add user page with error when adding a user\'s email with spaces only', async () => {
     req.body.email = '  ';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
@@ -98,11 +98,11 @@ describe('Add user details controller', () => {
     });
   });
 
-  test('Should render the add users page with error when adding a user with invalid email format', async () => {
+  test('Should render the add user page with error when adding a user with invalid email format', async () => {
     req.body.email = 'test@test';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: INVALID_EMAIL_FORMAT_ERROR
       }},

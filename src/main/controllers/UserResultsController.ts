@@ -32,7 +32,7 @@ export class UserResultsController extends RootController {
         });
       }
 
-      return super.post(req, res, 'manage-users', {
+      return super.post(req, res, 'manage-user', {
         content: {
           search: input,
           result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
@@ -57,7 +57,7 @@ export class UserResultsController extends RootController {
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'manage-users', {
+    return super.post(req, res, 'manage-user', {
       error: {
         search: {message: errorMessage}
       }
