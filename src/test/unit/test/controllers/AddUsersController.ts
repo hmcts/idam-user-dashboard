@@ -1,9 +1,10 @@
 import { AddUserController } from '../../../../main/controllers/AddUserController';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
-import * as urls from '../../../../main/utils/urls';
+import { mockRootController } from '../../utils/mockRootController';
 
 describe('Add user controller', () => {
+  mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new AddUserController();
@@ -14,6 +15,6 @@ describe('Add user controller', () => {
 
   test('Should render the add user page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('add-user', { urls });
+    expect(res.render).toBeCalledWith('add-user');
   });
 });

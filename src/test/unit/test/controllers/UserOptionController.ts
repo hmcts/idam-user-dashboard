@@ -4,8 +4,10 @@ import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
 import { MISSING_OPTION_ERROR } from '../../../../main/utils/error';
 import * as urls from '../../../../main/utils/urls';
+import { mockRootController } from '../../utils/mockRootController';
 
 describe('User option controller', () => {
+  mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new UserOptionController();
@@ -16,14 +18,13 @@ describe('User option controller', () => {
 
   test('Should render the user option page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('user-option', { urls} );
+    expect(res.render).toBeCalledWith('user-option' );
   });
 
   test('Should render the user option page with error when posting with no option selected', async () => {
     await controller.post(req, res);
     const expectedPageData: PageData = {
       error: { userAction: { message: MISSING_OPTION_ERROR }},
-      urls
     };
 
     expect(res.render).toBeCalledWith('user-option', expectedPageData);
