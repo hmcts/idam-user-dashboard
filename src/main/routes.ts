@@ -10,7 +10,7 @@ import {
   USER_ACTIONS_URL,
   USER_DETAILS_URL,
   USER_SUSPEND_URL,
-  ACCESSABILITY_STATEMENT
+  ACCESSIBILITY_STATEMENT
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
 import { BETA_ADD, BETA_DELETE, BETA_EDIT, BETA_SUSPEND } from './app/feature-flags/flags';
@@ -29,5 +29,5 @@ export default function(app: Application): void {
   app.post(EDIT_USER_URL, featureFlags.toggleRoute(BETA_EDIT), app.locals.container.cradle.userEditController.post);
   app.post(USER_DELETE_URL, featureFlags.toggleRoute(BETA_DELETE), app.locals.container.cradle.userDeleteController.post);
   app.post(USER_SUSPEND_URL, featureFlags.toggleRoute(BETA_SUSPEND), app.locals.container.cradle.userSuspendController.post);
-  app.get(ACCESSABILITY_STATEMENT, app.locals.container.cradle.accessabilityStatementController.get);
+  app.get(ACCESSIBILITY_STATEMENT, app.locals.container.cradle.accessibilityStatementController.get);
 }

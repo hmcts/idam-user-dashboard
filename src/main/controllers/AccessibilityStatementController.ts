@@ -4,8 +4,8 @@ import { RootController } from './RootController';
 import autobind from 'autobind-decorator';
 
 @autobind
-export class AccessabilityStatementController extends RootController{
+export class AccessibilityStatementController extends RootController{
   public get(req: AuthedRequest, res: Response) {
-    return super.get(req, res, 'accessability-statement');
+    return super.get(req, res, 'accessibility-statement');
   }
 }

@@ -15,4 +15,4 @@ export const EDIT_USER_URL = '/users/edit';
 export const USER_SUSPEND_URL = '/users/suspend';
 export const USER_DELETE_URL = '/users/delete';
 
-export const ACCESSABILITY_STATEMENT = '/accessibility-statement'
+export const ACCESSIBILITY_STATEMENT = '/accessibility-statement'
