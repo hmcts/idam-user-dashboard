@@ -1,6 +1,5 @@
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
-import * as urls from '../../../../main/utils/urls';
 import { AddUserDetailsController } from '../../../../main/controllers/AddUserDetailsController';
 import {
   duplicatedEmailError,
@@ -12,9 +11,11 @@ import {
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
 import { UserType } from '../../../../main/utils/UserType';
+import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 
 describe('Add user details controller', () => {
+  mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new AddUserDetailsController();
@@ -41,11 +42,7 @@ describe('Add user details controller', () => {
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', {
-      content: {
-        user: {email: email}
-      },
-      urls
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email } },
     });
   });
 
@@ -70,7 +67,6 @@ describe('Add user details controller', () => {
       error: { email: {
         message: duplicatedEmailError(email)
       }},
-      urls
     });
   });
 
@@ -82,7 +78,6 @@ describe('Add user details controller', () => {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
-      urls
     });
   });
 
@@ -94,7 +89,6 @@ describe('Add user details controller', () => {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
-      urls
     });
   });
 
@@ -106,7 +100,6 @@ describe('Add user details controller', () => {
       error: { email: {
         message: INVALID_EMAIL_FORMAT_ERROR
       }},
-      urls
     });
   });
 
@@ -130,7 +123,6 @@ describe('Add user details controller', () => {
       error: { forename: {
         message: USER_EMPTY_FORENAME_ERROR
       }},
-      urls
     });
   });
 
@@ -154,7 +146,6 @@ describe('Add user details controller', () => {
       error: { surname: {
         message: USER_EMPTY_SURNAME_ERROR
       }},
-      urls
     });
   });
 
@@ -177,7 +168,6 @@ describe('Add user details controller', () => {
       },
       error: { forename: { message: USER_EMPTY_FORENAME_ERROR },
         surname: { message: USER_EMPTY_SURNAME_ERROR } },
-      urls
     });
   });
 
@@ -200,7 +190,6 @@ describe('Add user details controller', () => {
       error: { userType: {
         message: MISSING_USER_TYPE_ERROR
       }},
-      urls
     });
   });
 
@@ -254,8 +243,6 @@ describe('Add user details controller', () => {
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-roles', {
       content: expectedContent,
-      urls,
-      user: { assignableRoles: [] }
     });
   });
 });
