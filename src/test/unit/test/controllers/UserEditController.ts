@@ -17,7 +17,7 @@ describe('User edit controller', () => {
     req.scope.cradle.api = mockApi;
   });
 
-  test('Should render the edit users page', async () => {
+  test('Should render the edit user page', async () => {
     const postData = {
       _userId: '7',
       _action: 'edit'
@@ -50,7 +50,7 @@ describe('User edit controller', () => {
     expect(res.render).toBeCalledWith('edit-user', { content: { user: apiData, roles: expectedRoleAssignments } });
   });
 
-  test('Should render the edit users page after saving when user fields changed', async () => {
+  test('Should render the edit user page after saving when user fields changed', async () => {
     const postData = {
       _userId: '7',
       _action: 'save',
@@ -101,7 +101,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page after saving when user roles added', async () => {
+  test('Should render the edit user page after saving when user roles added', async () => {
     const originalUserData = {
       id: '7',
       forename: 'John',
@@ -154,7 +154,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page after saving when user roles removed', async () => {
+  test('Should render the edit user page after saving when user roles removed', async () => {
     const originalUserData = {
       id: '7',
       forename: 'John',
@@ -206,7 +206,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page after saving when user roles added and removed', async () => {
+  test('Should render the edit user page after saving when user roles added and removed', async () => {
     const originalUserData = {
       id: '7',
       forename: 'John',
@@ -265,7 +265,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page after saving when the requesting user adding roles to themselves', async () => {
+  test('Should render the edit user page after saving when the requesting user adding roles to themselves', async () => {
     const originalUserData = {
       id: '7',
       forename: 'John',
@@ -324,7 +324,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page after saving when both user fields and roles changed', async () => {
+  test('Should render the edit user page after saving when both user fields and roles changed', async () => {
     const postData = {
       _userId: '7',
       _action: 'save',
@@ -392,7 +392,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page with validation errors after saving', async () => {
+  test('Should render the edit user page with validation errors after saving', async () => {
     const originalUserData = {
       id: '7',
       forename: 'John',
@@ -434,7 +434,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page with errors when no fields changed', async () => {
+  test('Should render the edit user page with errors when no fields changed', async () => {
     const originalUserData = {
       id: '7',
       forename: 'John',
@@ -476,7 +476,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit users page after there was an API issue saving', async () => {
+  test('Should render the edit user page after there was an API issue saving', async () => {
     const postData = {
       _userId: '7',
       _action: 'save',

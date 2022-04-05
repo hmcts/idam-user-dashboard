@@ -20,8 +20,8 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage users', urls.MANAGER_USERS_URL],
-    ['Edit User']
+    ['Manage user', urls.MANAGER_USER_URL],
+    ['Edit user']
   ]) }}
 {% endblock %}
 
@@ -41,7 +41,7 @@
     }) if content.notification }}
 
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Edit Users</h1>
+      <h1 class="govuk-heading-l">Edit User</h1>
     </div>
     <form id="userEditForm" method="POST" action="{{ urls.EDIT_USER_URL }}">
       {{ csrfProtection(csrfToken) }}

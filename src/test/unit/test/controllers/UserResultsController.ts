@@ -96,26 +96,26 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
   });
 
-  test('Should render the manage users page when searching with a non-existent email', async () => {
+  test('Should render the manage user page when searching with a non-existent email', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
   });
 
-  test('Should render the manage users page when searching with a non-existent ID', async () => {
+  test('Should render the manage user page when searching with a non-existent ID', async () => {
     when(mockApi.getUserById).calledWith(userId).mockReturnValue(Promise.reject('Not found'));
     when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: userId, result: NO_USER_MATCHES_ERROR + userId } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: userId, result: NO_USER_MATCHES_ERROR + userId } });
   });
 
-  test('Should render the manage users page when more than one emails matches the search input', async () => {
+  test('Should render the manage user page when more than one emails matches the search input', async () => {
     const results = [
       {
         id: userId,
@@ -141,10 +141,10 @@ describe('User results controller', () => {
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
   });
 
-  test('Should render the manage users page when more than one SSO IDs matches the search input', async () => {
+  test('Should render the manage user page when more than one SSO IDs matches the search input', async () => {
     const results = [
       {
         id: userId,
@@ -171,18 +171,18 @@ describe('User results controller', () => {
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { content: { search: ssoId, result: TOO_MANY_USERS_ERROR + ssoId } });
+    expect(res.render).toBeCalledWith('manage-user', { content: { search: ssoId, result: TOO_MANY_USERS_ERROR + ssoId } });
   });
 
-  test('Should render the manage users page with error when searching with empty input', async () => {
+  test('Should render the manage user page with error when searching with empty input', async () => {
     req.body.search = '';
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { error: { search: { message: MISSING_INPUT_ERROR } } });
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: MISSING_INPUT_ERROR } } });
   });
 
-  test('Should render the manage users page with error when searching with email with invalid format', async () => {
+  test('Should render the manage user page with error when searching with email with invalid format', async () => {
     req.body.search = 'test@test';
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-users', { error: { search: { message: INVALID_EMAIL_FORMAT_ERROR } }});
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: INVALID_EMAIL_FORMAT_ERROR } }});
   });
 });

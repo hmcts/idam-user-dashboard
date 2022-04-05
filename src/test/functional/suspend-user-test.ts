@@ -21,8 +21,8 @@ Scenario('I as a user should be able to suspend and un-suspend user',
     const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
     await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -38,7 +38,7 @@ Scenario('I as a user should be able to suspend and un-suspend user',
     I.waitForText(suspendUserEmail);
     I.click('Return to main menu');
 
-    I.click('Manage existing users');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -58,8 +58,8 @@ Scenario('I as a user should be able to suspend and un-suspend user',
     I.waitForText('Your account has been blocked. Contact us to get help signing in.');
 
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -80,8 +80,8 @@ Scenario('I as a user should be able to suspend and un-suspend user',
 
     I.click('Sign out');
     I.loginAs(suspendUserEmail, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -98,8 +98,8 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
     await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -127,8 +127,8 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     const user = await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
     await I.suspendUser(user.id, suspendUserEmail);
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');

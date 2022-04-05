@@ -13,7 +13,7 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage users', urls.MANAGER_USERS_URL],
+    ['Manage user', urls.MANAGER_USER_URL],
     ['User details']
   ]) }}
 {% endblock %}
@@ -162,6 +162,6 @@
 
   {{ govukBackLink({
     text: "Return to search",
-    href: urls.MANAGER_USERS_URL
+    href: urls.MANAGER_USER_URL
   }) }}
 {% endblock %}

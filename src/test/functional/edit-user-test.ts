@@ -22,8 +22,8 @@ Scenario('I as a user should be able to edit and update the user-details success
     const activeUser = await I.getUserDetails(activeUserEmail);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -31,9 +31,8 @@ Scenario('I as a user should be able to edit and update the user-details success
     I.click('Search');
     I.waitForText('User Details');
     I.click('Edit user');
-    I.waitForText('Edit Users');
+    I.waitForText('Edit User');
 
-    I.dontSee('Edit user');
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
 
@@ -84,8 +83,8 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -93,7 +92,7 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
     I.click('Search');
     I.waitForText('User Details');
     I.click('Edit user');
-    I.waitForText('Edit Users');
+    I.waitForText('Edit User');
 
     I.fillField('#email', current.incorrectEmailAddress);
     I.click('Save');
@@ -109,8 +108,8 @@ Scenario('I as a user should see proper error message when mandatory fields left
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -118,7 +117,7 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.click('Search');
     I.waitForText('User Details');
     I.click('Edit user');
-    I.waitForText('Edit Users');
+    I.waitForText('Edit User');
 
     I.clearField('#forename');
     I.clearField('#surname');
@@ -148,8 +147,8 @@ Scenario('I as a user should see proper error message when no changes were made 
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
     I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -157,7 +156,7 @@ Scenario('I as a user should see proper error message when no changes were made 
     I.click('Search');
     I.waitForText('User Details');
     I.click('Edit user');
-    I.waitForText('Edit Users');
+    I.waitForText('Edit User');
     I.click('Save');
     I.waitForText('There is a problem');
     I.waitForText('No changes to the user were made');

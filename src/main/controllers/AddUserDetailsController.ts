@@ -77,7 +77,7 @@ export class AddUserDetailsController extends RootController {
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'add-users', { error: {
+    return super.post(req, res, 'add-user', { error: {
       email: { message: errorMessage }
     }});
   }
