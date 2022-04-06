@@ -40,6 +40,7 @@ describe('User results controller', () => {
       }
     ];
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -85,6 +86,7 @@ describe('User results controller', () => {
       }
     ];
     when(mockApi.getUserById).calledWith(ssoId).mockRejectedValue('');
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
     when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockResolvedValue(results);
 
     req.body.search = ssoId;
