@@ -39,7 +39,8 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(results);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -49,27 +50,25 @@ describe('User results controller', () => {
   });
 
   test('Should render the user details page when searching with a valid user ID', async () => {
-    const results = [
-      {
-        id: userId,
-        forename: 'John',
-        surname: 'Smith',
-        email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
-        ssoId: ssoId,
-        createDate: '',
-        lastModified: ''
-      }
-    ];
-    when(mockApi.getUserById).calledWith(userId).mockReturnValue(results);
-    when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
+    const results = {
+      id: userId,
+      forename: 'John',
+      surname: 'Smith',
+      email: email,
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+      ssoId: ssoId,
+      createDate: '',
+      lastModified: ''
+    };
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results);
+    when(mockApi.searchUsersBySsoId).calledWith(userId).mockResolvedValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results, showDelete: false } });
   });
 
   test('Should render the user details page when searching with a valid SSO ID', async () => {
@@ -86,8 +85,9 @@ describe('User results controller', () => {
         lastModified: ''
       }
     ];
-    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue([]);
-    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockReturnValue(results);
+    when(mockApi.getUserById).calledWith(ssoId).mockRejectedValue('');
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockResolvedValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
@@ -106,8 +106,8 @@ describe('User results controller', () => {
   });
 
   test('Should render the manage user page when searching with a non-existent ID', async () => {
-    when(mockApi.getUserById).calledWith(userId).mockReturnValue(Promise.reject('Not found'));
-    when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
+    when(mockApi.getUserById).calledWith(userId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(userId).mockResolvedValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
@@ -136,7 +136,7 @@ describe('User results controller', () => {
         ssoId: userId
       }
     ];
-    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(results);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -165,8 +165,8 @@ describe('User results controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue(Promise.reject('Not found'));
-    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockReturnValue(results);
+    when(mockApi.getUserById).calledWith(ssoId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockResolvedValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;

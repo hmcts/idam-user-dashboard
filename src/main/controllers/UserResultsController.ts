@@ -25,7 +25,8 @@ export class UserResultsController extends RootController {
 
     if (users) {
       if (users.length === 1) {
-        const user = users[0];
+        const user = await req.scope.cradle.api.getUserById(users[0].id);
+
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
           content: { user, showDelete: this.canDeleteUser(req.session.user, user)}
