@@ -16,6 +16,7 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   assignRolesToParentRole = TestingSupportAPI.assignRolesToParentRole
   extractUrlFromNotifyEmail = TestingSupportAPI.extractUrlFromNotifyEmail
   activateUserAccount = TestingSupportAPI.activateUserAccount
+  getOIDCToken = TestingSupportAPI.getOIDCToken
 }
 
 export = TestingSupportApi;
