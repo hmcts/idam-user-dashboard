@@ -22,10 +22,14 @@ import {
   USER_UPDATE_NO_CHANGE_ERROR
 } from '../utils/error';
 import { PageError } from '../interfaces/PageData';
-import { constructUserRoleAssignments, determineUserNonAssignableRoles } from '../utils/roleUtils';
+import {
+  constructUserRoleAssignments,
+  determineUserNonAssignableRoles,
+  IDAM_MFA_DISABLED,
+  processMfaRole
+} from '../utils/roleUtils';
 import { RoleDefinition } from '../interfaces/RoleDefinition';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
-
 
 @autobind
 export class UserEditController extends RootController {
@@ -35,32 +39,38 @@ export class UserEditController extends RootController {
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.session.user.assignableRoles, user.roles);
+        processMfaRole(user);
 
         if(req.body._action === 'save') {
           return this.saveUser(req, res, user, roleAssignments);
         }
 
-        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments } });
+        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: this.canShowMfa(req.session.user.assignableRoles) } });
       });
   }
 
   private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
     const {_action, _csrf, _userId, ...editedUser} = req.body;
 
-    const {roles: originalRoles, ...originalFields} = user;
-    const {roles: editedRoles, ...editedFields} = editedUser as Partial<User>;
+    const {roles: originalRoles, multiFactorAuthentication: originalMfa, ...originalFields} = user;
+    const {roles: editedRoles, multiFactorAuthentication: editedMfa, ...editedFields} = editedUser as Partial<User>;
 
-    const newRoleList = this.getUserRolesAfterUpdate(req, originalRoles, editedRoles);
-    const rolesAdded = findDifferentElements(newRoleList, originalRoles);
-    const rolesRemoved = findDifferentElements(originalRoles, newRoleList);
-    const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0;
+    const originalRolesWithMfaRemoved = originalRoles.filter(r => r !== IDAM_MFA_DISABLED);
+    const newRoleList = this.getUserRolesAfterUpdate(req, originalRolesWithMfaRemoved, editedRoles);
+    const rolesAdded = findDifferentElements(newRoleList, originalRolesWithMfaRemoved);
+    const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
+    const mfaAssignable = this.canShowMfa(req.session.user.assignableRoles);
+    const mfaAdded = mfaAssignable && !originalMfa && typeof editedMfa !== 'undefined';
+    const mfaRemoved = mfaAssignable && originalMfa && typeof editedMfa === 'undefined';
+
+    const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved;
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
     // No changes
     if (isObjectEmpty(changedFields) && !rolesChanged) {
       const error = { userEditForm: { message: USER_UPDATE_NO_CHANGE_ERROR }};
-      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments },
+      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: mfaAssignable },
         error: error });
     }
 
@@ -71,13 +81,14 @@ export class UserEditController extends RootController {
     if (!isObjectEmpty(error)) {
       return super.post(req, res, 'edit-user', { content: {
         user: {...user, ...changedFields},
-        roles: roleAssignments
+        roles: roleAssignments,
+        showMfa: mfaAssignable
       },
       error });
     }
 
     try {
-      let updatedUser = { ...originalFields, roles: originalRoles };
+      let updatedUser = { ...originalFields, roles: originalRolesWithMfaRemoved, multiFactorAuthentication: originalMfa };
       if (!isObjectEmpty(changedFields)) {
         updatedUser = {
           ...updatedUser,
@@ -86,14 +97,15 @@ export class UserEditController extends RootController {
       }
 
       if (rolesChanged) {
-        updatedUser = { ...updatedUser, roles: newRoleList };
-        await this.updateUserRoles(req, user, rolesAdded, rolesRemoved);
+        const updatedMfa = (user.multiFactorAuthentication && !mfaRemoved) || (!user.multiFactorAuthentication && mfaAdded);
+        updatedUser = { ...updatedUser, roles: newRoleList, multiFactorAuthentication: updatedMfa };
+        await this.updateUserRoles(req, user, rolesAdded, rolesRemoved, mfaAdded, mfaRemoved);
         roleAssignments = await this.reconstructRoleAssignments(req, _userId, newRoleList);
       }
-      return super.post(req, res, 'edit-user', { content: { user: updatedUser, roles: roleAssignments, notification: 'User saved successfully'}});
+      return super.post(req, res, 'edit-user', { content: { user: updatedUser, roles: roleAssignments, showMfa: mfaAssignable, notification: 'User saved successfully'}});
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
-      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments },
+      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: mfaAssignable },
         error });
     }
   }
@@ -133,13 +145,21 @@ export class UserEditController extends RootController {
     return roleDefinitions;
   }
 
-  private async updateUserRoles(req: AuthedRequest, user: User, rolesAdded: string[], rolesRemoved: string[]) {
+  private async updateUserRoles(req: AuthedRequest, user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean) {
     if (rolesAdded.length > 0) {
       await req.scope.cradle.api.grantRolesToUser(user.id, this.convertRolesToDefinitions(rolesAdded));
     }
 
     for (const r of rolesRemoved) {
       await req.scope.cradle.api.removeRoleFromUser(user.id, r);
+    }
+
+    if (!user.multiFactorAuthentication && mfaAdded) {
+      await req.scope.cradle.api.removeRoleFromUser(user.id, IDAM_MFA_DISABLED);
+    }
+
+    if (user.multiFactorAuthentication && mfaRemoved) {
+      await req.scope.cradle.api.grantRolesToUser(user.id, this.convertRolesToDefinitions(convertToArray(IDAM_MFA_DISABLED)));
     }
   }
 
@@ -151,5 +171,9 @@ export class UserEditController extends RootController {
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
     return constructUserRoleAssignments(req.session.user.assignableRoles, newRoles);
+  }
+
+  private canShowMfa(assignableRoles: string[]) {
+    return assignableRoles.includes(IDAM_MFA_DISABLED);
   }
 }

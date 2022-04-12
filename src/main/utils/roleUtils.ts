@@ -1,5 +1,8 @@
 import { Role } from '../interfaces/Role';
-import {UserRoleAssignment} from '../interfaces/UserRoleAssignment';
+import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
+import { User } from '../interfaces/User';
+
+export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
 
 const sortRolesByName = (a: string, b: string): number => {
   return a < b ? -1 : a > b ? 1 : 0;
@@ -48,4 +51,12 @@ export const constructUserRoleAssignments = (assignableRoles: string[], assigned
 export const determineUserNonAssignableRoles = (assignableRoles: string[], assignedRoles: string[]): string[] => {
   const nonAssignableRoles = assignedRoles.filter(r => !assignableRoles.includes(r));
   return nonAssignableRoles;
+};
+
+export const processMfaRole = (user: User) => {
+  // Set a specific field using the idam-mfa-disabled role and remove that role from the role list
+  user.multiFactorAuthentication = !user.roles.includes(IDAM_MFA_DISABLED);
+  if (!user.multiFactorAuthentication) {
+    user.roles = user.roles.filter(r => r !== IDAM_MFA_DISABLED);
+  }
 };

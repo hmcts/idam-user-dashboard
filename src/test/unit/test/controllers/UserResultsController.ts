@@ -36,9 +36,13 @@ describe('User results controller', () => {
         email: email,
         active: true,
         roles: ['IDAM_SUPER_USER'],
-        ssoId: ssoId
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
       }
     ];
+
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
     when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
 
@@ -50,25 +54,29 @@ describe('User results controller', () => {
   });
 
   test('Should render the user details page when searching with a valid user ID', async () => {
-    const results = {
-      id: userId,
-      forename: 'John',
-      surname: 'Smith',
-      email: email,
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-      ssoId: ssoId,
-      createDate: '',
-      lastModified: ''
-    };
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results);
-    when(mockApi.searchUsersBySsoId).calledWith(userId).mockResolvedValue([]);
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    when(mockApi.getUserById).calledWith(userId).mockReturnValue(results[0]);
+    when(mockApi.searchUsersBySsoId).calledWith(userId).mockReturnValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results, showDelete: false } });
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
   });
 
   test('Should render the user details page when searching with a valid SSO ID', async () => {
@@ -80,20 +88,60 @@ describe('User results controller', () => {
         email: email,
         active: true,
         roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
         ssoId: ssoId,
         createDate: '',
         lastModified: ''
       }
     ];
-    when(mockApi.getUserById).calledWith(ssoId).mockRejectedValue('');
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
-    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockResolvedValue(results);
+
+    when(mockApi.getUserById).calledWith(ssoId).mockReturnValue([]);
+    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockReturnValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
+  });
+
+  test('Should render the user details page when searching for a user with idam-mfa-disabled role', async () => {
+    const users = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled'],
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    const expectedResults = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: false,
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(users);
+    when(mockApi.getUserById).calledWith(userId).mockReturnValue(users[0]);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', { content: { user: expectedResults[0], showDelete: false } });
   });
 
   test('Should render the manage user page when searching with a non-existent email', async () => {
