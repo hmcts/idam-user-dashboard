@@ -230,6 +230,7 @@ describe('IdamAPI', () => {
         { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
         { id: '2', name: 'test-role-2', assignableRoles: [] },
         { id: '3', name: 'test-role-3' },
+        undefined as unknown as Role
       ];
 
       const mockAxios = {get: async () => jest.fn()} as any;
