@@ -50,8 +50,6 @@ export class IdamAPI {
       });
   }
 
-
-
   public editUserById(id: string, fields: Partial<User>): Promise<User> {
     return this.userAxios
       .patch('/api/v1/users/' + id, fields)
