@@ -7,10 +7,14 @@
 
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  Un-suspended User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
  {{ super() }}
  {{ breadcrumb([
-   ['Manage users', urls.MANAGER_USERS_URL],
+   ['Manage user', urls.MANAGER_USER_URL],
    ['Un-suspend user']
  ]) }}
 {% endblock %}

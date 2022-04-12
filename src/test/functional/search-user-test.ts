@@ -5,16 +5,16 @@ import {createUserWithRoles, createUserWithSsoId} from './shared/testingSupportA
 
 Feature('Search User');
 
-const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-const citizenUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-const conflictUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
+const CITIZEN_USER_EMAIL = randomData.getRandomEmailAddress();
+const CONFLICT_USER_EMAIL = randomData.getRandomEmailAddress();
 let citizenUser;
 let conflictUser;
 
 BeforeSuite(async () => {
-  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
-  citizenUser = await createUserWithSsoId(citizenUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(10));
-  conflictUser = await createUserWithSsoId(conflictUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], citizenUser.id);
+  await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
+  citizenUser = await createUserWithSsoId(CITIZEN_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
+  conflictUser = await createUserWithSsoId(CONFLICT_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], citizenUser.id);
 });
 
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
@@ -23,9 +23,9 @@ incorrectEmailAddresses.add(['email@']);
 incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format', async ({I, current}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -35,14 +35,14 @@ Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper
   I.waitForText('The email address is not in the correct format');
 });
 
-Scenario('@CrossBrowser I should be able to search with user-email', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+Scenario('I should be able to search with user-email', async ({I}) => {
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
-  I.fillField('#search', citizenUserEmail);
+  I.fillField('#search', CITIZEN_USER_EMAIL);
   I.click('Search');
   I.waitForText('User Details');
 
@@ -50,7 +50,7 @@ Scenario('@CrossBrowser I should be able to search with user-email', async ({I})
   Assert.equal(status.trim(), 'Active');
 
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), citizenUserEmail);
+  Assert.equal(email.trim(), CITIZEN_USER_EMAIL);
 
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
@@ -60,12 +60,12 @@ Scenario('@CrossBrowser I should be able to search with user-email', async ({I})
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
-Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+Scenario('I should be able to search with user-id', async ({I}) => {
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -77,7 +77,7 @@ Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) =>
   Assert.equal(status.trim(), 'Active');
 
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), citizenUserEmail);
+  Assert.equal(email.trim(), CITIZEN_USER_EMAIL);
 
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
@@ -87,12 +87,12 @@ Scenario('@CrossBrowser I should be able to search with user-id', async ({I}) =>
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
-Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+Scenario('I should be able to search with sso-id', async ({I}) => {
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -104,7 +104,7 @@ Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => 
   Assert.equal(status.trim(), 'Active');
 
   const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), citizenUserEmail);
+  Assert.equal(email.trim(), CITIZEN_USER_EMAIL);
 
   const firstName = await I.grabTextFrom('#first-name');
   Assert.equal(firstName.trim(), testConfig.USER_FIRSTNAME);
@@ -114,12 +114,12 @@ Scenario('@CrossBrowser I should be able to search with sso-id', async ({I}) => 
 
   const assignedRoles = await I.grabTextFrom('#assigned-roles');
   Assert.equal(assignedRoles.trim(), testConfig.USER_ROLE_CITIZEN);
-});
+}).tag('@CrossBrowser');
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -132,21 +132,24 @@ Scenario('When there is a collision between user-id and sso-id, user details sho
 });
 
 Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  I.click('#search');
+  I.click('Search');
+  I.seeElement('#search-error');
+  I.waitForText('You must enter an email address');
+  I.fillField('#search', ' ');
   I.click('Search');
   I.seeElement('#search-error');
   I.waitForText('You must enter an email address');
 });
 
 Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');

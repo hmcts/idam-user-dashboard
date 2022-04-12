@@ -1,3 +1,5 @@
+import {config as testConfig} from '../../config';
+
 export const randomString = (length = 10) => {
   return Math.random().toString(36).substring(2, length);
 };
@@ -12,8 +14,10 @@ export const randomAlphabeticString = (length = 10) => {
   return randomString;
 };
 
-export const randomData= {
+export const randomData = {
   getRandomString: randomString,
   getRandomAlphabeticString: randomAlphabeticString,
-  getRandomEmailAddress: () => randomString() + '@idam.test',
+  getRandomEmailAddress: () => testConfig.TEST_SUITE_PREFIX + randomString() + '@idam.test',
+  getRandomRole: () => testConfig.TEST_SUITE_PREFIX + randomString(10),
+  getRandomSSOId: () => randomString(10)
 };

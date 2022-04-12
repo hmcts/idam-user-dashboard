@@ -1,21 +1,28 @@
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/errorSummary.njk" import errorSummary %}
+{% from "macros/roleList.njk" import roleList %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% extends "template.njk" %}
+
+{% block pageTitle %}
+  Edit User - IDAM User Dashboard - GOV.UK
+{% endblock %}
 
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage users', urls.MANAGER_USERS_URL],
-    ['Edit User']
+    ['Manage user', urls.MANAGER_USER_URL],
+    ['Edit user']
   ]) }}
 {% endblock %}
 
@@ -35,12 +42,12 @@
     }) if content.notification }}
 
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Edit Users</h1>
+      <h1 class="govuk-heading-l">Edit User</h1>
     </div>
     <form id="userEditForm" method="POST" action="{{ urls.EDIT_USER_URL }}">
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
-      <div class="govuk-grid-column-one-half">
+      <div class="govuk-grid-column-one-half govuk-!-margin-bottom-5">
         <h3 class="govuk-heading-s">General</h3>
 
         {% call govukFieldset({
@@ -65,6 +72,48 @@
           name: "email",
           id: "email",
           value: content.user.email
+        }) }}
+      </div>
+
+      {% set displayedRoles = [] %}
+      {% for role in content.roles %}
+        {% if role.name !== 'idam-mfa-disabled' %}
+          {% set displayedRoles = (displayedRoles.push(role), displayedRoles) %}
+        {% endif %}
+      {% endfor %}
+
+      <div class="govuk-grid-column-full">
+        <h3 class="govuk-heading-s">Assigned roles</h3>
+        {{ roleList({
+          roles: displayedRoles,
+          name: 'roles',
+          list: {
+            classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+          }
+        }) }}
+      </div>
+
+      <div class="govuk-grid-column-full">
+        <h3 class="govuk-heading-s">Multi-factor authentication</h3>
+
+        {% if content.showMfa and content.user.multiFactorAuthentication %}
+          {{ govukInsetText({
+            text: "Warning: only disable MFA for a user if they have a justice.gov.uk or hmcts.net email address. Contact the information security team if you want to make an exception."
+          }) }}
+        {% endif %}
+
+        {{ govukCheckboxes({
+          idPrefix: "multiFactorAuthentication",
+          name: "multiFactorAuthentication",
+          classes: "govuk-checkboxes--small",
+          items: [
+            {
+              value: 'enabled',
+              text: 'Enabled',
+              checked: content.user.multiFactorAuthentication,
+              disabled: not content.showMfa
+            }
+          ]
         }) }}
 
         <div class="govuk-button-group">

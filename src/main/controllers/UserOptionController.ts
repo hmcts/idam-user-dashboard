@@ -2,7 +2,7 @@ import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
 import { hasProperty } from '../utils/utils';
 import { MISSING_OPTION_ERROR } from '../utils/error';
-import { ADD_USERS_URL, MANAGER_USERS_URL } from '../utils/urls';
+import { ADD_USER_URL, MANAGER_USER_URL } from '../utils/urls';
 import { RootController } from './RootController';
 import autobind from 'autobind-decorator';
 
@@ -20,9 +20,9 @@ export class UserOptionController extends RootController {
     }
 
     const userAction = req.body.userAction as string;
-    if (userAction === 'manage-users') {
-      return res.redirect(MANAGER_USERS_URL);
+    if (userAction === 'manage-user') {
+      return res.redirect(MANAGER_USER_URL);
     }
-    return res.redirect(ADD_USERS_URL);
+    return res.redirect(ADD_USER_URL);
   }
 }

@@ -1,33 +1,36 @@
 import {
-  getUserDetails,
-  createUserWithSsoId,
-  createUserWithRoles,
-  suspendUser,
-  retireStaleUser,
-  deleteStaleUser
+  assignRolesToParentRole,
+  createAssignableRoles,
+  createUserWithRoles
 } from './shared/testingSupportApi';
-
 import '../../main/utils/utils';
-
-Feature('Manage Existing User');
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {convertISODateTimeToUTCFormat} from '../../main/utils/utils';
 
-const dashboardUserEMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
+Feature('Manage Existing User');
+
+const PARENT_ROLE = randomData.getRandomRole();
+const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
+const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
+
 BeforeSuite(async () => {
-  await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
+  await createAssignableRoles(PARENT_ROLE);
+  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
+  // Assigning self role with the child role so the this user can also delete same level users
+  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
+  await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
 });
 
-Scenario('@CrossBrowser I as a user should be able to see the active status of a user', async ({I}) => {
-  const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomString(5));
+Scenario('I as a user should be able to see the active status of a user', async ({I}) => {
+  const activeUserEmail = randomData.getRandomEmailAddress();
+  await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE], randomData.getRandomSSOId());
   const activeUser = await I.getUserDetails(activeUserEmail);
 
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -58,16 +61,16 @@ Scenario('@CrossBrowser I as a user should be able to see the active status of a
 
   const lastModifiedDate = await I.grabTextFrom('#last-modified');
   Assert.equal(lastModifiedDate.trim(), lastModified);
-});
+}).tag('@CrossBrowser');
 
 Scenario('I as a user should be able to see the suspended status of a user', async ({I}) => {
-  const suspendUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  const user = await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+  const suspendUserEmail = randomData.getRandomEmailAddress();
+  const user = await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
   await I.suspendUser(user.id, suspendUserEmail);
 
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -83,19 +86,22 @@ Scenario('I as a user should be able to see the suspended status of a user', asy
 });
 
 Scenario('I as a user should be able to see the stale status of a user', async ({I}) => {
-  const staleUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-  const user = await I.createUserWithRoles(staleUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
+  const staleUserEmail = randomData.getRandomEmailAddress();
+  const user = await I.createUserWithRoles(staleUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
   await I.retireStaleUser(user.id);
 
-  await I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  await I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
   I.fillField('#search', staleUserEmail);
   I.click('Search');
   I.waitForText('User Details');
+  I.dontSee('Edit user');
+  I.dontSee('Delete user');
+  I.dontSee('Suspend user');
 
   const email = await I.grabTextFrom('#email');
   Assert.equal(email.trim(), staleUserEmail);

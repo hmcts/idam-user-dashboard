@@ -7,10 +7,14 @@
 
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  Add User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Add user email']
+    ['Add user']
   ]) }}
 {% endblock %}
 
@@ -19,7 +23,7 @@
     <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
       <h1 class="govuk-heading-l">Add a new user</h1>
-      <form method="POST" action="{{ urls.ADD_USER_DETAILS_URL }}">
+      <form id="addUserEmailForm" method="POST" action="{{ urls.ADD_USER_DETAILS_URL }}">
         {{ csrfProtection(csrfToken) }}
 
         {{ govukInput({

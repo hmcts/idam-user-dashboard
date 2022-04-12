@@ -6,6 +6,10 @@
 
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  Add or Manage User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb() }}
@@ -33,13 +37,13 @@
           errorMessage: { text: error.userAction.message } if error.userAction,
           items: [
             {
-              value: "manage-users",
-              text: "Manage existing users"
+              value: "manage-user",
+              text: "Manage an existing user"
             },
             {
-              value: "add-users",
-              text: "Add new users"
-            } if featureFlags['idam-user-dashboard--beta-features']
+              value: "add-user",
+              text: "Add a new user"
+            } if featureFlags.values[featureFlags.flags.BETA_ADD]
           ]
         }) }}
 
