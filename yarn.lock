@@ -2590,10 +2590,10 @@ autobind-decorator@^2.4.0:
   resolved "https://registry.yarnpkg.com/autobind-decorator/-/autobind-decorator-2.4.0.tgz#ea9e1c98708cf3b5b356f7cf9f10f265ff18239c"
   integrity sha512-OGYhWUO72V6DafbF8PM8rm3EPbfuyMZcJhtm5/n26IDwO18pohE4eNazLoCGhPiXOCD0gEGmrbU3849QvM8bbw==
 
-awilix@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/awilix/-/awilix-7.0.0.tgz#5f222f4868cfb26d3e6a2559f653d48d5e4d477f"
-  integrity sha512-Ye4SLwqVfrsHSRRT6OmxvJjmnKryWzvEUdKEgnq/wODkYsV1Yo+L2k0aHEj5WhPyDym17hCRBxJn5whXWhU2Tw==
+awilix@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/awilix/-/awilix-7.0.2.tgz#8dfdfd5f803f148492e94265bea44fd7a8c053cf"
+  integrity sha512-eaI6aIhqVAoLZjCScpkEFz54ALMBgbjX00x45oOCFteye9AFs3Qm9FjbT20uYb3wR1FEEMhXUc1/rh4yVSY23g==
   dependencies:
     camel-case "^4.1.2"
     fast-glob "^3.2.11"
