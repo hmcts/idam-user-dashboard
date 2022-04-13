@@ -11,6 +11,7 @@ import {
 import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
+import { processMfaRole } from '../utils/roleUtils';
 
 @autobind
 export class UserResultsController extends RootController {
@@ -69,6 +70,7 @@ export class UserResultsController extends RootController {
     sortRoles(user.roles);
     user.createDate = convertISODateTimeToUTCFormat(user.createDate);
     user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
+    processMfaRole(user);
   }
 
   private canDeleteUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
