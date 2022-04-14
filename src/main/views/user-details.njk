@@ -99,6 +99,20 @@
     </div>
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
+        Multi-factor authentication
+      </dd>
+      <dd class="govuk-summary-list__value">
+        <p class="govuk-body-m" id="mfa">
+          {% if content.user.multiFactorAuthentication %}
+            <strong class="govuk-tag">Enabled</strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--green">Disabled</strong>
+          {% endif %}
+        </p>
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dd class="govuk-summary-list__key">
         Single sign-on provider
       </dd>
       <dd class="govuk-summary-list__value">
