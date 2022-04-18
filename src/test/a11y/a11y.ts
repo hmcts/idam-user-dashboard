@@ -30,7 +30,7 @@ const ASSIGNABLE_CHILD_ROLE = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRa
 const INDEPENDENT_CHILD_ROLE = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString();
 const PARENT_ROLE_EMAIL = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString() + '@idam.test';
 const CHILD_ROLE_EMAIL = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString() + '@idam.test';
-const NON_EXISTING_USER_EMAIL = 'nonExistingUSer@idam.test'
+const NON_EXISTING_USER_EMAIL = 'nonExistingUSer@idam.test';
 
 const postData = new Map<string, string>([
   [USER_DETAILS_URL, `{"search": "${CHILD_ROLE_EMAIL}"}`],
