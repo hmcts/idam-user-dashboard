@@ -1,19 +1,24 @@
 import fs from 'fs';
-import config from 'config';
 import Axios from 'axios';
 import puppeteer from 'puppeteer';
 import {randomData} from '../functional/shared/random-data';
 import * as urls from '../../main/utils/urls';
 import {config as testConfig} from '../config';
 import {
-  getOIDCToken,
   assignRolesToParentRole,
   createAssignableRoles,
   createUserWithRoles, deleteAllTestData
 } from '../functional/shared/testingSupportApi';
+import {
+  ADD_USER_DETAILS_URL,
+  ADD_USER_ROLES_URL,
+  EDIT_USER_URL,
+  USER_DELETE_URL,
+  USER_DETAILS_URL,
+  USER_SUSPEND_URL
+} from '../../main/utils/urls';
 
-const IGNORED_URLS = [urls.LOGIN_URL, urls.LOGOUT_URL, urls.OAUTH2_CALLBACK_URL, urls.ADD_USER_DETAILS_URL,
-  urls.ADD_USER_ROLES_URL, urls.ADD_USER_COMPLETION_URL, urls.USER_ACTIONS_URL, urls.EDIT_USER_URL, urls.USER_SUSPEND_URL, urls.USER_DELETE_URL];
+const IGNORED_URLS = [urls.LOGIN_URL, urls.LOGOUT_URL, urls.OAUTH2_CALLBACK_URL, urls.ADD_USER_COMPLETION_URL, urls.USER_ACTIONS_URL];
 
 const pa11y = require('pa11y');
 const axios = Axios.create({baseURL: testConfig.TEST_URL});
@@ -25,6 +30,16 @@ const ASSIGNABLE_CHILD_ROLE = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRa
 const INDEPENDENT_CHILD_ROLE = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString();
 const PARENT_ROLE_EMAIL = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString() + '@idam.test';
 const CHILD_ROLE_EMAIL = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString() + '@idam.test';
+const NON_EXISTING_USER_EMAIL = 'nonExistingUSer@idam.test'
+
+const postData = new Map<string, string>([
+  [USER_DETAILS_URL, `{"search": "${CHILD_ROLE_EMAIL}"}`],
+  [EDIT_USER_URL, `{"_action": "edit", "_userId": "${CHILD_ROLE_EMAIL}"}`],
+  [USER_SUSPEND_URL, `{"_action": "suspend", "_userId": "${CHILD_ROLE_EMAIL}"}`],
+  [USER_DELETE_URL, `{"_action": "delete", "_userId": "${CHILD_ROLE_EMAIL}"}`],
+  [ADD_USER_DETAILS_URL, `{"email": "${NON_EXISTING_USER_EMAIL}"}`],
+  [ADD_USER_ROLES_URL, '']
+]);
 
 interface Pa11yResult {
   documentTitle: string;
@@ -53,22 +68,20 @@ function runPally(url: string, browser: any): Promise<Pa11yResult> {
     fs.mkdirSync(screenshotDir, {recursive: true});
     screenCapture = `${screenshotDir}/${url.replace(/^\/$/, 'home').replace('/', '')}.png`;
   }
-  if (url == urls.USER_DETAILS_URL) {
-    const fullUrl = `${testConfig.TEST_URL}${urls.USER_DETAILS_URL}`;
-    return pa11y(fullUrl, {
-      browser,
-      headers: {'Authorization': 'Bearer ' + getOIDCToken()},
-      url: `${config.get('services.idam.url.api')}/api/v1/users?query=email:${CHILD_ROLE_EMAIL}`,
-      method: 'GET',
-    });
-  } else {
-    const fullUrl = `${testConfig.TEST_URL}${url}`;
-    return pa11y(fullUrl, {
-      browser,
-      screenCapture,
-      hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
-    });
-  }
+
+  const options = postData.has(url) ? {
+    headers: { 'Content-Type': 'application/json' },
+    browser,
+    screenCapture,
+    hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+    method: 'POST',
+    postData: postData.get(url)
+  } : {
+    browser,
+    screenCapture,
+    hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+  };
+  return pa11y(`${testConfig.TEST_URL}${url}`, options);
 }
 
 function expectNoErrors(messages: PallyIssue[]): void {
@@ -131,12 +144,7 @@ describe('Accessibility', () => {
     }
     await deleteAllTestData(ACCESSIBILITY_TEST_SUITE_PREFIX);
   });
-  test('should have no accessibility errors', async () => {
-    await ensurePageCallWillSucceed('/');
-    const result = await runPally('/', browser);
-    expect(result.issues).toEqual(expect.any(Array));
-    expectNoErrors(result.issues);
-  });
+
   const urlsNoSignOut = Object.values(urls).filter(url => !IGNORED_URLS.includes(url));
   describe.each(urlsNoSignOut)('Page %s', url => {
     test('should have no accessibility errors', async () => {
