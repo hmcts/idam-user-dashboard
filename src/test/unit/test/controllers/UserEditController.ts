@@ -47,7 +47,7 @@ describe('User edit controller', () => {
     await controller.post(req, res);
 
     expect(mockApi.getUserById).toBeCalledWith(postData._userId);
-    expect(res.render).toBeCalledWith('edit-user', { content: { user: apiData, roles: expectedRoleAssignments } });
+    expect(res.render).toBeCalledWith('edit-user', { content: { user: apiData, roles: expectedRoleAssignments, showMfa: false } });
   });
 
   test('Should render the edit user page after saving when user fields changed', async () => {
@@ -76,7 +76,8 @@ describe('User edit controller', () => {
       surname: postData.surname,
       email: postData.email,
       active: true,
-      roles: ['IDAM_SUPER_USER']
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
     };
 
     when(mockApi.getUserById).calledWith(postData._userId).mockReturnValue(Promise.resolve(originalUserApiData));
@@ -97,7 +98,7 @@ describe('User edit controller', () => {
     expect(mockApi.getUserById).toBeCalledWith(postData._userId);
     expect(mockApi.editUserById).toBeCalledWith(postData._userId, { forename: postData.forename });
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: updatedUserApiData, roles: expectedRoleAssignments, 'notification': 'User saved successfully' }
+      content:  { user: updatedUserApiData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
     });
   });
 
@@ -133,7 +134,8 @@ describe('User edit controller', () => {
       surname: originalUserData.surname,
       email: originalUserData.email,
       active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
     };
 
     const expectedRoleAssignments = [
@@ -150,7 +152,7 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, 'notification': 'User saved successfully' }
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
     });
   });
 
@@ -185,7 +187,8 @@ describe('User edit controller', () => {
       surname: originalUserData.surname,
       email: originalUserData.email,
       active: true,
-      roles: ['IDAM_SUPER_USER']
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
     };
 
     const expectedRoleAssignments = [
@@ -202,7 +205,7 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, 'notification': 'User saved successfully' }
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
     });
   });
 
@@ -239,7 +242,8 @@ describe('User edit controller', () => {
       surname: originalUserData.surname,
       email: originalUserData.email,
       active: true,
-      roles: ['IDAM_TEST_USER', 'IDAM_SUPER_USER']
+      roles: ['IDAM_TEST_USER', 'IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
     };
 
     const expectedRoleAssignments = [
@@ -261,7 +265,7 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, 'notification': 'User saved successfully' }
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
     });
   });
 
@@ -298,7 +302,8 @@ describe('User edit controller', () => {
       surname: originalUserData.surname,
       email: originalUserData.email,
       active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
     };
 
     const expectedRoleAssignments = [
@@ -320,7 +325,7 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, 'notification': 'User saved successfully' }
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
     });
   });
 
@@ -364,14 +369,14 @@ describe('User edit controller', () => {
     expect(mockApi.editUserById).toBeCalledWith(postData._userId, { forename: postData.forename });
     expect(mockApi.grantRolesToUser).toBeCalledWith(postData._userId, [{name: 'IDAM_ADMIN_USER'}]);
 
-
     const expectedUserData = {
       id: postData.id,
       forename: postData.forename,
       surname: postData.surname,
       email: postData.email,
       active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
     };
 
     const expectedRoleAssignments = [
@@ -388,7 +393,175 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, 'notification': 'User saved successfully' }
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+    });
+  });
+
+  test('Should render the edit user page after saving when user mfa enabled', async () => {
+    const originalUserData = {
+      id: '7',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@local.test',
+      active: true,
+      roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
+    };
+
+    const updatedUserData = {
+      id: '7',
+      forename: originalUserData.forename,
+      surname: originalUserData.surname,
+      email: originalUserData.email,
+      multiFactorAuthentication: 'enabled'
+    };
+
+    when(mockApi.getUserById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
+    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
+    req.session = { user: { assignableRoles: ['idam-mfa-disabled'] } };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
+    expect(mockApi.removeRoleFromUser).toBeCalledWith(originalUserData.id, 'idam-mfa-disabled');
+
+    const expectedUserData = {
+      id: originalUserData.id,
+      forename: originalUserData.forename,
+      surname: originalUserData.surname,
+      email: originalUserData.email,
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
+    };
+
+    const expectedRoleAssignments = [
+      {
+        name: 'idam-mfa-disabled',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+    expect(res.render).toBeCalledWith('edit-user', {
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
+    });
+  });
+
+  test('Should render the edit user page after saving when user mfa disabled', async () => {
+    const originalUserData = {
+      id: '7',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@local.test',
+      active: true,
+      roles: ['IDAM_SUPER_USER']
+    };
+
+    const updatedUserData = {
+      id: '7',
+      forename: originalUserData.forename,
+      surname: originalUserData.surname,
+      email: originalUserData.email
+    };
+
+    when(mockApi.getUserById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
+    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
+    req.session = { user: { assignableRoles: ['idam-mfa-disabled'] } };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
+    expect(mockApi.grantRolesToUser).toBeCalledWith(originalUserData.id, [{name: 'idam-mfa-disabled'}]);
+
+    const expectedUserData = {
+      id: originalUserData.id,
+      forename: originalUserData.forename,
+      surname: originalUserData.surname,
+      email: originalUserData.email,
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: false
+    };
+
+    const expectedRoleAssignments = [
+      {
+        name: 'idam-mfa-disabled',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+    expect(res.render).toBeCalledWith('edit-user', {
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
+    });
+  });
+
+  test('Should render the edit user page after saving when user mfa enabled and a role added', async () => {
+    const originalUserData = {
+      id: '7',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@local.test',
+      active: true,
+      roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
+    };
+
+    const updatedUserData = {
+      id: '7',
+      forename: originalUserData.forename,
+      surname: originalUserData.surname,
+      email: originalUserData.email,
+      roles: ['IDAM_ADMIN_USER'],
+      multiFactorAuthentication: 'enabled'
+    };
+
+    when(mockApi.getUserById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
+    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
+    req.session = { user: { assignableRoles: ['IDAM_ADMIN_USER', 'idam-mfa-disabled'] } };
+
+    await controller.post(req, res);
+    expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
+    expect(mockApi.grantRolesToUser).toBeCalledWith(originalUserData.id, [{name: 'IDAM_ADMIN_USER'}]);
+    expect(mockApi.removeRoleFromUser).toBeCalledWith(originalUserData.id, 'idam-mfa-disabled');
+
+    const expectedUserData = {
+      id: originalUserData.id,
+      forename: originalUserData.forename,
+      surname: originalUserData.surname,
+      email: originalUserData.email,
+      active: true,
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
+      multiFactorAuthentication: true
+    };
+
+    const expectedRoleAssignments = [
+      {
+        name: 'idam-mfa-disabled',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_ADMIN_USER',
+        assignable: true,
+        assigned: true
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+    expect(res.render).toBeCalledWith('edit-user', {
+      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
     });
   });
 
@@ -429,7 +602,7 @@ describe('User edit controller', () => {
 
     expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
     expect(res.render).toBeCalledWith('edit-user', {
-      content: { user: {...originalUserData, ...updatedUserData}, roles: expectedRoleAssignments },
+      content: { user: {...originalUserData, ...updatedUserData}, roles: expectedRoleAssignments, showMfa: false },
       error
     });
   });
@@ -471,7 +644,7 @@ describe('User edit controller', () => {
 
     expect(mockApi.getUserById).toBeCalledWith(originalUserData.id);
     expect(res.render).toBeCalledWith('edit-user', {
-      content: { user: {...originalUserData, ...updatedUserData}, roles: expectedRoleAssignments },
+      content: { user: {...originalUserData, ...updatedUserData}, roles: expectedRoleAssignments, showMfa: false },
       error
     });
   });
@@ -518,7 +691,7 @@ describe('User edit controller', () => {
     expect(mockApi.getUserById).toBeCalledWith(postData._userId);
     expect(mockApi.editUserById).toBeCalledWith(postData._userId, { forename: postData.forename });
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: originalUserApiData, roles: expectedRoleAssignments },
+      content:  { user: originalUserApiData, roles: expectedRoleAssignments, showMfa: false },
       error
     });
   });

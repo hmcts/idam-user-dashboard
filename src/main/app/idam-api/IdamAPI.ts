@@ -50,8 +50,6 @@ export class IdamAPI {
       });
   }
 
-
-
   public editUserById(id: string, fields: Partial<User>): Promise<User> {
     return this.userAxios
       .patch('/api/v1/users/' + id, fields)
@@ -113,11 +111,15 @@ export class IdamAPI {
 
   public async getAssignableRoles(roleNames: string[]) {
     const allRoles = await this.getAllRoles();
-    const rolesMap = new Map(allRoles.map(role => [role.id, role]));
+    const rolesMap = new Map(allRoles
+      .filter(role => role !== undefined)
+      .map(role => [role.id, role])
+    );
 
     const collection: Set<string> = new Set();
     Array.from(rolesMap.values())
-      .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+      .filter(role => roleNames.includes(role.name))
+      .filter(role => Array.isArray(role.assignableRoles))
       .forEach(role => role.assignableRoles
         .forEach(r => collection.add(rolesMap.get(r).name))
       );
