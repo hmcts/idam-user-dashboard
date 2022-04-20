@@ -6,7 +6,7 @@ import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import { BETA_SUSPEND } from '../../main/app/feature-flags/flags';
 
-Feature('Suspend and Un-suspend User');
+Feature('Suspend and Unsuspend User');
 
 const DASHBOARD_USER_EMAIL = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
 
@@ -14,7 +14,7 @@ BeforeSuite(async () => {
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Scenario('I as a user should be able to suspend and un-suspend user',
+Scenario('I as a user should be able to suspend and unsuspend user',
   {featureFlags: [BETA_SUSPEND]},
   async ({I}) => {
 
@@ -66,12 +66,12 @@ Scenario('I as a user should be able to suspend and un-suspend user',
     I.fillField('#search', suspendUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-    I.click('Un-suspend user');
-    I.waitForText('Are you sure you want to un-suspend this user?');
+    I.click('Unsuspend user');
+    I.waitForText('Are you sure you want to unsuspend this user?');
     I.click('Yes');
     I.click('Continue');
-    I.waitForText('User un-suspended successfully');
-    I.waitForText('The following account has been un-suspended:');
+    I.waitForText('User unsuspended successfully');
+    I.waitForText('The following account has been unsuspended:');
     I.waitForText(suspendUserEmail);
     I.click('Return to user details');
 
@@ -119,7 +119,7 @@ Scenario('I as a user should be redirected to user-details page if I select no w
   }
 );
 
-Scenario('I as a user should be redirected to user-details page if I select no when un-suspending a user',
+Scenario('I as a user should be redirected to user-details page if I select no when unsuspending a user',
   {featureFlags: [BETA_SUSPEND]},
   async ({I}) => {
 
@@ -135,8 +135,8 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     I.fillField('#search', suspendUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-    I.click('Un-suspend user');
-    I.waitForText('Are you sure you want to un-suspend this user?');
+    I.click('Unsuspend user');
+    I.waitForText('Are you sure you want to unsuspend this user?');
     I.click('No');
     I.click('Continue');
     I.waitForText('User Details');
@@ -144,6 +144,6 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     const status = await I.grabTextFrom('#status');
     Assert.equal(status.trim(), 'Suspended');
 
-    I.see('Un-suspend user');
+    I.see('Unsuspend user');
   }
 );
