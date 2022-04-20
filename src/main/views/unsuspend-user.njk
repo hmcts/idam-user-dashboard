@@ -7,11 +7,15 @@
 
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  Unsuspend User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
  {{ super() }}
  {{ breadcrumb([
-   ['Manage users', urls.MANAGER_USERS_URL],
-   ['Un-suspend user']
+   ['Manage user', urls.MANAGER_USER_URL],
+   ['Unsuspend user']
  ]) }}
 {% endblock %}
 
@@ -29,13 +33,13 @@
          name: "confirmUnSuspendRadio",
          fieldset: {
            legend: {
-             text: "Are you sure you want to un-suspend " + content.user.forename + " " + content.user.surname + "?",
+             text: "Are you sure you want to unsuspend " + content.user.forename + " " + content.user.surname + "?",
              isPageHeading: true,
              classes: "govuk-fieldset__legend--l"
            }
          },
          hint: {
-           text: "Are you sure you want to un-suspend this user?"
+           text: "Are you sure you want to unsuspend this user?"
          },
          items: [
            { value: true, text: "Yes" },
@@ -44,7 +48,7 @@
        }) }}
 
        <div class="govuk-button-group">
-         {{ govukButton({ text: "Continue", name: "_action", value: "confirm-un-suspend", classes: "govuk-button" }) }}
+         {{ govukButton({ text: "Continue", name: "_action", value: "confirm-unsuspend", classes: "govuk-button" }) }}
        </div>
      </div>
    </form>

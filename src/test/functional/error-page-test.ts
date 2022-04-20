@@ -11,7 +11,7 @@ BeforeSuite(async () => {
 
 Before(async ({I}) => {
   I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
+  I.waitForText('Manage an existing user');
 });
 
 Scenario('I as a system owner should be able to see Status code: 404 error code if page not exists', async ({I}) => {

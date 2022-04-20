@@ -39,10 +39,10 @@ export class UserSuspendController extends RootController{
               content: { user },
               error: this.validateFields(req.body)
             });
-          case 'un-suspend':
-            return super.post(req, res, 'un-suspend-user', { content: { user } });
-          case 'confirm-un-suspend':
-            return super.post(req, res, 'un-suspend-user', {
+          case 'unsuspend':
+            return super.post(req, res, 'unsuspend-user', { content: { user } });
+          case 'confirm-unsuspend':
+            return super.post(req, res, 'unsuspend-user', {
               content: { user },
               error: this.validateFields(req.body)
             });
@@ -64,18 +64,18 @@ export class UserSuspendController extends RootController{
   private unSuspendUser(req: AuthedRequest, res: Response, user: User) {
     return req.scope.cradle.api.editUserById(user.id, { active: true })
       .then(() => {
-        return super.post(req, res, 'un-suspend-user-successful', { content: { user } } );
+        return super.post(req, res, 'unsuspend-user-successful', { content: { user } } );
       })
       .catch(() => {
         const error = { userSuspendForm: { message: USER_UPDATE_FAILED_ERROR } };
-        return super.post(req, res, 'un-suspend-user', { content: { user }, error } );
+        return super.post(req, res, 'unsuspend-user', { content: { user }, error } );
       });
   }
 
   private validateFields(fields: any): PageError {
     const errors: PageError = {};
     if(fields._action === 'confirm-suspend' && isEmpty(fields.confirmSuspendRadio)) errors.confirmSuspendRadio = { message: MISSING_OPTION_ERROR };
-    if(fields._action  === 'confirm-un-suspend' && isEmpty(fields.confirmUnSuspendRadio)) errors.confirmUnSuspendRadio = { message: MISSING_OPTION_ERROR };
+    if(fields._action  === 'confirm-unsuspend' && isEmpty(fields.confirmUnSuspendRadio)) errors.confirmUnSuspendRadio = { message: MISSING_OPTION_ERROR };
     return errors;
   }
 }

@@ -11,13 +11,12 @@ import {
   USER_EMPTY_FORENAME_ERROR,
   USER_EMPTY_SURNAME_ERROR
 } from '../utils/error';
-import { SearchType } from '../utils/SearchType';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError} from '../interfaces/PageData';
-import { constructRoleAssignment } from '../utils/roleUtils';
+import { constructAllRoleAssignments } from '../utils/roleUtils';
 
 @autobind
-export class AddUserDetailsController extends RootController{
+export class AddUserDetailsController extends RootController {
   public get(req: AuthedRequest, res: Response) {
     return super.get(req, res, 'add-user-details');
   }
@@ -32,14 +31,14 @@ export class AddUserDetailsController extends RootController{
 
   private async processNewUserEmail(req: AuthedRequest, res: Response) {
     const email = req.body.email as string;
-    if (isEmpty(email)) {
+    if (isEmpty(email.trim())) {
       return this.postError(req, res, MISSING_EMAIL_ERROR);
     } else if (!isValidEmailFormat(email)) {
       return this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
     }
 
     // check if the user with the same email already exists
-    const users = await req.scope.cradle.api.getUserDetails(SearchType.Email, email);
+    const users = await req.scope.cradle.api.searchUsersByEmail(email);
     if (users.length == 0) {
       return super.post(req, res, 'add-user-details', {content: {
         user: {
@@ -53,6 +52,7 @@ export class AddUserDetailsController extends RootController{
 
   private async processNewUserDetails(req: AuthedRequest, res: Response) {
     const fields = req.body;
+    Object.keys(fields).forEach(field => fields[field] = (typeof fields[field] === 'string') ? fields[field].trim(): fields[field]);
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
     if(!isObjectEmpty(error)) {
@@ -65,7 +65,7 @@ export class AddUserDetailsController extends RootController{
     }
 
     const allRoles = await req.scope.cradle.api.getAllRoles();
-    const roleAssignment = constructRoleAssignment(allRoles, req.session.user.assignableRoles);
+    const roleAssignment = constructAllRoleAssignments(allRoles, req.session.user.assignableRoles);
     super.post(req, res, 'add-user-roles', {
       content: {
         user: user,
@@ -77,7 +77,7 @@ export class AddUserDetailsController extends RootController{
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'add-users', { error: {
+    return super.post(req, res, 'add-user', { error: {
       email: { message: errorMessage }
     }});
   }

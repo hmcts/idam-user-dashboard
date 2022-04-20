@@ -6,10 +6,14 @@
 
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  Add User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Add users', urls.ADD_USERS_URL],
+    ['Add user', urls.ADD_USER_URL],
     ['Add user roles']
   ]) }}
 {% endblock %}
@@ -35,6 +39,7 @@
             roles: content.roles,
             name: 'roles',
             searchBox: {
+              id: 'roles__search-box',
               placeholder: 'Search roles to assign to the user',
               classes: 'govuk-!-width-one-half'
             },

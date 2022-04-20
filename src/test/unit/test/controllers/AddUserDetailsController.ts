@@ -1,8 +1,6 @@
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
-import * as urls from '../../../../main/utils/urls';
 import { AddUserDetailsController } from '../../../../main/controllers/AddUserDetailsController';
-import { SearchType } from '../../../../main/utils/SearchType';
 import {
   duplicatedEmailError,
   INVALID_EMAIL_FORMAT_ERROR,
@@ -13,8 +11,11 @@ import {
 } from '../../../../main/utils/error';
 import { when } from 'jest-when';
 import { UserType } from '../../../../main/utils/UserType';
+import { mockRootController } from '../../utils/mockRootController';
+import { mockApi } from '../../utils/mockApi';
 
 describe('Add user details controller', () => {
+  mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new AddUserDetailsController();
@@ -29,34 +30,23 @@ describe('Add user details controller', () => {
     }
   ];
 
-  const mockApi = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    getUserDetails: jest.fn(),
-    getAllRoles: jest.fn(),
-    getAllServices: jest.fn()
-  };
-
   beforeEach(() => {
     req = mockRequest();
   });
 
   test('Should render the add user details page when adding a non-existing user\'s email', async () => {
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue([]);
-    when(mockApi.getAllServices as jest.Mock).calledWith().mockReturnValue(services);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
+    when(mockApi.getAllServices).calledWith().mockReturnValue(services);
 
     req.body.email = email;
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', {
-      content: {
-        user: {email: email}
-      },
-      urls
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email } },
     });
   });
 
-  test('Should render the add users page with error when adding a pre-existing user\'s email', async () => {
+  test('Should render the add user page with error when adding a pre-existing user\'s email', async () => {
     const users = [
       {
         id: '123',
@@ -67,41 +57,49 @@ describe('Add user details controller', () => {
         roles: ['IDAM_SUPER_USER']
       }
     ];
-    when(mockApi.getUserDetails as jest.Mock).calledWith(SearchType.Email, email).mockReturnValue(users);
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue(users);
 
     req.body.email = email;
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: duplicatedEmailError(email)
       }},
-      urls
     });
   });
 
-  test('Should render the add users page with error when adding a user with empty email', async () => {
+  test('Should render the add user page with error when adding a user with empty email', async () => {
     req.body.email = '';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
-      urls
     });
   });
 
-  test('Should render the add users page with error when adding a user with invalid email format', async () => {
+  test('Should render the add user page with error when adding a user\'s email with spaces only', async () => {
+    req.body.email = '  ';
+    await controller.post(req, res);
+
+    expect(res.render).toBeCalledWith('add-user', {
+      error: { email: {
+        message: MISSING_EMAIL_ERROR
+      }},
+    });
+  });
+
+  test('Should render the add user page with error when adding a user with invalid email format', async () => {
     req.body.email = 'test@test';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-users', {
+    expect(res.render).toBeCalledWith('add-user', {
       error: { email: {
         message: INVALID_EMAIL_FORMAT_ERROR
       }},
-      urls
     });
   });
 
@@ -125,7 +123,6 @@ describe('Add user details controller', () => {
       error: { forename: {
         message: USER_EMPTY_FORENAME_ERROR
       }},
-      urls
     });
   });
 
@@ -149,7 +146,28 @@ describe('Add user details controller', () => {
       error: { surname: {
         message: USER_EMPTY_SURNAME_ERROR
       }},
-      urls
+    });
+  });
+
+  test('Should render the add user details page with error when forename and surname contain empty space only', async () => {
+    req.body._email = email;
+    req.body.forename = ' ';
+    req.body.surname = '  ';
+    req.body.userType = UserType.Support;
+    req.scope.cradle.api = mockApi;
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('add-user-details', {
+      content: {
+        user : {
+          email: email,
+          forename: '',
+          surname: '',
+          userType: UserType.Support
+        }
+      },
+      error: { forename: { message: USER_EMPTY_FORENAME_ERROR },
+        surname: { message: USER_EMPTY_SURNAME_ERROR } },
     });
   });
 
@@ -172,7 +190,6 @@ describe('Add user details controller', () => {
       error: { userType: {
         message: MISSING_USER_TYPE_ERROR
       }},
-      urls
     });
   });
 
@@ -195,7 +212,7 @@ describe('Add user details controller', () => {
       }
     ];
 
-    when(mockApi.getAllRoles as jest.Mock).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body._email = email;
     req.body.forename = name;
@@ -226,8 +243,6 @@ describe('Add user details controller', () => {
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-roles', {
       content: expectedContent,
-      urls,
-      user: { assignableRoles: [] }
     });
   });
 });

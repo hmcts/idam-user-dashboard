@@ -8,7 +8,7 @@
       (roleItems.push({
       'text': role.name,
       'value': role.name,
-      'checked': false,
+      'checked': role.assigned if role.assigned else false,
       'disabled': not role.assignable,
       'attributes': {
         'data-role': role.name|lower
@@ -17,15 +17,18 @@
   {% endfor %}
 
   <div class="role-list {%- if params.classes %} {{ params.classes }}{% endif -%}" data-module="role-list" id="{{ params.id }}">
-    {{ govukInput({
-      attributes: {
-        placeholder: params.searchBox.placeholder
-      },
-      prefix: { text: params.searchBox.prefix|default('🔎', true) },
-      classes: "role-list__search-box " + params.searchBox.classes
-    }) }}
+    {% if params.searchBox %}
+      {{ govukInput({
+        id: params.searchBox.id,
+        attributes: {
+          placeholder: params.searchBox.placeholder
+        },
+        prefix: { text: params.searchBox.prefix|default('🔎', true) },
+        classes: "role-list__search-box " + params.searchBox.classes
+      }) }}
 
-    <p class='role-list__number-of-roles govuk-hint'></p>
+      <p class='role-list__number-of-roles govuk-hint'></p>
+    {% endif %}
 
     <div class="role-list__list">
       {{ govukCheckboxes({

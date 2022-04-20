@@ -13,4 +13,5 @@ export interface User {
   lastModified: string;
   createDate: string;
   assignableRoles?: string[];
+  multiFactorAuthentication?: boolean;
 }
