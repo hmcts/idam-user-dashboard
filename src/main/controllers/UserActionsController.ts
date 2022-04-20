@@ -14,7 +14,7 @@ export class UserActionsController extends RootController{
       case 'edit':
         return res.redirect(307, EDIT_USER_URL);
       case 'suspend':
-      case 'un-suspend':
+      case 'unsuspend':
         return res.redirect(307, USER_SUSPEND_URL);
       case 'delete':
         return res.redirect(307, USER_DELETE_URL);
