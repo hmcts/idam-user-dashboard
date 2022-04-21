@@ -178,7 +178,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.click('Search');
     I.waitForText('User Details');
 
-    const assignedRoles = await I.grabTextFromAll('#assigned-roles');
+    const assignedRoles = await I.grabTextFromAll('[id^=\'assigned-role\']');
     Assert.equal(assignedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
     Assert.equal(assignedRoles.includes(ASSIGNABLE_CHILD_ROLE), false);
 
@@ -198,7 +198,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.click('Return to user details');
     I.see('User Details');
 
-    const updatedRoles = await I.grabTextFromAll('#assigned-roles');
+    const updatedRoles = await I.grabTextFromAll('[id^=\'assigned-role\']');
     Assert.equal(updatedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
     Assert.equal(updatedRoles.includes(ASSIGNABLE_CHILD_ROLE), true);
   });
