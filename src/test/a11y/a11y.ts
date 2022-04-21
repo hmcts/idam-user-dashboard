@@ -19,7 +19,8 @@ import {
 } from '../../main/utils/urls';
 
 const IGNORED_URLS = [urls.LOGIN_URL, urls.LOGOUT_URL, urls.OAUTH2_CALLBACK_URL, urls.ADD_USER_COMPLETION_URL, urls.USER_ACTIONS_URL,
-  urls.USER_DETAILS_URL, urls.ADD_USER_DETAILS_URL, urls.ADD_USER_ROLES_URL, urls.EDIT_USER_URL];
+  urls.USER_DETAILS_URL, urls.ADD_USER_DETAILS_URL, urls.EDIT_USER_URL, urls.ADD_USER_ROLES_URL];
+
 
 const pa11y = require('pa11y');
 const axios = Axios.create({baseURL: testConfig.TEST_URL});
@@ -32,12 +33,13 @@ const INDEPENDENT_CHILD_ROLE = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getR
 const PARENT_ROLE_EMAIL = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString() + '@idam.test';
 const CHILD_ROLE_EMAIL = ACCESSIBILITY_TEST_SUITE_PREFIX + randomData.getRandomString() + '@idam.test';
 const NON_EXISTING_USER_EMAIL = 'nonExistingUSer@idam.test';
+let CHILD_USER_ID = '';
 
 const postData = new Map<string, string>([
   [USER_DETAILS_URL, `{"search": "${CHILD_ROLE_EMAIL}"}`],
-  [EDIT_USER_URL, `{"_action": "edit", "_userId": "${CHILD_ROLE_EMAIL}"}`],
-  [USER_SUSPEND_URL, `{"_action": "suspend", "_userId": "${CHILD_ROLE_EMAIL}"}`],
-  [USER_DELETE_URL, `{"_action": "delete", "_userId": "${CHILD_ROLE_EMAIL}"}`],
+  [EDIT_USER_URL, '{"_action": "edit", "_userId": "CHILD_USER_ID"}'],
+  [USER_SUSPEND_URL, '{"_action": "suspend", "_userId": "CHILD_USER_ID"}'],
+  [USER_DELETE_URL, '{"_action": "delete", "_userId": "CHILD_USER_ID"}'],
   [ADD_USER_DETAILS_URL, `{"email": "${NON_EXISTING_USER_EMAIL}"}`],
   [ADD_USER_ROLES_URL, '']
 ]);
@@ -71,12 +73,12 @@ function runPally(url: string, browser: any): Promise<Pa11yResult> {
   }
 
   const options = postData.has(url) ? {
-    headers: { 'Content-Type': 'application/json' },
+    headers: {'Content-Type': 'application/json'},
     browser,
     screenCapture,
     hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
     method: 'POST',
-    postData: postData.get(url)
+    postData: (postData.get(url) || '').replace('CHILD_USER_ID', CHILD_USER_ID)
   } : {
     browser,
     screenCapture,
@@ -114,7 +116,8 @@ describe('Accessibility', () => {
     await createAssignableRoles(INDEPENDENT_CHILD_ROLE);
     await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
     await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
-    await createUserWithRoles(CHILD_ROLE_EMAIL, testConfig.PASSWORD, USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE, INDEPENDENT_CHILD_ROLE]);
+    const childUser = await createUserWithRoles(CHILD_ROLE_EMAIL, testConfig.PASSWORD, USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE, INDEPENDENT_CHILD_ROLE]);
+    CHILD_USER_ID = childUser.id;
 
     browser = await puppeteer.launch({ignoreHTTPSErrors: true});
     browser.on('disconnected', setup);

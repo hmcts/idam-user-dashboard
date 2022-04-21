@@ -52,7 +52,6 @@ export const createUserWithRoles = async (email: string, password: string, foren
       `${config.get('services.idam.url.api')}/testing-support/accounts`,
       {
         email: email,
-        id: email,
         password: password,
         forename: forename,
         surname: testConfig.USER_LASTNAME,
