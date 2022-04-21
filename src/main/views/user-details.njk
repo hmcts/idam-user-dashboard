@@ -167,7 +167,7 @@
 
         {% if featureFlags.values[featureFlags.flags.BETA_SUSPEND] %}
           {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.user.active }}
-          {{ govukButton({ text: "Un-suspend user", name: "_action", value: "un-suspend", classes: "govuk-button--secondary" }) if not content.user.active }}
+          {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.user.active }}
         {% endif %}
 
         {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
