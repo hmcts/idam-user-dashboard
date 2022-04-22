@@ -50,7 +50,7 @@
     "@types/serve-favicon": "^2.5.1",
     "@types/session-file-store": "^1.2.2",
     "@types/uuid": "^8.3.4",
-    "applicationinsights": "^2.2.2",
+    "applicationinsights": "^2.3.1",
     "autobind-decorator": "^2.4.0",
     "awilix": "^7.0.2",
     "axios": "^0.26.0",
