@@ -19,9 +19,3 @@ Scenario('I as a system owner should be able to see Status code: 404 error code 
   I.waitForText('Page not found');
   I.waitForText('Status code: 404');
 }).tag('@CrossBrowser');
-
-Scenario('I as a system owner should be able to see Status code: 403 error code if _csrf value has changed', async ({I}) => {
-  I.fillField('_csrf', 'changedFieldValue');
-  I.click('Continue');
-  I.waitForText('Status code: 403');
-}).tag('@CrossBrowser');
