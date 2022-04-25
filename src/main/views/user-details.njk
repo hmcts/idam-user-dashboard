@@ -87,10 +87,13 @@
             {{ content.user.roles }}
           {% else %}
             <ul class="govuk-list">
+              {% set roleNumber = 1 %}
               {% for role in content.user.roles %}
-                <li id="assigned-roles">
+                {% set rowId = ["assigned-role", roleNumber] | join %}
+                <li id={{ rowId }}>
                   {{ role }}
                 </li>
+                {% set roleNumber = roleNumber + 1 %}
               {% endfor %}
             </ul>
           {% endif %}
