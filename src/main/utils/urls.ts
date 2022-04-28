@@ -15,3 +15,5 @@ export const EDIT_USER_URL = '/user/edit';
 export const USER_SUSPEND_URL = '/user/suspend';
 export const USER_DELETE_URL = '/user/delete';
 export const ACCESSIBILITY_STATEMENT = '/accessibility-statement';
+export const GENERATE_REPORT_URL = '/reports';
+export const DOWNLOAD_REPORT_URL = '/reports/:reportUUID';
