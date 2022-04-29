@@ -6,7 +6,7 @@ import {
 import { Role } from '../../../../main/interfaces/Role';
 import {User} from '../../../../main/interfaces/User';
 
-describe('utils', () => {
+describe('roleUtils', () => {
   describe('constructAllRoleAssignments', () => {
     const role1 = 'role1';
     const role2 = 'role2';

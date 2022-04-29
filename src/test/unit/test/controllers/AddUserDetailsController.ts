@@ -1,6 +1,10 @@
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
-import { AddUserDetailsController } from '../../../../main/controllers/AddUserDetailsController';
+import {
+  AddUserDetailsController,
+  ROLE_HINT_WITH_PRIVATE_BETA,
+  ROLE_HINT_WITHOUT_PRIVATE_BETA
+} from '../../../../main/controllers/AddUserDetailsController';
 import {
   duplicatedEmailError,
   INVALID_EMAIL_FORMAT_ERROR,
@@ -21,12 +25,33 @@ describe('Add user details controller', () => {
   const controller = new AddUserDetailsController();
   const email = 'test@test.com';
   const name = 'test';
-  const serviceName = 'service';
-  const services = [
+  const service1 = 'service1';
+  const service2 = 'service2';
+  const privateBetaRole = 'service-private-beta';
+
+  const servicesWithPrivateBeta = [
     {
-      label: serviceName,
-      description: serviceName,
-      onboardingRoles: ['private-beta']
+      label: service1,
+      description: service1,
+      onboardingRoles: [privateBetaRole]
+    },
+    {
+      label: service2,
+      description: service2,
+      onboardingRoles: [] as string[]
+    }
+  ];
+
+  const servicesWithoutPrivateBeta = [
+    {
+      label: service1,
+      description: service1,
+      onboardingRoles: [] as string[]
+    },
+    {
+      label: service2,
+      description: service2,
+      onboardingRoles: [] as string[]
     }
   ];
 
@@ -34,15 +59,27 @@ describe('Add user details controller', () => {
     req = mockRequest();
   });
 
-  test('Should render the add user details page when adding a non-existing user\'s email', async () => {
+  test('Should render the add user details page when adding a non-existing user\'s email when there is no service with private beta', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
-    when(mockApi.getAllServices).calledWith().mockReturnValue(services);
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
 
     req.body.email = email;
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email } },
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: false, roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA },
+    });
+  });
+
+  test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta', async () => {
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
+
+    req.body.email = email;
+    req.scope.cradle.api = mockApi;
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
     });
   });
 
@@ -110,6 +147,8 @@ describe('Add user details controller', () => {
     req.body.userType = UserType.Support;
     req.scope.cradle.api = mockApi;
 
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
+
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', {
       content: {
@@ -118,7 +157,9 @@ describe('Add user details controller', () => {
           forename: '',
           surname: name,
           userType: UserType.Support
-        }
+        },
+        showPrivateBeta: false,
+        roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA
       },
       error: { forename: {
         message: USER_EMPTY_FORENAME_ERROR
@@ -133,6 +174,8 @@ describe('Add user details controller', () => {
     req.body.userType = UserType.Support;
     req.scope.cradle.api = mockApi;
 
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
+
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', {
       content: {
@@ -141,7 +184,9 @@ describe('Add user details controller', () => {
           forename: name,
           surname: '',
           userType: UserType.Support
-        }
+        },
+        showPrivateBeta: false,
+        roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA
       },
       error: { surname: {
         message: USER_EMPTY_SURNAME_ERROR
@@ -156,6 +201,8 @@ describe('Add user details controller', () => {
     req.body.userType = UserType.Support;
     req.scope.cradle.api = mockApi;
 
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
+
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', {
       content: {
@@ -164,7 +211,9 @@ describe('Add user details controller', () => {
           forename: '',
           surname: '',
           userType: UserType.Support
-        }
+        },
+        showPrivateBeta: true,
+        roleHint: ROLE_HINT_WITH_PRIVATE_BETA
       },
       error: { forename: { message: USER_EMPTY_FORENAME_ERROR },
         surname: { message: USER_EMPTY_SURNAME_ERROR } },
@@ -177,6 +226,8 @@ describe('Add user details controller', () => {
     req.body.surname = name;
     req.scope.cradle.api = mockApi;
 
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
+
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', {
       content: {
@@ -185,7 +236,9 @@ describe('Add user details controller', () => {
           forename: name,
           surname: name,
           userType: ''
-        }
+        },
+        showPrivateBeta: true,
+        roleHint: ROLE_HINT_WITH_PRIVATE_BETA
       },
       error: { userType: {
         message: MISSING_USER_TYPE_ERROR

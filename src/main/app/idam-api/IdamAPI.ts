@@ -9,6 +9,7 @@ import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetail
 import { Service } from '../../interfaces/Service';
 import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
+import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 
 export class IdamAPI {
   constructor(
@@ -78,7 +79,7 @@ export class IdamAPI {
       .post('/api/v1/users/registration', user)
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = 'Error register new user in IDAM API';
+        const errorMessage = error.response.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
