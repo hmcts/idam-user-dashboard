@@ -107,7 +107,7 @@ describe('Add private beta service controller', () => {
         services: expectedServiceSelectItems,
         selectedService: service2
       },
-      error: { api : { message: error } }
+      error: { userRegistration : { message: error } }
     });
   });
 
