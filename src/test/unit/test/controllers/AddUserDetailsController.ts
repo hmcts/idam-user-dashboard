@@ -64,22 +64,37 @@ describe('Add user details controller', () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
 
     req.body.email = email;
+    req.session = { user: { assignableRoles: [UserType.Citizen] } };
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: false, roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA },
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: false, enablePrivateBeta: true, roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA },
     });
   });
 
-  test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta', async () => {
+  test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta and the citizen role is assignable', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
 
     req.body.email = email;
+    req.session = { user: { assignableRoles: [UserType.Citizen] } };
     req.scope.cradle.api = mockApi;
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: true, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
+    });
+  });
+
+  test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta but the citizen role is not assignable', async () => {
+    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
+    when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
+
+    req.body.email = email;
+    req.session = { user: { assignableRoles: [] } };
+    req.scope.cradle.api = mockApi;
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: false, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
     });
   });
 
@@ -145,6 +160,7 @@ describe('Add user details controller', () => {
     req.body.forename = '';
     req.body.surname = name;
     req.body.userType = UserType.Support;
+    req.session = { user: { assignableRoles: [UserType.Citizen] } };
     req.scope.cradle.api = mockApi;
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
@@ -159,6 +175,7 @@ describe('Add user details controller', () => {
           userType: UserType.Support
         },
         showPrivateBeta: false,
+        enablePrivateBeta: true,
         roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA
       },
       error: { forename: {
@@ -172,6 +189,7 @@ describe('Add user details controller', () => {
     req.body.forename = name;
     req.body.surname = '';
     req.body.userType = UserType.Support;
+    req.session = { user: { assignableRoles: [UserType.Citizen] } };
     req.scope.cradle.api = mockApi;
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
@@ -186,6 +204,7 @@ describe('Add user details controller', () => {
           userType: UserType.Support
         },
         showPrivateBeta: false,
+        enablePrivateBeta: true,
         roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA
       },
       error: { surname: {
@@ -199,6 +218,7 @@ describe('Add user details controller', () => {
     req.body.forename = ' ';
     req.body.surname = '  ';
     req.body.userType = UserType.Support;
+    req.session = { user: { assignableRoles: [UserType.Citizen] } };
     req.scope.cradle.api = mockApi;
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
@@ -213,6 +233,7 @@ describe('Add user details controller', () => {
           userType: UserType.Support
         },
         showPrivateBeta: true,
+        enablePrivateBeta: true,
         roleHint: ROLE_HINT_WITH_PRIVATE_BETA
       },
       error: { forename: { message: USER_EMPTY_FORENAME_ERROR },
@@ -224,6 +245,7 @@ describe('Add user details controller', () => {
     req.body._email = email;
     req.body.forename = name;
     req.body.surname = name;
+    req.session = { user: { assignableRoles: [UserType.Citizen] } };
     req.scope.cradle.api = mockApi;
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
@@ -238,6 +260,7 @@ describe('Add user details controller', () => {
           userType: ''
         },
         showPrivateBeta: true,
+        enablePrivateBeta: true,
         roleHint: ROLE_HINT_WITH_PRIVATE_BETA
       },
       error: { userType: {
