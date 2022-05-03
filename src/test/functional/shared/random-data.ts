@@ -19,5 +19,6 @@ export const randomData = {
   getRandomAlphabeticString: randomAlphabeticString,
   getRandomEmailAddress: () => testConfig.TEST_SUITE_PREFIX + randomString() + '@idam.test',
   getRandomRole: () => testConfig.TEST_SUITE_PREFIX + randomString(10),
+  getRandomServiceName: () => testConfig.TEST_SUITE_PREFIX + randomString(10),
   getRandomSSOId: () => randomString(10)
 };

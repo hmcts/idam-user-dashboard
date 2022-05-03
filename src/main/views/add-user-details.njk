@@ -69,7 +69,7 @@
         <h2 class="govuk-heading-s">Select user type</h2>
         {{ govukDetails({
           summaryText: "Help with selection",
-          text: "Private Beta Citizen is a citizen who is trialing a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support."
+          text: content.roleHint
         }) }}
 
         {{ govukRadios({
@@ -77,6 +77,11 @@
           name: "userType",
           errorMessage: { text: error.userType.message } if error.userType,
           items: [
+            {
+              value: "citizen",
+              text: "Private Beta Citizen",
+              checked: true if content.user.userType === 'citizen'
+            } if content.showPrivateBeta,
             {
               value: "professional",
               text: "Professional",
