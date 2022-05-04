@@ -46,8 +46,8 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Add user details",
-            classes: 'govuk-fieldset--row'
+              text: "Enter user's name",
+            classes: "govuk-fieldset__legend--s"
           }
         }) %}
           {{ govukInput({
@@ -69,37 +69,43 @@
           }) }}
         {% endcall %}
 
-        <h2 class="govuk-heading-s">Select user type</h2>
-        {{ govukDetails({
-          summaryText: "Help with selection",
-          text: content.roleHint
-        }) }}
+        {% call govukFieldset({
+          legend: {
+            text: "Select user type",
+            classes: "govuk-fieldset__legend--s"
+          }
+        }) %}
+          {{ govukDetails({
+            summaryText: "Help with selection",
+            text: content.roleHint
+          }) }}
 
-        {{ govukRadios({
-          idPrefix: "userType",
-          name: "userType",
-          errorMessage: { text: error.userType.message } if error.userType,
-          items: [
-            {
-              value: "citizen",
-              text: "Private Beta Citizen",
-              checked: true if content.user.userType === 'citizen',
-              disabled: not content.enablePrivateBeta
-            } if content.showPrivateBeta,
-            {
-              value: "professional",
-              text: "Professional",
-              checked: true if content.user.userType === 'professional'
-            },
-            {
-              value: "support",
-              text: "Support",
-              checked: true if content.user.userType === 'support'
-            }
-          ]
-        }) }}
+          {{ govukRadios({
+            idPrefix: "userType",
+            name: "userType",
+            errorMessage: { text: error.userType.message } if error.userType,
+            items: [
+              {
+                value: "citizen",
+                text: "Private Beta Citizen",
+                checked: true if content.user.userType === 'citizen',
+                disabled: not content.enablePrivateBeta
+              } if content.showPrivateBeta,
+              {
+                value: "professional",
+                text: "Professional",
+                checked: true if content.user.userType === 'professional'
+              },
+              {
+                value: "support",
+                text: "Support",
+                checked: true if content.user.userType === 'support'
+              }
+            ]
+          }) }}
+        {% endcall %}
 
-        {{ govukButton({
+  {{ govukButton({
           text: "Continue"
         }) }}
       </div>

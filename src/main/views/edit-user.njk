@@ -6,7 +6,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -52,8 +52,8 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Edit user",
-            classes: 'govuk-fieldset--row'
+            text: "User's details",
+            classes: "govuk-fieldset__legend--s"
           }
         }) %}
           {{ govukInput({
@@ -68,14 +68,14 @@
             id: "surname",
             value: content.user.surname
           }) }}
-        {% endcall %}
 
-        {{ govukInput({
-          label: { text: "Email" },
-          name: "email",
-          id: "email",
-          value: content.user.email
-        }) }}
+          {{ govukInput({
+            label: { text: "Email" },
+            name: "email",
+            id: "email",
+            value: content.user.email
+          }) }}
+        {% endcall %}
       </div>
 
       {% set displayedRoles = [] %}
@@ -86,38 +86,50 @@
       {% endfor %}
 
       <div class="govuk-grid-column-full">
-        <h3 class="govuk-heading-s">Assigned roles</h3>
-        {{ roleList({
-          roles: displayedRoles,
-          name: 'roles',
-          list: {
-            classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+        {% call govukFieldset({
+          legend: {
+            text: "User's assigned roles",
+            classes: "govuk-fieldset__legend--s"
           }
-        }) }}
+        }) %}
+          {{ roleList({
+            roles: displayedRoles,
+            name: 'roles',
+            list: {
+              classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
+            }
+          }) }}
+        {% endcall %}
       </div>
 
       <div class="govuk-grid-column-full">
-        <h3 class="govuk-heading-s">Multi-factor authentication</h3>
+        {% call govukFieldset({
+          legend: {
+            text: "Multi-factor authentication",
+            classes: "govuk-fieldset__legend--s"
+          }
+        }) %}
 
-        {% if content.showMfa and content.user.multiFactorAuthentication %}
-          {{ govukInsetText({
-            text: "Warning: only disable MFA for a user if they have a justice.gov.uk or hmcts.net email address. Contact the information security team if you want to make an exception."
+          {% if content.showMfa and content.user.multiFactorAuthentication %}
+            {{ govukWarningText({
+              text: "Only disable MFA for a user if they have a 'justice.gov.uk' or 'hmcts.net' email address. Contact the information security team if you want to make an exception.",
+              iconFallbackText: "Warning"
+            }) }}
+          {% endif %}
+          {{ govukCheckboxes({
+            idPrefix: "multiFactorAuthentication",
+            name: "multiFactorAuthentication",
+            classes: "govuk-checkboxes--small",
+            items: [
+              {
+                value: 'enabled',
+                text: 'Enabled',
+                checked: content.user.multiFactorAuthentication,
+                disabled: not content.showMfa
+              }
+            ]
           }) }}
-        {% endif %}
-
-        {{ govukCheckboxes({
-          idPrefix: "multiFactorAuthentication",
-          name: "multiFactorAuthentication",
-          classes: "govuk-checkboxes--small",
-          items: [
-            {
-              value: 'enabled',
-              text: 'Enabled',
-              checked: content.user.multiFactorAuthentication,
-              disabled: not content.showMfa
-            }
-          ]
-        }) }}
+        {% endcall %}
 
         <div class="govuk-button-group">
           {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}
