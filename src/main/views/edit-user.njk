@@ -51,7 +51,10 @@
         <h3 class="govuk-heading-s">General</h3>
 
         {% call govukFieldset({
-          classes: 'govuk-fieldset--row'
+          legend: {
+            text: "Edit user",
+            classes: 'govuk-fieldset--row'
+          }
         }) %}
           {{ govukInput({
             label: { text: "First name" },

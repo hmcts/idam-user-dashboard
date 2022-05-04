@@ -38,7 +38,11 @@
           {{ roleList({
             roles: content.roles,
             name: 'roles',
+            label: {
+              text: "Search Roles",
+            },
             searchBox: {
+              name: 'roles__search-box',
               id: 'roles__search-box',
               placeholder: 'Search roles to assign to the user',
               classes: 'govuk-!-width-one-half'

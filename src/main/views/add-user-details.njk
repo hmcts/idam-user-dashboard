@@ -45,7 +45,10 @@
         }) }}
 
         {% call govukFieldset({
-          classes: 'govuk-fieldset--row'
+          legend: {
+            text: "Add user details",
+            classes: 'govuk-fieldset--row'
+          }
         }) %}
           {{ govukInput({
             label: { text: "First name" },
