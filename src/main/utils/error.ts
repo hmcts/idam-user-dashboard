@@ -14,5 +14,6 @@ export const USER_DELETE_FAILED_ERROR = 'An error occurred whilst deleting this 
 export const MISSING_USER_TYPE_ERROR = 'You must select an user type';
 export const MISSING_PRIVATE_BETA_SERVICE_ERROR = 'You must select a service';
 export const MISSING_ROLE_ASSIGNMENT_ERROR = 'A user must have at least one role assigned to be able to create them';
+export const ROLE_PERMISSION_ERROR = 'You do not have permission to create the user roles';
 
 export const duplicatedEmailError = (email: string) => `The email '${email}' already exists`;

@@ -87,23 +87,26 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.session = { user: { assignableRoles: [role2] } };
 
-    const expectedRoleAssignment = { roles: [
-      {
-        name: 'role2',
-        assignable: true
-      },
-      {
-        name: 'role1',
-        assignable: false
-      }]};
-
+    const expectedContent = {
+      user: { email: email, forename: forename, surname: surname },
+      roles: [
+        {
+          name: 'role2',
+          assignable: true
+        },
+        {
+          name: 'role1',
+          assignable: false
+        }
+      ]
+    };
     const expectedError = { roles: {
       message: MISSING_ROLE_ASSIGNMENT_ERROR
     }};
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-roles', {
-      content: expectedRoleAssignment,
+      content: expectedContent,
       error: expectedError
     });
   });

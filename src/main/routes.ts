@@ -10,6 +10,7 @@ import {
   USER_ACTIONS_URL,
   USER_DETAILS_URL,
   USER_SUSPEND_URL,
+  ADD_PRIVATE_BETA_SERVICE_URL,
   ACCESSIBILITY_STATEMENT
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
@@ -23,6 +24,7 @@ export default function(app: Application): void {
   app.get(ADD_USER_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserController.get);
   app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserDetailsController.post);
   app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserRolesController.post);
+  app.post(ADD_PRIVATE_BETA_SERVICE_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addPrivateBetaServiceController.post);
   app.get(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.get);
   app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);
