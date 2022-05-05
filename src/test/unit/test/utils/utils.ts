@@ -11,6 +11,7 @@ import {
   isString,
   getObjectVariation,
   convertToArray,
+  arrayContainsSubstring,
   findDifferentElements
 } from '../../../../main/utils/utils';
 
@@ -264,6 +265,22 @@ describe('utils', () => {
 
     test('Should convert to array if input is string', async () => {
       expect(convertToArray('a')).toStrictEqual(['a']);
+    });
+  });
+
+  describe('arrayContainsSubstring', () => {
+    const array = ['test', 'testing', 'tested', 'My test'];
+
+    test('Should return true if one of the array items contains the substring', async () => {
+      expect(arrayContainsSubstring(array, 'testin')).toBeTruthy();
+    });
+
+    test('Should return true if multiple array items contain the substring', async () => {
+      expect(arrayContainsSubstring(array, 'test')).toBeTruthy();
+    });
+
+    test('Should return false if none of the array items contains the substring', async () => {
+      expect(arrayContainsSubstring(array, 'a new string')).toBeFalsy();
     });
   });
 

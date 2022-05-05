@@ -255,4 +255,24 @@ export const activateUserAccount = async (code: string, token: string) => {
   }
 };
 
+export const createService = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[] = []) => {
+  const data = {
+    label: label,
+    description: description,
+    oauth2ClientId: clientId,
+    oauth2ClientSecret: clientSecret,
+    oauth2RedirectUris: redirectUris,
+    onboardingRoles: onboardingRoles
+  };
 
+  try {
+    const authToken = await getAuthToken();
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/services`,
+      JSON.stringify(data),
+      { headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken} }
+    ));
+  } catch (e) {
+    throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
+  }
+};
