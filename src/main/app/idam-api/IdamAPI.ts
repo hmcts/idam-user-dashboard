@@ -9,6 +9,7 @@ import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetail
 import { Service } from '../../interfaces/Service';
 import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
+import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 
 export class IdamAPI {
   constructor(
@@ -50,8 +51,6 @@ export class IdamAPI {
       });
   }
 
-
-
   public editUserById(id: string, fields: Partial<User>): Promise<User> {
     return this.userAxios
       .patch('/api/v1/users/' + id, fields)
@@ -80,7 +79,7 @@ export class IdamAPI {
       .post('/api/v1/users/registration', user)
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = 'Error register new user in IDAM API';
+        const errorMessage = error.response.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
@@ -113,11 +112,15 @@ export class IdamAPI {
 
   public async getAssignableRoles(roleNames: string[]) {
     const allRoles = await this.getAllRoles();
-    const rolesMap = new Map(allRoles.map(role => [role.id, role]));
+    const rolesMap = new Map(allRoles
+      .filter(role => role !== undefined)
+      .map(role => [role.id, role])
+    );
 
     const collection: Set<string> = new Set();
     Array.from(rolesMap.values())
-      .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+      .filter(role => roleNames.includes(role.name))
+      .filter(role => Array.isArray(role.assignableRoles))
       .forEach(role => role.assignableRoles
         .forEach(r => collection.add(rolesMap.get(r).name))
       );

@@ -18,6 +18,7 @@ import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
 import { AccessibilityStatementController } from '../../controllers/AccessibilityStatementController';
+import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
 
 /**
  * Sets up the dependency injection container
@@ -34,6 +35,7 @@ export class Container {
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
       addUserRolesController: asClass(AddUserRolesController),
+      addPrivateBetaServiceController: asClass(AddPrivateBetaServiceController),
       manageUserController: asClass(ManageUserController),
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),

@@ -1,7 +1,12 @@
-import { constructAllRoleAssignments, constructUserRoleAssignments } from '../../../../main/utils/roleUtils';
+import {
+  constructAllRoleAssignments,
+  constructUserRoleAssignments,
+  processMfaRole
+} from '../../../../main/utils/roleUtils';
 import { Role } from '../../../../main/interfaces/Role';
+import {User} from '../../../../main/interfaces/User';
 
-describe('utils', () => {
+describe('roleUtils', () => {
   describe('constructAllRoleAssignments', () => {
     const role1 = 'role1';
     const role2 = 'role2';
@@ -121,6 +126,36 @@ describe('utils', () => {
 
       const results = constructUserRoleAssignments([role2, role4], [role3, role1, role4]);
       expect(results).toStrictEqual(expectedResults);
+    });
+  });
+
+  describe('processMfaRole', () => {
+    const user: User = {
+      id: '1',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'test@test.com',
+      active: true,
+      locked: false,
+      pending: false,
+      stale: false,
+      ssoProvider: '',
+      roles: [],
+      ssoId: '',
+      lastModified: '',
+      createDate: ''
+    };
+
+    test('Should set multi-factor authentication flag if user does not have the idam-mfa-disabled role', async () => {
+      user.roles = ['IDAM_SUPER_USER'];
+      processMfaRole(user);
+      expect(user.multiFactorAuthentication).toBeTruthy();
+    });
+
+    test('Should not set multi-factor authentication flag if user has the idam-mfa-disabled role', async () => {
+      user.roles = ['IDAM_SUPER_USER', 'idam-mfa-disabled'];
+      processMfaRole(user);
+      expect(user.multiFactorAuthentication).toBeFalsy();
     });
   });
 });
