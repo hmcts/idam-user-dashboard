@@ -50,7 +50,7 @@
     "@types/serve-favicon": "^2.5.1",
     "@types/session-file-store": "^1.2.2",
     "@types/uuid": "^8.3.4",
-    "applicationinsights": "^2.2.2",
+    "applicationinsights": "^2.3.2",
     "autobind-decorator": "^2.4.0",
     "awilix": "^7.0.2",
     "axios": "^0.26.0",
@@ -83,7 +83,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.7",
     "@babel/preset-env": "^7.16.11",
-    "notifications-node-client": "^4.7.3",
+    "notifications-node-client": "^5.1.1",
     "@codeceptjs/helper": "^1.0.2",
     "@types/copy-webpack-plugin": "^10.1.0",
     "@types/jest": "^27.4.1",
