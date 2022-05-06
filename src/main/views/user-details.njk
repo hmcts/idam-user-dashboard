@@ -13,7 +13,7 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage users', urls.MANAGER_USERS_URL],
+    ['Manage user', urls.MANAGER_USER_URL],
     ['User details']
   ]) }}
 {% endblock %}
@@ -87,12 +87,29 @@
             {{ content.user.roles }}
           {% else %}
             <ul class="govuk-list">
+              {% set roleNumber = 1 %}
               {% for role in content.user.roles %}
-                <li id="assigned-roles">
+                {% set rowId = ["assigned-role", roleNumber] | join %}
+                <li id={{ rowId }}>
                   {{ role }}
                 </li>
+                {% set roleNumber = roleNumber + 1 %}
               {% endfor %}
             </ul>
+          {% endif %}
+        </p>
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dd class="govuk-summary-list__key">
+        Multi-factor authentication
+      </dd>
+      <dd class="govuk-summary-list__value">
+        <p class="govuk-body-m" id="mfa">
+          {% if content.user.multiFactorAuthentication %}
+            <strong class="govuk-tag">Enabled</strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--green">Disabled</strong>
           {% endif %}
         </p>
       </dd>
@@ -150,7 +167,7 @@
 
         {% if featureFlags.values[featureFlags.flags.BETA_SUSPEND] %}
           {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.user.active }}
-          {{ govukButton({ text: "Un-suspend user", name: "_action", value: "un-suspend", classes: "govuk-button--secondary" }) if not content.user.active }}
+          {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.user.active }}
         {% endif %}
 
         {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
@@ -162,6 +179,6 @@
 
   {{ govukBackLink({
     text: "Return to search",
-    href: urls.MANAGER_USERS_URL
+    href: urls.MANAGER_USER_URL
   }) }}
 {% endblock %}

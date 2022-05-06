@@ -87,6 +87,10 @@ export const convertToArray = (value: string | string[]): string[] => {
   return Array.isArray(value) ? value : value.split(/\r?\n/);
 };
 
+export const arrayContainsSubstring = (values: string[], substring: string): boolean => {
+  return values.findIndex(element => element.includes(substring)) !== -1;
+};
+
 export const findDifferentElements = (arrayA: string[], arrayB: string[]): string[] => {
   const differentElements: string[] = [];
   arrayA

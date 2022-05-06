@@ -24,8 +24,8 @@ incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format', async ({I, current}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -37,8 +37,8 @@ Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper
 
 Scenario('I should be able to search with user-email', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -64,8 +64,8 @@ Scenario('I should be able to search with user-email', async ({I}) => {
 
 Scenario('I should be able to search with user-id', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -91,8 +91,8 @@ Scenario('I should be able to search with user-id', async ({I}) => {
 
 Scenario('I should be able to search with sso-id', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -118,8 +118,8 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -133,8 +133,8 @@ Scenario('When there is a collision between user-id and sso-id, user details sho
 
 Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('Search');
@@ -148,8 +148,8 @@ Scenario('I as a user should be able to see proper error message if search text 
 
 Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');

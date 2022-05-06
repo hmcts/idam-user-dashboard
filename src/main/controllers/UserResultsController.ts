@@ -11,6 +11,7 @@ import {
 import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
+import { processMfaRole } from '../utils/roleUtils';
 
 @autobind
 export class UserResultsController extends RootController {
@@ -25,14 +26,15 @@ export class UserResultsController extends RootController {
 
     if (users) {
       if (users.length === 1) {
-        const user = users[0];
+        const user = await req.scope.cradle.api.getUserById(users[0].id);
+
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
           content: { user, showDelete: this.canDeleteUser(req.session.user, user)}
         });
       }
 
-      return super.post(req, res, 'manage-users', {
+      return super.post(req, res, 'manage-user', {
         content: {
           search: input,
           result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
@@ -57,7 +59,7 @@ export class UserResultsController extends RootController {
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'manage-users', {
+    return super.post(req, res, 'manage-user', {
       error: {
         search: {message: errorMessage}
       }
@@ -68,6 +70,7 @@ export class UserResultsController extends RootController {
     sortRoles(user.roles);
     user.createDate = convertISODateTimeToUTCFormat(user.createDate);
     user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
+    processMfaRole(user);
   }
 
   private canDeleteUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
