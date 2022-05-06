@@ -28,7 +28,7 @@ services:
     backendServiceScope: 'create-invitation view-service-provider'
     responseType: 'code'
 session:
-  secret: 'local'
+  secret: 'LONG_RANDOM_STRING'
   cookie:
     name: 'idam-user-dashboard-session'
   redis:
