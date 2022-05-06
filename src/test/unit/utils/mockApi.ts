@@ -3,8 +3,9 @@ import {IdamAPI} from '../../../main/app/idam-api/IdamAPI';
 type Mocked<T> = { [P in keyof T]: jest.Mock; };
 
 export const mockApi: Mocked<IdamAPI> = {
+  searchUsersByEmail: jest.fn(),
+  searchUsersBySsoId: jest.fn(),
   getUserById: jest.fn(),
-  getUserDetails: jest.fn(),
   editUserById: jest.fn(),
   deleteUserById: jest.fn(),
   registerUser: jest.fn(),

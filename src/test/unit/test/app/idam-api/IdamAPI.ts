@@ -14,7 +14,7 @@ describe('IdamAPI', () => {
     { input: testSsoId, searchType: SearchType.SsoId }
   ];
 
-  describe('getUserDetails', () => {
+  describe('searchUsersByEmail', () => {
     parameters.forEach((parameter) => {
       it(`Should return results from getUserDetails request using ${parameter.searchType}`, async () => {
         const results = {
@@ -33,7 +33,7 @@ describe('IdamAPI', () => {
         const mockTelemetryClient = {} as any;
         const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-        await expect(api.getUserDetails(parameter.searchType, parameter.input)).resolves.toEqual(results.data);
+        await expect(api.searchUsersByEmail(parameter.input)).resolves.toEqual(results.data);
       });
     });
 
@@ -43,7 +43,44 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = { trackTrace: jest.fn() } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      await expect(api.getUserDetails(SearchType.Email, testEmail)).resolves.toEqual([]);
+      expect(api.searchUsersByEmail('')).rejects.toEqual('Error retrieving user by email from IDAM API');
+    });
+  });
+
+  describe('searchUsersBySsoId', () => {
+    test('Should return user details using valid SSO ID', () => {
+      const results = {
+        data: [{
+          id: testUserId,
+          forename: 'test',
+          surname: 'test',
+          email: testEmail,
+          active: true,
+          roles: ['IDAM_SUPER_USER'],
+          ssoId: testSsoId
+        }]
+      };
+      const mockAxios = {get: async () => results} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.searchUsersBySsoId(testSsoId)).resolves.toEqual(results.data);
+    });
+
+    test('Should not return user details when using invalid SSO ID', () => {
+      const mockAxios = {get: () => Promise.reject('')} as any;
+      const mockLogger = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error : () => {}
+      } as any;
+      const mockTelemetryClient = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        trackTrace : () => {}
+      } as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.searchUsersBySsoId('')).rejects.toEqual('Error retrieving user by ssoId from IDAM API');
     });
   });
 
@@ -193,6 +230,7 @@ describe('IdamAPI', () => {
         { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
         { id: '2', name: 'test-role-2', assignableRoles: [] },
         { id: '3', name: 'test-role-3' },
+        undefined as unknown as Role
       ];
 
       const mockAxios = {get: async () => jest.fn()} as any;

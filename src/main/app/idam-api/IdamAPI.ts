@@ -7,7 +7,9 @@ import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
 import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
 import { Service } from '../../interfaces/Service';
+import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
+import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 
 export class IdamAPI {
   constructor(
@@ -17,15 +19,24 @@ export class IdamAPI {
     private readonly telemetryClient: TelemetryClient
   ) { }
 
-  public getUserDetails(type: string, query: string): Promise<User[]> {
+  private getUserDetails(type: string, query: string): Promise<User[]> {
     return this.userAxios
       .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
       .then(results => results.data)
       .catch(error => {
-        this.telemetryClient.trackTrace({message: 'Error retrieving user details from IDAM API'});
+        const errorMessage = `Error retrieving user by ${type} from IDAM API`;
+        this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
-        return [];
+        return Promise.reject(errorMessage);
       });
+  }
+
+  public searchUsersByEmail(email: string): Promise<User[]> {
+    return this.getUserDetails(SearchType.Email, email);
+  }
+
+  public searchUsersBySsoId(id: string): Promise<User[]> {
+    return this.getUserDetails(SearchType.SsoId, id);
   }
 
   public getUserById(id: string): Promise<User> {
@@ -68,7 +79,7 @@ export class IdamAPI {
       .post('/api/v1/users/registration', user)
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = 'Error register new user in IDAM API';
+        const errorMessage = error.response.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
@@ -101,11 +112,15 @@ export class IdamAPI {
 
   public async getAssignableRoles(roleNames: string[]) {
     const allRoles = await this.getAllRoles();
-    const rolesMap = new Map(allRoles.map(role => [role.id, role]));
+    const rolesMap = new Map(allRoles
+      .filter(role => role !== undefined)
+      .map(role => [role.id, role])
+    );
 
     const collection: Set<string> = new Set();
     Array.from(rolesMap.values())
-      .filter(role => roleNames.includes(role.name) && role.assignableRoles)
+      .filter(role => roleNames.includes(role.name))
+      .filter(role => Array.isArray(role.assignableRoles))
       .forEach(role => role.assignableRoles
         .forEach(r => collection.add(rolesMap.get(r).name))
       );
