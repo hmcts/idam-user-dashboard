@@ -48,9 +48,8 @@
       {{ csrfProtection(csrfToken) }}
       <input type="hidden" name="_userId" value="{{ content.user.id }}">
       <div class="govuk-grid-column-one-half govuk-!-margin-bottom-5">
-        <h3 class="govuk-heading-s">General</h3>
-
         {% call govukFieldset({
+          classes: 'govuk-fieldset--row',
           legend: {
             text: "User's details",
             classes: "govuk-fieldset__legend--s"
@@ -68,14 +67,14 @@
             id: "surname",
             value: content.user.surname
           }) }}
-
-          {{ govukInput({
-            label: { text: "Email" },
-            name: "email",
-            id: "email",
-            value: content.user.email
-          }) }}
         {% endcall %}
+
+        {{ govukInput({
+          label: { text: "Email" },
+          name: "email",
+          id: "email",
+          value: content.user.email
+        }) }}
       </div>
 
       {% set displayedRoles = [] %}
