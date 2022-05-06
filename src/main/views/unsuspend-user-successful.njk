@@ -7,21 +7,25 @@
 
 {% extends "template.njk" %}
 
+{% block pageTitle %}
+  Unsuspended User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
 {% block beforeContent %}
  {{ super() }}
  {{ breadcrumb([
-   ['Manage users', urls.MANAGER_USERS_URL],
-   ['Un-suspend user']
+   ['Manage user', urls.MANAGER_USER_URL],
+   ['Unsuspend user']
  ]) }}
 {% endblock %}
 
 {% block content %}
  <div class="govuk-grid-row">
    <div class="govuk-grid-column-three-quarters">
-     {{ govukPanel({ titleText: "User un-suspended successfully" }) }}
+     {{ govukPanel({ titleText: "User unsuspended successfully" }) }}
 
      <div class="govuk-!-margin-bottom-9">
-       <p class="govuk-body-m govuk-!-margin-bottom-0">The following account has been un-suspended: </p>
+       <p class="govuk-body-m govuk-!-margin-bottom-0">The following account has been unsuspended: </p>
        <p class="govuk-body-m"><strong>{{ content.user.email }}</strong></p>
      </div>
 

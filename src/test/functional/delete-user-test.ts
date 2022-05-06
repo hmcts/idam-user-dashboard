@@ -4,7 +4,7 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_FEATURES} from '../../main/app/feature-flags/flags';
+import { BETA_DELETE } from '../../main/app/feature-flags/flags';
 
 Feature('Delete User');
 
@@ -23,14 +23,14 @@ BeforeSuite(async () => {
 });
 
 Scenario('I as a user should not be able delete user if I do not have the role with right to delete',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
 
     const nonDeletableUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -42,14 +42,14 @@ Scenario('I as a user should not be able delete user if I do not have the role w
 );
 
 Scenario('I as a user should not be able delete user with both deletable and other non-deletable roles',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
 
     const nonDeletableUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -61,13 +61,13 @@ Scenario('I as a user should not be able delete user with both deletable and oth
 );
 
 Scenario('I as a user if I have the right role, should be able delete user successfully',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
     const deletableUserEmail = randomData.getRandomEmailAddress();
     const userDataBeforeDeleting = await I.createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -81,7 +81,7 @@ Scenario('I as a user if I have the right role, should be able delete user succe
     I.waitForText('User deleted successfully');
     I.click('Return to main menu');
 
-    I.click('Manage existing users');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -102,13 +102,13 @@ Scenario('I as a user if I have the right role, should be able delete user succe
 ).tag('@CrossBrowser');
 
 Scenario('I as a user should be able delete users with same role successfully',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
     const deletableUserEmail = randomData.getRandomEmailAddress();
     await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [PARENT_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -121,7 +121,7 @@ Scenario('I as a user should be able delete users with same role successfully',
     I.click('Continue');
     I.waitForText('User deleted successfully');
     I.click('Return to main menu');
-    I.click('Manage existing users');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
@@ -132,13 +132,13 @@ Scenario('I as a user should be able delete users with same role successfully',
 );
 
 Scenario('I as a user should not delete user if I select No',
-  {featureFlags: [BETA_FEATURES]},
+  {featureFlags: [BETA_DELETE]},
   async ({I}) => {
     const deletableUserEmail = randomData.getRandomEmailAddress();
     await createUserWithRoles(deletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage existing users');
-    I.click('Manage existing users');
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
     I.click('Continue');
     I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');

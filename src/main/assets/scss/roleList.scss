@@ -1,0 +1,38 @@
+$track-background: #f1f1f1;
+$thumb-background: #888;
+$checkbox-padding: 40px;
+
+.role-list {
+  &__list {
+    position: relative;
+    left: -$checkbox-padding;
+    max-height: 448px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    width: calc(100% + #{$checkbox-padding});
+    margin-bottom: 20px;
+
+    & .govuk-checkboxes {
+      position: relative;
+      left: $checkbox-padding;
+    }
+
+    // sass-lint:disable no-vendor-prefixes
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    // sass-lint:disable no-vendor-prefixes
+    &::-webkit-scrollbar-track {
+      background: $track-background;
+      border-radius: 8px;
+    }
+
+    // sass-lint:disable no-vendor-prefixes
+    &::-webkit-scrollbar-thumb {
+      background: $thumb-background;
+      border-radius: 8px;
+    }
+  }
+}

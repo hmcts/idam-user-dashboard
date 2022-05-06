@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { RootController } from './RootController';
 import autobind from 'autobind-decorator';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import { EDIT_USER_URL, USER_SUSPEND_URL, USER_DELETE_URL } from '../utils/urls';
+import { EDIT_USER_URL, USER_DELETE_URL, USER_SUSPEND_URL } from '../utils/urls';
 
 @autobind
 export class UserActionsController extends RootController{
@@ -14,7 +14,7 @@ export class UserActionsController extends RootController{
       case 'edit':
         return res.redirect(307, EDIT_USER_URL);
       case 'suspend':
-      case 'un-suspend':
+      case 'unsuspend':
         return res.redirect(307, USER_SUSPEND_URL);
       case 'delete':
         return res.redirect(307, USER_DELETE_URL);
