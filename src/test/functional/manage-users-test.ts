@@ -29,8 +29,8 @@ Scenario('I as a user should be able to see the active status of a user', async 
   const activeUser = await I.getUserDetails(activeUserEmail);
 
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -69,8 +69,8 @@ Scenario('I as a user should be able to see the suspended status of a user', asy
   await I.suspendUser(user.id, suspendUserEmail);
 
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
@@ -91,8 +91,8 @@ Scenario('I as a user should be able to see the stale status of a user', async (
   await I.retireStaleUser(user.id);
 
   await I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage existing users');
-  I.click('Manage existing users');
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
   I.click('Continue');
   I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');

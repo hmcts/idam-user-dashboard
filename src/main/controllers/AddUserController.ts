@@ -4,8 +4,8 @@ import { RootController } from './RootController';
 import autobind from 'autobind-decorator';
 
 @autobind
-export class ManageUsersController extends RootController {
+export class AddUserController extends RootController{
   public get(req: AuthedRequest, res: Response) {
-    return super.get(req, res, 'manage-users');
+    return super.get(req, res, 'add-user');
   }
 }

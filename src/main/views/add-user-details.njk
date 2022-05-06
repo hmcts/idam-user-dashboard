@@ -19,7 +19,7 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Add users', urls.ADD_USERS_URL],
+    ['Add user', urls.ADD_USER_URL],
     ['Add user details']
   ]) }}
 {% endblock %}
@@ -69,7 +69,7 @@
         <h2 class="govuk-heading-s">Select user type</h2>
         {{ govukDetails({
           summaryText: "Help with selection",
-          text: "Private Beta Citizen is a citizen who is trialing a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support."
+          text: content.roleHint
         }) }}
 
         {{ govukRadios({
@@ -77,6 +77,12 @@
           name: "userType",
           errorMessage: { text: error.userType.message } if error.userType,
           items: [
+            {
+              value: "citizen",
+              text: "Private Beta Citizen",
+              checked: true if content.user.userType === 'citizen',
+              disabled: not content.enablePrivateBeta
+            } if content.showPrivateBeta,
             {
               value: "professional",
               text: "Professional",
@@ -98,9 +104,9 @@
   </div>
 
   <div class="govuk-grid-row">
-    <form method="REDIRECT" action="{{ urls.ADD_USERS_URL }}">
+    <form method="REDIRECT" action="{{ urls.ADD_USER_URL }}">
       {{ csrfProtection(csrfToken) }}
-      <button type="submit" class="govuk-back-link">Return to add users</button>
+      <button type="submit" class="govuk-back-link">Return to add user</button>
     </form>
   </div>
 {% endblock %}

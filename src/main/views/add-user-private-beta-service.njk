@@ -1,0 +1,62 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "macros/csrf.njk" import csrfProtection %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+{% from "macros/errorSummary.njk" import errorSummary %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  Add User - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Add user', urls.ADD_USER_URL],
+    ['Add private beta service']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      {{ errorSummary(error) }}
+      <h1 class="govuk-heading-l">Add a new user</h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      <form id="addPrivateBetaServiceForm" method="POST" action="{{ urls.ADD_PRIVATE_BETA_SERVICE_URL }}">
+        {{ csrfProtection(csrfToken) }}
+
+        <input type="hidden" name="_email" value="{{ content.user.email }}">
+        <input type="hidden" name="_forename" value="{{ content.user.forename }}">
+        <input type="hidden" name="_surname" value="{{ content.user.surname }}">
+
+        {{ govukSelect({
+          id: "service",
+          name: "service",
+          label: {
+            text: "Please select a service you would want to associate with the private beta citizen"
+          },
+          errorMessage: { text: error.privateBeta.message } if error.privateBeta,
+          items: content.services | selectFilter(content.selectedService)
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save" }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <form method="redirect" action="{{ urls.ADD_USER_URL }}">
+      {{ csrfProtection(csrfToken) }}
+      <button type="submit" class="govuk-back-link">Return to add user</button>
+    </form>
+  </div>
+
+{% endblock %}

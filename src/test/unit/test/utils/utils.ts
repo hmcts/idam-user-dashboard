@@ -1,12 +1,18 @@
 import {
   convertISODateTimeToUTCFormat,
-  hasProperty, isArrayEmpty,
-  isEmpty, isObjectEmpty,
+  hasProperty,
+  isArrayEmpty,
+  isEmpty,
+  isObjectEmpty,
   isValidEmailFormat,
   obfuscateEmail,
   possiblyEmail,
   sortRoles,
-  isString, getObjectVariation
+  isString,
+  getObjectVariation,
+  convertToArray,
+  arrayContainsSubstring,
+  findDifferentElements
 } from '../../../../main/utils/utils';
 
 describe('utils', () => {
@@ -248,6 +254,59 @@ describe('utils', () => {
 
     test('Should return false if input does not contain \'@\'', async () => {
       expect(possiblyEmail('f5a15ced-0189-4b84-ab95-15c2a5fee728')).toBe(false);
+    });
+  });
+
+  describe('convertToArray', () => {
+    test('Should return the input value if already an array', async () => {
+      const value = ['a', 'b', 'c'];
+      expect(convertToArray(value)).toStrictEqual(value);
+    });
+
+    test('Should convert to array if input is string', async () => {
+      expect(convertToArray('a')).toStrictEqual(['a']);
+    });
+  });
+
+  describe('arrayContainsSubstring', () => {
+    const array = ['test', 'testing', 'tested', 'My test'];
+
+    test('Should return true if one of the array items contains the substring', async () => {
+      expect(arrayContainsSubstring(array, 'testin')).toBeTruthy();
+    });
+
+    test('Should return true if multiple array items contain the substring', async () => {
+      expect(arrayContainsSubstring(array, 'test')).toBeTruthy();
+    });
+
+    test('Should return false if none of the array items contains the substring', async () => {
+      expect(arrayContainsSubstring(array, 'a new string')).toBeFalsy();
+    });
+  });
+
+  describe('findDifferentElements', () => {
+    test('Should return new added elements only', async () => {
+      expect(findDifferentElements(['a', 'c', 'd'], ['a', 'b', 'd'])).toStrictEqual(['c']);
+    });
+
+    test('Should return all new elements if all elements are new', async () => {
+      expect(findDifferentElements(['d', 'e'], ['a', 'b', 'c'])).toStrictEqual(['d', 'e']);
+    });
+
+    test('Should return nothing if no existing elements added', async () => {
+      expect(findDifferentElements(['a', 'b'], ['a', 'b', 'd'])).toStrictEqual([]);
+    });
+
+    test('Should return removed elements only', async () => {
+      expect(findDifferentElements(['a', 'b', 'd'], ['a', 'c', 'd'])).toStrictEqual(['b']);
+    });
+
+    test('Should return all existing elements if all new elements are different', async () => {
+      expect(findDifferentElements(['a', 'b', 'c'], ['d', 'e'])).toStrictEqual(['a', 'b', 'c']);
+    });
+
+    test('Should return nothing if no existing elements removed', async () => {
+      expect(findDifferentElements(['a', 'b', 'd'], ['a', 'b', 'c', 'd'])).toStrictEqual([]);
     });
   });
 });

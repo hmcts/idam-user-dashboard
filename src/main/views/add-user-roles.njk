@@ -13,7 +13,7 @@
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Add users', urls.ADD_USERS_URL],
+    ['Add user', urls.ADD_USER_URL],
     ['Add user roles']
   ]) }}
 {% endblock %}
@@ -56,9 +56,9 @@
     </div>
 
     <div class="govuk-grid-row">
-      <form method="post" action="{{ urls.HOME_URL }}">
+      <form method="redirect" action="{{ urls.ADD_USER_URL }}">
         {{ csrfProtection(csrfToken) }}
-        <button type="submit" class="govuk-back-link">Return to main menu</button>
+        <button type="submit" class="govuk-back-link">Return to add user</button>
       </form>
     </div>
 {% endblock %}
