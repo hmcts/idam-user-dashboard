@@ -450,4 +450,80 @@ describe('IdamAPI', () => {
       expect(api.removeRoleFromUser(testUserId, 'role1')).rejects.toEqual('Error deleting user role in IDAM API');
     });
   });
+
+  describe('getUsersWithRoles', () => {
+    test('Should return users details when querying by single role', () => {
+      const results = {
+        data: [{
+          id: testUserId,
+          forename: 'test',
+          surname: 'test',
+          email: testEmail,
+          active: true,
+          roles: ['IDAM_SUPER_USER'],
+        },
+        {
+          id: testUserId + 1,
+          forename: 'test',
+          surname: 'test',
+          email: '2' + testEmail,
+          active: true,
+          roles: ['IDAM_SUPER_USER'],
+        }]
+      };
+      const roles = ['IDAM_SUPER_USER'];
+      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER) AND lastModified:>2018-01-01T00:00:00.000000';
+
+      const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall);
+    });
+
+    test('Should return users details when querying by multiple roles', () => {
+      const results = {
+        data: [{
+          id: testUserId,
+          forename: 'test',
+          surname: 'test',
+          email: testEmail,
+          active: true,
+          roles: ['IDAM_SUPER_USER'],
+        },
+        {
+          id: testUserId + 1,
+          forename: 'test',
+          surname: 'test',
+          email: '2' + testEmail,
+          active: true,
+          roles: ['IDAM_ADMIN_USER'],
+        }]
+      };
+      const roles = ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'];
+      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER) AND lastModified:>2018-01-01T00:00:00.000000';
+
+      const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall);
+    });
+
+    test('Should return error if API issue', async () => {
+      const roles = ['IDAM_SUPER_USER'];
+
+      const mockAxios: any = {get: jest.fn().mockRejectedValue('')};
+      const mockLogger = {error: jest.fn()} as any;
+      const mockTelemetryClient = {trackTrace: jest.fn()} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      await expect(api.getUsersWithRoles(roles)).rejects.toThrowError();
+      expect(mockLogger.error).toBeCalled();
+    });
+  });
 });

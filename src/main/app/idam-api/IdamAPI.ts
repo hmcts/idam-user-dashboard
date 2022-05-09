@@ -150,4 +150,24 @@ export class IdamAPI {
         return Promise.reject(errorMessage);
       });
   }
+
+  public getUsersWithRoles(roles: string[]): Promise<User[]> {
+    let queryString = '';
+    roles.forEach((role, index, roles) => {
+      queryString += 'roles:' + role;
+      if (index !== roles.length - 1) {
+        queryString += ' OR ';
+      }
+    });
+
+    return this.userAxios
+      .get(`/api/v1/users?size=500&query=(${queryString}) AND lastModified:>2018-01-01T00:00:00.000000`)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error getting all users with role from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
+      });
+  }
 }
