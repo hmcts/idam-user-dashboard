@@ -30,13 +30,8 @@ button.govuk-back-link[type="submit"] {
     display: flex;
 
     & > * {
-      @include govuk-responsive-margin(6, "left");
       @include govuk-responsive-margin(6, "right");
       flex: auto;
-
-      &:first-child {
-        margin-left: 0;
-      }
 
       &:last-child {
         margin-right: 0;
