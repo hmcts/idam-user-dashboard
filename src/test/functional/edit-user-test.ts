@@ -19,7 +19,7 @@ const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 const MFA_ENABLED_FLAG = 'enabled';
 const MFA_ENABLED_TEXT = 'Enabled';
 const MFA_DISABLED_TEXT = 'Disabled';
-const MFA_SECURITY_WARNING = 'Warning: only disable MFA for a user if they have a justice.gov.uk or hmcts.net email address. Contact the information security team if you want to make an exception.';
+const MFA_SECURITY_WARNING = 'Only disable MFA for a user if they have a \'justice.gov.uk\' or \'hmcts.net\' email address. Contact the information security team if you want to make an exception.';
 
 BeforeSuite(async () => {
   await createAssignableRoles(PARENT_ROLE);
