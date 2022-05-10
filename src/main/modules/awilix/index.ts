@@ -20,6 +20,7 @@ import { UserEditController } from '../../controllers/UserEditController';
 import { AccessibilityStatementController } from '../../controllers/AccessibilityStatementController';
 import { GenerateReportController } from '../../controllers/GenerateReportController';
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
+import { DownloadReportController } from '../../controllers/DownloadReportController';
 
 /**
  * Sets up the dependency injection container
@@ -45,6 +46,7 @@ export class Container {
       userSuspendController: asClass(UserSuspendController),
       accessibilityStatementController: asClass(AccessibilityStatementController),
       generateReportController: asClass(GenerateReportController),
+      downloadReportController: asClass(DownloadReportController)
     });
 
     /**
