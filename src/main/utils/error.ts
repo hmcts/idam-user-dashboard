@@ -17,5 +17,6 @@ export const MISSING_ROLE_ASSIGNMENT_ERROR = 'A user must have at least one role
 export const MISSING_ROLE_INPUT_ERROR = 'You must enter a role or a list of roles (comma seperated)';
 export const GENERATING_REPORT_ERROR = 'An error occurred generating the report.';
 export const GENERATING_REPORT_FILE_ERROR = 'An error occurred generating the report file';
+export const ROLE_PERMISSION_ERROR = 'You do not have permission to create the user roles';
 
 export const duplicatedEmailError = (email: string) => `The email '${email}' already exists`;

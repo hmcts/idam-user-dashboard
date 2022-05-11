@@ -21,6 +21,7 @@ import { AccessibilityStatementController } from '../../controllers/Accessibilit
 import { GenerateReportController } from '../../controllers/GenerateReportController';
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
 import { DownloadReportController } from '../../controllers/DownloadReportController';
+import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
 
 /**
  * Sets up the dependency injection container
@@ -38,6 +39,7 @@ export class Container {
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
       addUserRolesController: asClass(AddUserRolesController),
+      addPrivateBetaServiceController: asClass(AddPrivateBetaServiceController),
       manageUserController: asClass(ManageUserController),
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),

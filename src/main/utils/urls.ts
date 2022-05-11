@@ -8,6 +8,7 @@ export const MANAGER_USER_URL = '/user/manage';
 export const ADD_USER_URL = '/user/add';
 export const ADD_USER_DETAILS_URL = '/user/add/details';
 export const ADD_USER_ROLES_URL = '/user/add/roles';
+export const ADD_PRIVATE_BETA_SERVICE_URL = '/user/add/private-beta-service';
 export const ADD_USER_COMPLETION_URL = '/user/add/completed';
 export const USER_DETAILS_URL = '/user/details';
 export const USER_ACTIONS_URL = '/user/actions';
