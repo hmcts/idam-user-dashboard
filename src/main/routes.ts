@@ -12,7 +12,7 @@ import {
   USER_SUSPEND_URL,
   ACCESSIBILITY_STATEMENT,
   GENERATE_REPORT_URL,
-  DOWNLOAD_REPORT_URL
+  DOWNLOAD_REPORT_URL,
   ADD_PRIVATE_BETA_SERVICE_URL,
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';

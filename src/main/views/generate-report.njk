@@ -22,17 +22,17 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
-      <h1 class="govuk-heading-l">Generate ReportsHandler</h1>
+      <h1 class="govuk-heading-l">Generate report</h1>
       <form method="POST" action="{{ urls.GENERATE_REPORT_URL }}">
         {{ csrfProtection(csrfToken) }}
         {{ govukInput({
           label: {
-            text: "What role should the report be based on?",
+            text: "What roles should the report be based on?",
             classes: "govuk-label govuk-label--m",
             isPageHeading: true
           },
           hint: {
-            text: "Please enter the role name"
+            text: "Please enter each role (comma-seperated)"
           },
           errorMessage: { text: error.search.message } if error.search,
           classes: "govuk-input govuk-!-width-three-quarters",

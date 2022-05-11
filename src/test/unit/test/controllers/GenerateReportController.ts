@@ -4,6 +4,7 @@ import { mockRequest } from '../../utils/mockRequest';
 import { mockApi } from '../../utils/mockApi';
 import { GenerateReportController } from '../../../../main/controllers/GenerateReportController';
 import {
+  GENERATING_REPORT_CITIZEN_ERROR,
   GENERATING_REPORT_ERROR,
   GENERATING_REPORT_FILE_ERROR,
   MISSING_ROLE_INPUT_ERROR
@@ -38,6 +39,17 @@ describe('Generate report controller', () => {
     expect(res.render).toBeCalledWith('generate-report', {
       error: {
         search: { message: MISSING_ROLE_INPUT_ERROR }
+      },
+    });
+  });
+
+  test('Should render the generate report page with error when attempting to generate citizen report', async () => {
+    req.body.search = 'citizen';
+    await controller.post(req, res);
+
+    expect(res.render).toBeCalledWith('generate-report', {
+      error: {
+        search: { message: GENERATING_REPORT_CITIZEN_ERROR }
       },
     });
   });

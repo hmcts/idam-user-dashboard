@@ -4,7 +4,12 @@ import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
 import { PageError } from '../interfaces/PageData';
 import { isArrayEmpty, isObjectEmpty } from '../utils/utils';
-import { GENERATING_REPORT_ERROR, GENERATING_REPORT_FILE_ERROR, MISSING_ROLE_INPUT_ERROR } from '../utils/error';
+import {
+  GENERATING_REPORT_CITIZEN_ERROR,
+  GENERATING_REPORT_ERROR,
+  GENERATING_REPORT_FILE_ERROR,
+  MISSING_ROLE_INPUT_ERROR
+} from '../utils/error';
 import { ReportsHandler } from '../app/reports/ReportsHandler';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 
@@ -25,7 +30,7 @@ export class GenerateReportController extends RootController {
     const roles = (req.body.search as string)
       .split(',')
       .map(role => role.trim())
-      .filter(role => role.length && role !== 'citizen');
+      .filter(role => role.length);
 
     const errors = this.validateFields({ search: roles });
     if(!isObjectEmpty(errors)) {
@@ -69,6 +74,7 @@ export class GenerateReportController extends RootController {
     const errors: PageError = {};
 
     if(isArrayEmpty(search)) errors.search = { message: MISSING_ROLE_INPUT_ERROR };
+    if(search.includes('citizen')) errors.search = { message: GENERATING_REPORT_CITIZEN_ERROR };
 
     return errors;
   }
