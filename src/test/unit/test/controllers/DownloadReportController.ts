@@ -4,7 +4,7 @@ import { DownloadReportController } from '../../../../main/controllers/DownloadR
 
 describe('Download report controller', () => {
   let req: any;
-  const res = mockResponse();
+  let res: any;
   const next = jest.fn();
   const mockReportGenerator: any = {
     generate: jest.fn(),
@@ -14,6 +14,7 @@ describe('Download report controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
+    res = mockResponse();
   });
 
   test('Should send report that exists', async () => {
