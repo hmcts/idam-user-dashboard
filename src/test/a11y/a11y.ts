@@ -18,8 +18,7 @@ import {
   USER_SUSPEND_URL
 } from '../../main/utils/urls';
 
-const IGNORED_URLS = [urls.LOGIN_URL, urls.LOGOUT_URL, urls.OAUTH2_CALLBACK_URL, urls.ADD_USER_COMPLETION_URL, urls.USER_ACTIONS_URL,
-  urls.ADD_USER_DETAILS_URL, urls.EDIT_USER_URL, urls.ADD_USER_ROLES_URL];
+const IGNORED_URLS = [urls.LOGIN_URL, urls.LOGOUT_URL, urls.OAUTH2_CALLBACK_URL, urls.ADD_USER_COMPLETION_URL, urls.USER_ACTIONS_URL];
 
 
 const pa11y = require('pa11y');
