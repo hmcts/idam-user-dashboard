@@ -39,7 +39,6 @@ Scenario('I as a user should be able to generate user report',
     I.waitForText('Please enter each role (comma-seperated)');
     I.click('#search');
     I.fillField('#search', SEARCHABLE_ROLE);
-    //'USER_DASHBOARD_ASSIGNABLE_ROLE'
     I.click('Generate report');
     I.waitForText('Generated Report');
     I.see('Account state');
@@ -52,9 +51,9 @@ Scenario('I as a user should be able to generate user report',
     Assert.deepEqual(firstNamesBeforeSorting, firstNamesAfterSorting);
 
     const emails: string[] = await I.grabTextFromAll('table > tbody > tr > *:nth-child(3)');
-    Assert.equal(emails.includes(DASHBOARD_USER_EMAIL),true);
-    Assert.equal(emails.includes(USER_WITH_SEARCHABLE_ROLE_EMAIL),true);
-    Assert.equal(emails.includes(archivedUserEmail),false);
+    Assert.equal(emails.includes(DASHBOARD_USER_EMAIL), true);
+    Assert.equal(emails.includes(USER_WITH_SEARCHABLE_ROLE_EMAIL), true);
+    Assert.equal(emails.includes(archivedUserEmail), false);
 
     await I.deleteStaleUser(archivedUser.id);
 
