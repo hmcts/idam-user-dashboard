@@ -79,7 +79,7 @@ export class IdamAPI {
       .post('/api/v1/users/registration', user)
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = error.response.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
+        const errorMessage = error.response?.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
