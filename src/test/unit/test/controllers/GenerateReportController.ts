@@ -7,6 +7,7 @@ import {
   GENERATING_REPORT_CITIZEN_ERROR,
   GENERATING_REPORT_ERROR,
   GENERATING_REPORT_FILE_ERROR,
+  GENERATING_REPORT_NO_USERS_MATCHED,
   MISSING_ROLE_INPUT_ERROR
 } from '../../../../main/utils/error';
 import { User } from '../../../../main/interfaces/User';
@@ -95,6 +96,29 @@ describe('Generate report controller', () => {
         reportData: users
       }
     });
+  });
+
+  test('Should render the view report page with no users matched error when searching non existent / unassigned role', async () => {
+    const query = ['XYZ'];
+    req.body.search = query[0];
+
+    const users = [] as User[];
+    const reportFileName = 'someUUID.csv';
+
+    mockApi.getUsersWithRoles.mockResolvedValue(users);
+    mockReportGenerator.generate.mockResolvedValue(reportFileName);
+
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('view-report', {
+      content: {
+        reportData: users,
+        query
+      },
+      error: {
+        body: { message: GENERATING_REPORT_NO_USERS_MATCHED }
+      },
+    });
+
   });
 
   test('Should render the view report page with a warning when an error has occurred creating the report file', async () => {

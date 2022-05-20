@@ -8,6 +8,7 @@ import {
   GENERATING_REPORT_CITIZEN_ERROR,
   GENERATING_REPORT_ERROR,
   GENERATING_REPORT_FILE_ERROR,
+  GENERATING_REPORT_NO_USERS_MATCHED,
   MISSING_ROLE_INPUT_ERROR
 } from '../utils/error';
 import { ReportsHandler } from '../app/reports/ReportsHandler';
@@ -51,6 +52,16 @@ export class GenerateReportController extends RootController {
     }
 
     try {
+      if(reportData.length < 1) {
+        return super.post(req, res, 'view-report', {
+          content: {
+            reportData, query: roles,
+          },
+          error: {
+            'body': {message: GENERATING_REPORT_NO_USERS_MATCHED}
+          }
+        });
+      }
       const reportFileName = await this.reportGenerator.generate(reportData);
       return super.post(req, res,'view-report', {
         content: {
