@@ -13,6 +13,7 @@ Feature('Generate User Report');
 const DASHBOARD_USER_ROLE = randomData.getRandomRole();
 const SEARCHABLE_ROLE = randomData.getRandomRole();
 const SEARCHABLE_ROLE_WITHOUT_USER = randomData.getRandomRole();
+const ROLE_NOT_EXIST = randomData.getRandomRole();
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 const USER_WITH_SEARCHABLE_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
@@ -36,14 +37,19 @@ Scenario('I as a user should be able to generate user report',
     I.waitForText('Generate a user report');
     I.click('Generate a user report');
     I.click('Continue');
+    I.waitForText('What roles should the report be based on?');
+    I.waitForText('Please enter the role(s) you want to search for (comma-separated). The results will show all users that have the entered role(s) assigned to them. Archived users are not listed.');
+    I.waitForText('Generating the report can take some time, please do not refresh the page.');
     I.waitForText('Please enter each role (comma-seperated)');
     I.click('#search');
     I.fillField('#search', SEARCHABLE_ROLE);
     I.click('Generate report');
     I.waitForText('Generated Report');
+    I.see('Download report (CSV)');
     I.see('Account state');
     I.see('Name');
     I.see('Email');
+    I.see('Back');
 
     const firstNames: string[] = await I.grabTextFromAll('table > tbody > tr > *:nth-child(2)');
     const firstNamesBeforeSorting: string[] = firstNames.map(n => n.toLowerCase());
@@ -75,7 +81,7 @@ Scenario('I as a user should not be able to see the users with citizen role and 
     I.see('For security reasons, it is not possible to get a report on all citizen users', '#search-error');
   });
 
-Scenario('I as a user should see proper error message when no role name entered',
+Scenario('I as a user should see proper error message when role name not entered',
   {featureFlags: [GAMMA_GENERATE_REPORT]},
   async ({I}) => {
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
@@ -89,4 +95,36 @@ Scenario('I as a user should see proper error message when no role name entered'
     I.click('Generate report');
     I.waitForText('There is a problem');
     I.see('You must enter a role or a list of roles (comma seperated)', '#search-error');
+  });
+
+Scenario('I as a user should see proper error message when role entered does not exist',
+  {featureFlags: [GAMMA_GENERATE_REPORT]},
+  async ({I}) => {
+    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage an existing user');
+    I.waitForText('Generate a user report');
+    I.click('Generate a user report');
+    I.click('Continue');
+    I.waitForText('Please enter each role (comma-seperated)');
+    I.click('#search');
+    I.fillField('#search', ROLE_NOT_EXIST);
+    I.click('Generate report');
+    I.waitForText('There is a problem');
+    I.see('There are no users with the entered role(s).');
+  });
+
+Scenario('I as a user should see proper error message when role entered does not have any user',
+  {featureFlags: [GAMMA_GENERATE_REPORT]},
+  async ({I}) => {
+    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage an existing user');
+    I.waitForText('Generate a user report');
+    I.click('Generate a user report');
+    I.click('Continue');
+    I.waitForText('Please enter each role (comma-seperated)');
+    I.click('#search');
+    I.fillField('#search', SEARCHABLE_ROLE_WITHOUT_USER);
+    I.click('Generate report');
+    I.waitForText('There is a problem');
+    I.see('There are no users with the entered role(s).');
   });
