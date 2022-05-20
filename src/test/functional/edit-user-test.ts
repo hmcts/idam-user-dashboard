@@ -6,7 +6,7 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_EDIT} from '../../main/app/feature-flags/flags';
+import { BETA_EDIT, GAMMA_MFA } from '../../main/app/feature-flags/flags';
 
 Feature('Edit User');
 
@@ -212,7 +212,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
   });
 
 Scenario('I as a user should be able to edit mfa if I have the assignable role of idam-mfa-disabled',
-  {featureFlags: [BETA_EDIT]},
+  {featureFlags: [BETA_EDIT, GAMMA_MFA]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, testConfig.USER_ROLE_IDAM_MFA_DISABLED, PARENT_ROLE_WITH_MFA_ASSIGNABLE]);
@@ -254,7 +254,7 @@ Scenario('I as a user should be able to edit mfa if I have the assignable role o
   });
 
 Scenario('I as a user should not be able to edit mfa if I don\'t have the assignable role of idam-mfa-disabled',
-  {featureFlags: [BETA_EDIT]},
+  {featureFlags: [BETA_EDIT, GAMMA_MFA]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
     await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [PARENT_ROLE]);
