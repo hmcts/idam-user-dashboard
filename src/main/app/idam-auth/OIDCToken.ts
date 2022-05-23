@@ -7,9 +7,9 @@ export class OIDCToken {
 }
 
 export interface OIDCToken {
-  [key: string]: string | number | boolean;
-  exp: number;
-  iat: number;
-  expires_in: number;
+  [key: string]: any;
+  exp?: number;
+  iat?: number;
+  expires_in?: number;
   raw: string;
 }
