@@ -20,6 +20,7 @@ export type OIDCSession = {
   tokens: {
     accessToken: OIDCToken;
     refreshToken: OIDCToken;
+    idToken: OIDCToken;
   };
 }
 
@@ -33,9 +34,11 @@ interface IdToken {
 
 export class IdamAuth {
   private readonly IDAM_PUBLIC_URL: string = config.get('services.idam.url.public');
+  private readonly IDAM_USER_DASHBOARD_URL: string = config.get('services.idam.url.dashboard');
   private readonly CALLBACK_URL: string = config.get('services.idam.callbackURL');
   private readonly TOKEN_PATH: string = config.get('services.idam.endpoint.token');
   private readonly AUTHORIZATION_PATH: string = config.get('services.idam.endpoint.authorization');
+  private readonly END_SESSION_PATH: string = config.get('services.idam.endpoint.endSession');
 
 
   constructor(
@@ -56,7 +59,17 @@ export class IdamAuth {
       'scope': this.clientScope
     });
 
-    return URL + '?' + params.toString() +'&prompt=login';
+    return URL + '?' + params.toString();
+  }
+
+  public getEndSessionRedirect(idToken: OIDCToken): string {
+    const URL = this.IDAM_PUBLIC_URL + this.END_SESSION_PATH;
+    const params = new URLSearchParams({
+      'id_token_hint': idToken.raw,
+      'post_logout_redirect_uri': this.IDAM_USER_DASHBOARD_URL
+    });
+
+    return URL + '?' + params.toString();
   }
 
   public authorizeCode(code: string): Promise<OIDCSession> {
@@ -85,7 +98,8 @@ export class IdamAuth {
           user: this.convertIdTokenToUser(jwtDecode(tokens.id_token)),
           tokens: {
             accessToken: OIDCToken.format(tokens.access_token),
-            refreshToken: OIDCToken.format(tokens.refresh_token)
+            refreshToken: OIDCToken.format(tokens.refresh_token),
+            idToken: OIDCToken.format(tokens.id_token),
           }};
       })
       .catch(error => {
