@@ -102,33 +102,35 @@
       </div>
 
       <div class="govuk-grid-column-full">
-        {% call govukFieldset({
-          legend: {
-            text: "Multi-factor authentication",
-            classes: "govuk-fieldset__legend--s"
-          }
-        }) %}
+        {% if featureFlags.values[featureFlags.flags.GAMMA_MFA] %}
 
-          {% if content.showMfa and content.user.multiFactorAuthentication %}
-            {{ govukWarningText({
-              text: "Only disable MFA for a user if they have a 'justice.gov.uk' or 'hmcts.net' email address. Contact the information security team if you want to make an exception.",
-              iconFallbackText: "Warning"
+          {% call govukFieldset({
+            legend: {
+              text: "Multi-factor authentication",
+              classes: "govuk-fieldset__legend--s"
+            }
+          }) %}
+            {% if content.showMfa and content.user.multiFactorAuthentication %}
+              {{ govukWarningText({
+                text: "Only disable MFA for a user if they have a 'justice.gov.uk' or 'hmcts.net' email address. Contact the information security team if you want to make an exception.",
+                iconFallbackText: "Warning"
+              }) }}
+            {% endif %}
+            {{ govukCheckboxes({
+              idPrefix: "multiFactorAuthentication",
+              name: "multiFactorAuthentication",
+              classes: "govuk-checkboxes--small",
+              items: [
+                {
+                  value: 'enabled',
+                  text: 'Enabled',
+                  checked: content.user.multiFactorAuthentication,
+                  disabled: not content.showMfa
+                }
+              ]
             }) }}
-          {% endif %}
-          {{ govukCheckboxes({
-            idPrefix: "multiFactorAuthentication",
-            name: "multiFactorAuthentication",
-            classes: "govuk-checkboxes--small",
-            items: [
-              {
-                value: 'enabled',
-                text: 'Enabled',
-                checked: content.user.multiFactorAuthentication,
-                disabled: not content.showMfa
-              }
-            ]
-          }) }}
-        {% endcall %}
+          {% endcall %}
+        {% endif %}
 
         <div class="govuk-button-group">
           {{ govukButton({ text: "Save", name: "_action", value: "save", classes: "govuk-button" }) }}

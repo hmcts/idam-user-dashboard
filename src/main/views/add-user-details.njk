@@ -91,7 +91,7 @@
                 text: "Private Beta Citizen",
                 checked: true if content.user.userType === 'citizen',
                 disabled: not content.enablePrivateBeta
-              } if content.showPrivateBeta,
+              } if content.showPrivateBeta and featureFlags.values[featureFlags.flags.GAMMA_PRIVATE_BETA],
               {
                 value: "professional",
                 text: "Professional",

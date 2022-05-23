@@ -8,7 +8,7 @@ import '../../main/utils/utils';
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import {BETA_ADD} from '../../main/app/feature-flags/flags';
+import { BETA_ADD, GAMMA_PRIVATE_BETA } from '../../main/app/feature-flags/flags';
 import {PRIVATE_BETA_ROLE} from '../../main/utils/serviceUtils';
 import {UserType} from '../../main/utils/UserType';
 
@@ -80,7 +80,7 @@ Scenario('I as a user should be able to register new support user',
   }).tag('@CrossBrowser');
 
 Scenario('I as a user should be able to register new private beta citizen user',
-  {featureFlags: [BETA_ADD]},
+  {featureFlags: [BETA_ADD, GAMMA_PRIVATE_BETA]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);

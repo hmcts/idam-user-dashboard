@@ -334,12 +334,10 @@ describe('IdamAPI', () => {
     test('Should not register a user when error', () => {
       const mockAxios = {post: () => Promise.reject('')} as any;
       const mockLogger = {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        error : () => {}
+        error: jest.fn()
       } as any;
       const mockTelemetryClient = {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        trackTrace : () => {}
+        trackTrace: jest.fn()
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
