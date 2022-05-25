@@ -18,6 +18,7 @@ export class OidcMiddleware {
         clientID: this.clientId,
         secret: this.sessionSecret,
         clientSecret: this.clientSecret,
+        clientAuthMethod: 'client_secret_post',
         authorizationParams: {
           'response_type': 'code',
           scope: this.clientScope
