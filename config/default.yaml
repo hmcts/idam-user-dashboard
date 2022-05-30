@@ -2,7 +2,7 @@ useCSRFProtection: true,
 security:
   referrerPolicy: 'origin'
 appInsights:
-    instrumentationKey: false
+  instrumentationKey: false
 port: 3100
 services:
   name: 'IDAM User Dashboard'
@@ -10,6 +10,7 @@ services:
     url:
       public: 'https://idam-web-public.aat.platform.hmcts.net'
       api: 'https://idam-api.aat.platform.hmcts.net'
+      testingSupportApi: 'https://idam-testing-support-api.aat.platform.hmcts.net'
       dashboard: 'http://localhost:3100'
     endpoint:
       authorization: '/o/authorize'

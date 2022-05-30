@@ -11,10 +11,13 @@ import {
   USER_DETAILS_URL,
   USER_SUSPEND_URL,
   USER_DISABLE_SSO_URL,
-  ACCESSIBILITY_STATEMENT
+  ACCESSIBILITY_STATEMENT,
+  GENERATE_REPORT_URL,
+  DOWNLOAD_REPORT_URL,
+  ADD_PRIVATE_BETA_SERVICE_URL,
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
-import { BETA_ADD, BETA_DELETE, BETA_EDIT, BETA_SUSPEND, BETA_SSO } from './app/feature-flags/flags';
+import { BETA_ADD, BETA_DELETE, BETA_EDIT, BETA_SUSPEND, BETA_SSO, GAMMA_PRIVATE_BETA, GAMMA_GENERATE_REPORT } from './app/feature-flags/flags';
 
 export default function(app: Application): void {
   const featureFlags: FeatureFlags = app.locals.container.cradle.featureFlags;
@@ -24,6 +27,7 @@ export default function(app: Application): void {
   app.get(ADD_USER_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserController.get);
   app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserDetailsController.post);
   app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserRolesController.post);
+  app.post(ADD_PRIVATE_BETA_SERVICE_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(GAMMA_PRIVATE_BETA), app.locals.container.cradle.addPrivateBetaServiceController.post);
   app.get(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.get);
   app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);
@@ -32,4 +36,7 @@ export default function(app: Application): void {
   app.post(USER_SUSPEND_URL, featureFlags.toggleRoute(BETA_SUSPEND), app.locals.container.cradle.userSuspendController.post);
   app.post(USER_DISABLE_SSO_URL, featureFlags.toggleRoute(BETA_SSO), app.locals.container.cradle.userSsoController.post);
   app.get(ACCESSIBILITY_STATEMENT, app.locals.container.cradle.accessibilityStatementController.get);
+  app.get(GENERATE_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.generateReportController.get);
+  app.post(GENERATE_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.generateReportController.post);
+  app.get(DOWNLOAD_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.downloadReportController.get);
 }

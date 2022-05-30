@@ -12,8 +12,13 @@ import {
   USER_EMPTY_SURNAME_ERROR
 } from '../utils/error';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import { PageError} from '../interfaces/PageData';
+import { PageError } from '../interfaces/PageData';
 import { constructAllRoleAssignments } from '../utils/roleUtils';
+import { UserType } from '../utils/UserType';
+import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
+
+export const ROLE_HINT_WITH_PRIVATE_BETA = 'Private Beta Citizen is a citizen who is trialling a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
+export const ROLE_HINT_WITHOUT_PRIVATE_BETA = 'Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 
 @autobind
 export class AddUserDetailsController extends RootController {
@@ -31,6 +36,7 @@ export class AddUserDetailsController extends RootController {
 
   private async processNewUserEmail(req: AuthedRequest, res: Response) {
     const email = req.body.email as string;
+
     if (isEmpty(email.trim())) {
       return this.postError(req, res, MISSING_EMAIL_ERROR);
     } else if (!isValidEmailFormat(email)) {
@@ -40,11 +46,14 @@ export class AddUserDetailsController extends RootController {
     // check if the user with the same email already exists
     const users = await req.scope.cradle.api.searchUsersByEmail(email);
     if (users.length == 0) {
-      return super.post(req, res, 'add-user-details', {content: {
-        user: {
-          email: email
-        },
-      }});
+      const allServices = await req.scope.cradle.api.getAllServices();
+      const hasPrivateBeta = hasPrivateBetaServices(allServices);
+      const enablePrivateBeta = req.session.user.assignableRoles.includes(UserType.Citizen);
+      const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
+
+      return super.post(req, res, 'add-user-details', {
+        content: { user: { email: email }, showPrivateBeta: hasPrivateBeta, enablePrivateBeta: enablePrivateBeta, roleHint: roleHint }
+      });
     }
 
     return this.postError(req, res, duplicatedEmailError(email));
@@ -55,31 +64,34 @@ export class AddUserDetailsController extends RootController {
     Object.keys(fields).forEach(field => fields[field] = (typeof fields[field] === 'string') ? fields[field].trim(): fields[field]);
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
-    if(!isObjectEmpty(error)) {
+    const allServices = await req.scope.cradle.api.getAllServices();
+
+    if (!isObjectEmpty(error)) {
+      const hasPrivateBeta = hasPrivateBetaServices(allServices);
+      const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
+      const enablePrivateBeta = req.session.user.assignableRoles.includes(UserType.Citizen);
+
       return super.post(req, res, 'add-user-details', {
-        content: {
-          user: user
-        },
+        content: { user: user, showPrivateBeta: hasPrivateBeta, enablePrivateBeta: enablePrivateBeta, roleHint: roleHint },
         error
       });
     }
 
-    const allRoles = await req.scope.cradle.api.getAllRoles();
-    const roleAssignment = constructAllRoleAssignments(allRoles, req.session.user.assignableRoles);
-    super.post(req, res, 'add-user-roles', {
-      content: {
+    if (user.userType === UserType.Citizen) {
+      return super.post(req, res, 'add-user-private-beta-service', { content: {
         user: user,
-        roles: roleAssignment
-      }
-    });
-
-    return;
+        services: getServicesForSelect(allServices),
+        selectedService: ''
+      }});
+    } else {
+      const allRoles = await req.scope.cradle.api.getAllRoles();
+      const roleAssignment = constructAllRoleAssignments(allRoles, req.session.user.assignableRoles);
+      return super.post(req, res, 'add-user-roles', { content: { user: user, roles: roleAssignment } });
+    }
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
-    return super.post(req, res, 'add-user', { error: {
-      email: { message: errorMessage }
-    }});
+    return super.post(req, res, 'add-user', { error: { email: { message: errorMessage } } });
   }
 
   private validateFields(fields: any): PageError {

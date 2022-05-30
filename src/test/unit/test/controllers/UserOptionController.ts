@@ -30,7 +30,7 @@ describe('User option controller', () => {
     expect(res.render).toBeCalledWith('user-option', expectedPageData);
   });
 
-  test('Should redirect to the manage user page when \'Manage an exiting user\' option is selected', async () => {
+  test('Should redirect to the manage user page when "Manage an exiting user" option is selected', async () => {
     req.body = {
       userAction: 'manage-user',
     };
@@ -38,11 +38,19 @@ describe('User option controller', () => {
     expect(res.redirect).toBeCalledWith(urls.MANAGER_USER_URL);
   });
 
-  test('Should redirect to the add user page when \'Add a new user\' option is selected', async () => {
+  test('Should redirect to the add user page when "Add a new user" option is selected', async () => {
     req.body = {
       userAction: 'add-user',
     };
     await controller.post(req, res);
     expect(res.redirect).toBeCalledWith(urls.ADD_USER_URL);
+  });
+
+  test('Should redirect to the generate a report page when "Generate a user report" option is selected', async () => {
+    req.body = {
+      userAction: 'generate-report',
+    };
+    await controller.post(req, res);
+    expect(res.redirect).toBeCalledWith(urls.GENERATE_REPORT_URL);
   });
 });
