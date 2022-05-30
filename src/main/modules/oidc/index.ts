@@ -32,10 +32,11 @@ export class OidcMiddleware {
 
     app.get(LOGOUT_URL, (req: AuthedRequest, res: Response) => {
       if (!req.session.user) return res.redirect(LOGIN_URL);
+      const idToken = req.session.tokens.idToken;
 
       req.session.destroy(() => {
         res.clearCookie(config.get('session.cookie.name'));
-        res.redirect(LOGIN_URL);
+        res.redirect(idamAuth.getEndSessionRedirect(idToken));
       });
     });
 
