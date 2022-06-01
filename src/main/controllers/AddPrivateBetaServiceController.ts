@@ -7,7 +7,7 @@ import { hasProperty, isEmpty } from '../utils/utils';
 import { MISSING_PRIVATE_BETA_SERVICE_ERROR } from '../utils/error';
 import { getServicesForSelect } from '../utils/serviceUtils';
 import { UserType } from '../utils/UserType';
-import { PRIVATE_BETA_ROLE } from '../utils/serviceUtils';
+import {Service} from '../interfaces/Service';
 
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
@@ -28,15 +28,13 @@ export class AddPrivateBetaServiceController extends RootController {
         error: { privateBeta : { message: MISSING_PRIVATE_BETA_SERVICE_ERROR } }
       });
     }
-
-    const selectedService = allServices.find(service => service.label === fields.service);
-    const privateBetaRole = selectedService.onboardingRoles.find(element => element.includes(PRIVATE_BETA_ROLE));
+    const rolesToAdd = await this.getRolesToRegisterUser(req, allServices, fields.service);
 
     return req.scope.cradle.api.registerUser({
       email: fields._email,
       firstName: fields._forename,
       lastName: fields._surname,
-      roles: [UserType.Citizen, privateBetaRole]
+      roles: rolesToAdd
     })
       .then (() => {
         return super.post(req, res, 'add-user-completion');
@@ -47,5 +45,23 @@ export class AddPrivateBetaServiceController extends RootController {
           error: { userRegistration : { message: error } }
         });
       });
+  }
+
+  private async getRolesToRegisterUser(req: AuthedRequest, allServices: Service[], serviceField: String): Promise<string[]> {
+    const selectedService = allServices.find(service => service.label === serviceField);
+    const rolesToAdd: string[] = [UserType.Citizen];
+
+    const allRoles = await  req.scope.cradle.api.getAllRoles();
+    const rolesMap = new Map(allRoles
+      .filter(role => role !== undefined)
+      .map(role => [role.id, role])
+    );
+
+    selectedService.onboardingRoles.forEach(r => {
+      if (rolesMap.has(r)) {
+        rolesToAdd.push(rolesMap.get(r).name)
+      }
+    });
+    return rolesToAdd;
   }
 }
