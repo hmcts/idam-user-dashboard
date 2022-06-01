@@ -47,7 +47,7 @@ export class AddPrivateBetaServiceController extends RootController {
       });
   }
 
-  private async getRolesToRegisterUser(req: AuthedRequest, allServices: Service[], serviceField: String): Promise<string[]> {
+  private async getRolesToRegisterUser(req: AuthedRequest, allServices: Service[], serviceField: string): Promise<string[]> {
     const selectedService = allServices.find(service => service.label === serviceField);
     const rolesToAdd: string[] = [UserType.Citizen];
 
@@ -59,7 +59,7 @@ export class AddPrivateBetaServiceController extends RootController {
 
     selectedService.onboardingRoles.forEach(r => {
       if (rolesMap.has(r)) {
-        rolesToAdd.push(rolesMap.get(r).name)
+        rolesToAdd.push(rolesMap.get(r).name);
       }
     });
     return rolesToAdd;
