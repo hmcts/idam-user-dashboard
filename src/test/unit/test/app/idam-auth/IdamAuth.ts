@@ -61,6 +61,7 @@ describe('IdamAuth', () =>{
         tokens: {
           accessToken: {'mock-key': 'mock-value', raw: response.data['access_token']},
           refreshToken: {'mock-key': 'mock-value', raw: response.data['refresh_token']},
+          idToken: { ...mockTokens.id_token, raw: 'id-token' }
         },
         user: mockUser
       };
@@ -108,6 +109,7 @@ describe('IdamAuth', () =>{
         tokens: {
           accessToken: {'mock-key': 'mock-value', raw: response.data['access_token']},
           refreshToken: {'mock-key': 'mock-value', raw: response.data['refresh_token']},
+          idToken: { ...mockTokens.id_token, raw: 'id-token' }
         },
         user: mockUser
       };
@@ -155,6 +157,7 @@ describe('IdamAuth', () =>{
         tokens: {
           accessToken: {'mock-key': 'mock-value', raw: response.data['access_token']},
           refreshToken: {'mock-key': 'mock-value', raw: response.data['refresh_token']},
+          idToken: { ...mockTokens.id_token, raw: 'id-token' }
         },
         user: mockUser
       };
@@ -181,6 +184,39 @@ describe('IdamAuth', () =>{
 
       await expect(auth.authorizeRefresh('refresh-token')).rejects.toThrowError();
       expect(mockAxios.post).toBeCalledWith('tokenUrl', params);
+    });
+  });
+
+  describe('getAuthorizeRedirect', () => {
+    test('Should return authorize redirect', () => {
+      const publicUrl = 'public-url';
+      const authorizationEndpoint = '/auth';
+      when(config.get).calledWith('services.idam.url.public').mockReturnValue(publicUrl);
+      when(config.get).calledWith('services.idam.endpoint.authorization').mockReturnValue(authorizationEndpoint);
+
+      const auth = new IdamAuth(mockLogger, mockTelemetryClient, clientId, clientSecret, clientScope, mockAxios);
+
+      expect(auth.getAuthorizeRedirect()).toBe(`${publicUrl}${authorizationEndpoint}?client_id=${clientId}&response_type=code&redirect_uri=callbackURL&scope=${clientScope}`);
+    });
+  });
+
+  describe('getEndSessionRedirect', () => {
+    test('Should return end session redirect', () => {
+      const publicUrl = 'public-url';
+      const endSessionEndpoint = '/endSession';
+      const dashboardUrl = 'dashboard-url';
+      const idToken = {
+        ...mockTokens.id_token,
+        raw: 'raw-id-token'
+      };
+
+      when(config.get).calledWith('services.idam.url.public').mockReturnValue(publicUrl);
+      when(config.get).calledWith('services.idam.url.dashboard').mockReturnValue(dashboardUrl);
+      when(config.get).calledWith('services.idam.endpoint.endSession').mockReturnValue(endSessionEndpoint);
+
+      const auth = new IdamAuth(mockLogger, mockTelemetryClient, clientId, clientSecret, clientScope, mockAxios);
+
+      expect(auth.getEndSessionRedirect(idToken)).toBe(`${publicUrl}${endSessionEndpoint}?id_token_hint=${idToken.raw}&post_logout_redirect_uri=${dashboardUrl}`);
     });
   });
 });
