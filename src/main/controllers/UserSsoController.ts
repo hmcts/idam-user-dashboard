@@ -36,7 +36,7 @@ export class UserSsoController extends RootController{
   }
 
   private removesso(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.editUserById(req.body._userId, {ssoId:null, ssoProvider:null})
+    return req.scope.cradle.api.deleteSsoById(req.body._userId)
       .then(() => {
         return super.post(req, res, 'sso-user-successful', { content: { user } } );
       })

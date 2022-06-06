@@ -74,6 +74,17 @@ export class IdamAPI {
       });
   }
 
+  public deleteSsoById(id: string) {
+    return this.userAxios
+      .delete('/api/v1/users/' + id + '/sso')
+      .catch(error => {
+        const errorMessage = 'Error removing user sso by ID from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
+      });
+  }
+
   public registerUser(user: UserRegistrationDetails): Promise<void> {
     return this.userAxios
       .post('/api/v1/users/registration', user)
