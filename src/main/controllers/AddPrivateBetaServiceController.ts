@@ -51,17 +51,15 @@ export class AddPrivateBetaServiceController extends RootController {
     const selectedService = allServices.find(service => service.label === serviceField);
     const rolesToAdd: string[] = [UserType.Citizen];
 
-    const allRoles = await  req.scope.cradle.api.getAllRoles();
+    const allRoles = await req.scope.cradle.api.getAllRoles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])
     );
 
-    selectedService.onboardingRoles.forEach(r => {
-      if (rolesMap.has(r)) {
-        rolesToAdd.push(rolesMap.get(r).name);
-      }
-    });
+    selectedService.onboardingRoles
+      .filter(r => rolesMap.has(r))
+      .forEach(r => rolesToAdd.push(rolesMap.get(r).name));
     return rolesToAdd;
   }
 }
