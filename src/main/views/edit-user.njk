@@ -94,6 +94,12 @@
           {{ roleList({
             roles: displayedRoles,
             name: 'roles',
+            searchBox: {
+              name: 'roles__search-box',
+              id: 'roles__search-box',
+              placeholder: 'Search roles to assign to the user',
+              classes: 'govuk-!-width-one-half'
+            },
             list: {
               classes: 'govuk-checkboxes--small govuk-checkboxes--two-column'
             }
