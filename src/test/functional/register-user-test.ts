@@ -9,7 +9,6 @@ import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {BETA_ADD, GAMMA_PRIVATE_BETA} from '../../main/app/feature-flags/flags';
-import {PRIVATE_BETA_ROLE} from '../../main/utils/serviceUtils';
 import {UserType} from '../../main/utils/UserType';
 
 Feature('Register New User');
@@ -19,7 +18,7 @@ const ASSIGNABLE_CHILD_ROLE1 = randomData.getRandomRole();
 const ASSIGNABLE_CHILD_ROLE2 = randomData.getRandomRole();
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 const SERVICE_WITH_PRIVATE_BETA = randomData.getRandomRole();
-const PRIVATE_BETA_USER_ROLE = SERVICE_WITH_PRIVATE_BETA + '-' + PRIVATE_BETA_ROLE;
+const PRIVATE_BETA_USER_ROLE = SERVICE_WITH_PRIVATE_BETA + '-beta-role';
 
 const OAUTH_REDIRECT_URI = 'http://test.com/oauth2/callback';
 
