@@ -6,13 +6,14 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import { BETA_EDIT, GAMMA_MFA } from '../../main/app/feature-flags/flags';
+import {BETA_EDIT, GAMMA_MFA} from '../../main/app/feature-flags/flags';
 
 Feature('Edit User');
 
 const PARENT_ROLE = randomData.getRandomRole();
 const PARENT_ROLE_WITH_MFA_ASSIGNABLE = randomData.getRandomRole();
-const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
+const ASSIGNABLE_CHILD_ROLE1 = randomData.getRandomRole();
+const ASSIGNABLE_CHILD_ROLE2 = randomData.getRandomRole();
 const INDEPENDANT_CHILD_ROLE = randomData.getRandomRole();
 const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
@@ -24,11 +25,12 @@ const MFA_SECURITY_WARNING = 'Only disable MFA for a user if they have a \'justi
 BeforeSuite(async () => {
   await createAssignableRoles(PARENT_ROLE);
   await createAssignableRoles(PARENT_ROLE_WITH_MFA_ASSIGNABLE);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
+  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE1);
+  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE2);
   await createAssignableRoles(INDEPENDANT_CHILD_ROLE);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
-  await assignRolesToParentRole(PARENT_ROLE_WITH_MFA_ASSIGNABLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE_WITH_MFA_ASSIGNABLE, testConfig.USER_ROLE_IDAM_MFA_DISABLED]);
+  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, PARENT_ROLE, ASSIGNABLE_CHILD_ROLE2]);
+  await assignRolesToParentRole(PARENT_ROLE_WITH_MFA_ASSIGNABLE, [ASSIGNABLE_CHILD_ROLE1, PARENT_ROLE_WITH_MFA_ASSIGNABLE, testConfig.USER_ROLE_IDAM_MFA_DISABLED]);
   await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
 });
 
@@ -188,18 +190,18 @@ Scenario('I as a user should be able to edit roles only if I have the permission
 
     const assignedRoles = await I.grabTextFromAll('[id^=\'assigned-role\']');
     Assert.equal(assignedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
-    Assert.equal(assignedRoles.includes(ASSIGNABLE_CHILD_ROLE), false);
+    Assert.equal(assignedRoles.includes(ASSIGNABLE_CHILD_ROLE1), false);
 
     I.click('Edit user');
     I.waitForText('Edit User');
-    I.see(ASSIGNABLE_CHILD_ROLE);
+    I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(INDEPENDANT_CHILD_ROLE);
 
     //Checking the role which user doesn't have permission to assign is disabled
     const disabledRoles = await I.grabValueFromAll(locate('//input[@name=\'roles\' and @disabled]'));
     Assert.equal(disabledRoles.includes(INDEPENDANT_CHILD_ROLE), true);
 
-    I.click(ASSIGNABLE_CHILD_ROLE);
+    I.click(ASSIGNABLE_CHILD_ROLE1);
     I.click('Save');
     I.see('Success');
     I.waitForText('User details updated successfully');
@@ -208,7 +210,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
 
     const updatedRoles = await I.grabTextFromAll('[id^=\'assigned-role\']');
     Assert.equal(updatedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
-    Assert.equal(updatedRoles.includes(ASSIGNABLE_CHILD_ROLE), true);
+    Assert.equal(updatedRoles.includes(ASSIGNABLE_CHILD_ROLE1), true);
   });
 
 Scenario('I as a user should be able to edit mfa if I have the assignable role of idam-mfa-disabled',
@@ -279,4 +281,42 @@ Scenario('I as a user should not be able to edit mfa if I don\'t have the assign
     // Check the mfa enabled checkbox is selected but disabled
     const mfaFlag = await I.grabValueFrom(locate('//input[@name=\'multiFactorAuthentication\' and @checked and @disabled]'));
     Assert.equal(mfaFlag, MFA_ENABLED_FLAG);
+  });
+
+Scenario('I as a user should be able to filter through roles while updating the user details',
+  {featureFlags: [BETA_EDIT]},
+  async ({I}) => {
+
+    const activeUserEmail = randomData.getRandomEmailAddress();
+    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE1]);
+    const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
+
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+    I.click('Edit user');
+    I.waitForText('Edit User');
+    I.dontSee('Suspend user');
+    I.dontSee('Delete user');
+    I.wait(20);
+    I.see(ASSIGNABLE_CHILD_ROLE1);
+    I.see(ASSIGNABLE_CHILD_ROLE2);
+    I.see(PARENT_ROLE);
+    I.click('#roles__search-box');
+    I.fillField('#roles__search-box', searchText);
+
+    const checkboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
+    checkboxes.forEach(function (checkbox) {
+      if (checkbox.includes(searchText) && !checkbox.includes(testConfig.RBAC.access)) {
+        Assert.ok(true);
+      } else {
+        Assert.ok(false);
+      }
+    });
   });
