@@ -177,7 +177,7 @@ describe('User results controller', () => {
       ssoId: ssoId,
       createDate: '',
       lastModified: ''
-    }
+    };
 
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(searchUserResults);
     when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
@@ -187,9 +187,9 @@ describe('User results controller', () => {
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', { content: {
-        user: getUserByIdResult,
-        showDelete: false,
-        lockedMessage: 'This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in 58 minutes' } });
+      user: getUserByIdResult,
+      showDelete: false,
+      lockedMessage: 'This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in 58 minutes' } });
   });
 
   test('Should render the user details page when searching for a locked user which will be unlocked in a minute', async () => {
@@ -225,7 +225,7 @@ describe('User results controller', () => {
       ssoId: ssoId,
       createDate: '',
       lastModified: ''
-    }
+    };
 
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(searchUserResults);
     when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
@@ -235,9 +235,9 @@ describe('User results controller', () => {
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', { content: {
-        user: getUserByIdResult,
-        showDelete: false,
-        lockedMessage: 'This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in 1 minute'}
+      user: getUserByIdResult,
+      showDelete: false,
+      lockedMessage: 'This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in 1 minute'}
     });
   });
 
@@ -275,7 +275,7 @@ describe('User results controller', () => {
       ssoId: ssoId,
       createDate: '',
       lastModified: ''
-    }
+    };
 
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(searchUserResults);
     when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
@@ -285,9 +285,9 @@ describe('User results controller', () => {
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', { content: {
-        user: getUserByIdResult,
-        showDelete: false,
-        lockedMessage: ''}
+      user: getUserByIdResult,
+      showDelete: false,
+      lockedMessage: ''}
     });
   });
 
