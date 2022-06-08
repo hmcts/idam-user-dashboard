@@ -16,7 +16,15 @@ import {
   ADD_PRIVATE_BETA_SERVICE_URL,
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
-import { BETA_ADD, BETA_DELETE, BETA_EDIT, BETA_SUSPEND, GAMMA_PRIVATE_BETA, GAMMA_GENERATE_REPORT } from './app/feature-flags/flags';
+import {
+  BETA_ADD,
+  BETA_DELETE,
+  BETA_EDIT,
+  BETA_SUSPEND,
+  BETA_SHOW_LOCKED_STATUS,
+  GAMMA_PRIVATE_BETA,
+  GAMMA_GENERATE_REPORT
+} from './app/feature-flags/flags';
 
 export default function(app: Application): void {
   const featureFlags: FeatureFlags = app.locals.container.cradle.featureFlags;
@@ -24,7 +32,7 @@ export default function(app: Application): void {
   app.get(HOME_URL, app.locals.container.cradle.userOptionController.get);
   app.post(HOME_URL, app.locals.container.cradle.userOptionController.post);
   app.get(ADD_USER_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserController.get);
-  app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserDetailsController.post);
+  app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(BETA_SHOW_LOCKED_STATUS), app.locals.container.cradle.addUserDetailsController.post);
   app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserRolesController.post);
   app.post(ADD_PRIVATE_BETA_SERVICE_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(GAMMA_PRIVATE_BETA), app.locals.container.cradle.addPrivateBetaServiceController.post);
   app.get(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.get);

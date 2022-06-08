@@ -7,6 +7,7 @@ export interface User {
   locked: boolean;
   pending: boolean;
   stale: boolean;
+  pwdAccountLockedTime: string;
   roles: string[];
   ssoProvider: string;
   ssoId: string;

@@ -53,6 +53,11 @@ export const convertISODateTimeToUTCFormat = (date: string): string => {
   return result === 'Invalid Date' ? '' : result;
 };
 
+export const computeTimeDifferenceInMinutes = (date1: Date, date2: Date): number => {
+  const differenceInMs = date1.getTime() - date2.getTime();
+  return Math.round(differenceInMs / (1000 * 60));
+};
+
 export const obfuscateEmail = (value: string): string => {
   if (value.includes('@')) {
     // obfuscate at least half of the username, and leave maximum of 3 characters unobfuscated

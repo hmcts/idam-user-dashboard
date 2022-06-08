@@ -1,8 +1,9 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/csrf.njk" import csrfProtection %}
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% extends "template.njk" %}
 
@@ -20,6 +21,13 @@
 
 {% block content %}
   <h1 class="govuk-heading-l">User Details</h1>
+  {% if featureFlags.values[featureFlags.flags.BETA_SHOW_LOCKED_STATUS] and content.lockedMessage %}
+    {{ govukWarningText({
+      text: content.lockedMessage,
+      iconFallbackText: "Warning"
+    }) }}
+  {% endif %}
+
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__key">
@@ -29,7 +37,7 @@
         <p class="govuk-body-m" id="status">
           {% if content.user.active %}
             <strong class="govuk-tag">Active</strong>
-          {% elif content.user.stale %}
+            {% elif content.user.stale %}
             <strong class="govuk-tag govuk-tag--green">Archived</strong>
           {% else %}
             <strong class="govuk-tag govuk-tag--red">Suspended</strong>
