@@ -43,7 +43,11 @@
             {
               value: "add-user",
               text: "Add a new user"
-            } if featureFlags.values[featureFlags.flags.BETA_ADD]
+            } if featureFlags.values[featureFlags.flags.BETA_ADD],
+            {
+              value: "generate-report",
+              text: "Generate a user report"
+            } if featureFlags.values[featureFlags.flags.GAMMA_GENERATE_REPORT]
           ]
         }) }}
 

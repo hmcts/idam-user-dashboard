@@ -1,15 +1,12 @@
 import { SelectItem } from '../interfaces/SelectItem';
 import { Service } from '../interfaces/Service';
-import { arrayContainsSubstring } from './utils';
-
-export const PRIVATE_BETA_ROLE = 'private-beta';
 
 const getServicesWithPrivateBetaRole = (services: Service[]): Service[] => {
-  return services.filter(service => service.onboardingRoles.length > 0 && arrayContainsSubstring(service.onboardingRoles, PRIVATE_BETA_ROLE));
+  return services.filter(service => service.onboardingRoles.length > 0);
 };
 
 export const hasPrivateBetaServices = (services: Service[]): boolean => {
-  return services.some(service => service.onboardingRoles.length > 0 && arrayContainsSubstring(service.onboardingRoles, PRIVATE_BETA_ROLE));
+  return services.some(service => service.onboardingRoles.length > 0);
 };
 
 export const getServicesForSelect = (services: Service[]): SelectItem[] => {
