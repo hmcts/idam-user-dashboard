@@ -21,7 +21,6 @@ import {
   BETA_DELETE,
   BETA_EDIT,
   BETA_SUSPEND,
-  BETA_SHOW_LOCKED_STATUS,
   GAMMA_PRIVATE_BETA,
   GAMMA_GENERATE_REPORT
 } from './app/feature-flags/flags';
@@ -36,7 +35,7 @@ export default function(app: Application): void {
   app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserRolesController.post);
   app.post(ADD_PRIVATE_BETA_SERVICE_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(GAMMA_PRIVATE_BETA), app.locals.container.cradle.addPrivateBetaServiceController.post);
   app.get(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.get);
-  app.post(USER_DETAILS_URL, featureFlags.toggleRoute(BETA_SHOW_LOCKED_STATUS), app.locals.container.cradle.userResultsController.post);
+  app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);
   app.post(EDIT_USER_URL, featureFlags.toggleRoute(BETA_EDIT), app.locals.container.cradle.userEditController.post);
   app.post(USER_DELETE_URL, featureFlags.toggleRoute(BETA_DELETE), app.locals.container.cradle.userDeleteController.post);
