@@ -189,7 +189,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', { content: {
       user: getUserByIdResult,
       showDelete: false,
-      lockedMessage: 'This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in 58 minutes' } });
+      lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes' } });
   });
 
   test('Should render the user details page when searching for a locked user which will be unlocked in a minute', async () => {
@@ -237,7 +237,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', { content: {
       user: getUserByIdResult,
       showDelete: false,
-      lockedMessage: 'This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in 1 minute'}
+      lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'}
     });
   });
 
