@@ -37,7 +37,7 @@
         <p class="govuk-body-m" id="status">
           {% if content.user.active %}
             <strong class="govuk-tag">Active</strong>
-            {% elif content.user.stale %}
+          {% elif content.user.stale %}
             <strong class="govuk-tag govuk-tag--green">Archived</strong>
           {% else %}
             <strong class="govuk-tag govuk-tag--red">Suspended</strong>

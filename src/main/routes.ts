@@ -32,11 +32,11 @@ export default function(app: Application): void {
   app.get(HOME_URL, app.locals.container.cradle.userOptionController.get);
   app.post(HOME_URL, app.locals.container.cradle.userOptionController.post);
   app.get(ADD_USER_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserController.get);
-  app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(BETA_SHOW_LOCKED_STATUS), app.locals.container.cradle.addUserDetailsController.post);
+  app.post(ADD_USER_DETAILS_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserDetailsController.post);
   app.post(ADD_USER_ROLES_URL, featureFlags.toggleRoute(BETA_ADD), app.locals.container.cradle.addUserRolesController.post);
   app.post(ADD_PRIVATE_BETA_SERVICE_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(GAMMA_PRIVATE_BETA), app.locals.container.cradle.addPrivateBetaServiceController.post);
   app.get(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.get);
-  app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
+  app.post(USER_DETAILS_URL, featureFlags.toggleRoute(BETA_SHOW_LOCKED_STATUS), app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);
   app.post(EDIT_USER_URL, featureFlags.toggleRoute(BETA_EDIT), app.locals.container.cradle.userEditController.post);
   app.post(USER_DELETE_URL, featureFlags.toggleRoute(BETA_DELETE), app.locals.container.cradle.userDeleteController.post);

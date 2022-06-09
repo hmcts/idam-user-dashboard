@@ -84,7 +84,7 @@ export class UserResultsController extends RootController {
     if (user.locked) {
       const remainingTime = isEmpty(user.pwdAccountLockedTime) ? 0 : this.computeRemainingLockedTime(user.pwdAccountLockedTime);
       if (remainingTime > 0) {
-        const lockedMessage = `This account has been temporarily locked due to multiple incorrect passwords. The temporary lock will end in ${remainingTime} `;
+        const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
         return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
       }
     }
