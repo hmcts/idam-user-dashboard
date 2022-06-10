@@ -122,6 +122,7 @@ export class IdamAPI {
       .filter(role => roleNames.includes(role.name))
       .filter(role => Array.isArray(role.assignableRoles))
       .forEach(role => role.assignableRoles
+        .filter(r => rolesMap.has(r))
         .forEach(r => collection.add(rolesMap.get(r).name))
       );
 

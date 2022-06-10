@@ -10,12 +10,11 @@ describe('serviceUtils', () => {
   const service3 = 'Service3';
   const service4 = 'Service4';
   const service5 = 'Service5';
-  const privateBetaRole = 'service-private-beta';
-  const otherRole1 = 'other1';
-  const otherRole2 = 'other2';
+  const role1 = 'other1';
+  const role2 = 'other2';
 
   describe('hasPrivateBetaServices', () => {
-    test('Should return true when one of the services has "private-beta" onboarding roles', async () => {
+    test('Should return true when one of the services has onboarding roles', async () => {
       const testServices: Service[] = [
         {
           label: service1,
@@ -26,30 +25,20 @@ describe('serviceUtils', () => {
           label: service2,
           description: service2,
           onboardingRoles: [
-            otherRole1,
-            privateBetaRole
+            role1
           ]
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: [
-            otherRole1
-          ]
-        },
-        {
-          label: service4,
-          description: service4,
-          onboardingRoles: [
-            otherRole2
-          ]
+          onboardingRoles: []
         }
       ];
 
       expect(hasPrivateBetaServices(testServices)).toBeTruthy();
     });
 
-    test('Should return false when none of the services has "private-beta" onboarding roles', async () => {
+    test('Should return false when none of the services has onboarding roles', async () => {
       const testServices: Service[] = [
         {
           label: service1,
@@ -59,17 +48,12 @@ describe('serviceUtils', () => {
         {
           label: service2,
           description: service2,
-          onboardingRoles: [
-            otherRole1,
-            otherRole2
-          ]
+          onboardingRoles: []
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: [
-            otherRole1
-          ]
+          onboardingRoles: []
         }
       ];
 
@@ -78,7 +62,7 @@ describe('serviceUtils', () => {
   });
 
   describe('getServicesForSelect', () => {
-    test('Should return select items for services where some of the onboarding roles have "private-beta"', async () => {
+    test('Should return select items for services with onboarding roles', async () => {
       const testServices: Service[] = [
         {
           label: service1,
@@ -89,48 +73,51 @@ describe('serviceUtils', () => {
           label: service2,
           description: service2,
           onboardingRoles: [
-            otherRole1,
-            privateBetaRole
+            role1
           ]
         },
         {
           label: service3,
           description: service3,
           onboardingRoles: [
-            otherRole1
+            role2
           ]
         },
         {
           label: service4,
           description: service4,
-          onboardingRoles: [
-            otherRole2
-          ]
+          onboardingRoles: []
         },
         {
           label: service5,
           description: service5,
           onboardingRoles: [
-            privateBetaRole
+            role1,
+            role2
           ]
         }
       ];
 
       const results = getServicesForSelect(testServices);
-      expect(results).toHaveLength(2);
+      expect(results).toHaveLength(3);
       expect(results[0]).toStrictEqual({
         value: service2,
         text: service2,
         selected: false
       });
       expect(results[1]).toStrictEqual({
+        value: service3,
+        text: service3,
+        selected: false
+      });
+      expect(results[2]).toStrictEqual({
         value: service5,
         text: service5,
         selected: false
       });
     });
 
-    test('Should return empty array when no service has onboarding roles of "private-beta"', async () => {
+    test('Should return empty array when no service has onboarding roles', async () => {
       const testServices: Service[] = [
         {
           label: service1,
@@ -140,17 +127,12 @@ describe('serviceUtils', () => {
         {
           label: service2,
           description: service2,
-          onboardingRoles: [
-            otherRole1,
-            otherRole2
-          ]
+          onboardingRoles: []
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: [
-            otherRole1
-          ]
+          onboardingRoles: []
         }
       ];
 
