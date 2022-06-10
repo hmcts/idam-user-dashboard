@@ -12,7 +12,8 @@ import {
   getObjectVariation,
   convertToArray,
   arrayContainsSubstring,
-  findDifferentElements
+  findDifferentElements,
+  computeTimeDifferenceInMinutes
 } from '../../../../main/utils/utils';
 
 describe('utils', () => {
@@ -229,6 +230,38 @@ describe('utils', () => {
 
     test('Should not return date time with invalid input', async () => {
       expect(convertISODateTimeToUTCFormat('20220117')).toBe('');
+    });
+  });
+
+  describe('computeTimeDifferenceInMinutes', () => {
+    test('Should return time different in minutes', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setMinutes(date2.getMinutes() - 5);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(5);
+    });
+
+    test('Should return time different in minutes for more than an hour difference', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setHours(date2.getHours() - 1);
+      date2.setMinutes(date2.getMinutes() - 2);
+      date2.setSeconds(date2.getSeconds() - 50);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(63);
+    });
+
+    test('Should return no time difference for very short time difference', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setSeconds(date2.getSeconds() - 5);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(0);
+    });
+
+    test('Should return negative time difference if comparing earlier date to later', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setMinutes(date2.getMinutes() + 5);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(-5);
     });
   });
 
