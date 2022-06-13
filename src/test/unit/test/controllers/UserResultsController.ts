@@ -50,7 +50,14 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false, lockedMessage: '' } });
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        showDelete: false,
+        lockedMessage: '',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
+    });
   });
 
   test('Should render the user details page when searching with a valid user ID', async () => {
@@ -76,7 +83,14 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false, lockedMessage: '' } });
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        showDelete: false,
+        lockedMessage: '',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
+    });
   });
 
   test('Should render the user details page when searching with a valid SSO ID', async () => {
@@ -102,7 +116,14 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false, lockedMessage: '' } });
+    expect(res.render).toBeCalledWith('user-details',{
+      content: {
+        user: results[0],
+        showDelete: false,
+        lockedMessage: '',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
+    });
   });
 
   test('Should render the user details page when searching for a user with idam-mfa-disabled role', async () => {
@@ -141,7 +162,14 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: expectedResults[0], showDelete: false, lockedMessage: '' } });
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: expectedResults[0],
+        showDelete: false,
+        lockedMessage: '',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
+    });
   });
 
   test('Should render the user details page when searching for a locked user', async () => {
@@ -186,10 +214,14 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: {
-      user: getUserByIdResult,
-      showDelete: false,
-      lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes' } });
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: getUserByIdResult,
+        showDelete: false,
+        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
+    });
   });
 
   test('Should render the user details page when searching for a locked user which will be unlocked in a minute', async () => {
@@ -234,10 +266,13 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: {
-      user: getUserByIdResult,
-      showDelete: false,
-      lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'}
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: getUserByIdResult,
+        showDelete: false,
+        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
     });
   });
 
@@ -284,10 +319,13 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: {
-      user: getUserByIdResult,
-      showDelete: false,
-      lockedMessage: ''}
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: getUserByIdResult,
+        showDelete: false,
+        lockedMessage: '',
+        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+      }
     });
   });
 
