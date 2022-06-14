@@ -16,7 +16,14 @@ import {
   ADD_PRIVATE_BETA_SERVICE_URL,
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
-import { BETA_ADD, BETA_DELETE, BETA_EDIT, BETA_SUSPEND, GAMMA_PRIVATE_BETA, GAMMA_GENERATE_REPORT } from './app/feature-flags/flags';
+import {
+  BETA_ADD,
+  BETA_DELETE,
+  BETA_EDIT,
+  BETA_SUSPEND,
+  GAMMA_PRIVATE_BETA,
+  GAMMA_GENERATE_REPORT
+} from './app/feature-flags/flags';
 
 export default function(app: Application): void {
   const featureFlags: FeatureFlags = app.locals.container.cradle.featureFlags;
