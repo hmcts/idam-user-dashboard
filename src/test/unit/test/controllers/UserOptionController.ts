@@ -56,7 +56,7 @@ describe('User option controller', () => {
   test('Should render the user option page with error when posting with no option selected', async () => {
     when(mockFeatureFlags.getAllFlagValues)
       .calledWith()
-      .mockReturnValue(Promise.resolve({ 'idam-user-dashboard--beta-add': true, }));
+      .mockReturnValue(Promise.resolve({ 'idam-user-dashboard--beta-add': true }));
 
     await controller.post(req, res);
     const expectedPageData: PageData = {
