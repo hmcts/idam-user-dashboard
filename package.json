@@ -73,6 +73,8 @@
     "lodash": "^4.17.20",
     "memfs": "^3.4.7",
     "nunjucks": "^3.2.4",
+    "npm-run-all": "^4.1.5",
+    "openid-client": "^5.1.6",
     "redis": "^3.1.2",
     "request": "^2.88.2",
     "require-directory": "^2.1.1",
