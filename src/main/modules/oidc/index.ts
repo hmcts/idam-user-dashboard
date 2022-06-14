@@ -46,7 +46,7 @@ export class OidcMiddleware {
         scope: this.clientScope
       },
       session: {
-        rollingDuration: 20 * (60 * 1000),
+        rollingDuration: 20 * 60,
         cookie: {
           httpOnly: true,
         },
