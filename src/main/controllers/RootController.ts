@@ -42,4 +42,8 @@ export class RootController {
 
     res.render(view, constructedData);
   }
+
+  public getFeatureFlags(): FeatureFlags {
+    return this.featureFlags;
+  }
 }

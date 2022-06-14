@@ -13,7 +13,8 @@ import {
   convertToArray,
   arrayContainsSubstring,
   findDifferentElements,
-  computeTimeDifferenceInMinutes
+  computeTimeDifferenceInMinutes,
+  constructOptionsStringFromArray
 } from '../../../../main/utils/utils';
 
 describe('utils', () => {
@@ -340,6 +341,20 @@ describe('utils', () => {
 
     test('Should return nothing if no existing elements removed', async () => {
       expect(findDifferentElements(['a', 'b', 'd'], ['a', 'b', 'c', 'd'])).toStrictEqual([]);
+    });
+  });
+
+  describe('composeOptionsStringFromArray', () => {
+    test('Should return options string from a single option array', async () => {
+      expect(constructOptionsStringFromArray(['option1'])).toStrictEqual('option1');
+    });
+
+    test('Should return options string from 2 options', async () => {
+      expect(constructOptionsStringFromArray(['option1', 'option2'])).toStrictEqual('option1 or option2');
+    });
+
+    test('Should return options string from multiple options', async () => {
+      expect(constructOptionsStringFromArray(['option1', 'option2', 'option3', 'option4'])).toStrictEqual('option1, option2, option3 or option4');
     });
   });
 });
