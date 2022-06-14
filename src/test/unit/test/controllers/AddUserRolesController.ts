@@ -148,7 +148,7 @@ describe('Add user roles controller', () => {
     req.body._email = email;
     req.body._forename = forename;
     req.body._surname = surname;
-    req.session = { user: { assignableRoles: [role2] } };
+    req.appSession = { user: { assignableRoles: [role2] } };
 
     const expectedContent = {
       user: { email: email, forename: forename, surname: surname },

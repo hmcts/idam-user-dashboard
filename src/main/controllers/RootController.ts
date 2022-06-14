@@ -33,8 +33,8 @@ export class RootController {
       }
     }
 
-    if(req.session) {
-      const user = req.session.user;
+    if(req.appSession) {
+      const user = req.appSession.user;
       if(!isObjectEmpty(user)) {
         constructedData.user = user;
       }
