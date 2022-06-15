@@ -1,6 +1,5 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/errorSummary.njk" import errorSummary %}
@@ -55,13 +54,6 @@
           text: "Search"
         }) }}
       </form>
-
-      {% if content.result %}
-        {{ govukWarningText({
-          text: content.result,
-          iconFallbackText: "Warning"
-        }) }}
-      {% endif %}
     </div>
   </div>
 {% endblock %}
