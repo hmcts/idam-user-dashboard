@@ -21,4 +21,6 @@ export const GENERATING_REPORT_NO_USERS_MATCHED = 'There are no users with the e
 export const GENERATING_REPORT_CITIZEN_ERROR = 'For security reasons, it is not possible to get a report on all citizen users';
 export const ROLE_PERMISSION_ERROR = 'You do not have permission to create the user roles';
 
+export const selectOptionError = (options: string) => `Select if you would like to ${options}`;
+
 export const duplicatedEmailError = (email: string) => `The email '${email}' already exists`;
