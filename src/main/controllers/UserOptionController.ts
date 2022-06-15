@@ -1,6 +1,6 @@
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
-import { constructOptionsStringFromArray, hasProperty, isObjectEmpty } from '../utils/utils';
+import { constructOptionsStringFromArray, hasProperty } from '../utils/utils';
 import { selectOptionError } from '../utils/error';
 import { ADD_USER_URL, GENERATE_REPORT_URL, MANAGER_USER_URL } from '../utils/urls';
 import { RootController } from './RootController';
@@ -38,17 +38,15 @@ export class UserOptionController extends RootController {
   private async getOptionsForSelect(): Promise<SelectItem[]> {
     const items = [{value: UserOption.MANAGE_USER, text: 'Manage an existing user'}];
 
-    if (this.getFeatureFlags()) {
-      const featureFlags = await this.getFeatureFlags().getAllFlagValues();
+    if (this.featureFlags) {
+      const featureFlags = await this.featureFlags.getAllFlagValues();
 
-      if (!isObjectEmpty(featureFlags)) {
-        if (featureFlags[BETA_ADD]) {
-          items.push({value: UserOption.ADD_USER, text: 'Add a new user'});
-        }
+      if (featureFlags[BETA_ADD]) {
+        items.push({value: UserOption.ADD_USER, text: 'Add a new user'});
+      }
 
-        if (featureFlags[GAMMA_GENERATE_REPORT]) {
-          items.push({value: UserOption.GENERATE_REPORT, text: 'Generate a user report'});
-        }
+      if (featureFlags[GAMMA_GENERATE_REPORT]) {
+        items.push({value: UserOption.GENERATE_REPORT, text: 'Generate a user report'});
       }
     }
     return items;

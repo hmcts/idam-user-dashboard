@@ -4,7 +4,7 @@ import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
 import * as urls from '../../../../main/utils/urls';
 import { mockRootController } from '../../utils/mockRootController';
-import {when} from 'jest-when';
+import { when } from 'jest-when';
 
 describe('User option controller', () => {
   const mockFeatureFlags: any = {
@@ -15,7 +15,7 @@ describe('User option controller', () => {
   mockRootController(mockFeatureFlags);
   let req: any;
   const res = mockResponse();
-  const controller = new UserOptionController();
+  const controller = new UserOptionController(mockFeatureFlags);
 
   beforeEach(() => {
     req = mockRequest();

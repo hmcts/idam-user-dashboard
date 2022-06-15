@@ -10,7 +10,7 @@ import * as flags from '../../main/app/feature-flags/flags';
 
 @autobind
 export class RootController {
-  constructor(private featureFlags?: FeatureFlags) {
+  constructor(protected featureFlags?: FeatureFlags) {
     this.featureFlags = featureFlags;
   }
 
@@ -41,9 +41,5 @@ export class RootController {
     }
 
     res.render(view, constructedData);
-  }
-
-  public getFeatureFlags(): FeatureFlags {
-    return this.featureFlags;
   }
 }
