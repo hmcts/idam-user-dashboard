@@ -103,3 +103,19 @@ export const findDifferentElements = (arrayA: string[], arrayB: string[]): strin
     .forEach(e => differentElements.push(e));
   return differentElements;
 };
+
+export const constructOptionsStringFromArray = (options: string[]): string => {
+  if (options.length == 1) {
+    return options[0];
+  }
+
+  let output = '';
+  for (let i = 0; i < options.length; i++) {
+    if (options.length > 2 && i < options.length - 2) {
+      output += options[i] + ', ';
+    } else if (i == options.length - 2) {
+      output += options[i] + ' or ';
+    }
+  }
+  return output + options[options.length - 1];
+};
