@@ -40,14 +40,7 @@ export class UserResultsController extends RootController {
           content: { user, showDelete: this.canDeleteUser(req.session.user, user), lockedMessage: this.composeLockedMessage(user)}
         });
       }
-
-      return super.post(req, res, 'manage-user', {
-        error: {
-          search: {
-            message: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
-          }
-        }
-      });
+      return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
   }
 
