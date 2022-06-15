@@ -21,17 +21,6 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
-      {% if content.result %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: [
-            {
-              text: "content.result",
-              href: "#search"
-            }
-          ]
-        }) }}
-      {% endif %}
       <h1 class="govuk-heading-l">Manage User</h1>
       <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
         {{ csrfProtection(csrfToken) }}
