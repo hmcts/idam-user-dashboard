@@ -36,13 +36,11 @@ export class UserResultsController extends RootController {
         const user = await req.scope.cradle.api.getUserById(users[0].id);
 
         this.preprocessSearchResults(user);
-        const userProcessedRoles = this.processUIRoles(user);
         return super.post(req, res, 'user-details', {
           content: {
             user,
             showDelete: this.canDeleteUser(req.session.user, user),
-            lockedMessage: this.composeLockedMessage(user),
-            userProcessedRoles
+            lockedMessage: this.composeLockedMessage(user)
           }
         });
       }
@@ -77,16 +75,6 @@ export class UserResultsController extends RootController {
         search: {message: errorMessage}
       }
     });
-  }
-
-  private processUIRoles(user: User): string {
-    let uiRoles = '';
-    if(user.roles) {
-      user.roles.forEach((element => {
-        uiRoles = uiRoles + element + '<br>';
-      }));
-    }
-    return uiRoles;
   }
 
   private preprocessSearchResults(user: User): void {

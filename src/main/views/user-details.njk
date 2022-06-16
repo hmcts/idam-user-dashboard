@@ -28,6 +28,12 @@
     }) }}
   {% endif %}
 
+  {% set processedRoles %}
+    {% for role in content.user.roles %}
+      {{ role }}<br>
+    {% endfor %}
+  {% endset %}
+
   {{ govukSummaryList({
     rows: [
       {
@@ -91,7 +97,7 @@
           text: "Assigned roles"
         },
         value: {
-          html: content.userProcessedRoles
+          html: processedRoles
         }
       },
       {
