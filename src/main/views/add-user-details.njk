@@ -13,7 +13,7 @@
 {% extends "template.njk" %}
 
 {% block pageTitle %}
-  Add User - IDAM User Dashboard - GOV.UK
+  Add User Details - IDAM User Dashboard - GOV.UK
 {% endblock %}
 
 {% block beforeContent %}
@@ -28,7 +28,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
-      <h1 class="govuk-heading-l">Add a new user</h1>
+      <h1 class="govuk-heading-l">Add new user details</h1>
     </div>
 
     <form id="addUserDetailsForm" method="POST" action="{{ urls.ADD_USER_DETAILS_URL }}">
@@ -91,7 +91,7 @@
                 text: "Private Beta Citizen",
                 checked: true if content.user.userType === 'citizen',
                 disabled: not content.enablePrivateBeta
-              } if content.showPrivateBeta,
+              } if content.showPrivateBeta and featureFlags.values[featureFlags.flags.GAMMA_PRIVATE_BETA],
               {
                 value: "professional",
                 text: "Professional",

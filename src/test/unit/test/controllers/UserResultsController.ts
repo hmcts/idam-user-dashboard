@@ -50,7 +50,7 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false, lockedMessage: '' } });
   });
 
   test('Should render the user details page when searching with a valid user ID', async () => {
@@ -76,7 +76,7 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false, lockedMessage: '' } });
   });
 
   test('Should render the user details page when searching with a valid SSO ID', async () => {
@@ -102,7 +102,7 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false } });
+    expect(res.render).toBeCalledWith('user-details', { content: { user: results[0], showDelete: false, lockedMessage: '' } });
   });
 
   test('Should render the user details page when searching for a user with idam-mfa-disabled role', async () => {
@@ -141,7 +141,154 @@ describe('User results controller', () => {
     req.scope.cradle.api = mockApi;
     req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', { content: { user: expectedResults[0], showDelete: false } });
+    expect(res.render).toBeCalledWith('user-details', { content: { user: expectedResults[0], showDelete: false, lockedMessage: '' } });
+  });
+
+  test('Should render the user details page when searching for a locked user', async () => {
+    const searchUserResults = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    const currentTime = new Date();
+    const pwdAccountLockedTime = new Date(currentTime);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 2);
+
+    const getUserByIdResult = {
+      id: userId,
+      forename: 'John',
+      surname: 'Smith',
+      email: email,
+      active: true,
+      locked: true,
+      pwdAccountLockedTime: pwdAccountLockedTime,
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true,
+      ssoId: ssoId,
+      createDate: '',
+      lastModified: ''
+    };
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(searchUserResults);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', { content: {
+      user: getUserByIdResult,
+      showDelete: false,
+      lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes' } });
+  });
+
+  test('Should render the user details page when searching for a locked user which will be unlocked in a minute', async () => {
+    const searchUserResults = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    const currentTime = new Date();
+    const pwdAccountLockedTime = new Date(currentTime);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 59);
+
+    const getUserByIdResult = {
+      id: userId,
+      forename: 'John',
+      surname: 'Smith',
+      email: email,
+      active: true,
+      locked: true,
+      pwdAccountLockedTime: pwdAccountLockedTime,
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true,
+      ssoId: ssoId,
+      createDate: '',
+      lastModified: ''
+    };
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(searchUserResults);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', { content: {
+      user: getUserByIdResult,
+      showDelete: false,
+      lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'}
+    });
+  });
+
+  test('Should render the user details page when searching for a locked user which is close to being unlocked', async () => {
+    const searchUserResults = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    const currentTime = new Date();
+    const pwdAccountLockedTime = new Date(currentTime);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 59);
+    pwdAccountLockedTime.setSeconds(pwdAccountLockedTime.getSeconds() - 50);
+
+    const getUserByIdResult = {
+      id: userId,
+      forename: 'John',
+      surname: 'Smith',
+      email: email,
+      active: true,
+      locked: true,
+      pwdAccountLockedTime: pwdAccountLockedTime,
+      roles: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true,
+      ssoId: ssoId,
+      createDate: '',
+      lastModified: ''
+    };
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(searchUserResults);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', { content: {
+      user: getUserByIdResult,
+      showDelete: false,
+      lockedMessage: ''}
+    });
   });
 
   test('Should render the manage user page when searching with a non-existent email', async () => {

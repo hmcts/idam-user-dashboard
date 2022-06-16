@@ -35,16 +35,7 @@
             text: "Please select an option to continue"
           },
           errorMessage: { text: error.userAction.message } if error.userAction,
-          items: [
-            {
-              value: "manage-user",
-              text: "Manage an existing user"
-            },
-            {
-              value: "add-user",
-              text: "Add a new user"
-            } if featureFlags.values[featureFlags.flags.BETA_ADD]
-          ]
+          items: content.options
         }) }}
 
         {{ govukButton({

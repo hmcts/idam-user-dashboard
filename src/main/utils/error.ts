@@ -14,6 +14,13 @@ export const USER_DELETE_FAILED_ERROR = 'An error occurred whilst deleting this 
 export const MISSING_USER_TYPE_ERROR = 'You must select an user type';
 export const MISSING_PRIVATE_BETA_SERVICE_ERROR = 'You must select a service';
 export const MISSING_ROLE_ASSIGNMENT_ERROR = 'A user must have at least one role assigned to be able to create them';
+export const MISSING_ROLE_INPUT_ERROR = 'You must enter a role or a list of roles (comma seperated)';
+export const GENERATING_REPORT_ERROR = 'An error occurred generating the report.';
+export const GENERATING_REPORT_FILE_ERROR = 'An error occurred generating the report file';
+export const GENERATING_REPORT_NO_USERS_MATCHED = 'There are no users with the entered role(s).';
+export const GENERATING_REPORT_CITIZEN_ERROR = 'For security reasons, it is not possible to get a report on all citizen users';
 export const ROLE_PERMISSION_ERROR = 'You do not have permission to create the user roles';
+
+export const selectOptionError = (options: string) => `Select if you would like to ${options}`;
 
 export const duplicatedEmailError = (email: string) => `The email '${email}' already exists`;

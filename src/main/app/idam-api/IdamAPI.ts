@@ -79,7 +79,7 @@ export class IdamAPI {
       .post('/api/v1/users/registration', user)
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = error.response.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
+        const errorMessage = error.response?.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
@@ -122,6 +122,7 @@ export class IdamAPI {
       .filter(role => roleNames.includes(role.name))
       .filter(role => Array.isArray(role.assignableRoles))
       .forEach(role => role.assignableRoles
+        .filter(r => rolesMap.has(r))
         .forEach(r => collection.add(rolesMap.get(r).name))
       );
 
@@ -149,6 +150,26 @@ export class IdamAPI {
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
+      });
+  }
+
+  public getUsersWithRoles(roles: string[]): Promise<User[]> {
+    let queryString = '';
+    roles.forEach((role, index, roles) => {
+      queryString += 'roles:' + role;
+      if (index !== roles.length - 1) {
+        queryString += ' OR ';
+      }
+    });
+
+    return this.userAxios
+      .get(`/api/v1/users?size=500&query=(${queryString}) AND lastModified:>2018-01-01T00:00:00.000000`)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error getting all users with role from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
       });
   }
 }
