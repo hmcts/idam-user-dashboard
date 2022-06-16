@@ -54,8 +54,7 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         showDelete: false,
-        lockedMessage: '',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: ''
       }
     });
   });
@@ -87,8 +86,7 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         showDelete: false,
-        lockedMessage: '',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: ''
       }
     });
   });
@@ -120,8 +118,7 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         showDelete: false,
-        lockedMessage: '',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: ''
       }
     });
   });
@@ -166,8 +163,7 @@ describe('User results controller', () => {
       content: {
         user: expectedResults[0],
         showDelete: false,
-        lockedMessage: '',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: ''
       }
     });
   });
@@ -218,8 +214,7 @@ describe('User results controller', () => {
       content: {
         user: getUserByIdResult,
         showDelete: false,
-        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes'
       }
     });
   });
@@ -270,8 +265,7 @@ describe('User results controller', () => {
       content: {
         user: getUserByIdResult,
         showDelete: false,
-        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'
       }
     });
   });
@@ -323,8 +317,7 @@ describe('User results controller', () => {
       content: {
         user: getUserByIdResult,
         showDelete: false,
-        lockedMessage: '',
-        userProcessedRoles: 'IDAM_SUPER_USER<br>'
+        lockedMessage: ''
       }
     });
   });
