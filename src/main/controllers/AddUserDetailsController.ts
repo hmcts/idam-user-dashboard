@@ -16,6 +16,7 @@ import { PageError } from '../interfaces/PageData';
 import { constructAllRoleAssignments } from '../utils/roleUtils';
 import { UserType } from '../utils/UserType';
 import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
+import { Role } from '../interfaces/Role';
 
 export const ROLE_HINT_WITH_PRIVATE_BETA = 'Private Beta Citizen is a citizen who is trialling a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 export const ROLE_HINT_WITHOUT_PRIVATE_BETA = 'Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
@@ -47,7 +48,8 @@ export class AddUserDetailsController extends RootController {
     const users = await req.scope.cradle.api.searchUsersByEmail(email);
     if (users.length == 0) {
       const allServices = await req.scope.cradle.api.getAllServices();
-      const hasPrivateBeta = hasPrivateBetaServices(allServices);
+      const rolesMap = await this.getRolesMap(req);
+      const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
       const enablePrivateBeta = req.session.user.assignableRoles.includes(UserType.Citizen);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
 
@@ -65,9 +67,10 @@ export class AddUserDetailsController extends RootController {
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
     const allServices = await req.scope.cradle.api.getAllServices();
+    const rolesMap = await this.getRolesMap(req);
 
     if (!isObjectEmpty(error)) {
-      const hasPrivateBeta = hasPrivateBetaServices(allServices);
+      const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
       const enablePrivateBeta = req.session.user.assignableRoles.includes(UserType.Citizen);
 
@@ -80,7 +83,7 @@ export class AddUserDetailsController extends RootController {
     if (user.userType === UserType.Citizen) {
       return super.post(req, res, 'add-user-private-beta-service', { content: {
         user: user,
-        services: getServicesForSelect(allServices),
+        services: getServicesForSelect(allServices, rolesMap),
         selectedService: ''
       }});
     } else {
@@ -116,5 +119,14 @@ export class AddUserDetailsController extends RootController {
 
   private getUserType(fields: any): string {
     return hasProperty(fields, 'userType') ? fields.userType : '';
+  }
+
+  private async getRolesMap(req: AuthedRequest): Promise<Map<string, Role>> {
+    const allRoles = await req.scope.cradle.api.getAllRoles();
+    const rolesMap = new Map(allRoles
+      .filter(role => role !== undefined)
+      .map(role => [role.id, role])
+    );
+    return rolesMap;
   }
 }
