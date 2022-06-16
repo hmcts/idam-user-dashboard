@@ -60,3 +60,7 @@ export const processMfaRole = (user: User) => {
     user.roles = user.roles.filter(r => r !== IDAM_MFA_DISABLED);
   }
 };
+
+export const rolesExist = (roleIds: string[], rolesMap: Map<string, Role>): boolean => {
+  return roleIds.every(r => rolesMap.has(r));
+};

@@ -27,13 +27,34 @@ describe('Add user details controller', () => {
   const name = 'test';
   const service1 = 'service1';
   const service2 = 'service2';
-  const privateBetaRole = 'service-private-beta';
+
+  const privateBetaRoleId = '1';
+  const privateBetaRoleName = 'service-private-beta';
+  const otherRoleId1 = '2';
+  const otherRoleName1 = 'other-role1';
+  const otherRoleId2 = '3';
+  const otherRoleName2 = 'other-role2';
+
+  const allRoles = [
+    {
+      id: privateBetaRoleId,
+      name: privateBetaRoleName
+    },
+    {
+      id: otherRoleId1,
+      name: otherRoleName1
+    },
+    {
+      id: otherRoleId2,
+      name: otherRoleName2
+    }
+  ];
 
   const servicesWithPrivateBeta = [
     {
       label: service1,
       description: service1,
-      onboardingRoles: [privateBetaRole]
+      onboardingRoles: [privateBetaRoleId]
     },
     {
       label: service2,
@@ -62,6 +83,7 @@ describe('Add user details controller', () => {
   test('Should render the add user details page when adding a non-existing user\'s email when there is no service with private beta', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body.email = email;
     req.session = { user: { assignableRoles: [UserType.Citizen] } };
@@ -75,6 +97,7 @@ describe('Add user details controller', () => {
   test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta and the citizen role is assignable', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body.email = email;
     req.session = { user: { assignableRoles: [UserType.Citizen] } };
@@ -88,6 +111,7 @@ describe('Add user details controller', () => {
   test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta but the citizen role is not assignable', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body.email = email;
     req.session = { user: { assignableRoles: [] } };
@@ -270,24 +294,6 @@ describe('Add user details controller', () => {
   });
 
   test('Should render the add user completion page when all fields populated', async () => {
-    const role1 = 'role1';
-    const role2 = 'role2';
-
-    const allRoles = [
-      {
-        id: 1,
-        name: role1,
-        description: role1,
-        assigned: false
-      },
-      {
-        id: 2,
-        name: role2,
-        description: role2,
-        assigned: false
-      }
-    ];
-
     when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
 
     req.body._email = email;
@@ -300,11 +306,15 @@ describe('Add user details controller', () => {
     const expectedContent = {
       roles: [
         {
-          name: 'role1',
+          name: otherRoleName1,
           assignable: false
         },
         {
-          name: 'role2',
+          name: otherRoleName2,
+          assignable: false
+        },
+        {
+          name: privateBetaRoleName,
           assignable: false
         }
       ],
