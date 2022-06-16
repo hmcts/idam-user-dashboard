@@ -19,7 +19,12 @@ describe('Add private beta service controller', () => {
 
   const service1 = 'service1';
   const service2 = 'service2';
-  const privateBetaRole = 'service-private-beta';
+  const privateBetaRoleId = '1';
+  const privateBetaRoleName = 'service-private-beta';
+  const otherRoleId1 = '2';
+  const otherRoleName1 = 'other-role1';
+  const otherRoleId2 = '3';
+  const otherRoleName2 = 'other-role2';
 
   const error = 'error';
 
@@ -27,12 +32,27 @@ describe('Add private beta service controller', () => {
     {
       label: service1,
       description: service1,
-      onboardingRoles: [privateBetaRole]
+      onboardingRoles: [privateBetaRoleId]
     },
     {
       label: service2,
       description: service2,
-      onboardingRoles: [privateBetaRole]
+      onboardingRoles: [privateBetaRoleId]
+    }
+  ];
+
+  const allRoles = [
+    {
+      id: privateBetaRoleId,
+      name: privateBetaRoleName
+    },
+    {
+      id: otherRoleId1,
+      name: otherRoleName1
+    },
+    {
+      id: otherRoleId2,
+      name: otherRoleName2
     }
   ];
 
@@ -46,10 +66,11 @@ describe('Add private beta service controller', () => {
       email: email,
       firstName: forename,
       lastName: surname,
-      roles: [UserType.Citizen, privateBetaRole]
+      roles: [UserType.Citizen, privateBetaRoleName]
     };
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(services);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
     when(mockApi.registerUser).calledWith(userRegistrationDetails).mockResolvedValue({});
 
     req.body = {
@@ -68,10 +89,11 @@ describe('Add private beta service controller', () => {
       email: email,
       firstName: forename,
       lastName: surname,
-      roles: [UserType.Citizen, privateBetaRole]
+      roles: [UserType.Citizen, privateBetaRoleName]
     };
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(services);
+    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
     when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue(Promise.reject(error));
 
     req.body = {
