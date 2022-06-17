@@ -1,10 +1,10 @@
 import {
   constructAllRoleAssignments,
   constructUserRoleAssignments,
-  processMfaRole
+  processMfaRole, rolesExist
 } from '../../../../main/utils/roleUtils';
 import { Role } from '../../../../main/interfaces/Role';
-import {User} from '../../../../main/interfaces/User';
+import { User } from '../../../../main/interfaces/User';
 
 describe('roleUtils', () => {
   describe('constructAllRoleAssignments', () => {
@@ -156,6 +156,32 @@ describe('roleUtils', () => {
       user.roles = ['IDAM_SUPER_USER', 'idam-mfa-disabled'];
       processMfaRole(user);
       expect(user.multiFactorAuthentication).toBeFalsy();
+    });
+  });
+
+  describe('rolesExist', () => {
+    const role1 = 'role1';
+    const role2 = 'role2';
+    const role3 = 'role3';
+    const role4 = 'role4';
+    const role5 = 'role5';
+
+    const rolesMap = new Map<string, Role>([
+      [role1, { id: role1, name: role1, description: role1, assignableRoles: [], conflictingRoles: [], assigned: false }],
+      [role2, { id: role2, name: role2, description: role2, assignableRoles: [], conflictingRoles: [], assigned: false }],
+      [role3, { id: role3, name: role3, description: role3, assignableRoles: [], conflictingRoles: [], assigned: false }]
+    ]);
+
+    test('Should return true if all role IDs exist in the roles map', async () => {
+      expect(rolesExist([role1, role2, role3], rolesMap)).toBeTruthy();
+    });
+
+    test('Should return false if some role IDs exist in the roles map', async () => {
+      expect(rolesExist([role1, role2, role4], rolesMap)).toBeFalsy();
+    });
+
+    test('Should return false if no role ID exists in the roles map', async () => {
+      expect(rolesExist([role4, role5], rolesMap)).toBeFalsy();
     });
   });
 });
