@@ -18,8 +18,7 @@ const ASSIGNABLE_CHILD_ROLE2 = randomData.getRandomRole();
 const INDEPENDENT_ROLE = randomData.getRandomRole();
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 const SERVICE_WITH_PRIVATE_BETA = randomData.getRandomRole();
-const PRIVATE_BETA_USER_ROLE = SERVICE_WITH_PRIVATE_BETA;
-const RANDOM_SERVICE = 'ashwini11' + randomData.getRandomRole();
+const RANDOM_SERVICE = randomData.getRandomRole();
 
 const OAUTH_REDIRECT_URI = 'http://test.com/oauth2/callback';
 
@@ -27,11 +26,12 @@ BeforeSuite(async () => {
   await createAssignableRoles(PARENT_ROLE);
   await createAssignableRoles(ASSIGNABLE_CHILD_ROLE1);
   await createAssignableRoles(ASSIGNABLE_CHILD_ROLE2);
-  await createAssignableRoles(PRIVATE_BETA_USER_ROLE);
+  await createAssignableRoles(SERVICE_WITH_PRIVATE_BETA);
+  await createAssignableRoles(INDEPENDENT_ROLE);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, PRIVATE_BETA_USER_ROLE, testConfig.USER_ROLE_CITIZEN]);
+  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, SERVICE_WITH_PRIVATE_BETA, testConfig.USER_ROLE_CITIZEN]);
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
-  await createService(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [PRIVATE_BETA_USER_ROLE]);
+  await createService(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [SERVICE_WITH_PRIVATE_BETA]);
   await createService(RANDOM_SERVICE, RANDOM_SERVICE, RANDOM_SERVICE, RANDOM_SERVICE, [OAUTH_REDIRECT_URI], [INDEPENDENT_ROLE]);
 });
 
@@ -146,8 +146,7 @@ Scenario('I as a user should be able to see proper error message when proper ser
     I.click('Continue');
 
     I.waitForText('Please select a service you would want to associate with the private beta citizen');
-    I.click('#service');
-    I.click('#service', RANDOM_SERVICE);
+    I.selectOption('#service', RANDOM_SERVICE);
     I.click('Save');
     I.waitForText('There is a problem');
     I.waitForText('You do not have permission to create the user roles');
