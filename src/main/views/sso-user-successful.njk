@@ -25,11 +25,15 @@
           <p class="govuk-body-m"><strong>{{ content.user.email }}</strong></p>
         </div>
 
-        <div class="govuk-button-group">
-          <a href="{{ urls.HOME_URL }}">
-            {{ govukButton({ text: "Return to main menu", classes: "govuk-button" }) }}
-          </a>
-        </div>
+        <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+           {{ csrfProtection(csrfToken) }}
+           <input type="hidden" name="_userId" value="{{ content.user.id }}">
+           {{ govukButton({ text: "Return to user details", classes: "govuk-button" }) }}
+         </form>
       </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <a href="{{ urls.HOME_URL }}" class="govuk-back-link">Return to main menu</a>
   </div>
 {% endblock %}
