@@ -328,7 +328,7 @@ describe('User results controller', () => {
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { content: { search: email, result: NO_USER_MATCHES_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
   });
 
   test('Should render the manage user page when searching with a non-existent ID', async () => {
@@ -338,7 +338,7 @@ describe('User results controller', () => {
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { content: { search: userId, result: NO_USER_MATCHES_ERROR + userId } });
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
 
   test('Should render the manage user page when more than one emails matches the search input', async () => {
@@ -367,7 +367,7 @@ describe('User results controller', () => {
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { content: { search: email, result: TOO_MANY_USERS_ERROR + email } });
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + email } } });
   });
 
   test('Should render the manage user page when more than one SSO IDs matches the search input', async () => {
@@ -397,7 +397,7 @@ describe('User results controller', () => {
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { content: { search: ssoId, result: TOO_MANY_USERS_ERROR + ssoId } });
+    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
   });
 
   test('Should render the manage user page with error when searching with empty input', async () => {

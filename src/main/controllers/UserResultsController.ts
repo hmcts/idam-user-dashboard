@@ -44,13 +44,7 @@ export class UserResultsController extends RootController {
           }
         });
       }
-
-      return super.post(req, res, 'manage-user', {
-        content: {
-          search: input,
-          result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
-        }
-      });
+      return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
   }
 
