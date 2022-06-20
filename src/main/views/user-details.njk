@@ -165,7 +165,7 @@
           {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.user.active }}
         {% endif %}
 
-        {% if featureFlags.values[featureFlags.flags.BETA_SSO] %}
+        {% if featureFlags.values[featureFlags.flags.BETA_SSO] and (content.user.ssoProvider or content.user.ssoId) %}
           {{ govukButton({ text: "Disable SSO", name: "_action", value: "disable-sso", classes: "govuk-button--secondary" })}}
         {% endif %}
 
