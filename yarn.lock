@@ -1202,6 +1202,11 @@
   resolved "https://registry.yarnpkg.com/@codeceptjs/helper/-/helper-1.0.2.tgz#feefbdc7877e7cf98dabcda55ae313b72bda6d98"
   integrity sha512-QKuyw4cGVa78YYj+g02RXitcUYpV4qKjZDHxfCIH2w8lJIr1FQohRD3o/MpcqEnvp475HQJN/OyWhdUBstJupA==
 
+"@codeceptjs/helper@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@codeceptjs/helper/-/helper-2.0.1.tgz#e70a8a49140e05bb360cbd9a6d6dfa2a141f2e99"
+  integrity sha512-g1rng4RjGW/Vy5KcETpdwlfsAQJA2TN7tdO0MtAttjWe7TiUwI+8AeQp2mYpVr4FuWSCV5slyMtquBYexnGemA==
+
 "@cspotcode/source-map-consumer@0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-consumer/-/source-map-consumer-0.8.0.tgz#33bf4b7b39c178821606f669bbc447a6a629786b"
