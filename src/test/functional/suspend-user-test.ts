@@ -45,9 +45,7 @@ Scenario('I as a user should be able to suspend and unsuspend user',
     I.fillField('#search', suspendUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-
-    const email = await I.grabTextFrom('#email');
-    Assert.equal(email.trim(), suspendUserEmail);
+    I.see(suspendUserEmail);
     I.see(suspendUserEmail);
     I.see('SUSPENDED');
 

@@ -80,7 +80,6 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
   I.click('Search');
   I.waitForText('User Details');
   I.see('ACTIVE');
-  const email = await I.grabTextFrom('#email');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
   I.see(testConfig.USER_LASTNAME);
