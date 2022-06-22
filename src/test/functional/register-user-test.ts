@@ -9,16 +9,17 @@ import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {BETA_ADD, GAMMA_PRIVATE_BETA} from '../../main/app/feature-flags/flags';
-import {UserType} from '../../main/utils/UserType';
 
 Feature('Register New User');
 
 const PARENT_ROLE = randomData.getRandomRole();
 const ASSIGNABLE_CHILD_ROLE1 = randomData.getRandomRole();
 const ASSIGNABLE_CHILD_ROLE2 = randomData.getRandomRole();
+const INDEPENDENT_ROLE = randomData.getRandomRole();
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 const SERVICE_WITH_PRIVATE_BETA = randomData.getRandomRole();
-const PRIVATE_BETA_USER_ROLE = SERVICE_WITH_PRIVATE_BETA + '-beta-role';
+const PRIVATE_BETA_ROLE = randomData.getRandomRole();
+const SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE = randomData.getRandomRole();
 
 const OAUTH_REDIRECT_URI = 'http://test.com/oauth2/callback';
 
@@ -26,11 +27,13 @@ BeforeSuite(async () => {
   await createAssignableRoles(PARENT_ROLE);
   await createAssignableRoles(ASSIGNABLE_CHILD_ROLE1);
   await createAssignableRoles(ASSIGNABLE_CHILD_ROLE2);
-  await createAssignableRoles(PRIVATE_BETA_USER_ROLE);
+  await createAssignableRoles(PRIVATE_BETA_ROLE);
+  await createAssignableRoles(INDEPENDENT_ROLE);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, PRIVATE_BETA_USER_ROLE, UserType.Citizen]);
+  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, PRIVATE_BETA_ROLE, testConfig.USER_ROLE_CITIZEN]);
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
-  await createService(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [PRIVATE_BETA_USER_ROLE]);
+  await createService(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [PRIVATE_BETA_ROLE]);
+  await createService(SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, [OAUTH_REDIRECT_URI], [INDEPENDENT_ROLE]);
 });
 
 Scenario('I as a user should be able to register new support user',
@@ -95,7 +98,7 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.see('Select user type');
     I.fillField('#forename', testConfig.USER_FIRSTNAME);
     I.fillField('#surname', testConfig.USER_LASTNAME);
-    I.click('Citizen');
+    I.click('Private Beta Citizen');
     I.click('Continue');
 
     I.waitForText('Please select a service you would want to associate with the private beta citizen');
@@ -118,6 +121,35 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.click('Search');
     I.waitForText('User Details');
     I.see(registerUserEmail);
+  });
+
+Scenario('I as a user should be able to see proper error message when proper service is not selected',
+  {featureFlags: [BETA_ADD, GAMMA_PRIVATE_BETA]},
+  async ({I}) => {
+    const registerUserEmail = randomData.getRandomEmailAddress();
+    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage an existing user');
+    I.waitForText('Add a new user');
+    I.click('Add a new user');
+    I.click('Continue');
+    I.waitForText('Please enter an email address');
+    I.click('#email');
+    I.fillField('#email', registerUserEmail);
+    I.click('Continue');
+    I.see('First name');
+    I.see('Last name');
+    I.see('Select user type');
+    I.fillField('#forename', testConfig.USER_FIRSTNAME);
+    I.fillField('#surname', testConfig.USER_LASTNAME);
+    I.click('Private Beta Citizen');
+    I.click('Continue');
+
+    I.waitForText('Please select a service you would want to associate with the private beta citizen');
+    I.selectOption('#service', SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE);
+    I.click('Save');
+    I.waitForText('There is a problem');
+    I.waitForText('You do not have permission to create the user roles');
+
   });
 
 Scenario('I as a user should be able to search for roles',
