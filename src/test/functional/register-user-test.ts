@@ -74,8 +74,7 @@ Scenario('I as a user should be able to register new support user',
     I.fillField('#search', registerUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-    const email = await I.grabTextFrom('#email');
-    Assert.equal(email.trim(), registerUserEmail);
+    I.see(registerUserEmail);
   }).tag('@CrossBrowser');
 
 Scenario('I as a user should be able to register new private beta citizen user',
@@ -118,8 +117,7 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.fillField('#search', registerUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-    const email = await I.grabTextFrom('#email');
-    Assert.equal(email.trim(), registerUserEmail);
+    I.see(registerUserEmail);
   });
 
 Scenario('I as a user should be able to search for roles',

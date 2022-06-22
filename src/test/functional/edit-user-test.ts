@@ -187,10 +187,8 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.fillField('#search', activeUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-
-    const assignedRoles = await I.grabTextFromAll('[id^=\'assigned-role\']');
-    Assert.equal(assignedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
-    Assert.equal(assignedRoles.includes(ASSIGNABLE_CHILD_ROLE1), false);
+    I.see(INDEPENDANT_CHILD_ROLE);
+    I.dontSee(ASSIGNABLE_CHILD_ROLE1);
 
     I.click('Edit user');
     I.waitForText('Edit User');
@@ -207,10 +205,8 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.waitForText('User details updated successfully');
     I.click('Return to user details');
     I.see('User Details');
-
-    const updatedRoles = await I.grabTextFromAll('[id^=\'assigned-role\']');
-    Assert.equal(updatedRoles.includes(INDEPENDANT_CHILD_ROLE), true);
-    Assert.equal(updatedRoles.includes(ASSIGNABLE_CHILD_ROLE1), true);
+    I.see(INDEPENDANT_CHILD_ROLE);
+    I.see(ASSIGNABLE_CHILD_ROLE1);
   });
 
 Scenario('I as a user should be able to edit mfa if I have the assignable role of idam-mfa-disabled',
@@ -228,9 +224,7 @@ Scenario('I as a user should be able to edit mfa if I have the assignable role o
     I.fillField('#search', activeUserEmail);
     I.click('Search');
     I.waitForText('User Details');
-
-    let mfa = await I.grabTextFrom('#mfa');
-    Assert.equal(mfa.includes(MFA_DISABLED_TEXT), true);
+    I.see(MFA_DISABLED_TEXT);
 
     I.click('Edit user');
     I.waitForText('Edit User');
@@ -246,9 +240,7 @@ Scenario('I as a user should be able to edit mfa if I have the assignable role o
 
     I.click('Return to user details');
     I.see('User Details');
-
-    mfa = await I.grabTextFrom('#mfa');
-    Assert.equal(mfa.includes(MFA_ENABLED_TEXT), true);
+    I.see(MFA_ENABLED_TEXT);
 
     I.click('Edit user');
     I.waitForText('Edit User');
@@ -270,9 +262,7 @@ Scenario('I as a user should not be able to edit mfa if I don\'t have the assign
     I.fillField('#search', PARENT_ROLE_EMAIL);
     I.click('Search');
     I.waitForText('User Details');
-
-    const mfa = await I.grabTextFrom('#mfa');
-    Assert.equal(mfa.includes(MFA_ENABLED_TEXT), true);
+    I.see(MFA_ENABLED_TEXT);
 
     I.click('Edit user');
     I.waitForText('Edit User');
@@ -304,7 +294,6 @@ Scenario('I as a user should be able to filter through roles while updating the 
     I.waitForText('Edit User');
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
-    I.wait(20);
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(ASSIGNABLE_CHILD_ROLE2);
     I.see(PARENT_ROLE);
