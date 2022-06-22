@@ -18,7 +18,6 @@ const INDEPENDANT_CHILD_ROLE = randomData.getRandomRole();
 const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
 const MFA_ENABLED_FLAG = 'enabled';
-const MFA_ENABLED_TEXT = 'ENABLED';
 const MFA_DISABLED_TEXT = 'DISABLED';
 const MFA_SECURITY_WARNING = 'Only disable MFA for a user if they have a \'justice.gov.uk\' or \'hmcts.net\' email address. Contact the information security team if you want to make an exception.';
 
@@ -233,14 +232,14 @@ Scenario('I as a user should be able to edit mfa if I have the assignable role o
     const mfaFlag = await I.grabValueFrom(locate('//input[@name=\'multiFactorAuthentication\']'));
     Assert.equal(mfaFlag, MFA_ENABLED_FLAG);
 
-    I.click(MFA_ENABLED_TEXT);
+    I.click('Enabled');
     I.click('Save');
     I.see('Success');
     I.waitForText('User details updated successfully');
 
     I.click('Return to user details');
     I.see('User Details');
-    I.see(MFA_ENABLED_TEXT);
+    I.see('ENABLED');
 
     I.click('Edit user');
     I.waitForText('Edit User');
@@ -262,7 +261,7 @@ Scenario('I as a user should not be able to edit mfa if I don\'t have the assign
     I.fillField('#search', PARENT_ROLE_EMAIL);
     I.click('Search');
     I.waitForText('User Details');
-    I.see(MFA_ENABLED_TEXT);
+    I.see('ENABLED');
 
     I.click('Edit user');
     I.waitForText('Edit User');
