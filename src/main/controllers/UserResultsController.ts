@@ -37,16 +37,14 @@ export class UserResultsController extends RootController {
 
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
-          content: { user, showDelete: this.canDeleteUser(req.session.user, user), lockedMessage: this.composeLockedMessage(user)}
+          content: {
+            user,
+            showDelete: this.canDeleteUser(req.session.user, user),
+            lockedMessage: this.composeLockedMessage(user)
+          }
         });
       }
-
-      return super.post(req, res, 'manage-user', {
-        content: {
-          search: input,
-          result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
-        }
-      });
+      return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
   }
 

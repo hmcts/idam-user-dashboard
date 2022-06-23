@@ -28,141 +28,128 @@
     }) }}
   {% endif %}
 
-  <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Account state
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="status">
-          {% if content.user.active %}
-            <strong class="govuk-tag">Active</strong>
-          {% elif content.user.stale %}
-            <strong class="govuk-tag govuk-tag--green">Archived</strong>
-          {% else %}
-            <strong class="govuk-tag govuk-tag--red">Suspended</strong>
-          {% endif %}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        User ID
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="user-id">
-          {{ content.user.id }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Email
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="email">
-          {{ content.user.email }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        First name
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="first-name">
-          {{ content.user.forename }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Last name
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="last-name">
-          {{ content.user.surname }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Assigned roles
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="assigned-roles">
-          {% if content.user.roles|length === 1 %}
-            {{ content.user.roles }}
-          {% else %}
-            <ul class="govuk-list">
-              {% set roleNumber = 1 %}
-              {% for role in content.user.roles %}
-                {% set rowId = ["assigned-role", roleNumber] | join %}
-                <li id={{ rowId }}>
-                  {{ role }}
-                </li>
-                {% set roleNumber = roleNumber + 1 %}
-              {% endfor %}
-            </ul>
-          {% endif %}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Multi-factor authentication
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="mfa">
-          {% if content.user.multiFactorAuthentication %}
-            <strong class="govuk-tag">Enabled</strong>
-          {% else %}
-            <strong class="govuk-tag govuk-tag--green">Disabled</strong>
-          {% endif %}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Single sign-on provider
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="sso-provider">
-          {{ content.user.ssoProvider }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Single sign-on ID
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="sso-id">
-          {{ content.user.ssoId }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Account creation date
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="account-creation-date">
-          {{ content.user.createDate }}
-        </p>
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dd class="govuk-summary-list__key">
-        Last modified date
-      </dd>
-      <dd class="govuk-summary-list__value">
-        <p class="govuk-body-m" id="last-modified">
-          {{ content.user.lastModified }}
-        </p>
-      </dd>
-    </div>
-  </dl>
+  {% set processedRoles %}
+    {% for role in content.user.roles %}
+      {{ role }}<br>
+    {% endfor %}
+  {% endset %}
+
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Account state"
+        },
+        value: {
+          html: '<strong class="govuk-tag">Active</strong>'
+        }
+      } if (content.user.active and not content.user.stale),
+      {
+        key: {
+          text: "Account state"
+        },
+        value: {
+          html: '<strong class="govuk-tag govuk-tag--green">Archived</strong>'
+        }
+      } if (content.user.stale and not content.user.active),
+      {
+        key: {
+          text: "Account state"
+        },
+        value: {
+          html: '<strong class="govuk-tag govuk-tag--red">Suspended</strong>'
+        }
+      } if (not content.user.stale and not content.user.active),
+      {
+        key: {
+          text: "User ID"
+        },
+        value: {
+          text: content.user.id
+        }
+      },
+      {
+        key: {
+          text: "Email"
+        },
+        value: {
+          text: content.user.email
+        }
+      },
+      {
+        key: {
+          text: "First name"
+        },
+        value: {
+          text: content.user.forename
+        }
+      },
+      {
+        key: {
+          text: "Last name"
+        },
+        value: {
+          text: content.user.surname
+        }
+      },
+      {
+        key: {
+          text: "Assigned roles"
+        },
+        value: {
+          html: processedRoles
+        }
+      },
+      {
+        key: {
+          text: "Multi-factor authentication"
+        },
+        value: {
+          html: '<strong class="govuk-tag">Enabled</strong>'
+        }
+      } if content.user.multiFactorAuthentication,
+      {
+        key: {
+          text: "Multi-factor authentication"
+        },
+        value: {
+          html: '<strong class="govuk-tag govuk-tag--green">Disabled</strong>'
+        }
+      } if not content.user.multiFactorAuthentication,
+      {
+        key: {
+          text: "Single sign-on provider"
+        },
+        value: {
+          text: content.user.ssoProvider
+        }
+      },
+      {
+        key: {
+          text: "Single sign-on ID"
+        },
+        value: {
+          text: content.user.ssoId
+        }
+      },
+      {
+        key: {
+          text: "Account creation date"
+        },
+        value: {
+          text: content.user.createDate
+        }
+      },
+      {
+        key: {
+          text: "Last modified date"
+        },
+        value: {
+          text: content.user.lastModified
+        }
+      }
+    ]
+  }) }}
 
   {% if not content.user.stale %}
     <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
