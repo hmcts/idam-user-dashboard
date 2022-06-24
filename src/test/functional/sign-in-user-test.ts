@@ -49,7 +49,7 @@ Scenario('I as a user try to sign in with invalid credentials', ({I}) => {
   I.clearField('#username');
   I.clearField('#password');
   I.click('Sign in');
-  I.waitForText('Information is missing or invalid');
+  I.waitForText('Email address cannot be blank');
 });
 
 
