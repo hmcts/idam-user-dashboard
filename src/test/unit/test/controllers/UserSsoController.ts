@@ -2,28 +2,16 @@ import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockRootController } from '../../utils/mockRootController';
 import { UserSsoController } from '../../../../main/controllers/UserSsoController';
-import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import { mockApi } from '../../utils/mockApi';
 import { when } from 'jest-when';
 import { MISSING_OPTION_ERROR, USER_DISABLE_SSO_ERROR } from '../../../../main/utils/error';
 import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
-
-type Mocked<T> = { [P in keyof T]: jest.Mock; };
 
 describe('User remove SSO controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
   const controller = new UserSsoController();
-  const mockApi: Mocked<IdamAPI> = {
-    getUserById: jest.fn(),
-    getUserDetails: jest.fn(),
-    deleteUserById: jest.fn(),
-    getAllRoles: jest.fn(),
-    getAssignableRoles: jest.fn(),
-    editUserById: jest.fn(),
-    registerUser: jest.fn(),
-    getAllServices: jest.fn()
-  };
 
   beforeEach(() => {
     req = mockRequest();
@@ -59,7 +47,7 @@ describe('User remove SSO controller', () => {
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.editUserById).calledWith(userData.id).mockReturnValue(Promise.resolve());
+    when(mockApi.deleteSsoById).calledWith(userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('sso-user-successful', { content: { user: userData } });
@@ -112,10 +100,10 @@ describe('User remove SSO controller', () => {
       roles: ['IDAM_SUPER_USER'],
     };
 
-    const error = { userSsoForm: { message: USER_DISABLE_SSO_ERROR } };
+    const error = { userRemoveSsoForm: { message: USER_DISABLE_SSO_ERROR } };
 
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.editUserById).calledWith(userData.id).mockReturnValue(Promise.reject('Failed'));
+    when(mockApi.deleteSsoById).calledWith(userData.id).mockReturnValue(Promise.reject('Failed'));
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
 
