@@ -16,7 +16,7 @@ export class UserActionsController extends RootController{
       case 'suspend':
       case 'unsuspend':
         return res.redirect(307, USER_SUSPEND_URL);
-      case 'disable-sso':
+      case 'remove-sso':
         return res.redirect(307, USER_DISABLE_SSO_URL);
       case 'delete':
         return res.redirect(307, USER_DELETE_URL);

@@ -39,7 +39,7 @@ export class UserResultsController extends RootController {
         return super.post(req, res, 'user-details', {
           content: {
             user,
-            showManage: this.canManageUser(req.session.user, user),
+            canManage: this.canManageUser(req.session.user, user),
             lockedMessage: this.composeLockedMessage(user)
           }
         });

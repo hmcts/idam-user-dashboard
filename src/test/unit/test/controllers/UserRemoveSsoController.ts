@@ -1,17 +1,17 @@
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockRootController } from '../../utils/mockRootController';
-import { UserSsoController } from '../../../../main/controllers/UserSsoController';
+import { UserRemoveSsoController } from '../../../../main/controllers/UserRemoveSsoController';
 import { mockApi } from '../../utils/mockApi';
 import { when } from 'jest-when';
-import { MISSING_OPTION_ERROR, USER_DISABLE_SSO_ERROR } from '../../../../main/utils/error';
+import { MISSING_OPTION_ERROR, USER_REMOVE_SSO_ERROR } from '../../../../main/utils/error';
 import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
 
 describe('User remove SSO controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new UserSsoController();
+  const controller = new UserRemoveSsoController();
 
   beforeEach(() => {
     req = mockRequest();
@@ -32,7 +32,7 @@ describe('User remove SSO controller', () => {
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('sso-user', { content: { user: userData } });
+    expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData } });
   });
 
   test('Should redirect to the user manage page after removing sso for user', async () => {
@@ -47,10 +47,10 @@ describe('User remove SSO controller', () => {
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.deleteSsoById).calledWith(userData.id).mockReturnValue(Promise.resolve());
+    when(mockApi.removeSsoById).calledWith(userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('sso-user-successful', { content: { user: userData } });
+    expect(res.render).toBeCalledWith('remove-sso-user-successful', { content: { user: userData } });
   });
 
   test('Should redirect to the user details page after cancelling removing sso for user', async () => {
@@ -87,7 +87,7 @@ describe('User remove SSO controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(userData.id);
-    expect(res.render).toBeCalledWith('sso-user', { content: { user: userData }, error });
+    expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData }, error });
   });
 
   test('Should render the remove sso page after there was an API issue', async () => {
@@ -100,15 +100,15 @@ describe('User remove SSO controller', () => {
       roles: ['IDAM_SUPER_USER'],
     };
 
-    const error = { userRemoveSsoForm: { message: USER_DISABLE_SSO_ERROR } };
+    const error = { userRemoveSsoForm: { message: USER_REMOVE_SSO_ERROR } };
 
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.deleteSsoById).calledWith(userData.id).mockReturnValue(Promise.reject('Failed'));
+    when(mockApi.removeSsoById).calledWith(userData.id).mockReturnValue(Promise.reject('Failed'));
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(userData.id);
-    expect(res.render).toBeCalledWith('sso-user', { content: { user: userData }, error });
+    expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData }, error });
   });
 });

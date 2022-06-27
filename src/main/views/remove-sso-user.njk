@@ -11,7 +11,7 @@
   {{ super() }}
   {{ breadcrumb([
     ['Manage users', urls.MANAGER_USERS_URL],
-    ['Delete User']
+    ['Remove SSO']
   ]) }}
 {% endblock %}
 
@@ -29,13 +29,13 @@
           name: "confirmSso",
           fieldset: {
             legend: {
-              text: "Are you sure you want to remove single sign on for " + content.user.forename + " " + content.user.surname + "?",
+              text: "Are you sure you want to remove single sign-on for " + content.user.forename + " " + content.user.surname + "?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--l"
             }
           },
           hint: {
-            text: "Are you sure you want to remove single sign on for this user? The user will need to reset their password."
+            text: "Are you sure you want to remove single sign-on for this user? The user will need to reset their password."
           },
           items: [
             { value: true, text: "Yes" },
