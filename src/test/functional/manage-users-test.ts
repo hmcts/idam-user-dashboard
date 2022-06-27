@@ -5,7 +5,6 @@ import {
 } from './shared/testingSupportApi';
 import '../../main/utils/utils';
 import {config as testConfig} from '../config';
-import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
 import {convertISODateTimeToUTCFormat} from '../../main/utils/utils';
 
@@ -40,27 +39,13 @@ Scenario('I as a user should be able to see the active status of a user', async 
 
   const createDate = convertISODateTimeToUTCFormat(activeUser[0].createDate);
   const lastModified = convertISODateTimeToUTCFormat(activeUser[0].lastModified);
-
-  const userId = await I.grabTextFrom('#user-id');
-  Assert.equal(userId.trim(), activeUser[0].id);
-
-  const status = await I.grabTextFrom('#status');
-  Assert.equal(status.trim(), 'Active');
-
-  const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), activeUser[0].email);
-
-  const ssoId = await I.grabTextFrom('#sso-id');
-  Assert.equal(ssoId.trim(), activeUser[0].ssoId);
-
-  const ssoProvider = await I.grabTextFrom('#sso-provider');
-  Assert.equal(ssoProvider.trim(), activeUser[0].ssoProvider);
-
-  const accountCreationDate = await I.grabTextFrom('#account-creation-date');
-  Assert.equal(accountCreationDate.trim(), createDate);
-
-  const lastModifiedDate = await I.grabTextFrom('#last-modified');
-  Assert.equal(lastModifiedDate.trim(), lastModified);
+  I.see(activeUser[0].id);
+  I.see('ACTIVE');
+  I.see(activeUser[0].email);
+  I.see(activeUser[0].ssoId);
+  I.see(activeUser[0].ssoProvider);
+  I.see(createDate);
+  I.see(lastModified);
 }).tag('@CrossBrowser');
 
 Scenario('I as a user should be able to see the suspended status of a user', async ({I}) => {
@@ -77,12 +62,8 @@ Scenario('I as a user should be able to see the suspended status of a user', asy
   I.fillField('#search', suspendUserEmail);
   I.click('Search');
   I.waitForText('User Details');
-
-  const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), suspendUserEmail);
-
-  const status = await I.grabTextFrom('#status');
-  Assert.equal(status.trim(), 'Suspended');
+  I.see(suspendUserEmail);
+  I.see('SUSPENDED');
 });
 
 Scenario('I as a user should be able to see the stale status of a user', async ({I}) => {
@@ -102,11 +83,8 @@ Scenario('I as a user should be able to see the stale status of a user', async (
   I.dontSee('Edit user');
   I.dontSee('Delete user');
   I.dontSee('Suspend user');
+  I.see(staleUserEmail);
+  I.see('ARCHIVED');
 
-  const email = await I.grabTextFrom('#email');
-  Assert.equal(email.trim(), staleUserEmail);
-
-  const status = await I.grabTextFrom('#status');
-  Assert.equal(status.trim(), 'Archived');
   await I.deleteStaleUser(user.id);
 });
