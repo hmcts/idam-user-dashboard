@@ -5,6 +5,7 @@ import {createUserWithRoles} from './shared/testingSupportApi';
 Feature('Lock User Account');
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 const AFTER_RESET_PASSWORD = testConfig.PASSWORD + randomData.getRandomString(2);
+
 BeforeSuite(async () => {
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
