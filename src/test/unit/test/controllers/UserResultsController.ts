@@ -53,7 +53,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: results[0],
-        showDelete: false,
+        canManage: false,
         lockedMessage: ''
       }
     });
@@ -85,7 +85,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: results[0],
-        showDelete: false,
+        canManage: false,
         lockedMessage: ''
       }
     });
@@ -117,7 +117,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details',{
       content: {
         user: results[0],
-        showDelete: false,
+        canManage: false,
         lockedMessage: ''
       }
     });
@@ -162,7 +162,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: expectedResults[0],
-        showDelete: false,
+        canManage: false,
         lockedMessage: ''
       }
     });
@@ -213,7 +213,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
-        showDelete: false,
+        canManage: false,
         lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes'
       }
     });
@@ -264,7 +264,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
-        showDelete: false,
+        canManage: false,
         lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'
       }
     });
@@ -316,7 +316,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
-        showDelete: false,
+        canManage: false,
         lockedMessage: ''
       }
     });
