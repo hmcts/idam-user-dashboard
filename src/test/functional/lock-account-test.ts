@@ -43,7 +43,7 @@ Scenario('User details page should reflect users locked status and active status
   I.fillField('#search', TEST_USER_EMAIL);
   I.click('Search');
   I.waitForText('User Details');
-  I.see('This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 60 minutes');
+  I.see('This account has been temporarily locked due to multiple failed login attempts.');
   I.click('Sign out');
 
   I.loginAs(TEST_USER_EMAIL, testConfig.PASSWORD);
