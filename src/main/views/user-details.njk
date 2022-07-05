@@ -165,8 +165,12 @@
           {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.user.active }}
         {% endif %}
 
+        {% if featureFlags.values[featureFlags.flags.BETA_REMOVE_SSO] and (content.user.ssoProvider or content.user.ssoId) and content.canManage %}
+          {{ govukButton({ text: "Remove SSO", name: "_action", value: "remove-sso", classes: "govuk-button--secondary" })}}
+        {% endif %}
+
         {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
-          {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.showDelete }}
+          {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.canManage }}
         {% endif %}
       </div>
     </form>

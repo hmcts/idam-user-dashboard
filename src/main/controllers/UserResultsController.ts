@@ -39,7 +39,7 @@ export class UserResultsController extends RootController {
         return super.post(req, res, 'user-details', {
           content: {
             user,
-            showDelete: this.canDeleteUser(req.session.user, user),
+            canManage: this.canManageUser(req.session.user, user),
             lockedMessage: this.composeLockedMessage(user)
           }
         });
@@ -93,7 +93,7 @@ export class UserResultsController extends RootController {
     return 60 - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
   }
 
-  private canDeleteUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
+  private canManageUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
     return userB.roles.every(role => userA.assignableRoles.includes(role));
   }
 }
