@@ -12,7 +12,9 @@ import {
   getObjectVariation,
   convertToArray,
   arrayContainsSubstring,
-  findDifferentElements
+  findDifferentElements,
+  computeTimeDifferenceInMinutes,
+  constructOptionsStringFromArray
 } from '../../../../main/utils/utils';
 
 describe('utils', () => {
@@ -232,6 +234,38 @@ describe('utils', () => {
     });
   });
 
+  describe('computeTimeDifferenceInMinutes', () => {
+    test('Should return time different in minutes', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setMinutes(date2.getMinutes() - 5);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(5);
+    });
+
+    test('Should return time different in minutes for more than an hour difference', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setHours(date2.getHours() - 1);
+      date2.setMinutes(date2.getMinutes() - 2);
+      date2.setSeconds(date2.getSeconds() - 50);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(63);
+    });
+
+    test('Should return no time difference for very short time difference', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setSeconds(date2.getSeconds() - 5);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(0);
+    });
+
+    test('Should return negative time difference if comparing earlier date to later', async () => {
+      const date1 = new Date();
+      const date2 = new Date(date1);
+      date2.setMinutes(date2.getMinutes() + 5);
+      expect(computeTimeDifferenceInMinutes(date1, date2)).toBe(-5);
+    });
+  });
+
   describe('obfuscateEmail', () => {
     test('Should return obfuscated email', async () => {
       expect(obfuscateEmail('a@test.com')).toBe('*@test.com');
@@ -307,6 +341,20 @@ describe('utils', () => {
 
     test('Should return nothing if no existing elements removed', async () => {
       expect(findDifferentElements(['a', 'b', 'd'], ['a', 'b', 'c', 'd'])).toStrictEqual([]);
+    });
+  });
+
+  describe('composeOptionsStringFromArray', () => {
+    test('Should return options string from a single option array', async () => {
+      expect(constructOptionsStringFromArray(['option1'])).toStrictEqual('option1');
+    });
+
+    test('Should return options string from 2 options', async () => {
+      expect(constructOptionsStringFromArray(['option1', 'option2'])).toStrictEqual('option1 or option2');
+    });
+
+    test('Should return options string from multiple options', async () => {
+      expect(constructOptionsStringFromArray(['option1', 'option2', 'option3', 'option4'])).toStrictEqual('option1, option2, option3 or option4');
     });
   });
 });

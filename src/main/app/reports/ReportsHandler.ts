@@ -1,20 +1,19 @@
 import { Parser } from 'json2csv';
 import { User } from '../../interfaces/User';
-import { promises as fs, existsSync, mkdirSync } from 'fs';
+import { fs } from 'memfs';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { Logger } from '../../interfaces/Logger';
 import { TelemetryClient } from 'applicationinsights';
+import Stats from 'memfs/lib/Stats';
 
 export class ReportsHandler {
-  private readonly TMP_FOLDER = path.join('/', 'tmp', 'reports')
+  private readonly TMP_FOLDER = path.join('/');
 
   constructor(
     private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
   ) {
-    this.createReportsDirectory();
-
     // Clear old files every minute
     setInterval(this.deleteOldReports, 1000 * 60);
   }
@@ -25,7 +24,7 @@ export class ReportsHandler {
     const filePath = path.join(this.TMP_FOLDER, fileName);
     const fileData = new Parser().parse(reportData);
 
-    return fs.writeFile(filePath, fileData)
+    return fs.promises.writeFile(filePath, fileData)
       .then(() => uuid)
       .catch(e => {
         this.telemetryClient.trackTrace({message: 'Error creating report file: ' + fileName});
@@ -34,11 +33,11 @@ export class ReportsHandler {
       });
   }
 
-  load(fileUUID: string): Promise<Buffer | void> {
+  load(fileUUID: string) {
     const fileName = fileUUID + '.csv';
     const filePath = path.join(this.TMP_FOLDER, fileName);
 
-    return fs.readFile(filePath)
+    return fs.promises.readFile(filePath)
       .catch(e => {
         this.telemetryClient.trackTrace({message: 'Error loading report file: ' + fileName});
         this.logger.error(e);
@@ -47,23 +46,17 @@ export class ReportsHandler {
       });
   }
 
-  private createReportsDirectory = () => {
-    if (!existsSync(this.TMP_FOLDER)) {
-      mkdirSync(this.TMP_FOLDER, { recursive: true });
-    }
-  }
-
   private deleteOldReports = () => {
-    fs.readdir(this.TMP_FOLDER)
-      .then(files => {
+    fs.promises.readdir(this.TMP_FOLDER)
+      .then((files: string[]) => {
         files.map(file => {
           const filePath = path.join(this.TMP_FOLDER, file);
 
-          fs.stat(filePath)
-            .then(stats => {
+          fs.promises.stat(filePath)
+            .then((stats: Stats) => {
               const fileAgeInMinutes = (new Date().getTime() - new Date(stats.mtime).getTime()) / (1000 * 60);
-              if (fileAgeInMinutes >= 30) {
-                fs.unlink(filePath).then(() => console.log('Deleted report file: ' + file));
+              if (fileAgeInMinutes >= 1) {
+                fs.promises.unlink(filePath).then(() => console.log('Deleted report file: ' + file));
               }
             });
         });

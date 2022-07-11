@@ -1,6 +1,13 @@
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
-import { convertISODateTimeToUTCFormat, isEmpty, isValidEmailFormat, possiblyEmail, sortRoles } from '../utils/utils';
+import {
+  computeTimeDifferenceInMinutes,
+  convertISODateTimeToUTCFormat,
+  isEmpty,
+  isValidEmailFormat,
+  possiblyEmail,
+  sortRoles
+} from '../utils/utils';
 import { RootController } from './RootController';
 import {
   INVALID_EMAIL_FORMAT_ERROR,
@@ -30,16 +37,14 @@ export class UserResultsController extends RootController {
 
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
-          content: { user, showDelete: this.canDeleteUser(req.session.user, user)}
+          content: {
+            user,
+            canManage: this.canManageUser(req.session.user, user),
+            lockedMessage: this.composeLockedMessage(user)
+          }
         });
       }
-
-      return super.post(req, res, 'manage-user', {
-        content: {
-          search: input,
-          result: (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input
-        }
-      });
+      return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
   }
 
@@ -73,7 +78,22 @@ export class UserResultsController extends RootController {
     processMfaRole(user);
   }
 
-  private canDeleteUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
+  private composeLockedMessage(user: User): string {
+    if (user.locked) {
+      const remainingTime = isEmpty(user.pwdAccountLockedTime) ? 0 : this.computeRemainingLockedTime(user.pwdAccountLockedTime);
+      if (remainingTime > 0) {
+        const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
+        return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
+      }
+    }
+    return '';
+  }
+
+  private computeRemainingLockedTime(accountLockedTime: string): number {
+    return 60 - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
+  }
+
+  private canManageUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
     return userB.roles.every(role => userA.assignableRoles.includes(role));
   }
 }

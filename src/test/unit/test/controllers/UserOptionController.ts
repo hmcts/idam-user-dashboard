@@ -2,31 +2,70 @@ import { UserOptionController } from '../../../../main/controllers/UserOptionCon
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { PageData } from '../../../../main/interfaces/PageData';
-import { MISSING_OPTION_ERROR } from '../../../../main/utils/error';
 import * as urls from '../../../../main/utils/urls';
 import { mockRootController } from '../../utils/mockRootController';
+import { when } from 'jest-when';
 
 describe('User option controller', () => {
-  mockRootController();
+  const mockFeatureFlags: any = {
+    getFlagValue: jest.fn(),
+    getAllFlagValues: jest.fn(),
+    toggleRoute: jest.fn()
+  };
+  mockRootController(mockFeatureFlags);
   let req: any;
   const res = mockResponse();
-  const controller = new UserOptionController();
+  const controller = new UserOptionController(mockFeatureFlags);
 
   beforeEach(() => {
     req = mockRequest();
   });
 
-  test('Should render the user option page', async () => {
+  test('Should render the user option page with a single option', async () => {
+    when(mockFeatureFlags.getAllFlagValues)
+      .calledWith()
+      .mockReturnValue(Promise.resolve({}));
+
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('user-option' );
+    const expectedPageData: PageData = {
+      content: { options: [ {value: 'manage-user', text: 'Manage an existing user' } ] },
+    };
+    expect(res.render).toBeCalledWith('user-option', expectedPageData);
+  });
+
+  test('Should render the user option page with multiple options', async () => {
+    const mockData = {
+      'idam-user-dashboard--beta-add': true,
+      'idam-user-dashboard--gamma-generate-report': true
+    };
+    when(mockFeatureFlags.getAllFlagValues)
+      .calledWith()
+      .mockReturnValue(Promise.resolve(mockData));
+
+    await controller.get(req, res);
+    const expectedPageData: PageData = {
+      content: { options: [
+        { value: 'manage-user', text: 'Manage an existing user' },
+        { value: 'add-user', text: 'Add a new user' },
+        { value: 'generate-report', text: 'Generate a user report' }
+      ]},
+    };
+    expect(res.render).toBeCalledWith('user-option', expectedPageData);
   });
 
   test('Should render the user option page with error when posting with no option selected', async () => {
+    when(mockFeatureFlags.getAllFlagValues)
+      .calledWith()
+      .mockReturnValue(Promise.resolve({ 'idam-user-dashboard--beta-add': true }));
+
     await controller.post(req, res);
     const expectedPageData: PageData = {
-      error: { userAction: { message: MISSING_OPTION_ERROR }},
+      content: { options: [
+        { value: 'manage-user', text: 'Manage an existing user' },
+        { value: 'add-user', text: 'Add a new user' }
+      ]},
+      error: { userAction: { message: 'Select if you would like to manage an existing user or add a new user' } },
     };
-
     expect(res.render).toBeCalledWith('user-option', expectedPageData);
   });
 

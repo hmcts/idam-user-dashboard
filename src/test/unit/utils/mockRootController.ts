@@ -1,6 +1,6 @@
 import { RootController } from '../../../main/controllers/RootController';
 
-export const mockRootController = () => {
+export const mockRootController = (featureFlags?: any ) => {
   jest.spyOn(RootController.prototype, 'get').mockImplementation((req, res, view, data) => {
     data ? res.render(view, data) : res.render(view);
   });

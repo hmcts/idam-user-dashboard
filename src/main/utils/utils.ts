@@ -53,6 +53,11 @@ export const convertISODateTimeToUTCFormat = (date: string): string => {
   return result === 'Invalid Date' ? '' : result;
 };
 
+export const computeTimeDifferenceInMinutes = (date1: Date, date2: Date): number => {
+  const differenceInMs = date1.getTime() - date2.getTime();
+  return Math.round(differenceInMs / (1000 * 60));
+};
+
 export const obfuscateEmail = (value: string): string => {
   if (value.includes('@')) {
     // obfuscate at least half of the username, and leave maximum of 3 characters unobfuscated
@@ -97,4 +102,20 @@ export const findDifferentElements = (arrayA: string[], arrayB: string[]): strin
     .filter(e => !arrayB.includes(e))
     .forEach(e => differentElements.push(e));
   return differentElements;
+};
+
+export const constructOptionsStringFromArray = (options: string[]): string => {
+  if (options.length == 1) {
+    return options[0];
+  }
+
+  let output = '';
+  for (let i = 0; i < options.length; i++) {
+    if (options.length > 2 && i < options.length - 2) {
+      output += options[i] + ', ';
+    } else if (i == options.length - 2) {
+      output += options[i] + ' or ';
+    }
+  }
+  return output + options[options.length - 1];
 };

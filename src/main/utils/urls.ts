@@ -15,6 +15,7 @@ export const USER_ACTIONS_URL = '/user/actions';
 export const EDIT_USER_URL = '/user/edit';
 export const USER_SUSPEND_URL = '/user/suspend';
 export const USER_DELETE_URL = '/user/delete';
+export const USER_DISABLE_SSO_URL = '/user/sso';
 export const ACCESSIBILITY_STATEMENT = '/accessibility-statement';
 export const GENERATE_REPORT_URL = '/reports';
 export const DOWNLOAD_REPORT_URL = '/reports/:reportUUID';

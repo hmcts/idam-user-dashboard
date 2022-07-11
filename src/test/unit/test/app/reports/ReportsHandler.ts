@@ -1,20 +1,18 @@
 import { ReportsHandler } from '../../../../../main/app/reports/ReportsHandler';
 import { User } from '../../../../../main/interfaces/User';
-import fs from 'fs';
+import { fs } from 'memfs';
 import * as uuid from 'uuid';
 import { when } from 'jest-when';
 import path from 'path';
 
-jest.mock('fs');
+jest.mock('memfs');
 jest.mock('uuid');
 
 describe('Report handler', () => {
-  const reportsFolder = path.join('/', 'tmp', 'reports');
+  const reportsFolder = path.join('/');
 
-  fs.promises = {
-    writeFile: jest.fn(),
-    readFile: jest.fn()
-  } as any;
+  fs.promises.writeFile = jest.fn();
+  fs.promises.readFile = jest.fn();
   jest.spyOn(uuid, 'v4');
 
   describe('generate', () => {
