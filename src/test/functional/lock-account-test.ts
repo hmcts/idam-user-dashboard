@@ -44,7 +44,7 @@ Scenario('User details page should reflect users locked status and active status
   I.click('Search');
   I.waitForText('User Details');
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
-  I.click('Sign out');
+  I.logout();
 
   I.loginAs(TEST_USER_EMAIL, testConfig.PASSWORD);
   I.waitForText('You can reset your password to unlock your account.');

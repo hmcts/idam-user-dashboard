@@ -48,8 +48,8 @@ Scenario('I as a user should be able to suspend and unsuspend user',
     I.see(suspendUserEmail);
     I.see(suspendUserEmail);
     I.see('SUSPENDED');
+    I.logout();
 
-    I.click('Sign out');
     I.loginAs(suspendUserEmail, testConfig.PASSWORD);
     I.waitForText('There is a problem with your account login details');
     I.waitForText('Your account has been blocked. Contact us to get help signing in.');
@@ -73,7 +73,7 @@ Scenario('I as a user should be able to suspend and unsuspend user',
     I.click('Return to user details');
     I.see('ACTIVE');
 
-    I.click('Sign out');
+    I.logout();
     I.loginAs(suspendUserEmail, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
