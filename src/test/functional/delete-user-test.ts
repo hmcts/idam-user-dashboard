@@ -89,7 +89,7 @@ Scenario('I as a user if I have the right role, should be able delete user succe
     I.click('Search');
     I.waitForText('No user matches your search for: ' + deletableUserEmail);
 
-    I.click('Sign out');
+    I.logout();
     I.see('Sign in');
     I.fillField('#username', deletableUserEmail);
     I.fillField('#password', testConfig.PASSWORD);
