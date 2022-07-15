@@ -17,6 +17,7 @@ import { defaultClient } from 'applicationinsights';
 import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
+import { UserRemoveSsoController } from '../../controllers/UserRemoveSsoController';
 import { AccessibilityStatementController } from '../../controllers/AccessibilityStatementController';
 import { GenerateReportController } from '../../controllers/GenerateReportController';
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
@@ -39,6 +40,7 @@ export class Container {
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
       addUserRolesController: asClass(AddUserRolesController),
+      userSsoController: asClass(UserRemoveSsoController),
       addPrivateBetaServiceController: asClass(AddPrivateBetaServiceController),
       manageUserController: asClass(ManageUserController),
       userEditController: asClass(UserEditController),
