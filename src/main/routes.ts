@@ -10,6 +10,7 @@ import {
   USER_ACTIONS_URL,
   USER_DETAILS_URL,
   USER_SUSPEND_URL,
+  USER_DISABLE_SSO_URL,
   ACCESSIBILITY_STATEMENT,
   GENERATE_REPORT_URL,
   DOWNLOAD_REPORT_URL,
@@ -21,6 +22,7 @@ import {
   BETA_DELETE,
   BETA_EDIT,
   BETA_SUSPEND,
+  BETA_REMOVE_SSO,
   GAMMA_PRIVATE_BETA,
   GAMMA_GENERATE_REPORT
 } from './app/feature-flags/flags';
@@ -40,6 +42,7 @@ export default function(app: Application): void {
   app.post(EDIT_USER_URL, featureFlags.toggleRoute(BETA_EDIT), app.locals.container.cradle.userEditController.post);
   app.post(USER_DELETE_URL, featureFlags.toggleRoute(BETA_DELETE), app.locals.container.cradle.userDeleteController.post);
   app.post(USER_SUSPEND_URL, featureFlags.toggleRoute(BETA_SUSPEND), app.locals.container.cradle.userSuspendController.post);
+  app.post(USER_DISABLE_SSO_URL, featureFlags.toggleRoute(BETA_REMOVE_SSO), app.locals.container.cradle.userSsoController.post);
   app.get(ACCESSIBILITY_STATEMENT, app.locals.container.cradle.accessibilityStatementController.get);
   app.get(GENERATE_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.generateReportController.get);
   app.post(GENERATE_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.generateReportController.post);

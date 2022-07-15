@@ -4,19 +4,19 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import { BETA_DELETE } from '../../main/app/feature-flags/flags';
+import {BETA_DELETE} from '../../main/app/feature-flags/flags';
 
 Feature('Delete User');
 
 const PARENT_ROLE = randomData.getRandomRole();
 const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
-const INDEPENDANT_CHILD_ROLE = randomData.getRandomRole();
+const INDEPENDENT_CHILD_ROLE = randomData.getRandomRole();
 const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
 BeforeSuite(async () => {
   await createAssignableRoles(PARENT_ROLE);
   await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
-  await createAssignableRoles(INDEPENDANT_CHILD_ROLE);
+  await createAssignableRoles(INDEPENDENT_CHILD_ROLE);
   // Assigning self role with the child role so the this user can also delete same level users
   await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
   await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
@@ -27,7 +27,7 @@ Scenario('I as a user should not be able delete user if I do not have the role w
   async ({I}) => {
 
     const nonDeletableUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
+    await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDENT_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
@@ -46,7 +46,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
   async ({I}) => {
 
     const nonDeletableUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]);
+    await I.createUserWithRoles(nonDeletableUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDENT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]);
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
@@ -89,7 +89,7 @@ Scenario('I as a user if I have the right role, should be able delete user succe
     I.click('Search');
     I.waitForText('No user matches your search for: ' + deletableUserEmail);
 
-    I.click('Sign out');
+    I.logout();
     I.see('Sign in');
     I.fillField('#username', deletableUserEmail);
     I.fillField('#password', testConfig.PASSWORD);
