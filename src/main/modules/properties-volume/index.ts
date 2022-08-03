@@ -17,15 +17,6 @@ export class PropertiesVolume {
       this.setSecret('secrets.idam-idam.redis-hostname', 'session.redis.host');
       this.setSecret('secrets.idam-idam.redis-port', 'session.redis.port');
       this.setSecret('secrets.idam-idam.redis-key', 'session.redis.key');
-
-      // Use idam-preview redis if using idam-idam-preview kv
-      if(config.has('secrets.idam-idam-preview')) {
-        console.log('Using idam-preview redis');
-        this.setSecret('secrets.idam-idam-preview.redis-hostname', 'session.redis.host');
-        this.setSecret('secrets.idam-idam-preview.redis-port', 'session.redis.port');
-        this.setSecret('secrets.idam-idam-preview.redis-key', 'session.redis.key');
-      }
-
       this.setSecret('session.redis.key', 'session.secret');
     } else {
       this.setLocalSecret('AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
