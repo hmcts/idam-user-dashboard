@@ -38,7 +38,7 @@ export const getOIDCToken = async () => {
 };
 
 export const createUserWithRoles = async (email: string, password: string, forename: string, userRoles: string[]) => {
-  const userId = uuid;
+  const userId = uuid();
   const OIDCToken = await getOIDCToken();
   try {
     return (await axios.post(
@@ -63,7 +63,7 @@ export const createUserWithRoles = async (email: string, password: string, foren
 };
 
 export const createUserWithSsoId = async (email: string, password: string, forename: string, userRoles: string[], ssoId: string) => {
-  const userId = uuid;
+  const userId = uuid();
   const OIDCToken = await getOIDCToken();
   try {
     return (await axios.post(
