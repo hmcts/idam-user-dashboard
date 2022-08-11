@@ -7,5 +7,9 @@ export = function () {
       this.fillField('#password', password);
       this.click('Sign in');
     },
+    logout: function () {
+      this.click('Sign out');
+      this.see('Sign in');
+    }
   });
 };

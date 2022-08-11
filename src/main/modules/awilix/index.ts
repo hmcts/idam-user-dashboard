@@ -17,7 +17,11 @@ import { defaultClient } from 'applicationinsights';
 import { IdamAuth } from '../../app/idam-auth/IdamAuth';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
+import { UserRemoveSsoController } from '../../controllers/UserRemoveSsoController';
 import { AccessibilityStatementController } from '../../controllers/AccessibilityStatementController';
+import { GenerateReportController } from '../../controllers/GenerateReportController';
+import { ReportsHandler } from '../../app/reports/ReportsHandler';
+import { DownloadReportController } from '../../controllers/DownloadReportController';
 import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
 
 /**
@@ -31,10 +35,12 @@ export class Container {
       telemetryClient: asValue(defaultClient),
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
+      reportGenerator: asValue(new ReportsHandler(logger, defaultClient)),
       userOptionController: asClass(UserOptionController),
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
       addUserRolesController: asClass(AddUserRolesController),
+      userSsoController: asClass(UserRemoveSsoController),
       addPrivateBetaServiceController: asClass(AddPrivateBetaServiceController),
       manageUserController: asClass(ManageUserController),
       userEditController: asClass(UserEditController),
@@ -42,7 +48,9 @@ export class Container {
       userActionsController: asClass(UserActionsController),
       userDeleteController: asClass(UserDeleteController),
       userSuspendController: asClass(UserSuspendController),
-      accessibilityStatementController: asClass(AccessibilityStatementController)
+      accessibilityStatementController: asClass(AccessibilityStatementController),
+      generateReportController: asClass(GenerateReportController),
+      downloadReportController: asClass(DownloadReportController)
     });
 
     /**

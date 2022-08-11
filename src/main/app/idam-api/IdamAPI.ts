@@ -74,6 +74,17 @@ export class IdamAPI {
       });
   }
 
+  public removeSsoById(id: string) {
+    return this.userAxios
+      .delete('/api/v1/users/' + id + '/sso')
+      .catch(error => {
+        const errorMessage = 'Error removing user SSO by ID from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
+      });
+  }
+
   public registerUser(user: UserRegistrationDetails): Promise<void> {
     return this.userAxios
       .post('/api/v1/users/registration', user)
@@ -122,6 +133,7 @@ export class IdamAPI {
       .filter(role => roleNames.includes(role.name))
       .filter(role => Array.isArray(role.assignableRoles))
       .forEach(role => role.assignableRoles
+        .filter(r => rolesMap.has(r))
         .forEach(r => collection.add(rolesMap.get(r).name))
       );
 
@@ -149,6 +161,26 @@ export class IdamAPI {
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
+      });
+  }
+
+  public getUsersWithRoles(roles: string[]): Promise<User[]> {
+    let queryString = '';
+    roles.forEach((role, index, roles) => {
+      queryString += 'roles:' + role;
+      if (index !== roles.length - 1) {
+        queryString += ' OR ';
+      }
+    });
+
+    return this.userAxios
+      .get(`/api/v1/users?size=500&query=(${queryString}) AND lastModified:>2018-01-01T00:00:00.000000`)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error getting all users with role from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        throw new Error(errorMessage);
       });
   }
 }

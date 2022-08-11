@@ -4,7 +4,7 @@ import {
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
 import {randomData} from './shared/random-data';
-import { BETA_SUSPEND } from '../../main/app/feature-flags/flags';
+import {BETA_SUSPEND} from '../../main/app/feature-flags/flags';
 
 Feature('Suspend and Unsuspend User');
 
@@ -45,14 +45,11 @@ Scenario('I as a user should be able to suspend and unsuspend user',
     I.fillField('#search', suspendUserEmail);
     I.click('Search');
     I.waitForText('User Details');
+    I.see(suspendUserEmail);
+    I.see(suspendUserEmail);
+    I.see('SUSPENDED');
+    I.logout();
 
-    const email = await I.grabTextFrom('#email');
-    Assert.equal(email.trim(), suspendUserEmail);
-
-    const statusAfterSuspend = await I.grabTextFrom('#status');
-    Assert.equal(statusAfterSuspend.trim(), 'Suspended');
-
-    I.click('Sign out');
     I.loginAs(suspendUserEmail, testConfig.PASSWORD);
     I.waitForText('There is a problem with your account login details');
     I.waitForText('Your account has been blocked. Contact us to get help signing in.');
@@ -74,11 +71,9 @@ Scenario('I as a user should be able to suspend and unsuspend user',
     I.waitForText('The following account has been unsuspended:');
     I.waitForText(suspendUserEmail);
     I.click('Return to user details');
+    I.see('ACTIVE');
 
-    const statusAfterUnsuspend = await I.grabTextFrom('#status');
-    Assert.equal(statusAfterUnsuspend.trim(), 'Active');
-
-    I.click('Sign out');
+    I.logout();
     I.loginAs(suspendUserEmail, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
     I.click('Manage an existing user');
@@ -111,9 +106,7 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     I.click('No');
     I.click('Continue');
     I.waitForText('User Details');
-
-    const status = await I.grabTextFrom('#status');
-    Assert.equal(status.trim(), 'Active');
+    I.see('ACTIVE');
 
     I.see('Suspend user');
   }
@@ -140,9 +133,7 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     I.click('No');
     I.click('Continue');
     I.waitForText('User Details');
-
-    const status = await I.grabTextFrom('#status');
-    Assert.equal(status.trim(), 'Suspended');
+    I.see('SUSPENDED');
 
     I.see('Unsuspend user');
   }

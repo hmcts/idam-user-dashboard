@@ -1,14 +1,7 @@
 import axios from 'axios';
 import config from 'config';
 import {config as testConfig} from '../../config';
-
-const NotifyClient = require('notifications-node-client').NotifyClient;
-let notifyClient: any = undefined;
-if (testConfig.NOTIFY_API_KEY) {
-  notifyClient = new NotifyClient(testConfig.NOTIFY_API_KEY);
-}
-//max notify results pages to search
-const MAX_NOTIFY_PAGES = 3;
+import {v4 as uuid} from 'uuid';
 
 const getAuthToken = async () => {
   const credentials = {
@@ -45,20 +38,24 @@ export const getOIDCToken = async () => {
 };
 
 export const createUserWithRoles = async (email: string, password: string, forename: string, userRoles: string[]) => {
-  const codeUserRoles = userRoles.map(role => ({code: role}));
-
+  const userId = uuid();
+  const OIDCToken = await getOIDCToken();
   try {
     return (await axios.post(
-      `${config.get('services.idam.url.api')}/testing-support/accounts`,
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/users`,
       {
-        email: email,
-        password: password,
-        forename: forename,
-        surname: testConfig.USER_LASTNAME,
-        roles: codeUserRoles
+        activationSecretPhrase: password,
+        user: {
+          id: userId,
+          email: email,
+          forename: forename,
+          surname: testConfig.USER_LASTNAME,
+          displayName: forename + ' ' + testConfig.USER_LASTNAME,
+          roleNames: userRoles,
+        }
       },
       {
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OIDCToken},
       })).data;
   } catch (e) {
     throw new Error(`Failed to create user ${email} with roles ${userRoles}, http-status: ${e.response?.status}`);
@@ -66,22 +63,26 @@ export const createUserWithRoles = async (email: string, password: string, foren
 };
 
 export const createUserWithSsoId = async (email: string, password: string, forename: string, userRoles: string[], ssoId: string) => {
-  const codeUserRoles = userRoles.map(role => ({code: role}));
-
+  const userId = uuid();
+  const OIDCToken = await getOIDCToken();
   try {
     return (await axios.post(
-      `${config.get('services.idam.url.api')}/testing-support/accounts`,
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/users`,
       {
-        email: email,
-        password: password,
-        forename: forename,
-        surname: testConfig.USER_LASTNAME,
-        ssoProvider: testConfig.SSO_PROVIDER,
-        ssoId: ssoId,
-        roles: codeUserRoles
+        activationSecretPhrase: password,
+        user: {
+          id: userId,
+          email: email,
+          forename: forename,
+          surname: testConfig.USER_LASTNAME,
+          displayName: forename + ' ' + testConfig.USER_LASTNAME,
+          roleNames: userRoles,
+          ssoId: ssoId,
+          ssoProvider: testConfig.SSO_PROVIDER
+        }
       },
       {
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OIDCToken},
       })).data;
   } catch (e) {
     throw new Error(`Failed to create user ${email} with ssoId ${ssoId}, http-status: ${e.response?.status}`);
@@ -205,35 +206,18 @@ export const assignRolesToParentRole = async (parentRoleId: string, assignableRo
   }
 };
 
-const searchForEmailInNotifyResults = async (notifications: any, searchEmail: string) => {
-  const result = notifications.find((currentItem: any) => {
-    if (currentItem.email_address === searchEmail) {
-      return true;
-    }
-    return false;
-  });
-  return result;
-};
-
 export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
-  let url;
-  let notificationsResponse = await notifyClient.getNotifications('email', null);
-  let emailResponse = await searchForEmailInNotifyResults(notificationsResponse.body.notifications, searchEmail);
-  let i = 1;
-  while (i < MAX_NOTIFY_PAGES && !emailResponse && notificationsResponse.body.links.next) {
-    const nextPageLink = notificationsResponse.body.links.next;
-    const nextPageLinkUrl = new URL(nextPageLink);
-    const olderThanId = nextPageLinkUrl.searchParams.get('older_than');
-    notificationsResponse = await notifyClient.getNotifications('email', null, null, olderThanId);
-    emailResponse = await searchForEmailInNotifyResults(notificationsResponse.body.notifications, searchEmail);
-    i++;
+  const OIDCToken = await getOIDCToken();
+  try {
+    return (await axios.get(
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
+      {
+        headers: {'Authorization': 'Bearer ' + OIDCToken},
+      }
+    )).data;
+  } catch (e) {
+    throw new Error(`Failed to extract email from Notify for ${searchEmail}, http-status: ${e.response?.status}`);
   }
-  const regex = '(https.+)';
-  const urlMatch = emailResponse.body.match(regex);
-  if (urlMatch[0]) {
-    url = urlMatch[0];
-  }
-  return url;
 };
 
 export const activateUserAccount = async (code: string, token: string) => {
@@ -270,7 +254,7 @@ export const createService = async (label: string, description: string, clientId
     return (await axios.post(
       `${config.get('services.idam.url.api')}/services`,
       JSON.stringify(data),
-      { headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken} }
+      {headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken}}
     ));
   } catch (e) {
     throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);

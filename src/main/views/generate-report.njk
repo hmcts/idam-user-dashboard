@@ -1,5 +1,6 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "macros/csrf.njk" import csrfProtection %}
 {% from "macros/breadcrumb.njk" import breadcrumb %}
 {% from "macros/errorSummary.njk" import errorSummary %}
@@ -7,13 +8,13 @@
 {% extends "template.njk" %}
 
 {% block pageTitle %}
-  Manage User - IDAM User Dashboard - GOV.UK
+  Generate report - IDAM User Dashboard - GOV.UK
 {% endblock %}
 
 {% block beforeContent %}
   {{ super() }}
   {{ breadcrumb([
-    ['Manage user']
+    ['Generate report']
   ]) }}
 {% endblock %}
 
@@ -21,16 +22,16 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
-      <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+      <h1 class="govuk-heading-l">Generate report</h1>
+      <form method="POST" action="{{ urls.GENERATE_REPORT_URL }}">
         {{ csrfProtection(csrfToken) }}
         {{ govukInput({
           label: {
-            text: "Search for an existing user",
-            classes: "govuk-label govuk-label--l",
-            isPageHeading: true
+            text: "What roles should the report be based on?",
+            classes: "govuk-label govuk-label--m"
           },
           hint: {
-            text: "Please enter the email address, user ID or SSO ID of the user you wish to manage"
+            text: "Please enter the role(s) you want to search for (comma-separated). The results will show all users that have the entered role(s) assigned to them. Archived users are not listed."
           },
           errorMessage: { text: error.search.message } if error.search,
           classes: "govuk-input govuk-!-width-three-quarters",
@@ -39,9 +40,14 @@
           value: search
         }) }}
         {{ govukButton({
-          text: "Search"
+          text: "Generate report"
         }) }}
       </form>
+
+      {{ govukWarningText({
+        text: "Generating the report can take some time, please do not refresh the page. Generated reports are currently limited to 500 user's details per report for performance reasons.",
+        iconFallbackText: "Warning"
+      }) }}
     </div>
   </div>
 {% endblock %}

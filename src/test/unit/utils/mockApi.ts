@@ -8,10 +8,12 @@ export const mockApi: Mocked<IdamAPI> = {
   getUserById: jest.fn(),
   editUserById: jest.fn(),
   deleteUserById: jest.fn(),
+  removeSsoById: jest.fn(),
   registerUser: jest.fn(),
   getAllServices: jest.fn(),
   getAllRoles: jest.fn(),
   getAssignableRoles: jest.fn(),
   grantRolesToUser: jest.fn(),
-  removeRoleFromUser: jest.fn()
+  removeRoleFromUser: jest.fn(),
+  getUsersWithRoles: jest.fn()
 };
