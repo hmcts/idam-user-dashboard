@@ -25,13 +25,12 @@ services:
     scope: 'openid profile roles manage-user search-user create-user'
     responseType: 'code'
 session:
-  secret: 'local'
   cookie:
     name: 'idam-user-dashboard-session'
   redis:
     host:
     port:
-    key:
+    key: 'local'
 health:
   timeout: 5000
   deadline: 15000
