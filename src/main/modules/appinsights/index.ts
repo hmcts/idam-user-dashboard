@@ -28,7 +28,7 @@ export class AppInsights {
       return true;
     }
 
-    if (config.has('appInsights.instrumentationKey')) {
+    if (config.get('appInsights.instrumentationKey')) {
       appInsights.setup(config.get('appInsights.instrumentationKey'))
         .setSendLiveMetrics(true)
         .start();

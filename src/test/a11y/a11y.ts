@@ -126,7 +126,6 @@ describe('Accessibility', () => {
     await page.type('#username', PARENT_ROLE_EMAIL);
     await page.type('#password', testConfig.PASSWORD);
     await page.click('input[type="submit"]');
-    await page.waitForNavigation();
     cookies = await page.cookies(testConfig.TEST_URL + urls.HOME_URL);
     await page.close();
   };
