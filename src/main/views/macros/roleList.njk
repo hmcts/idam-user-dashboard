@@ -21,7 +21,8 @@
       {{ govukInput({
         id: params.searchBox.id,
         attributes: {
-          placeholder: params.searchBox.placeholder
+          placeholder: params.searchBox.placeholder,
+          "aria-label": "Role searchbox"
         },
         prefix: { text: params.searchBox.prefix|default('🔎', true) },
         classes: "role-list__search-box " + params.searchBox.classes
