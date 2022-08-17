@@ -52,7 +52,7 @@ export class ReportsHandler {
     const redisPort: number = config.get('session.redis.port');
     const redisPass: string = config.get('session.redis.key');
 
-    if (redisHost) {
+    if (redisHost && redisPass) {
       this.logger.info('Using Redis Store');
       return this.getRedisStore(redisHost, redisPort, redisPass);
     }
@@ -64,7 +64,9 @@ export class ReportsHandler {
   private getRedisStore(redisHost: string, redisPort: number, redisPass: string): Store {
     const client = createClient({
       host: redisHost,
+      password: redisPass,
       port: redisPort ?? 6380,
+      tls: true
     });
 
     const setAsync = promisify(client.set).bind(client);
