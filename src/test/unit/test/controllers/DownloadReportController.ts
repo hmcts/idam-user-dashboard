@@ -7,8 +7,8 @@ describe('Download report controller', () => {
   let res: any;
   const next = jest.fn();
   const mockReportGenerator: any = {
-    generate: jest.fn(),
-    load: jest.fn(),
+    saveReport: jest.fn(),
+    getReport: jest.fn(),
   };
   const controller = new DownloadReportController(mockReportGenerator);
 
@@ -22,7 +22,7 @@ describe('Download report controller', () => {
     req.params = {
       reportUUID: 'someUUID'
     };
-    mockReportGenerator.load.mockResolvedValue(fileData);
+    mockReportGenerator.getReport.mockResolvedValue(fileData);
 
     await controller.get(req, res, next);
     expect(res.send).toHaveBeenCalledWith(fileData);
@@ -34,7 +34,7 @@ describe('Download report controller', () => {
     req.params = {
       reportUUID: 'someUUID'
     };
-    mockReportGenerator.load.mockRejectedValue(false);
+    mockReportGenerator.getReport.mockRejectedValue(false);
 
     await controller.get(req, res, next);
     expect(res.send).not.toHaveBeenCalled();

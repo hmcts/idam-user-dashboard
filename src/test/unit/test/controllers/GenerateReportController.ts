@@ -18,8 +18,8 @@ describe('Generate report controller', () => {
   let req: any;
   const res = mockResponse();
   const mockReportGenerator: any = {
-    generate: jest.fn(),
-    load: jest.fn(),
+    saveReport: jest.fn(),
+    getReport: jest.fn(),
   };
   const controller = new GenerateReportController(mockReportGenerator);
 
@@ -85,7 +85,7 @@ describe('Generate report controller', () => {
     const reportFileName = 'someUUID.csv';
 
     mockApi.getUsersWithRoles.mockResolvedValue(users);
-    mockReportGenerator.generate.mockResolvedValue(reportFileName);
+    mockReportGenerator.saveReport.mockResolvedValue(reportFileName);
 
     await controller.post(req, res);
 
@@ -106,7 +106,7 @@ describe('Generate report controller', () => {
     const reportFileName = 'someUUID.csv';
 
     mockApi.getUsersWithRoles.mockResolvedValue(users);
-    mockReportGenerator.generate.mockResolvedValue(reportFileName);
+    mockReportGenerator.saveReport.mockResolvedValue(reportFileName);
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('view-report', {
@@ -136,7 +136,7 @@ describe('Generate report controller', () => {
     ] as User[];
 
     mockApi.getUsersWithRoles.mockResolvedValue(users);
-    mockReportGenerator.generate.mockRejectedValue(false);
+    mockReportGenerator.saveReport.mockRejectedValue(false);
 
     await controller.post(req, res);
 
