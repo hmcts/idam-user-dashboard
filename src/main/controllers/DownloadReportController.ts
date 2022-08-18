@@ -10,8 +10,8 @@ export class DownloadReportController {
     private readonly reportGenerator: ReportsHandler
   ) {}
 
-  public get(req: AuthedRequest, res: Response, next: NextFunction) {
-    return this.reportGenerator.load(req.params.reportUUID)
+  public get(req: AuthedRequest, res: Response, next: NextFunction): Promise<void> {
+    return this.reportGenerator.getReport(req.params.reportUUID)
       .then(csv => {
         // YYYY-MM-DD-hh-mm-ss format
         const timestamp = new Date().toISOString().split('.')[0].replace(/[T:]/g, '-');

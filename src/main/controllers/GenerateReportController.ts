@@ -62,7 +62,9 @@ export class GenerateReportController extends RootController {
           }
         });
       }
-      const reportFileName = await this.reportGenerator.generate(reportData);
+
+      const reportFileName = await this.reportGenerator.saveReport(reportData);
+
       return super.post(req, res,'view-report', {
         content: {
           reportFileName, reportData, query: roles
