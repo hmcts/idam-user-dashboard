@@ -89,6 +89,33 @@ export const createUserWithSsoId = async (email: string, password: string, foren
   }
 };
 
+export const createUserWithSsoProvider = async (email: string, password: string, forename: string, userRoles: string[], ssoProvider: string) => {
+  const userId = uuid();
+  const OIDCToken = await getOIDCToken();
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/users`,
+      {
+        activationSecretPhrase: password,
+        user: {
+          id: userId,
+          email: email,
+          forename: forename,
+          surname: testConfig.USER_LASTNAME,
+          displayName: forename + ' ' + testConfig.USER_LASTNAME,
+          roleNames: userRoles,
+          ssoId: testConfig.SSO_ID,
+          ssoProvider: ssoProvider
+        }
+      },
+      {
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OIDCToken},
+      })).data;
+  } catch (e) {
+    throw new Error(`Failed to create user ${email} with ssoProvider ${ssoProvider}, http-status: ${e.response?.status}`);
+  }
+};
+
 export const retireStaleUser = async (userId: string) => {
   const authToken = await getAuthToken();
   try {

@@ -8,8 +8,8 @@ export const config = {
   PASSWORD: 'Pa55word11',
   USER_ROLE_CITIZEN: 'citizen',
   USER_ROLE_IDAM_MFA_DISABLED: 'idam-mfa-disabled',
+  SSO_ID: 'abcde000-0000-0000-0000-000000000000',
   SSO_PROVIDER: 'TEST_HMCTS_SSO',
-  EJUDICIARY_SSO_PROVIDER: 'ejudiciary-aad',
   SCENARIO_RETRY_LIMIT: 3,
   NOTIFY_API_KEY: process.env.NOTIFY_API_KEY,
   RBAC: {

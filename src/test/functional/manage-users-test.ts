@@ -50,7 +50,7 @@ Scenario('I as a user should be able to see the active status of a user', async 
 
 Scenario('I as a user should be able to see the eJudiciary info message.', async ({I}) => {
   const ssoUserEmail = randomData.getRandomEmailAddress();
-  await I.createUserWithSsoId(ssoUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE], testConfig.EJUDICIARY_SSO_PROVIDER);
+  await I.createUserWithSsoProvider(ssoUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE], 'ejudiciary-aad');
   const activeUser = await I.getUserDetails(ssoUserEmail);
 
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
