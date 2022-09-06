@@ -9,6 +9,7 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   deleteAllTestData = TestingSupportAPI.deleteAllTestData;
   createUserWithRoles = TestingSupportAPI.createUserWithRoles
   createUserWithSsoId = TestingSupportAPI.createUserWithSsoId
+  createUserWithSsoProvider = TestingSupportAPI.createUserWithSsoProvider
   retireStaleUser = TestingSupportAPI.retireStaleUser
   suspendUser = TestingSupportAPI.suspendUser
   getUserDetails = TestingSupportAPI.getUserDetails
