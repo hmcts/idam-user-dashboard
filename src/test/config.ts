@@ -9,6 +9,7 @@ export const config = {
   USER_ROLE_CITIZEN: 'citizen',
   USER_ROLE_IDAM_MFA_DISABLED: 'idam-mfa-disabled',
   SSO_PROVIDER: 'TEST_HMCTS_SSO',
+  EJUDICIARY_SSO_PROVIDER: 'ejudiciary-aad',
   SCENARIO_RETRY_LIMIT: 3,
   NOTIFY_API_KEY: process.env.NOTIFY_API_KEY,
   RBAC: {
