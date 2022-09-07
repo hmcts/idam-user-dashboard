@@ -27,7 +27,7 @@
 {% endset %}
 
 {% block content %}
-  {% if content.user.ssoProvider and content.user.ssoProvider.toLowerCase().includes('ejudiciary') %}
+  {% if content.user.ssoProvider and content.user.ssoProvider.toLowerCase().includes('azure') %}
     {{ govukNotificationBanner({
       html: eJudiciaryNotification
     }) }}
