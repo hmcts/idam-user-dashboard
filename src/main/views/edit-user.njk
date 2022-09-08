@@ -116,25 +116,29 @@
               classes: "govuk-fieldset__legend--s"
             }
           }) %}
-            {% if content.showMfa and content.user.multiFactorAuthentication %}
-              {{ govukWarningText({
-                text: "Only disable MFA for a user if they have a 'justice.gov.uk' or 'hmcts.net' email address. Contact the information security team if you want to make an exception.",
-                iconFallbackText: "Warning"
+            {% if content.user.ssoProvider %}
+              <p class="govuk-hint">{{ content.mfaMessage }}</p><br>
+            {% else %}
+              {% if content.showMfa and content.user.multiFactorAuthentication %}
+                {{ govukWarningText({
+                  text: "Only disable MFA for a user if they have a 'justice.gov.uk' or 'hmcts.net' email address. Contact the information security team if you want to make an exception.",
+                  iconFallbackText: "Warning"
+                }) }}
+              {% endif %}
+              {{ govukCheckboxes({
+                idPrefix: "multiFactorAuthentication",
+                name: "multiFactorAuthentication",
+                classes: "govuk-checkboxes--small",
+                items: [
+                  {
+                    value: 'enabled',
+                    text: 'Enabled',
+                    checked: content.user.multiFactorAuthentication,
+                    disabled: not content.showMfa
+                  }
+                ]
               }) }}
             {% endif %}
-            {{ govukCheckboxes({
-              idPrefix: "multiFactorAuthentication",
-              name: "multiFactorAuthentication",
-              classes: "govuk-checkboxes--small",
-              items: [
-                {
-                  value: 'enabled',
-                  text: 'Enabled',
-                  checked: content.user.multiFactorAuthentication,
-                  disabled: not content.showMfa
-                }
-              ]
-            }) }}
           {% endcall %}
         {% endif %}
 

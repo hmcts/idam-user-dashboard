@@ -44,8 +44,8 @@ export class UserEditController extends RootController {
         if(req.body._action === 'save') {
           return this.saveUser(req, res, user, roleAssignments);
         }
-
-        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: this.canShowMfa(req.session.user.assignableRoles) } });
+        const mfaMessage = user.ssoProvider == 'azure' ? 'Managed by eJudiciary.net' : 'Managed by MOJ/Justice.gov.uk';
+        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: this.canShowMfa(req.session.user.assignableRoles), mfaMessage: mfaMessage } });
       });
   }
 
