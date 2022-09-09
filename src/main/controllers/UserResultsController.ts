@@ -19,9 +19,16 @@ import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { processMfaRole } from '../utils/roleUtils';
+import config from 'config';
 
 @autobind
 export class UserResultsController extends RootController {
+
+  private providerMap: Map<string, Array<string>> = new Map([
+    [ config.get('providers.azure.internalName'),  [ config.get('providers.azure.externalName'), config.get('providers.azure.idFieldName')]],
+    [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
+  ])
+
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
@@ -35,12 +42,26 @@ export class UserResultsController extends RootController {
       if (users.length === 1) {
         const user = await req.scope.cradle.api.getUserById(users[0].id);
 
+        let providerName;
+        let providerIdField;
+        if (user.ssoProvider) {
+          if (this.providerMap.has(user.ssoProvider)) {
+            providerName = this.providerMap.get(user.ssoProvider)[0];
+            providerIdField = this.providerMap.get(user.ssoProvider)[1];
+          } else {
+            providerName = user.ssoProvider;
+            providerIdField = 'IdP User ID';
+          }
+        }
+
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
           content: {
             user,
             canManage: this.canManageUser(req.session.user, user),
-            lockedMessage: this.composeLockedMessage(user)
+            lockedMessage: this.composeLockedMessage(user),
+            providerName: providerName,
+            providerIdField: providerIdField
           }
         });
       }
