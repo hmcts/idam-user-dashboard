@@ -50,6 +50,48 @@ describe('User edit controller', () => {
     expect(res.render).toBeCalledWith('edit-user', { content: { user: apiData, roles: expectedRoleAssignments, showMfa: false } });
   });
 
+  test('Should show SSO MFA message when applicable', async () => {
+    const postData = {
+      _userId: '7',
+      _action: 'edit'
+    };
+
+    const apiData = {
+      id: postData._userId,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+      ssoProvider: ['azure']
+    };
+
+    when(mockApi.getUserById).calledWith(postData._userId).mockReturnValue(Promise.resolve(apiData));
+    req.body = postData;
+    req.session = {user: {assignableRoles: ['IDAM_SUPER_USER']}};
+
+    const expectedRoleAssignments = [
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: true,
+        assigned: true
+      }
+    ];
+
+    await controller.post(req, res);
+
+    expect(mockApi.getUserById).toBeCalledWith(postData._userId);
+    expect(res.render).toBeCalledWith('edit-user',
+      {
+        content: {
+          user: apiData,
+          roles: expectedRoleAssignments,
+          showMfa: false,
+          mfaMessage: 'Managed by eJudiciary.net'
+        }
+      });
+  });
+
   test('Should render the edit user page after saving when user fields changed', async () => {
     const postData = {
       _userId: '7',
