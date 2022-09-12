@@ -24,11 +24,6 @@ import config from 'config';
 @autobind
 export class UserResultsController extends RootController {
 
-  private providerMap: Map<string, Array<string>> = new Map([
-    [ config.get('providers.azure.internalName'),  [ config.get('providers.azure.externalName'), config.get('providers.azure.idFieldName')]],
-    [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
-  ])
-
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
@@ -42,12 +37,17 @@ export class UserResultsController extends RootController {
       if (users.length === 1) {
         const user = await req.scope.cradle.api.getUserById(users[0].id);
 
+        const providerMap: Map<string, Array<string>> = new Map([
+          [ config.get('providers.azure.internalName'),  [ config.get('providers.azure.externalName'), config.get('providers.azure.idFieldName')]],
+          [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
+        ]);
+
         let providerName;
         let providerIdField;
         if (user.ssoProvider) {
-          if (this.providerMap.has(user.ssoProvider)) {
-            providerName = this.providerMap.get(user.ssoProvider)[0];
-            providerIdField = this.providerMap.get(user.ssoProvider)[1];
+          if (providerMap.has(user.ssoProvider)) {
+            providerName = providerMap.get(user.ssoProvider)[0];
+            providerIdField = providerMap.get(user.ssoProvider)[1];
           } else {
             providerName = user.ssoProvider;
             providerIdField = 'IdP User ID';
