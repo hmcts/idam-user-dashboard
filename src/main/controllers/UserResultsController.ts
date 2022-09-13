@@ -23,6 +23,7 @@ import config from 'config';
 
 @autobind
 export class UserResultsController extends RootController {
+
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
@@ -35,17 +36,37 @@ export class UserResultsController extends RootController {
     if (users) {
       if (users.length === 1) {
         const user = await req.scope.cradle.api.getUserById(users[0].id);
+
+        const providerMap: Map<string, Array<string>> = new Map([
+          [ config.get('providers.azure.internalName'),  [ config.get('providers.azure.externalName'), config.get('providers.azure.idFieldName')]],
+          [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
+        ]);
+
+        let providerName;
+        let providerIdField;
         let notificationBannerMessage;
-        if (user.ssoProvider && user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
-          notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
+        if (user.ssoProvider) {
+          if (user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
+            notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
+          }
+          if (providerMap.has(user.ssoProvider)) {
+            providerName = providerMap.get(user.ssoProvider)[0];
+            providerIdField = providerMap.get(user.ssoProvider)[1];
+          } else {
+            providerName = user.ssoProvider;
+            providerIdField = 'IdP User ID';
+          }
         }
+
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
           content: {
             user,
             canManage: this.canManageUser(req.session.user, user),
             lockedMessage: this.composeLockedMessage(user),
-            notificationBannerMessage: notificationBannerMessage
+            notificationBannerMessage: notificationBannerMessage,
+            providerName: providerName,
+            providerIdField: providerIdField
           }
         });
       }
