@@ -10,12 +10,15 @@ import {
 import { when } from 'jest-when';
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
-
+import config from 'config';
+jest.mock('config');
 
 describe('User results controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
+
+  when(config.get).calledWith('providers.azure.internalName').mockReturnValue('azure');
 
   const controller = new UserResultsController();
   const email = 'john.smith@test.com';
@@ -25,6 +28,40 @@ describe('User results controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
+  });
+
+  test('Should render the user details page with notification banner', async () => {
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        ssoProvider: 'azure',
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        canManage: false,
+        notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.',
+        lockedMessage: ''
+      }
+    });
   });
 
   test('Should render the user details page when searching with a valid email', async () => {
