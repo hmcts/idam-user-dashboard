@@ -22,3 +22,12 @@ session:
 featureFlags:
   launchdarkly:
     sdkKey: LAUNCHDARKLY_SDK_KEY
+providers:
+  azure:
+    internalName: AZURE_INTERNAL_NAME
+    externalName: AZURE_EXTERNAL_NAME
+    idFieldName: AZURE_ID_FIELD_NAME
+  moj:
+    internalName: MOJ_INTERNAL_NAME
+    externalName: MOJ_EXTERNAL_NAME
+    idFieldName: MOJ_ID_FIELD_NAME

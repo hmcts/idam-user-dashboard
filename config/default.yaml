@@ -42,3 +42,12 @@ featureFlags:
     ldUser: 'idam-user-dashboard'
     sdkKey:
   flags:   # add feature-flag overrides below
+providers:
+  azure:
+    internalName: 'azure'
+    externalName: 'eJudiciary.net'
+    idFieldName: 'eJudiciary User ID'
+  moj:
+    internalName: 'moj'
+    externalName: 'MOJ/Justice.gov.uk'
+    idFieldName: 'MOJ User ID'

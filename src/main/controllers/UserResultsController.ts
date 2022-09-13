@@ -19,6 +19,7 @@ import autobind from 'autobind-decorator';
 import { User } from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { processMfaRole } from '../utils/roleUtils';
+import config from 'config';
 
 @autobind
 export class UserResultsController extends RootController {
@@ -34,13 +35,17 @@ export class UserResultsController extends RootController {
     if (users) {
       if (users.length === 1) {
         const user = await req.scope.cradle.api.getUserById(users[0].id);
-
+        let notificationBannerMessage;
+        if (user.ssoProvider && user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
+          notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
+        }
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
           content: {
             user,
             canManage: this.canManageUser(req.session.user, user),
-            lockedMessage: this.composeLockedMessage(user)
+            lockedMessage: this.composeLockedMessage(user),
+            notificationBannerMessage: notificationBannerMessage
           }
         });
       }

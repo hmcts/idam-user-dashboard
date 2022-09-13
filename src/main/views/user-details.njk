@@ -22,12 +22,12 @@
 
 {% set eJudiciaryNotification %}
   <p class="govuk-notification-banner__heading">
-    Please check with the eJudiciary support team to see if there are related accounts.
+    {{ content.notificationBannerMessage }}
   </p>
 {% endset %}
 
 {% block content %}
-  {% if content.user.ssoProvider and content.user.ssoProvider.toLowerCase().includes('azure') %}
+  {% if content.notificationBannerMessage %}
     {{ govukNotificationBanner({
       html: eJudiciaryNotification
     }) }}
