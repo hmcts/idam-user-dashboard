@@ -4,12 +4,22 @@ import { when } from 'jest-when';
 import { UserEditController } from '../../../../main/controllers/UserEditController';
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
+import config from 'config';
+jest.mock('config');
 
 describe('User edit controller', () => {
   mockRootController();
 
   let req: any;
   const res = mockResponse();
+
+  when(config.get).calledWith('providers.azure.internalName').mockReturnValue('azure');
+  when(config.get).calledWith('providers.azure.externalName').mockReturnValue('eJudiciary.net');
+  when(config.get).calledWith('providers.azure.idFieldName').mockReturnValue('eJudiciary User ID');
+  when(config.get).calledWith('providers.moj.internalName').mockReturnValue('moj');
+  when(config.get).calledWith('providers.moj.externalName').mockReturnValue('MOJ/Justice.gov.uk');
+  when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
+
   const controller = new UserEditController();
 
   beforeEach(() => {
@@ -63,7 +73,7 @@ describe('User edit controller', () => {
       email: 'john.smith@test.local',
       active: true,
       roles: ['IDAM_SUPER_USER'],
-      ssoProvider: ['azure']
+      ssoProvider: 'azure'
     };
 
     when(mockApi.getUserById).calledWith(postData._userId).mockReturnValue(Promise.resolve(apiData));
