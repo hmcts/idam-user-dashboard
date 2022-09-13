@@ -10,12 +10,21 @@ import {
 import { when } from 'jest-when';
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
+import config from 'config';
+jest.mock('config');
 
 
 describe('User results controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
+
+  when(config.get).calledWith('providers.azure.internalName').mockReturnValue('azure');
+  when(config.get).calledWith('providers.azure.externalName').mockReturnValue('eJudiciary.net');
+  when(config.get).calledWith('providers.azure.idFieldName').mockReturnValue('eJudiciary User ID');
+  when(config.get).calledWith('providers.moj.internalName').mockReturnValue('moj');
+  when(config.get).calledWith('providers.moj.externalName').mockReturnValue('MOJ/Justice.gov.uk');
+  when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
 
   const controller = new UserResultsController();
   const email = 'john.smith@test.com';
@@ -55,6 +64,76 @@ describe('User results controller', () => {
         user: results[0],
         canManage: false,
         lockedMessage: ''
+      }
+    });
+  });
+
+  test('Should render the user details page when searching with a valid email and SSO Provider', async () => {
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoProvider: 'azure',
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        canManage: false,
+        lockedMessage: '',
+        providerName: 'eJudiciary.net',
+        providerIdField: 'eJudiciary User ID'
+      }
+    });
+  });
+
+  test('Should render the default provider fields with unrecognised provider name', async () => {
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoProvider: 'unknown',
+        ssoId: ssoId,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        canManage: false,
+        lockedMessage: '',
+        providerName: 'unknown',
+        providerIdField: 'IdP User ID'
       }
     });
   });
