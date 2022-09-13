@@ -62,7 +62,7 @@
       } if (not content.user.stale and not content.user.active),
       {
         key: {
-          text: "User ID"
+          text: "IDAM User ID"
         },
         value: {
           text: content.user.id
@@ -118,20 +118,20 @@
       } if not content.user.multiFactorAuthentication,
       {
         key: {
-          text: "Single sign-on provider"
+          text: "Identity Provider"
         },
         value: {
-          text: content.user.ssoProvider
+          text: content.providerName
         }
-      },
+      } if content.user.ssoProvider,
       {
         key: {
-          text: "Single sign-on ID"
+          text: content.providerIdField
         },
         value: {
           text: content.user.ssoId
         }
-      },
+      } if content.user.ssoProvider,
       {
         key: {
           text: "Account creation date"
