@@ -63,6 +63,8 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         canManage: false,
+        providerIdField: 'eJudiciary User ID',
+        providerName: 'eJudiciary.net',
         notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.',
         lockedMessage: ''
       }
@@ -131,6 +133,7 @@ describe('User results controller', () => {
         canManage: false,
         lockedMessage: '',
         providerName: 'eJudiciary.net',
+        notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.',
         providerIdField: 'eJudiciary User ID'
       }
     });
