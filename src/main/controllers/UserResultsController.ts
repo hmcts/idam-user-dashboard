@@ -42,11 +42,7 @@ export class UserResultsController extends RootController {
           [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
         ]);
 
-        let notificationBannerMessage;
-        if (user.ssoProvider && user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
-          notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
-        }
-
+        const notificationBannerMessage = this.getBannerIfRequired(user);
         let providerName;
         let providerIdField;
         if (user.ssoProvider) {
@@ -73,6 +69,14 @@ export class UserResultsController extends RootController {
       }
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
+  }
+
+  private getBannerIfRequired(user: User): string {
+    let notificationBannerMessage;
+    if (user.ssoProvider && user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
+      notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
+    }
+    return notificationBannerMessage;
   }
 
   private async searchForUser(req: AuthedRequest, res: Response, input: string): Promise<User[]> {
