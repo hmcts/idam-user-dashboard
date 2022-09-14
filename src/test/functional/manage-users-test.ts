@@ -69,7 +69,6 @@ Scenario('I as a user should be able to see the eJudiciary info message.', async
   I.see(activeUser[0].id);
   I.see(activeUser[0].email);
   I.see(activeUser[0].ssoId);
-  I.see(activeUser[0].ssoProvider);
   I.see(createDate);
   I.see(lastModified);
 }).tag('@CrossBrowser');
