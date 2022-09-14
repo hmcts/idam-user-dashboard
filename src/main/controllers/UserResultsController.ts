@@ -42,13 +42,14 @@ export class UserResultsController extends RootController {
           [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
         ]);
 
+        let notificationBannerMessage;
+        if (user.ssoProvider && user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
+          notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
+        }
+
         let providerName;
         let providerIdField;
-        let notificationBannerMessage;
         if (user.ssoProvider) {
-          if (user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
-            notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
-          }
           if (providerMap.has(user.ssoProvider)) {
             providerName = providerMap.get(user.ssoProvider)[0];
             providerIdField = providerMap.get(user.ssoProvider)[1];
