@@ -30,6 +30,7 @@ import {
 } from '../utils/roleUtils';
 import { RoleDefinition } from '../interfaces/RoleDefinition';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
+import config from 'config';
 
 @autobind
 export class UserEditController extends RootController {
@@ -44,8 +45,19 @@ export class UserEditController extends RootController {
         if(req.body._action === 'save') {
           return this.saveUser(req, res, user, roleAssignments);
         }
-
-        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: this.canShowMfa(req.session.user.assignableRoles) } });
+        let mfaMessage;
+        if (user.ssoProvider) {
+          const providerMap: Map<string, string> = new Map([
+            [ config.get('providers.azure.internalName'),  config.get('providers.azure.externalName') ],
+            [ config.get('providers.moj.internalName'),  config.get('providers.moj.externalName') ]
+          ]);
+          if (providerMap.has(user.ssoProvider)) {
+            mfaMessage = 'Managed by ' + providerMap.get(user.ssoProvider);
+          } else {
+            mfaMessage = 'Managed by ' + user.ssoProvider;
+          }
+        }
+        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: this.canShowMfa(req.session.user.assignableRoles), mfaMessage: mfaMessage } });
       });
   }
 
