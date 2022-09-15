@@ -70,10 +70,18 @@
         {% endcall %}
 
         {{ govukInput({
-          label: { text: "Email" },
+          label: {
+            text: "Email"
+          },
           name: "email",
           id: "email",
-          value: content.user.email
+          value: content.user.email,
+          hint: {
+            text: 'The email address for this user is managed by their identity provider, it cannot be updated within IDAM.'
+          } if content.user.ssoProvider,
+          attributes: {
+            disabled: true
+          } if content.user.ssoProvider
         }) }}
       </div>
 
