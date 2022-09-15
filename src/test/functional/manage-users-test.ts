@@ -48,6 +48,31 @@ Scenario('I as a user should be able to see the active status of a user', async 
   I.see(lastModified);
 }).tag('@CrossBrowser');
 
+Scenario('I as a user should be able to see the eJudiciary info message.', async ({I}) => {
+  const ssoUserEmail = randomData.getRandomEmailAddress();
+  await I.createUserWithSsoProvider(ssoUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE], 'azure');
+  const activeUser = await I.getUserDetails(ssoUserEmail);
+
+  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.waitForText('Manage an existing user');
+  I.click('Manage an existing user');
+  I.click('Continue');
+  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.click('#search');
+  I.fillField('#search', ssoUserEmail);
+  I.click('Search');
+  I.waitForText('User Details');
+
+  const createDate = convertISODateTimeToUTCFormat(activeUser[0].createDate);
+  const lastModified = convertISODateTimeToUTCFormat(activeUser[0].lastModified);
+  I.see('Please check with the eJudiciary support team to see if there are related accounts.');
+  I.see(activeUser[0].id);
+  I.see(activeUser[0].email);
+  I.see(activeUser[0].ssoId);
+  I.see(createDate);
+  I.see(lastModified);
+}).tag('@CrossBrowser');
+
 Scenario('I as a user should be able to see the suspended status of a user', async ({I}) => {
   const suspendUserEmail = randomData.getRandomEmailAddress();
   const user = await I.createUserWithRoles(suspendUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE]);
