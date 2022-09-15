@@ -37,7 +37,7 @@ Scenario('I as a user should be able to edit and update the user-details success
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN], randomData.getRandomSSOId());
+    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
     const activeUser = await I.getUserDetails(activeUserEmail);
 
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
@@ -270,6 +270,39 @@ Scenario('I as a user should not be able to edit mfa if I don\'t have the assign
     // Check the mfa enabled checkbox is selected but disabled
     const mfaFlag = await I.grabValueFrom(locate('//input[@name=\'multiFactorAuthentication\' and @checked and @disabled]'));
     Assert.equal(mfaFlag, MFA_ENABLED_FLAG);
+  });
+
+Scenario('I as a user should not be able to edit or update the user`s email when user has SSO enabled',
+  {featureFlags: [BETA_EDIT]},
+  async ({I}) => {
+    const activeUserEmail = randomData.getRandomEmailAddress();
+    const activeUserSsoId = randomData.getRandomSSOId();
+    await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE], activeUserSsoId);
+
+    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
+    I.waitForText('Manage an existing user');
+    I.click('Manage an existing user');
+    I.click('Continue');
+    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', activeUserEmail);
+    I.click('Search');
+    I.waitForText('User Details');
+    I.see(activeUserEmail);
+    I.see(activeUserSsoId);
+
+    I.click('Edit user');
+    I.waitForText('Edit User');
+
+    // attempt to fill disabled field
+    I.seeElement('#email:disabled');
+    I.fillField('#email', randomData.getRandomEmailAddress());
+    I.click('Save');
+    I.see('There is a problem');
+    I.see('No changes to the user were made');
+
+    const emailFieldValue = await I.grabValueFrom('#email');
+    Assert.equal(emailFieldValue, activeUserEmail);
   });
 
 Scenario('I as a user should be able to filter through roles while updating the user details',
