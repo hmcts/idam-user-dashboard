@@ -29,25 +29,8 @@ BeforeSuite(async () => {
   nonRemovableSsoUser = await createUserWithSsoId(NON_REMOVABLE_SSO_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDENT_CHILD_ROLE], randomData.getRandomSSOId());
 });
 
-Scenario('I as a user should not see remove sso option if I do not have the right role to remove sso', async ({I}) => {
-  I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
-  I.click('Manage an existing user');
-  I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-  I.click('#search');
-  I.fillField('#search', NON_REMOVABLE_SSO_USER_EMAIL);
-  I.click('Search');
-  I.waitForText('User Details');
-  I.see(NON_REMOVABLE_SSO_USER_EMAIL);
-  I.see('IdP User ID');
-  I.see('Identity Provider');
-  I.see(nonRemovableSsoUser.ssoId);
-  I.see(nonRemovableSsoUser.ssoProvider);
-  I.dontSee('Remove SSO');
-}).tag('@CrossBrowser');
 
-Scenario('I as a user should be able to remove sso from user account @special', async ({I}) => {
+Scenario('I as a user should be able to remove sso from user account', async ({I}) => {
   I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage an existing user');
   I.click('Manage an existing user');
