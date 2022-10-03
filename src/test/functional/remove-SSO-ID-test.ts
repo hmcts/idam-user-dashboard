@@ -47,7 +47,7 @@ Scenario('I as a user should not see remove sso option if I do not have the righ
   I.dontSee('Remove SSO');
 }).tag('@CrossBrowser');
 
-Scenario('I as a user should be able to remove sso from user account @special', async ({I}) => {
+Scenario('I as a user should be able to remove sso from user account', async ({I}) => {
   I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
   I.waitForText('Manage an existing user');
   I.click('Manage an existing user');
