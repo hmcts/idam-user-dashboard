@@ -51,7 +51,7 @@ export class UserEditController extends RootController {
             user,
             roles: roleAssignments,
             showMfa: this.canShowMfa(req.session.user.assignableRoles),
-            mfaMessage: this.generateMFAMessage(user.ssoProvider)
+            ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
           }
         });
       });
@@ -88,7 +88,7 @@ export class UserEditController extends RootController {
           user,
           roles: roleAssignments,
           showMfa: mfaAssignable,
-          mfaMessage: this.generateMFAMessage(user.ssoProvider)
+          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
         },
         error
       });
@@ -103,7 +103,7 @@ export class UserEditController extends RootController {
         user: {...user, ...changedFields},
         roles: roleAssignments,
         showMfa: mfaAssignable,
-        mfaMessage: this.generateMFAMessage(user.ssoProvider)
+        ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
       },
       error });
     }
@@ -129,7 +129,7 @@ export class UserEditController extends RootController {
           user: updatedUser,
           roles: roleAssignments,
           showMfa: mfaAssignable,
-          mfaMessage: this.generateMFAMessage(user.ssoProvider),
+          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) },
           notification: 'User saved successfully'
         }
       });
@@ -140,7 +140,7 @@ export class UserEditController extends RootController {
           user,
           roles: roleAssignments,
           showMfa: mfaAssignable,
-          mfaMessage: this.generateMFAMessage(user.ssoProvider)
+          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
         },
         error
       });
