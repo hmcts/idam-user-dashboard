@@ -45,19 +45,15 @@ export class UserEditController extends RootController {
         if(req.body._action === 'save') {
           return this.saveUser(req, res, user, roleAssignments);
         }
-        let mfaMessage;
-        if (user.ssoProvider) {
-          const providerMap: Map<string, string> = new Map([
-            [ config.get('providers.azure.internalName'),  config.get('providers.azure.externalName') ],
-            [ config.get('providers.moj.internalName'),  config.get('providers.moj.externalName') ]
-          ]);
-          if (providerMap.has(user.ssoProvider)) {
-            mfaMessage = 'Managed by ' + providerMap.get(user.ssoProvider);
-          } else {
-            mfaMessage = 'Managed by ' + user.ssoProvider;
+
+        return super.post(req, res, 'edit-user', {
+          content: {
+            user,
+            roles: roleAssignments,
+            showMfa: this.canShowMfa(req.session.user.assignableRoles),
+            ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
           }
-        }
-        return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: this.canShowMfa(req.session.user.assignableRoles), mfaMessage: mfaMessage } });
+        });
       });
   }
 
@@ -73,8 +69,13 @@ export class UserEditController extends RootController {
     const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
     const mfaAssignable = this.canShowMfa(req.session.user.assignableRoles);
-    const mfaAdded = mfaAssignable && !originalMfa && typeof editedMfa !== 'undefined';
-    const mfaRemoved = mfaAssignable && originalMfa && typeof editedMfa === 'undefined';
+
+    let mfaAdded, mfaRemoved = false;
+
+    if (!user.ssoProvider) {
+      mfaAdded = mfaAssignable && !originalMfa && typeof editedMfa !== 'undefined';
+      mfaRemoved = mfaAssignable && originalMfa && typeof editedMfa === 'undefined';
+    }
 
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved;
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
@@ -82,8 +83,15 @@ export class UserEditController extends RootController {
     // No changes
     if (isObjectEmpty(changedFields) && !rolesChanged) {
       const error = { userEditForm: { message: USER_UPDATE_NO_CHANGE_ERROR }};
-      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: mfaAssignable },
-        error: error });
+      return super.post(req, res, 'edit-user', {
+        content: {
+          user,
+          roles: roleAssignments,
+          showMfa: mfaAssignable,
+          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
+        },
+        error
+      });
     }
 
     Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
@@ -94,7 +102,8 @@ export class UserEditController extends RootController {
       return super.post(req, res, 'edit-user', { content: {
         user: {...user, ...changedFields},
         roles: roleAssignments,
-        showMfa: mfaAssignable
+        showMfa: mfaAssignable,
+        ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
       },
       error });
     }
@@ -114,11 +123,27 @@ export class UserEditController extends RootController {
         await this.updateUserRoles(req, user, rolesAdded, rolesRemoved, mfaAdded, mfaRemoved);
         roleAssignments = await this.reconstructRoleAssignments(req, _userId, newRoleList);
       }
-      return super.post(req, res, 'edit-user', { content: { user: updatedUser, roles: roleAssignments, showMfa: mfaAssignable, notification: 'User saved successfully'}});
+
+      return super.post(req, res, 'edit-user', {
+        content: {
+          user: updatedUser,
+          roles: roleAssignments,
+          showMfa: mfaAssignable,
+          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) },
+          notification: 'User saved successfully'
+        }
+      });
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
-      return super.post(req, res, 'edit-user', { content: { user, roles: roleAssignments, showMfa: mfaAssignable },
-        error });
+      return super.post(req, res, 'edit-user', {
+        content: {
+          user,
+          roles: roleAssignments,
+          showMfa: mfaAssignable,
+          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
+        },
+        error
+      });
     }
   }
 
@@ -183,6 +208,14 @@ export class UserEditController extends RootController {
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
     return constructUserRoleAssignments(req.session.user.assignableRoles, newRoles);
+  }
+
+  private generateMFAMessage(ssoProvider: string): string {
+    if(config.has(`providers.${ssoProvider}.internalName`)) {
+      return 'Managed by ' + config.get(`providers.${ssoProvider}.externalName`);
+    } else {
+      return 'Managed by ' + ssoProvider;
+    }
   }
 
   private canShowMfa(assignableRoles: string[]) {
