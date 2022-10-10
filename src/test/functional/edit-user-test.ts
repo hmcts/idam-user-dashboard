@@ -208,7 +208,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.see(ASSIGNABLE_CHILD_ROLE1);
   });
 
-Scenario('I as a user should be able to edit mfa if I have the assignable role of idam-mfa-disabled',
+Scenario('I as a user should be able to edit mfa',
   {featureFlags: [BETA_EDIT, GAMMA_MFA]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
@@ -244,32 +244,6 @@ Scenario('I as a user should be able to edit mfa if I have the assignable role o
     I.click('Edit user');
     I.waitForText('Edit User');
     I.see(MFA_SECURITY_WARNING);
-  });
-
-Scenario('I as a user should not be able to edit mfa if I don\'t have the assignable role of idam-mfa-disabled',
-  {featureFlags: [BETA_EDIT, GAMMA_MFA]},
-  async ({I}) => {
-    const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [PARENT_ROLE]);
-
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', PARENT_ROLE_EMAIL);
-    I.click('Search');
-    I.waitForText('User Details');
-    I.see('ENABLED');
-
-    I.click('Edit user');
-    I.waitForText('Edit User');
-    I.dontSee(MFA_SECURITY_WARNING);
-
-    // Check the mfa enabled checkbox is selected but disabled
-    const mfaFlag = await I.grabValueFrom(locate('//input[@name=\'multiFactorAuthentication\' and @checked and @disabled]'));
-    Assert.equal(mfaFlag, MFA_ENABLED_FLAG);
   });
 
 Scenario('I as a user should not be able to edit or update the user`s email when user has SSO enabled',

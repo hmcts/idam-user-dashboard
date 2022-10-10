@@ -76,6 +76,7 @@ describe('User edit controller', () => {
       ssoProvider: 'azure'
     };
 
+    when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
     when(mockApi.getUserById).calledWith(postData._userId).mockReturnValue(Promise.resolve(apiData));
     req.body = postData;
     req.session = {user: {assignableRoles: ['IDAM_SUPER_USER']}};
