@@ -32,40 +32,54 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
-withNightlyPipeline(type, product, component) {
-  loadVaultSecrets(secrets)
-  enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
-  enableFullFunctionalTest()
-  enableCrossBrowserTest()
+try {
+  withNightlyPipeline(type, product, component) {
+    loadVaultSecrets(secrets)
+    enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
+    enableFullFunctionalTest()
+    enableCrossBrowserTest()
 
 
-  after('fortify-scan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    after('fortify-scan') {
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
+
+    after('fullFunctionalTest') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "functional-output/functional/allure",
+        reportFiles          : "index.html",
+        reportName           : "Functional Test Report"
+      ]
+
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/functional/reports/**/*'
+    }
+
+    after('crossBrowserTest') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "functional-output/cross-browser/allure",
+        reportFiles          : "index.html",
+        reportName           : "Cross Browser Test Report"
+      ]
+
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/cross-browser/reports/**/*'
+    }
   }
-
-  after('fullFunctionalTest') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "functional-output/functional/allure",
-      reportFiles          : "index.html",
-      reportName           : "Functional Test Report"
-    ]
-
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/functional/reports/**/*'
-  }
-
-  after('crossBrowserTest') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "functional-output/cross-browser/allure",
-      reportFiles          : "index.html",
-      reportName           : "Cross Browser Test Report"
-    ]
-
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/cross-browser/reports/**/*'
-  }
+} catch (err) {
+    node {
+        onMaster() {
+            def slackMessage = "IDAM User Dashboard nightly pipeline failed:"
+            slackMessage += "\nLink to build ${BUILD_ID}:\n${BUILD_URL}"
+            slackSend(
+                channel: "#idam-nightly-pipelines",
+                color: 'danger',
+                message: slackMessage)
+        }
+    }
+    throw err
 }
