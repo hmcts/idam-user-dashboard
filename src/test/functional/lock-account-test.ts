@@ -22,7 +22,6 @@ Scenario('I should be see a warning when viewing a user who is locked', async ({
   I.loginAs(DASHBOARD_USER_EMAIL);
   I.waitForText('Manage an existing user');
   I.gotoUserDetails(userEmail);
-  I.see('LOCKED');
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
 });
 
