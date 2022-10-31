@@ -2,7 +2,7 @@ import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
 import {createUserWithRoles} from './shared/testingSupportApi';
 
-Feature('Lock User Account @special');
+Feature('Lock User Account');
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 
 BeforeSuite(async () => {
