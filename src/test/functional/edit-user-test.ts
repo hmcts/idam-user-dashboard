@@ -37,32 +37,30 @@ Scenario('I as a user should be able to edit and update the user-details success
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
-    const activeUser = await I.getUserDetails(activeUserEmail);
+    const activeUserDetails = await I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [testConfig.USER_ROLE_CITIZEN]
+    );
 
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
 
     //Checks whether correct user-details retrieved
     const forename = await I.grabValueFrom('#forename');
-    Assert.equal(forename.trim(), activeUser[0].forename);
+    Assert.equal(forename.trim(), activeUserDetails.forename);
 
     const surname = await I.grabValueFrom('#surname');
-    Assert.equal(surname.trim(), activeUser[0].surname);
+    Assert.equal(surname.trim(), activeUserDetails.surname);
 
     const email = await I.grabValueFrom('#email');
-    Assert.equal(email.trim(), activeUser[0].email);
+    Assert.equal(email.trim(), activeUserDetails.email);
 
     const updatedForename = testConfig.USER_FIRSTNAME + randomData.getRandomString(5);
     const updatedSurname = testConfig.USER_FIRSTNAME + randomData.getRandomString(10);
@@ -73,7 +71,7 @@ Scenario('I as a user should be able to edit and update the user-details success
     I.fillField('#email', updatedEmail);
     I.click('Save');
     I.see('Success');
-    I.waitForText('User details updated successfully');
+    I.see('User details updated successfully');
 
     //Checks whether updated user-details retrieved
     const forenameUpdated = await I.grabValueFrom('#forename');
@@ -84,7 +82,6 @@ Scenario('I as a user should be able to edit and update the user-details success
 
     const emailUpdated = await I.grabValueFrom('#email');
     Assert.equal(emailUpdated.trim(), updatedEmail);
-
   }).tag('@CrossBrowser');
 
 const incorrectEmailAddresses = new DataTable(['incorrectEmailAddress']);
@@ -96,101 +93,96 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
   {featureFlags: [BETA_EDIT]},
   async ({I, current}) => {
     const activeUserEmail = testConfig.TEST_SUITE_PREFIX + randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [testConfig.USER_ROLE_CITIZEN]
+    );
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.fillField('#email', current.incorrectEmailAddress);
     I.click('Save');
-    I.waitForText('The email address is not in the correct format');
+    I.see('The email address is not in the correct format');
   });
 
 Scenario('I as a user should see proper error message when mandatory fields left empty',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [testConfig.USER_ROLE_CITIZEN]
+    );
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.clearField('#forename');
     I.clearField('#surname');
     I.clearField('#email');
     I.click('Save');
-    I.waitForText('There is a problem');
-    I.waitForText('You must enter a forename for the user');
-    I.waitForText('You must enter a surname for the user');
-    I.waitForText('The email address is not in the correct format');
+    I.see('There is a problem');
+    I.see('You must enter a forename for the user');
+    I.see('You must enter a surname for the user');
+    I.see('The email address is not in the correct format');
     I.fillField('#forename', '');
     I.fillField('#surname', ' ');
     I.fillField('#email', ' ');
     I.click('Save');
-    I.waitForText('There is a problem');
-    I.waitForText('You must enter a forename for the user');
-    I.waitForText('You must enter a surname for the user');
-    I.waitForText('The email address is not in the correct format');
+    I.see('There is a problem');
+    I.see('You must enter a forename for the user');
+    I.see('You must enter a surname for the user');
+    I.see('The email address is not in the correct format');
   });
 
 Scenario('I as a user should see proper error message when no changes were made before updating',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.USER_ROLE_CITIZEN]);
 
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [testConfig.USER_ROLE_CITIZEN]
+    );
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.click('Save');
-    I.waitForText('There is a problem');
-    I.waitForText('No changes to the user were made');
+    I.see('There is a problem');
+    I.see('No changes to the user were made');
   });
 
 Scenario('I as a user should be able to edit roles only if I have the permission to do so',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE]);
 
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [INDEPENDANT_CHILD_ROLE]
+    );
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(activeUserEmail);
     I.see(INDEPENDANT_CHILD_ROLE);
     I.dontSee(ASSIGNABLE_CHILD_ROLE1);
-
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(INDEPENDANT_CHILD_ROLE);
 
@@ -201,7 +193,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.click(ASSIGNABLE_CHILD_ROLE1);
     I.click('Save');
     I.see('Success');
-    I.waitForText('User details updated successfully');
+    I.see('User details updated successfully');
     I.click('Return to user details');
     I.see('User Details');
     I.see(INDEPENDANT_CHILD_ROLE);
@@ -212,21 +204,20 @@ Scenario('I as a user should be able to edit mfa',
   {featureFlags: [BETA_EDIT, GAMMA_MFA]},
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, testConfig.USER_ROLE_IDAM_MFA_DISABLED, PARENT_ROLE_WITH_MFA_ASSIGNABLE]);
 
-    I.loginAs(activeUserEmail, testConfig.PASSWORD);
+    I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [testConfig.RBAC.access, testConfig.USER_ROLE_IDAM_MFA_DISABLED, PARENT_ROLE_WITH_MFA_ASSIGNABLE]
+    );
+
+    I.loginAs(activeUserEmail);
     I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.gotoUserDetails(activeUserEmail);
     I.see(MFA_DISABLED_TEXT);
-
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.dontSee(MFA_SECURITY_WARNING);
 
     const mfaFlag = await I.grabValueFrom(locate('//input[@name=\'multiFactorAuthentication\']'));
@@ -235,14 +226,12 @@ Scenario('I as a user should be able to edit mfa',
     I.click('Enabled');
     I.click('Save');
     I.see('Success');
-    I.waitForText('User details updated successfully');
-
+    I.see('User details updated successfully');
     I.click('Return to user details');
     I.see('User Details');
     I.see('ENABLED');
-
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.see(MFA_SECURITY_WARNING);
   });
 
@@ -251,23 +240,21 @@ Scenario('I as a user should not be able to edit or update the user`s email when
   async ({I}) => {
     const activeUserEmail = randomData.getRandomEmailAddress();
     const activeUserSsoId = randomData.getRandomSSOId();
-    await I.createUserWithSsoId(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [INDEPENDANT_CHILD_ROLE], activeUserSsoId);
 
+    I.createUserWithSsoId(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [INDEPENDANT_CHILD_ROLE],
+      activeUserSsoId
+    );
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.gotoUserDetails(activeUserEmail);
     I.see(activeUserEmail);
     I.see(activeUserSsoId);
-
     I.click('Edit user');
-    I.waitForText('Edit User');
-
+    I.see('Edit User');
     // attempt to fill disabled field
     I.seeElement('#email:disabled');
     I.fillField('#email', randomData.getRandomEmailAddress());
@@ -282,22 +269,20 @@ Scenario('I as a user should not be able to edit or update the user`s email when
 Scenario('I as a user should be able to filter through roles while updating the user details',
   {featureFlags: [BETA_EDIT]},
   async ({I}) => {
-
     const activeUserEmail = randomData.getRandomEmailAddress();
-    await I.createUserWithRoles(activeUserEmail, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE1]);
     const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
 
+    I.createUserWithRoles(
+      activeUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [ASSIGNABLE_CHILD_ROLE1]
+    );
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.click('Manage an existing user');
-    I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
-    I.click('#search');
-    I.fillField('#search', activeUserEmail);
-    I.click('Search');
-    I.waitForText('User Details');
+    I.see('Manage an existing user');
+    I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.waitForText('Edit User');
+    I.see('Edit User');
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
     I.see(ASSIGNABLE_CHILD_ROLE1);
