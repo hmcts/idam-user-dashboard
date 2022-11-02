@@ -145,16 +145,13 @@ export const deleteStaleUser = async (userId: string) => {
   }
 };
 
-export const suspendUser = async (userId: string, email: string) => {
+export const suspendUser = async (userId: string) => {
   const OIDCToken = await getOIDCToken();
   try {
     await axios.patch(
       `${config.get('services.idam.url.api')}/api/v1/users/${userId}`,
       {
-        active: 'false',
-        forename: testConfig.USER_FIRSTNAME,
-        surname: testConfig.USER_LASTNAME,
-        email: email
+        active: false
       },
       {
         headers: {'Authorization': 'Bearer ' + OIDCToken},
