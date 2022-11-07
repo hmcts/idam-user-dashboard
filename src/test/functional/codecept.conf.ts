@@ -25,6 +25,9 @@ export const config: CodeceptJS.Config = {
     tryTo: {
       enabled: true,
     },
+    retryTo: {
+      enabled: true
+    },
     screenshotOnFail: {
       enabled: true,
     }

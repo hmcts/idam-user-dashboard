@@ -3,7 +3,7 @@ import supportedBrowsers from './supportedBrowsers';
 import {event, container} from 'codeceptjs';
 
 const waitForTimeout = 60000;
-const smartWait = 5000;
+const smartWait = 10000;
 
 const defaultSauceOptions = {
   username: process.env.SAUCE_USERNAME,
@@ -60,6 +60,9 @@ const setupConfig = {
     autoDelay: {
       enabled: true,
       delayAfter: 2000,
+    },
+    retryTo: {
+      enabled: true
     },
     allure: {
       enabled: true,
