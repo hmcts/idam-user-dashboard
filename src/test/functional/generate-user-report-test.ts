@@ -7,6 +7,8 @@ import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
 import {GAMMA_GENERATE_REPORT} from '../../main/app/feature-flags/flags';
 import * as Assert from 'assert';
+import { container } from 'codeceptjs';
+const { retryTo } = container.plugins();
 
 Feature('Generate User Report');
 
@@ -23,7 +25,7 @@ BeforeSuite(async () => {
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, DASHBOARD_USER_ROLE, SEARCHABLE_ROLE]);
 });
 
-Scenario('I as a user should be able to generate user report @special',
+Scenario('I as a user should be able to generate user report',
   {featureFlags: [GAMMA_GENERATE_REPORT]},
   async ({I}) => {
     const archivedUserEmail = randomData.getRandomEmailAddress();
@@ -48,33 +50,28 @@ Scenario('I as a user should be able to generate user report @special',
     I.click('Generate a user report');
     I.click('Continue');
     I.see('Generate report');
-    I.fillField('#search', SEARCHABLE_ROLE);
-    I.saveScreenshot('filledField.png');
-    I.click('Generate report');
-    try {
-      I.waitForText('Generated Report');
-    } catch {
+    await retryTo(() => {
+      I.fillField('#search', SEARCHABLE_ROLE);
       I.click('Generate report');
-      I.waitForText('Generated Report');
-    } finally {
-      I.see('Download report (CSV)');
-      I.see('Account state');
-      I.see('Name');
-      I.see('Email');
-      I.see('Back');
+      I.see('Generated Report');
+    }, 3);
+    I.see('Download report (CSV)');
+    I.see('Account state');
+    I.see('Name');
+    I.see('Email');
+    I.see('Back');
 
-      const firstNames: string[] = await I.grabTextFromAll('table > tbody > tr > *:nth-child(2)');
-      const firstNamesBeforeSorting: string[] = firstNames.map(n => n.toLowerCase());
-      const firstNamesAfterSorting: string[] = firstNames.map(n => n.toLowerCase()).sort();
-      Assert.deepEqual(firstNamesBeforeSorting, firstNamesAfterSorting);
+    const firstNames: string[] = await I.grabTextFromAll('table > tbody > tr > *:nth-child(2)');
+    const firstNamesBeforeSorting: string[] = firstNames.map(n => n.toLowerCase());
+    const firstNamesAfterSorting: string[] = firstNames.map(n => n.toLowerCase()).sort();
+    Assert.deepEqual(firstNamesBeforeSorting, firstNamesAfterSorting);
 
-      const emails: string[] = await I.grabTextFromAll('table > tbody > tr > *:nth-child(3)');
-      Assert.equal(emails.includes(DASHBOARD_USER_EMAIL), true);
-      Assert.equal(emails.includes(activeUserEmail), true);
-      Assert.equal(emails.includes(archivedUserEmail), false);
+    const emails: string[] = await I.grabTextFromAll('table > tbody > tr > *:nth-child(3)');
+    Assert.equal(emails.includes(DASHBOARD_USER_EMAIL), true);
+    Assert.equal(emails.includes(activeUserEmail), true);
+    Assert.equal(emails.includes(archivedUserEmail), false);
 
-      I.deleteStaleUser(archivedUser.id);
-    }
+    I.deleteStaleUser(archivedUser.id);
   }).tag('@CrossBrowser');
 
 Scenario('I as a user should not be able to see the users with citizen role and I should see proper error message',
