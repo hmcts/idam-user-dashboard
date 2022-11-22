@@ -9,13 +9,10 @@ BeforeSuite(async () => {
   await createUserWithRoles(dashboardUserEMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access]);
 });
 
-Before(async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
-});
-
 Scenario('I as a system owner should be able to see Status code: 404 error code if page not exists', async ({I}) => {
+  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.see('Manage an existing user');
   I.amOnPage('/pageNotFound');
-  I.waitForText('Page not found');
-  I.waitForText('Status code: 404');
+  I.see('Page not found');
+  I.see('Status code: 404');
 }).tag('@CrossBrowser');

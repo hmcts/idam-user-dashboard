@@ -174,7 +174,10 @@ export class IdamAPI {
     });
 
     return this.userAxios
-      .get(`/api/v1/users?size=500&query=(${queryString}) AND lastModified:>2018-01-01T00:00:00.000000`)
+      .get(`/api/v1/users?size=500&query=(${queryString}) AND lastModified:>2018-01-01T00:00:00.000000`,
+        {
+          timeout: 20000
+        })
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error getting all users with role from IDAM API';

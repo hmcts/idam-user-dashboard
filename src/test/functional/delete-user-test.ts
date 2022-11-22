@@ -51,7 +51,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
       [INDEPENDENT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]
     );
     I.loginAs(PARENT_ROLE_EMAIL);
-    I.waitForText('Manage an existing user');
+    I.see('Manage an existing user');
     I.gotoUserDetails(nonDeletableUserEmail);
     I.dontSee('Delete user');
   }
