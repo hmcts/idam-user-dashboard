@@ -46,6 +46,9 @@ const setupConfig = {
     retryTo: {
       enabled: true
     },
+    retryTo: {
+      enabled: true
+    },
     allure: {
       enabled: true,
     },
