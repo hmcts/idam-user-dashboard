@@ -2,24 +2,12 @@ import {config} from '../config';
 import supportedBrowsers from './supportedBrowsers';
 import {event, container} from 'codeceptjs';
 
-const waitForTimeout = 60000;
-const smartWait = 10000;
-
-const defaultSauceOptions = {
-  username: process.env.SAUCE_USERNAME,
-  accessKey: process.env.SAUCE_ACCESS_KEY,
-  acceptSslCerts: true,
-  extendedDebugging: true,
-  capturePerformance: true,
-};
-
 const getBrowserConfig = browserGroup => {
   const browserConfig: any[] = [];
 
   for (const candidateBrowser in supportedBrowsers[browserGroup]) {
     if (candidateBrowser) {
       const candidateCapabilities = {
-        ...{'sauce:options': defaultSauceOptions},
         ...supportedBrowsers[browserGroup][candidateBrowser]
       };
 
@@ -43,12 +31,10 @@ const setupConfig = {
     ...config.helpers,
     Playwright: {
       url: config.TEST_URL,
-      browser: 'chromium',
-      waitForTimeout,
-      smartWait,
-      cssSelectorsEnabled: 'true',
-      host: 'ondemand.eu-central-1.saucelabs.com',
-      port: 80,
+      waitForTimeout: config.WaitForTimeout,
+      waitForAction: 1500,
+      waitForNavigation: 'domcontentloaded',
+      ignoreHTTPSErrors: true,
       capabilities: {},
     },
   },
@@ -57,9 +43,8 @@ const setupConfig = {
       enabled: true,
       retries: 2,
     },
-    autoDelay: {
-      enabled: true,
-      delayAfter: 2000,
+    retryTo: {
+      enabled: true
     },
     retryTo: {
       enabled: true

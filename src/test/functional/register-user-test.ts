@@ -41,11 +41,11 @@ Scenario('I as a user should be able to register new support user',
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.waitForText('Add a new user');
+    I.see('Manage an existing user');
+    I.see('Add a new user');
     I.click('Add a new user');
     I.click('Continue');
-    I.waitForText('Please enter an email address');
+    I.see('Please enter an email address');
     I.click('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
@@ -61,7 +61,7 @@ Scenario('I as a user should be able to register new support user',
     I.see(PARENT_ROLE);
     I.checkOption(ASSIGNABLE_CHILD_ROLE2);
     I.click('Save');
-    I.waitForText('User registered');
+    I.see('User registered');
 
     const response = await I.extractUrlFromNotifyEmail(registerUserEmail);
     const activationParams = response.body.match(/token=(.*?)&code=([a-zA-Z0-9\\-]+)/);
@@ -72,11 +72,11 @@ Scenario('I as a user should be able to register new support user',
     I.click('Return to main menu');
     I.click('Manage an existing user');
     I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
     I.fillField('#search', registerUserEmail);
     I.click('Search');
-    I.waitForText('User Details');
+    I.see('User Details');
     I.see(registerUserEmail);
   }).tag('@CrossBrowser');
 
@@ -85,11 +85,11 @@ Scenario('I as a user should be able to register new private beta citizen user',
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.waitForText('Add a new user');
+    I.see('Manage an existing user');
+    I.see('Add a new user');
     I.click('Add a new user');
     I.click('Continue');
-    I.waitForText('Please enter an email address');
+    I.see('Please enter an email address');
     I.click('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
@@ -101,10 +101,10 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.click('Private Beta Citizen');
     I.click('Continue');
 
-    I.waitForText('Please select a service you would want to associate with the private beta citizen');
+    I.see('Please select a service you would want to associate with the private beta citizen');
     I.selectOption('#service', SERVICE_WITH_PRIVATE_BETA);
     I.click('Save');
-    I.waitForText('User registered');
+    I.see('User registered');
 
     const response = await I.extractUrlFromNotifyEmail(registerUserEmail);
     const activationParams = response.body.match(/token=(.*?)&code=([a-zA-Z0-9\\-]+)/);
@@ -115,11 +115,11 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.click('Return to main menu');
     I.click('Manage an existing user');
     I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
     I.fillField('#search', registerUserEmail);
     I.click('Search');
-    I.waitForText('User Details');
+    I.see('User Details');
     I.see(registerUserEmail);
   });
 
@@ -128,11 +128,11 @@ Scenario('I as a user should be able to see proper error message when proper ser
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.waitForText('Add a new user');
+    I.see('Manage an existing user');
+    I.see('Add a new user');
     I.click('Add a new user');
     I.click('Continue');
-    I.waitForText('Please enter an email address');
+    I.see('Please enter an email address');
     I.click('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
@@ -144,11 +144,11 @@ Scenario('I as a user should be able to see proper error message when proper ser
     I.click('Private Beta Citizen');
     I.click('Continue');
 
-    I.waitForText('Please select a service you would want to associate with the private beta citizen');
+    I.see('Please select a service you would want to associate with the private beta citizen');
     I.selectOption('#service', SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE);
     I.click('Save');
-    I.waitForText('There is a problem');
-    I.waitForText('You do not have permission to create the user roles');
+    I.see('There is a problem');
+    I.see('You do not have permission to create the user roles');
 
   });
 
@@ -158,11 +158,11 @@ Scenario('I as a user should be able to search for roles',
     const registerUserEmail = randomData.getRandomEmailAddress();
     const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.waitForText('Add a new user');
+    I.see('Manage an existing user');
+    I.see('Add a new user');
     I.click('Add a new user');
     I.click('Continue');
-    I.waitForText('Please enter an email address');
+    I.see('Please enter an email address');
     I.click('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
@@ -197,15 +197,15 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
   {featureFlags: [BETA_ADD]},
   async ({I, current}) => {
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.waitForText('Add a new user');
+    I.see('Manage an existing user');
+    I.see('Add a new user');
     I.click('Add a new user');
     I.click('Continue');
-    I.waitForText('Please enter an email address');
+    I.see('Please enter an email address');
     I.click('#email');
     I.fillField('#email', current.incorrectEmailAddress);
     I.click('Continue');
-    I.waitForText('The email address is not in the correct format');
+    I.see('The email address is not in the correct format');
   });
 
 Scenario('I as a user should be able to see proper error messages when add-user validations are not met',
@@ -213,21 +213,21 @@ Scenario('I as a user should be able to see proper error messages when add-user 
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
-    I.waitForText('Add a new user');
+    I.see('Manage an existing user');
+    I.see('Add a new user');
     I.click('Add a new user');
     I.click('Continue');
-    I.waitForText('Please enter an email address');
+    I.see('Please enter an email address');
     I.click('Continue');
-    I.waitForText('There is a problem');
-    I.waitForText('You must enter an email address');
+    I.see('There is a problem');
+    I.see('You must enter an email address');
     I.fillField('#email', ' ');
     I.click('Continue');
-    I.waitForText('There is a problem');
-    I.waitForText('You must enter an email address');
+    I.see('There is a problem');
+    I.see('You must enter an email address');
     I.fillField('#email', DASHBOARD_USER_EMAIL);
     I.click('Continue');
-    I.waitForText(`The email '${DASHBOARD_USER_EMAIL}' already exists`);
+    I.see(`The email '${DASHBOARD_USER_EMAIL}' already exists`);
     I.clearField('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
@@ -235,15 +235,15 @@ Scenario('I as a user should be able to see proper error messages when add-user 
     I.see('Last name');
     I.see('Select user type');
     I.click('Continue');
-    I.waitForText('You must enter a forename for the user');
-    I.waitForText('You must enter a surname for the user');
-    I.waitForText('You must select an user type');
+    I.see('You must enter a forename for the user');
+    I.see('You must enter a surname for the user');
+    I.see('You must select an user type');
     I.fillField('#forename', ' ');
     I.fillField('#surname', ' ');
     I.click('Support');
     I.click('Continue');
-    I.waitForText('You must enter a forename for the user');
-    I.waitForText('You must enter a surname for the user');
+    I.see('You must enter a forename for the user');
+    I.see('You must enter a surname for the user');
     I.fillField('#forename', testConfig.USER_FIRSTNAME);
     I.fillField('#surname', testConfig.USER_LASTNAME);
     I.click('Support');
@@ -252,7 +252,7 @@ Scenario('I as a user should be able to see proper error messages when add-user 
     I.see(ASSIGNABLE_CHILD_ROLE2);
     I.see(PARENT_ROLE);
     I.click('Save');
-    I.waitForText('There is a problem');
-    I.waitForText('A user must have at least one role assigned to be able to create them');
+    I.see('There is a problem');
+    I.see('A user must have at least one role assigned to be able to create them');
   });
 

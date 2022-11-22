@@ -478,7 +478,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
     });
 
     test('Should return users details when querying by multiple roles', () => {
@@ -509,7 +509,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
     });
 
     test('Should return error if API issue', async () => {
