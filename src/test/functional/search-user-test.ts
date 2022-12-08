@@ -24,27 +24,27 @@ incorrectEmailAddresses.add(['email@com']);
 Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format',
   async ({I, current}) => {
     I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
+    I.see('Manage an existing user');
     I.click('Manage an existing user');
     I.click('Continue');
-    I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
     I.click('#search');
     I.fillField('#search', current.incorrectEmailAddress);
     I.click('Search');
     I.seeElement('#search-error');
-    I.waitForText('The email address is not in the correct format');
+    I.see('The email address is not in the correct format');
   });
 
 Scenario('I should be able to search with user-email', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
   I.fillField('#search', CITIZEN_USER_EMAIL);
   I.click('Search');
-  I.waitForText('User Details');
+  I.see('User Details');
   I.see('ACTIVE');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
@@ -54,14 +54,14 @@ Scenario('I should be able to search with user-email', async ({I}) => {
 
 Scenario('I should be able to search with user-id', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
   I.fillField('#search', citizenUser.id);
   I.click('Search');
-  I.waitForText('User Details');
+  I.see('User Details');
   I.see('ACTIVE');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
@@ -71,14 +71,14 @@ Scenario('I should be able to search with user-id', async ({I}) => {
 
 Scenario('I should be able to search with sso-id', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
   I.fillField('#search', citizenUser.ssoId);
   I.click('Search');
-  I.waitForText('User Details');
+  I.see('User Details');
   I.see('ACTIVE');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
@@ -88,40 +88,40 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
   I.fillField('#search', conflictUser.ssoId);
   I.click('Search');
-  I.waitForText('User Details');
+  I.see('User Details');
   I.see(citizenUser.id);
 });
 
 Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('Search');
   I.seeElement('#search-error');
-  I.waitForText('You must enter an email address');
+  I.see('You must enter an email address');
   I.fillField('#search', ' ');
   I.click('Search');
   I.seeElement('#search-error');
-  I.waitForText('You must enter an email address');
+  I.see('You must enter an email address');
 });
 
 Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
   I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
-  I.waitForText('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+  I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
   I.click('#search');
   I.fillField('#search', 'meTesting@test.com');
   I.click('Search');
-  I.waitForText('No user matches your search for: meTesting@test.com');
+  I.see('No user matches your search for: meTesting@test.com');
 });
