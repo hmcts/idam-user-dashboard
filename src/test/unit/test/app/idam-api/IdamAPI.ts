@@ -470,7 +470,7 @@ describe('IdamAPI', () => {
         }]
       };
       const roles = ['IDAM_SUPER_USER'];
-      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER) AND lastModified:>2018-01-01T00:00:00.000000';
+      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER)';
 
       const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
       const mockLogger = {} as any;
@@ -478,7 +478,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
     });
 
     test('Should return users details when querying by multiple roles', () => {
@@ -501,7 +501,7 @@ describe('IdamAPI', () => {
         }]
       };
       const roles = ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'];
-      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER) AND lastModified:>2018-01-01T00:00:00.000000';
+      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER)';
 
       const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
       const mockLogger = {} as any;
@@ -509,7 +509,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
     });
 
     test('Should return error if API issue', async () => {

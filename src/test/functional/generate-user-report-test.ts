@@ -72,7 +72,7 @@ Scenario('I as a user should be able to generate user report',
     Assert.equal(emails.includes(archivedUserEmail), false);
 
     I.deleteStaleUser(archivedUser.id);
-  }).tag('@CrossBrowser');
+  }).tag('@CrossBrowser').retry(2);
 
 Scenario('I as a user should not be able to see the users with citizen role and I should see proper error message',
   {featureFlags: [GAMMA_GENERATE_REPORT]},

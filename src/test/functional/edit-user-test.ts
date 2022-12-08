@@ -213,7 +213,7 @@ Scenario('I as a user should be able to edit mfa',
     );
 
     I.loginAs(activeUserEmail);
-    I.waitForText('Manage an existing user');
+    I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.see(MFA_DISABLED_TEXT);
     I.click('Edit user');
@@ -249,7 +249,7 @@ Scenario('I as a user should not be able to edit or update the user`s email when
       activeUserSsoId
     );
     I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
-    I.waitForText('Manage an existing user');
+    I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.see(activeUserEmail);
     I.see(activeUserSsoId);

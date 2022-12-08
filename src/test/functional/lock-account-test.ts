@@ -20,7 +20,7 @@ Scenario('I should be see a warning when viewing a user who is locked', async ({
   );
   I.lockAccountOf(userEmail);
   I.loginAs(DASHBOARD_USER_EMAIL);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
 });
@@ -43,7 +43,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.see('Reset your password');
   I.fillField('#email', userEmail);
   I.click('Submit');
-  I.waitForText('Check your email');
+  I.see('Check your email');
 
   const response = await I.extractUrlFromNotifyEmail(userEmail);
   const resetLink = response.body.match(/https:\/\/.*/);
@@ -57,7 +57,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.see('Your password has been changed');
 
   I.loginAs(DASHBOARD_USER_EMAIL);
-  I.waitForText('Manage an existing user');
+  I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.dontSee('This account has been temporarily locked due to multiple failed login attempts.');
 });
