@@ -84,7 +84,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.7",
-    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-env": "^7.20.2",
     "@codeceptjs/helper": "^1.0.2",
     "@types/copy-webpack-plugin": "^10.1.0",
     "@types/jest": "^27.4.1",
