@@ -174,6 +174,38 @@ describe('User results controller', () => {
     });
   });
 
+  test('Should render the default provider name when no SSO provider present', async () => {
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        canManage: false,
+        lockedMessage: '',
+        providerName: 'IDAM'
+      }
+    });
+  });
+
   test('Should render the user details page when searching with a valid user ID', async () => {
     const results = [
       {

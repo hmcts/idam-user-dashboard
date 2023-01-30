@@ -53,6 +53,8 @@ export class UserResultsController extends RootController {
             providerName = user.ssoProvider;
             providerIdField = 'IdP User ID';
           }
+        } else {
+          providerName = 'IDAM';
         }
 
         this.preprocessSearchResults(user);
