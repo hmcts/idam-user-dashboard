@@ -1,4 +1,5 @@
 import { AuthedRequest } from '../interfaces/AuthedRequest';
+import { ProviderIdentity } from '../interfaces/Provider';
 import { Response } from 'express';
 import {
   computeTimeDifferenceInMinutes,
@@ -37,25 +38,13 @@ export class UserResultsController extends RootController {
       if (users.length === 1) {
         const user = await req.scope.cradle.api.getUserById(users[0].id);
 
-        const providerMap: Map<string, Array<string>> = new Map([
-          [ config.get('providers.azure.internalName'),  [ config.get('providers.azure.externalName'), config.get('providers.azure.idFieldName')]],
-          [ config.get('providers.moj.internalName'),  [ config.get('providers.moj.externalName'), config.get('providers.moj.idFieldName')]]
+        const providerMap: Map<string, ProviderIdentity> = new Map([
+          [ config.get('providers.azure.internalName'), { providerName : config.get('providers.azure.externalName'), providerIdField : config.get('providers.azure.idFieldName') }],
+          [ config.get('providers.moj.internalName'),  { providerName : config.get('providers.moj.externalName'), providerIdField : config.get('providers.moj.idFieldName') }]
         ]);
 
         const notificationBannerMessage = this.getBannerIfRequired(user);
-        let providerName;
-        let providerIdField;
-        if (user.ssoProvider) {
-          if (providerMap.has(user.ssoProvider)) {
-            providerName = providerMap.get(user.ssoProvider)[0];
-            providerIdField = providerMap.get(user.ssoProvider)[1];
-          } else {
-            providerName = user.ssoProvider;
-            providerIdField = 'IdP User ID';
-          }
-        } else {
-          providerName = 'IDAM';
-        }
+        const {providerName, providerIdField} = this.computeProviderIdentity(user, providerMap);
 
         this.preprocessSearchResults(user);
         return super.post(req, res, 'user-details', {
@@ -71,6 +60,23 @@ export class UserResultsController extends RootController {
       }
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
+  }
+
+  private computeProviderIdentity(user: User, providerMap: Map<string, ProviderIdentity>): ProviderIdentity {
+    let providerName;
+    let providerIdField;
+    if (user.ssoProvider) {
+      if (providerMap.has(user.ssoProvider)) {
+        providerName = providerMap.get(user.ssoProvider).providerName;
+        providerIdField = providerMap.get(user.ssoProvider).providerIdField;
+      } else {
+        providerName = user.ssoProvider;
+        providerIdField = 'IdP User ID';
+      }
+    } else {
+      providerName = 'IDAM';
+    }
+    return { providerName, providerIdField };
   }
 
   private getBannerIfRequired(user: User): string {
