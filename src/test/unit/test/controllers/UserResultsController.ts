@@ -98,7 +98,8 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         canManage: false,
-        lockedMessage: ''
+        lockedMessage: '',
+        providerName: 'IDAM'
       }
     });
   });
@@ -233,7 +234,8 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         canManage: false,
-        lockedMessage: ''
+        lockedMessage: '',
+        providerName: 'IDAM'
       }
     });
   });
@@ -265,7 +267,8 @@ describe('User results controller', () => {
       content: {
         user: results[0],
         canManage: false,
-        lockedMessage: ''
+        lockedMessage: '',
+        providerName: 'IDAM'
       }
     });
   });
@@ -310,7 +313,8 @@ describe('User results controller', () => {
       content: {
         user: expectedResults[0],
         canManage: false,
-        lockedMessage: ''
+        lockedMessage: '',
+        providerName: 'IDAM'
       }
     });
   });
@@ -361,6 +365,7 @@ describe('User results controller', () => {
       content: {
         user: getUserByIdResult,
         canManage: false,
+        providerName: 'IDAM',
         lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes'
       }
     });
@@ -412,6 +417,7 @@ describe('User results controller', () => {
       content: {
         user: getUserByIdResult,
         canManage: false,
+        providerName: 'IDAM',
         lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'
       }
     });
@@ -464,7 +470,8 @@ describe('User results controller', () => {
       content: {
         user: getUserByIdResult,
         canManage: false,
-        lockedMessage: ''
+        lockedMessage: '',
+        providerName: 'IDAM'
       }
     });
   });
