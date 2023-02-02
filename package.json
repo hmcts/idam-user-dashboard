@@ -124,6 +124,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
-    "async": "^3.2.2"
+    "async": "^3.2.2",
+    "qs": ">=6.9.7"
   }
 }
