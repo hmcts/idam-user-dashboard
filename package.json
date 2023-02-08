@@ -124,6 +124,8 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
-    "async": "^3.2.2"
+    "async": "^3.2.2",
+    "cookiejar": ">=2.1.4",
+    "qs": ">=6.9.7"
   }
 }

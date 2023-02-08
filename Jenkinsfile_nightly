@@ -40,11 +40,11 @@ try {
     enableCrossBrowserTest()
 
 
-    after('fortify-scan') {
+    afterSuccess('fortify-scan') {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    after('fullFunctionalTest') {
+    afterSuccess('fullFunctionalTest') {
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
@@ -57,7 +57,7 @@ try {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/functional/reports/**/*'
     }
 
-    after('crossBrowserTest') {
+    afterSuccess('crossBrowserTest') {
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
