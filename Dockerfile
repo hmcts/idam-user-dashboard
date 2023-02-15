@@ -1,8 +1,7 @@
 # ---- Base image ----
 FROM hmctspublic.azurecr.io/base/node:14-alpine as base
 COPY --chown=hmcts:hmcts . .
-RUN yarn install --production \
-  && yarn cache clean
+RUN yarn workspaces focus --all --production && rm -rf "$(yarn cache clean)"
 
 # ---- Build image ----
 FROM base as build

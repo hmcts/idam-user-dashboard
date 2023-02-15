@@ -12,3 +12,7 @@
 !src/main/**
 !config/**
 !webpack.config.js
+
+# Yarn 3 files
+.yarn/cache
+.yarn/install-state.gz

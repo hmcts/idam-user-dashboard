@@ -24,3 +24,12 @@ dist/
 public/
 functional-output/
 test-output/
+
+# Yarn 3 files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
