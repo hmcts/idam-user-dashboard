@@ -56,7 +56,8 @@ Scenario('I as a user should be able to remove sso from user account', async ({I
   I.see('User Details');
   I.see(userEmail);
   I.dontSee('IdP User ID');
-  I.dontSee('Identity Provider');
+  I.see('Identity Provider');
+  I.see('IDAM');
   I.dontSee(ssoId);
   I.dontSee(ssoProvider);
 }).tag('@CrossBrowser');

@@ -68,7 +68,7 @@
     "jest-when": "^3.5.1",
     "json2csv": "^5.0.7",
     "jwt-decode": "^3.1.2",
-    "launchdarkly-node-server-sdk": "^6.4.1",
+    "launchdarkly-node-server-sdk": "^7.0.0",
     "lodash": "^4.17.20",
     "memfs": "^3.4.7",
     "nunjucks": "^3.2.2",
@@ -78,7 +78,7 @@
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.14.1",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "^4.6.4",
     "uuid": "^8.3.2"
   },
@@ -124,6 +124,8 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
-    "async": "^3.2.2"
+    "async": "^3.2.2",
+    "cookiejar": ">=2.1.4",
+    "qs": ">=6.9.7"
   }
 }
