@@ -23,6 +23,7 @@ import { GenerateReportController } from '../../controllers/GenerateReportContro
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
 import { DownloadReportController } from '../../controllers/DownloadReportController';
 import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
+import { AuthorizedAxios } from '../../app/authorized-axios/AuthorizedAxios';
 
 /**
  * Sets up the dependency injection container
@@ -36,6 +37,18 @@ export class Container {
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
       reportGenerator: asValue(new ReportsHandler(logger, defaultClient)),
+      idamApiAxios: asValue(
+        new AuthorizedAxios({
+          baseURL: config.get('services.idam.url.api'),
+          oauth: {
+            clientId: config.get('services.idam.clientID'),
+            clientSecret: config.get('services.idam.clientSecret'),
+            clientScope: config.get('services.idam.scope'),
+            tokenEndpoint: config.get('services.idam.endpoint.token'),
+            autoRefresh: true,
+          },
+        })
+      ),
       userOptionController: asClass(UserOptionController),
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
