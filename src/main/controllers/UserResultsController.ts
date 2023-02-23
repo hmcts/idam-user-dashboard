@@ -85,9 +85,8 @@ export class UserResultsController extends RootController {
       notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
     }
     if (user.stale) {
-      notificationBannerMessage = notificationBannerMessage !== '' ? '\n' + notificationBannerMessage : notificationBannerMessage;
-      notificationBannerMessage = notificationBannerMessage ? `\n${notificationBannerMessage}` : notificationBannerMessage;
-      notificationBannerMessage = 'Archived accounts are read only.';
+      notificationBannerMessage = notificationBannerMessage?.trim() !== '' ? notificationBannerMessage + '\n' : notificationBannerMessage;
+      notificationBannerMessage = notificationBannerMessage + 'Archived accounts are read only.';
     }
     return notificationBannerMessage;
   }
