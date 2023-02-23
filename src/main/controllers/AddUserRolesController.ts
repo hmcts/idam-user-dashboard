@@ -6,9 +6,16 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { convertToArray, hasProperty } from '../utils/utils';
 import { MISSING_ROLE_ASSIGNMENT_ERROR } from '../utils/error';
 import { constructAllRoleAssignments } from '../utils/roleUtils';
+import { InviteService } from '../app/invite-service/InviteService';
 
 @autobind
 export class AddUserRolesController extends RootController {
+  constructor(
+    private readonly inviteService: InviteService
+  ) {
+    super();
+  }
+
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const fields = req.body;
@@ -30,12 +37,14 @@ export class AddUserRolesController extends RootController {
     }
 
     const roles = fields.roles;
-    await req.scope.cradle.api.registerUser({
-      email: fields._email,
-      firstName: fields._forename,
-      lastName: fields._surname,
-      roles: convertToArray(roles)
-    });
+
+    await this.inviteService.inviteUser(
+      fields._email,
+      fields._forename,
+      fields._surname,
+      convertToArray(roles),
+      req.session.user.id
+    );
 
     return super.post(req, res, 'add-user-completion');
   }
