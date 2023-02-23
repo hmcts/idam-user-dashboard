@@ -5,11 +5,13 @@ import { mockRequest } from '../../utils/mockRequest';
 import {MISSING_ROLE_ASSIGNMENT_ERROR} from '../../../../main/utils/error';
 import {mockApi} from '../../utils/mockApi';
 import { mockRootController } from '../../utils/mockRootController';
+import { mockInviteService } from '../../utils/mockInviteService';
 
 describe('Add user roles controller', () => {
   let req: any;
   const res = mockResponse();
-  const controller = new AddUserRolesController();
+  const inviteService = mockInviteService();
+  const controller = new AddUserRolesController(inviteService);
   mockRootController();
 
   const email = 'test@test.com';
@@ -24,38 +26,34 @@ describe('Add user roles controller', () => {
   });
 
   test('Should render the add user completion page when assigning the user with a single role', async () => {
-    const userRegistrationDetails = {
-      email: email,
-      firstName: forename,
-      lastName: surname,
-      roles: role
-    };
-
-    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue({});
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
 
     req.body._email = email;
     req.body._forename = forename;
     req.body._surname = surname;
     req.body.roles = role;
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
+    };
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-completion');
   });
 
   test('Should render the add user completion page when assigning the user with multiple roles', async () => {
-    const userRegistrationDetails = {
-      email: email,
-      firstName: forename,
-      lastName: surname,
-      roles: roleArray
-    };
-
-    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue({});
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
 
     req.body._email = email;
     req.body._forename = forename;
     req.body._surname = surname;
     req.body.roles = roleArray;
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
+    };
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-completion');

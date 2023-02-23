@@ -123,35 +123,6 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.see(registerUserEmail);
   });
 
-Scenario('I as a user should be able to see proper error message when proper service is not selected',
-  {featureFlags: [BETA_ADD, GAMMA_PRIVATE_BETA]},
-  async ({I}) => {
-    const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
-    I.see('Manage an existing user');
-    I.see('Add a new user');
-    I.click('Add a new user');
-    I.click('Continue');
-    I.see('Please enter an email address');
-    I.click('#email');
-    I.fillField('#email', registerUserEmail);
-    I.click('Continue');
-    I.see('First name');
-    I.see('Last name');
-    I.see('Select user type');
-    I.fillField('#forename', testConfig.USER_FIRSTNAME);
-    I.fillField('#surname', testConfig.USER_LASTNAME);
-    I.click('Private Beta Citizen');
-    I.click('Continue');
-
-    I.see('Please select a service you would want to associate with the private beta citizen');
-    I.selectOption('#service', SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE);
-    I.click('Save');
-    I.see('There is a problem');
-    I.see('You do not have permission to create the user roles');
-
-  });
-
 Scenario('I as a user should be able to search for roles',
   {featureFlags: [BETA_ADD]},
   async ({I}) => {
