@@ -47,7 +47,8 @@ export class AddPrivateBetaServiceController extends RootController {
       fields._surname,
       rolesToAdd,
       req.session.user.id,
-      selectedService.activationRedirectUrl
+      selectedService.activationRedirectUrl,
+      selectedService.oauth2ClientId
     )
       .then (() => {
         return super.post(req, res, 'add-user-completion');

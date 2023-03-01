@@ -25,7 +25,8 @@ export class InviteService {
     surname: string,
     roles: string[] = [],
     invitedBy?: string,
-    successRedirect?: string
+    successRedirect?: string,
+    clientId = this.CLIENT_ID
   ) => {
     return this.idamApiAxios
       .post(this.INVITE_ENDPOINT, {
@@ -33,7 +34,7 @@ export class InviteService {
         email,
         forename,
         surname,
-        clientId: this.CLIENT_ID,
+        clientId,
         activationRoleNames: roles,
         invitedBy,
         successRedirect

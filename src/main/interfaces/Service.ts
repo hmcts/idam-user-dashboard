@@ -3,4 +3,5 @@ export interface Service {
   description: string;
   onboardingRoles: string[];
   activationRedirectUrl?: string;
+  oauth2ClientId: string;
 }
