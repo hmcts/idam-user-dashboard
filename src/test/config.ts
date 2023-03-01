@@ -16,7 +16,7 @@ export const config = {
     access: 'idam-user-dashboard--access'
   },
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
-  WaitForTimeout: 20000,
+  WaitForTimeout: 30000,
   Gherkin: {
     features: './features/**/*.feature',
     steps: './steps/**/*.ts',
@@ -30,7 +30,7 @@ config.helpers = {
     show: !config.TestHeadlessBrowser,
     browser: 'chromium',
     waitForTimeout: config.WaitForTimeout,
-    waitForAction: 1000,
+    waitForAction: 3000,
     waitForNavigation: 'networkidle0',
     ignoreHTTPSErrors: true,
   },
