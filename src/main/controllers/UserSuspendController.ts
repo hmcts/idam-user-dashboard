@@ -21,14 +21,14 @@ export class UserSuspendController extends RootController{
           case 'true':
             return this.suspendUser(req, res, user);
           case 'false':
-            return res.redirect(307, USER_DETAILS_URL);
+            return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', req.body._userId));
         }
 
         switch(req.body.confirmUnSuspendRadio) {
           case 'true':
             return this.unSuspendUser(req, res, user);
           case 'false':
-            return res.redirect(307, USER_DETAILS_URL);
+            return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', req.body._userId));
         }
 
         switch(req.body._action) {

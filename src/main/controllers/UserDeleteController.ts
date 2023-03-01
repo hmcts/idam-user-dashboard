@@ -21,7 +21,7 @@ export class UserDeleteController extends RootController{
           case 'true':
             return this.deleteUser(req, res, user);
           case 'false':
-            return res.redirect(307, USER_DETAILS_URL);
+            return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', req.body._userId));
         }
 
         if(req.body._action === 'confirm-delete') {
