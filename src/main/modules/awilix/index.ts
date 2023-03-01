@@ -23,7 +23,7 @@ import { GenerateReportController } from '../../controllers/GenerateReportContro
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
 import { DownloadReportController } from '../../controllers/DownloadReportController';
 import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
-import {UserSearchController} from "../../controllers/UserSearchController";
+import { UserSearchController } from '../../controllers/UserSearchController';
 
 /**
  * Sets up the dependency injection container
