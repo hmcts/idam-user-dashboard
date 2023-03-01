@@ -12,7 +12,8 @@
   },
   "plugins": {
     "autoDelay": {
-      "enabled": true
+      "enabled": true,
+      "delayAfter": 2000
     }
   }
 }
