@@ -23,7 +23,6 @@ import { GenerateReportController } from '../../controllers/GenerateReportContro
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
 import { DownloadReportController } from '../../controllers/DownloadReportController';
 import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
-import { UserSearchController } from '../../controllers/UserSearchController';
 
 /**
  * Sets up the dependency injection container
@@ -46,7 +45,6 @@ export class Container {
       manageUserController: asClass(ManageUserController),
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
-      userSearchController: asClass(UserSearchController),
       userActionsController: asClass(UserActionsController),
       userDeleteController: asClass(UserDeleteController),
       userSuspendController: asClass(UserSuspendController),
