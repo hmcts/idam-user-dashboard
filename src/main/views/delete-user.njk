@@ -55,9 +55,8 @@
   </div>
 
   <div class="govuk-grid-row">
-    <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+    <form method="POST" action="{{ urls.USER_DETAILS_URL | replace(":userUUID", content.user.id) }}">
       {{ csrfProtection(csrfToken) }}
-      <input type="hidden" name="search" value="{{ content.user.email }}">
       <button type="submit" class="govuk-back-link">Return to user details</button>
     </form>
   </div>

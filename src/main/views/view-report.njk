@@ -71,9 +71,8 @@
         {% endset %}
 
         {% set accountViewHTML %}
-          <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+          <form method="POST" action="{{ urls.USER_DETAILS_URL | replace(":userUUID", content.user.id) }}">
             {{ csrfProtection(csrfToken) }}
-            <input type="hidden" name="search" value="{{ user.id }}">
             <button type="submit" class="govuk-link">View user</button>
           </form>
         {% endset %}

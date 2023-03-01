@@ -21,7 +21,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {{ errorSummary(error) }}
-      <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+      <form method="POST" action="{{ urls.USER_SEARCH_URL }}">
         {{ csrfProtection(csrfToken) }}
         {{ govukInput({
           label: {
