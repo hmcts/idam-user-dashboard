@@ -30,7 +30,12 @@ export class UserResultsController extends RootController {
   private async getUserResults(req: AuthedRequest, res: Response) {
     const userUUID: string = req.params.userUUID || '';
 
-    const user = await req.scope.cradle.api.getUserById(userUUID);
+    let user;
+    try {
+      user = await req.scope.cradle.api.getUserById(userUUID);
+    } catch (e) {
+      return req.next();
+    }
 
     const providerMap: Map<string, ProviderIdentity> = new Map([
       [ config.get('providers.azure.internalName'), { providerName : config.get('providers.azure.externalName'), providerIdField : config.get('providers.azure.idFieldName') }],
