@@ -30,7 +30,7 @@ config.helpers = {
     show: !config.TestHeadlessBrowser,
     browser: 'chromium',
     waitForTimeout: config.WaitForTimeout,
-    waitForAction: 3000,
+    waitForAction: 4000,
     waitForNavigation: 'networkidle0',
     ignoreHTTPSErrors: true,
   },
