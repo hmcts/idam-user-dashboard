@@ -1,70 +1,70 @@
+import { Invite } from '../../../../../main/app/invite-service/Invite';
+import { InviteService } from '../../../../../main/app/invite-service/InviteService';
 import config from 'config';
 import { when } from 'jest-when';
-import { InviteService } from '../../../../../main/app/invite-service/InviteService';
 import { mockAxios } from '../../../utils/mockAxios';
+import { mockLogger } from '../../../utils/mockLogger';
 
 jest.mock('config');
 
 describe('InviteService', () => {
-  const mockEndpoint = '/invites';
-  const mockClientId = 'someClientId';
-  const mockedLogger = {
-    error: jest.fn()
-  } as any;
-  const mockedTelemetryClient = { trackTrace: jest.fn() } as any;
   const mockedAxios = mockAxios();
-
-  when(config.get).calledWith('services.idam.endpoint.invite').mockReturnValue(mockEndpoint);
-  when(config.get).calledWith('services.idam.clientID').mockReturnValue(mockClientId);
-
-  const inviteService = new InviteService(mockedAxios, mockedLogger, mockedTelemetryClient);
+  const mockedLogger = mockLogger();
+  const mockEndpoint = '/invites';
+  when(config.get).mockReturnValue(mockEndpoint);
+  const inviteService = new InviteService(mockedAxios, mockedLogger);
 
   describe('inviteUser', () => {
     test('Should resolve if no error from axios', () => {
-      const email = 'dummy@hmcts.net';
-      const forename = 'forename';
-      const surname = 'surname';
-      const roles = ['citizen'];
-      const invitedBy = 'someUserId';
-      const successRedirect = 'someUrl';
+      const invite: Invite = {
+        email: 'dummy@hmcts.net',
+        forename: 'FORENAME',
+        surname: 'SURNAME',
+        clientId: 'hmcts-access',
+      };
 
-      when(mockedAxios.post).mockResolvedValue(true);
+      (mockedAxios.post as jest.Mock).mockResolvedValue(true);
 
-      expect(inviteService.inviteUser(email, forename, surname, roles, invitedBy, successRedirect)).resolves.toBe(true);
+      expect(inviteService.inviteUser(invite)).resolves.toBe(true);
     });
 
     test('Should pass all data into axios request', () => {
-      const email = 'dummy@hmcts.net';
-      const forename = 'forename';
-      const surname = 'surname';
-      const roles = ['citizen'];
-      const invitedBy = 'someUserId';
-      const successRedirect = 'someUrl';
+      const invite: Invite = {
+        email: 'dummy@hmcts.net',
+        forename: 'FORENAME',
+        surname: 'SURNAME',
+        clientId: 'hmcts-access',
+      };
 
-      when(mockedAxios.post).mockResolvedValue(true);
+      (mockedAxios.post as jest.Mock).mockResolvedValue(true);
 
-      inviteService.inviteUser(email, forename, surname, roles, invitedBy, successRedirect);
-
-      expect(mockedAxios.post).toHaveBeenCalledWith(mockEndpoint, {
-        invitationType: 'INVITE',
-        clientId: mockClientId,
-        email,
-        forename,
-        surname,
-        activationRoleNames: roles,
-        invitedBy,
-        successRedirect
-      });
+      inviteService.inviteUser(invite);
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        mockEndpoint,
+        {
+          ...invite,
+          activationRoleNames: ['citizen'],
+          invitationType: 'SELF_REGISTER',
+        },
+        {
+          headers: {
+            'Accept-Language': 'en',
+          },
+        }
+      );
     });
 
     test('Should throw INTERNAL_SERVER_ERROR if error from axios', () => {
-      const email = 'dummy@hmcts.net';
-      const forename = 'forename';
-      const surname = 'surname';
+      const invite: Invite = {
+        email: 'dummy@hmcts.net',
+        forename: 'FORENAME',
+        surname: 'SURNAME',
+        clientId: 'hmcts-access',
+      };
 
-      when(mockedAxios.post).mockRejectedValue(true);
+      (mockedAxios.post as jest.Mock).mockRejectedValue(true);
 
-      expect(inviteService.inviteUser(email, forename, surname)).rejects.toThrow();
+      expect(inviteService.inviteUser(invite)).rejects.toThrow();
     });
   });
 });
