@@ -43,6 +43,10 @@ const setupConfig = {
       enabled: true,
       retries: 2,
     },
+    autoDelay: {
+      enabled: true,
+      delayAfter: 3000
+    },
     retryTo: {
       enabled: true
     },
