@@ -6,7 +6,7 @@ import { HTTPError } from '../errors/HttpError';
 import { Logger } from '../../interfaces/Logger';
 
 export class InviteService {
-  private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoints.invite');
+  private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoint.invite');
   private readonly DEFAULT_ROLE = 'citizen';
 
   constructor(

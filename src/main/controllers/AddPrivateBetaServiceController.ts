@@ -41,15 +41,15 @@ export class AddPrivateBetaServiceController extends RootController {
     const selectedService = allServices.find(service => service.label === fields.service);
     const rolesToAdd = await this.getRolesToRegisterUser(req, allServices, fields.service);
 
-    return this.inviteService.inviteUser(
-      fields._email,
-      fields._forename,
-      fields._surname,
-      rolesToAdd,
-      req.session.user.id,
-      selectedService.activationRedirectUrl,
-      selectedService.oauth2ClientId
-    )
+    return this.inviteService.inviteUser({
+      email: fields._email,
+      forename: fields._forename,
+      surname: fields._surname,
+      activationRoleNames: rolesToAdd,
+      invitedBy: req.session.user.id,
+      successRedirect: selectedService.activationRedirectUrl,
+      clientId: selectedService.oauth2ClientId
+    })
       .then (() => {
         return super.post(req, res, 'add-user-completion');
       })
