@@ -17,6 +17,7 @@ services:
       token: '/o/token'
       endSession: '/o/endSession'
       invite: '/api/v2/invitations'
+      services: '/api/v2/services'
     systemUser:
       username: 'idam-user-dashboard-system-user@user.idam'
       password: 'Pa55word11'

@@ -25,6 +25,7 @@ import { DownloadReportController } from '../../controllers/DownloadReportContro
 import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
 import { AuthorizedAxios } from '../../app/authorized-axios/AuthorizedAxios';
 import { InviteService } from '../../app/invite-service/InviteService';
+import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
 
 /**
  * Sets up the dependency injection container
@@ -51,6 +52,7 @@ export class Container {
         })
       ),
       inviteService: asClass(InviteService),
+      serviceProviderService: asClass(ServiceProviderService),
       userOptionController: asClass(UserOptionController),
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
