@@ -24,7 +24,8 @@ services:
     clientID: 'idam_user_dashboard'
     clientSecret: 'idam_user_dashboard_secret'
     callbackURL: 'http://localhost:3100/oauth2/callback'
-    scope: 'profile roles manage-user search-user create-user create-invitation'
+    scope: 'openid profile roles manage-user search-user create-user'
+    clientScope: 'create-invitation view-service-provider'
     responseType: 'code'
 session:
   secret: 'local'

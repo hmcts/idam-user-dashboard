@@ -45,7 +45,7 @@ export class Container {
           oauth: {
             clientId: config.get('services.idam.clientID'),
             clientSecret: config.get('services.idam.clientSecret'),
-            clientScope: config.get('services.idam.scope'),
+            clientScope: config.get('services.idam.clientScope'),
             tokenEndpoint: config.get('services.idam.endpoint.token'),
             autoRefresh: true,
           },

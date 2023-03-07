@@ -46,7 +46,7 @@ export class IdamAuth {
     private readonly telemetryClient: TelemetryClient,
     private readonly clientId = config.get('services.idam.clientID') as string,
     private readonly clientSecret = config.get('services.idam.clientSecret') as string,
-    private readonly clientScope = config.get('services.idam.scope') as string + ' openid',
+    private readonly clientScope = config.get('services.idam.scope') as string,
     private readonly axios = Axios.create({ baseURL: config.get('services.idam.url.api') })
   ) { }
 
