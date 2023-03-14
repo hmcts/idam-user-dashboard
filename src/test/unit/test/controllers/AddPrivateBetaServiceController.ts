@@ -5,12 +5,13 @@ import { mockApi } from '../../utils/mockApi';
 import { AddPrivateBetaServiceController } from '../../../../main/controllers/AddPrivateBetaServiceController';
 import { MISSING_PRIVATE_BETA_SERVICE_ERROR } from '../../../../main/utils/error';
 import { when } from 'jest-when';
-import { UserType } from '../../../../main/utils/UserType';
+import { mockInviteService } from '../../utils/mockInviteService';
 
 describe('Add private beta service controller', () => {
   let req: any;
   const res = mockResponse();
-  const controller = new AddPrivateBetaServiceController();
+  const inviteService = mockInviteService();
+  const controller = new AddPrivateBetaServiceController(inviteService);
   mockRootController();
 
   const email = 'test@test.com';
@@ -62,22 +63,20 @@ describe('Add private beta service controller', () => {
   });
 
   test('Should render the add user completion page when a service is selected', async () => {
-    const userRegistrationDetails = {
-      email: email,
-      firstName: forename,
-      lastName: surname,
-      roles: [UserType.Citizen, privateBetaRoleName]
-    };
-
     when(mockApi.getAllServices).calledWith().mockReturnValue(services);
     when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
-    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockResolvedValue({});
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
 
     req.body = {
       _email: email,
       _forename: forename,
       _surname: surname,
       service: service2,
+    };
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
     };
 
     await controller.post(req, res);
@@ -85,22 +84,20 @@ describe('Add private beta service controller', () => {
   });
 
   test('Should render the add private beta service page with error when problem occurring during user registration', async () => {
-    const userRegistrationDetails = {
-      email: email,
-      firstName: forename,
-      lastName: surname,
-      roles: [UserType.Citizen, privateBetaRoleName]
-    };
-
     when(mockApi.getAllServices).calledWith().mockReturnValue(services);
     when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
-    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue(Promise.reject(error));
+    when(inviteService.inviteUser).mockRejectedValue(error);
 
     req.body = {
       _email: email,
       _forename: forename,
       _surname: surname,
       service: service2,
+    };
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
     };
 
     const expectedUser = {

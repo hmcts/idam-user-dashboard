@@ -9,9 +9,16 @@ import { getServicesForSelect } from '../utils/serviceUtils';
 import { UserType } from '../utils/UserType';
 import { Service } from '../interfaces/Service';
 import { Role } from '../interfaces/Role';
+import { InviteService } from '../app/invite-service/InviteService';
 
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
+  constructor(
+    private readonly inviteService: InviteService,
+  ) {
+    super();
+  }
+
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const allServices = await req.scope.cradle.api.getAllServices();
@@ -30,13 +37,18 @@ export class AddPrivateBetaServiceController extends RootController {
         error: { privateBeta : { message: MISSING_PRIVATE_BETA_SERVICE_ERROR } }
       });
     }
+
+    const selectedService = allServices.find(service => service.label === fields.service);
     const rolesToAdd = await this.getRolesToRegisterUser(req, allServices, fields.service);
 
-    return req.scope.cradle.api.registerUser({
+    return this.inviteService.inviteUser({
       email: fields._email,
-      firstName: fields._forename,
-      lastName: fields._surname,
-      roles: rolesToAdd
+      forename: fields._forename,
+      surname: fields._surname,
+      activationRoleNames: rolesToAdd,
+      invitedBy: req.session.user.id,
+      successRedirect: selectedService.activationRedirectUrl,
+      clientId: selectedService.oauth2ClientId
     })
       .then (() => {
         return super.post(req, res, 'add-user-completion');
