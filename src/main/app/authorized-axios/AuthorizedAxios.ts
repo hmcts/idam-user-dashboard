@@ -104,7 +104,7 @@ export class AuthorizedAxios extends Axios {
 
   private requestInterceptor = () => {
     this.interceptors.request.use(config => {
-      if (this.oauth.token && config.url !== '/o/token') {
+      if (this.oauth.token && !config.url?.endsWith('/o/token')) {
         config.headers = config.headers ?? {};
         config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
       }
