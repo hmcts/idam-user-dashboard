@@ -25,19 +25,22 @@ describe('serviceUtils', () => {
         {
           label: service1,
           description: service1,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service1
         },
         {
           label: service2,
           description: service2,
           onboardingRoles: [
             role1
-          ]
+          ],
+          oauth2ClientId: service2
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service3
         }
       ];
 
@@ -49,19 +52,22 @@ describe('serviceUtils', () => {
         {
           label: service1,
           description: service1,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service1
         },
         {
           label: service2,
           description: service2,
           onboardingRoles: [
             nonExistingRole
-          ]
+          ],
+          oauth2ClientId: service2
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service3
         }
       ];
 
@@ -73,17 +79,20 @@ describe('serviceUtils', () => {
         {
           label: service1,
           description: service1,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service1
         },
         {
           label: service2,
           description: service2,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service2
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service3
         }
       ];
 
@@ -97,26 +106,30 @@ describe('serviceUtils', () => {
         {
           label: service1,
           description: service1,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service1
         },
         {
           label: service5,
           description: service5,
           onboardingRoles: [
             role1
-          ]
+          ],
+          oauth2ClientId: service5
         },
         {
           label: service3,
           description: service3,
           onboardingRoles: [
             role2
-          ]
+          ],
+          oauth2ClientId: service3
         },
         {
           label: service2,
           description: service2,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service2
         },
         {
           label: service4,
@@ -124,7 +137,8 @@ describe('serviceUtils', () => {
           onboardingRoles: [
             role1,
             role2
-          ]
+          ],
+          oauth2ClientId: service4
         }
       ];
 
@@ -152,12 +166,14 @@ describe('serviceUtils', () => {
         {
           label: service1,
           description: service1,
-          onboardingRoles: [nonExistingRole]
+          onboardingRoles: [nonExistingRole],
+          oauth2ClientId: service1
         },
         {
           label: service2,
           description: service2,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service2
         },
         {
           label: service3,
@@ -166,7 +182,8 @@ describe('serviceUtils', () => {
             role1,
             role2,
             nonExistingRole
-          ]
+          ],
+          oauth2ClientId: service3
         }
       ];
 
@@ -179,17 +196,20 @@ describe('serviceUtils', () => {
         {
           label: service1,
           description: service1,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service1
         },
         {
           label: service2,
           description: service2,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service2
         },
         {
           label: service3,
           description: service3,
-          onboardingRoles: []
+          onboardingRoles: [],
+          oauth2ClientId: service3
         }
       ];
 
