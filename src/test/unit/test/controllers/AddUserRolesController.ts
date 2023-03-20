@@ -5,11 +5,16 @@ import { mockRequest } from '../../utils/mockRequest';
 import {MISSING_ROLE_ASSIGNMENT_ERROR} from '../../../../main/utils/error';
 import {mockApi} from '../../utils/mockApi';
 import { mockRootController } from '../../utils/mockRootController';
+import { mockInviteService } from '../../utils/mockInviteService';
+import { mockServiceProviderService } from '../../utils/mockServiceProviderService';
+import { UserType } from '../../../../main/utils/UserType';
 
 describe('Add user roles controller', () => {
   let req: any;
   const res = mockResponse();
-  const controller = new AddUserRolesController();
+  const inviteService = mockInviteService();
+  const serviceProviderService = mockServiceProviderService();
+  const controller = new AddUserRolesController(inviteService, serviceProviderService);
   mockRootController();
 
   const email = 'test@test.com';
@@ -17,6 +22,12 @@ describe('Add user roles controller', () => {
   const surname = 'test';
   const role = 'test_role';
   const roleArray = ['test_role1', 'test_role2'];
+  const service = {
+    clientId: 'aClientID',
+    hmctsAccess: {
+      postActivationRedirectUrl: 'someUrl'
+    }
+  };
 
   beforeEach(() => {
     req = mockRequest();
@@ -24,41 +35,93 @@ describe('Add user roles controller', () => {
   });
 
   test('Should render the add user completion page when assigning the user with a single role', async () => {
-    const userRegistrationDetails = {
-      email: email,
-      firstName: forename,
-      lastName: surname,
-      roles: role
-    };
-
-    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue({});
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
+    when(serviceProviderService.getService).mockResolvedValue(service);
 
     req.body._email = email;
     req.body._forename = forename;
     req.body._surname = surname;
+    req.body._usertype = UserType.Professional;
     req.body.roles = role;
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
+    };
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-completion');
   });
 
   test('Should render the add user completion page when assigning the user with multiple roles', async () => {
-    const userRegistrationDetails = {
-      email: email,
-      firstName: forename,
-      lastName: surname,
-      roles: roleArray
-    };
-
-    when(mockApi.registerUser).calledWith(userRegistrationDetails).mockReturnValue({});
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
+    when(serviceProviderService.getService).mockResolvedValue(service);
 
     req.body._email = email;
     req.body._forename = forename;
     req.body._surname = surname;
     req.body.roles = roleArray;
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
+    };
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-completion');
+  });
+
+  test('Should invite user with support role redirecting to user-dashboard', async () => {
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
+    when(serviceProviderService.getService).mockResolvedValue(service);
+
+    req.body._email = email;
+    req.body._forename = forename;
+    req.body._surname = surname;
+    req.body.roles = roleArray;
+    req.body._usertype = UserType.Support;
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
+    };
+
+    await controller.post(req, res);
+    expect(inviteService.inviteUser).toBeCalledWith({
+      email,
+      forename,
+      surname,
+      activationRoleNames: roleArray,
+      clientId: service.clientId,
+      invitedBy: req.session.user.id,
+      successRedirect: service.hmctsAccess.postActivationRedirectUrl,
+    });
+  });
+
+  test('Should invite user with professional role without specifying redirect', async () => {
+    when(inviteService.inviteUser).mockResolvedValue({} as any);
+    when(serviceProviderService.getService).mockResolvedValue(service);
+
+    req.body._email = email;
+    req.body._forename = forename;
+    req.body._surname = surname;
+    req.body.roles = roleArray;
+    req.body._userType = UserType.Professional;
+    req.session = {
+      user: {
+        id: 'some-user-id'
+      }
+    };
+
+    await controller.post(req, res);
+    expect(inviteService.inviteUser).toBeCalledWith({
+      email,
+      forename,
+      surname,
+      activationRoleNames: roleArray,
+      clientId: service.clientId,
+      invitedBy: req.session.user.id
+    });
   });
 
   test('Should render the add user roles page with error when no role assigned to the user', async () => {
