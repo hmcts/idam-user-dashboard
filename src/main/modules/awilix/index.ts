@@ -78,7 +78,7 @@ export class Container {
      */
     (function refreshSystemUser(): void {
       const idamAuth = new IdamAuth(logger, defaultClient);
-      const { username, password } = config.get('services.idam.systemUser');
+      const { username, password } = config.get('services.idam.systemUser') as any;
       let delay = 10 * 60;
 
       idamAuth.authorizePassword(username, password)
