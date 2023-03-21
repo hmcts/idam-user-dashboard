@@ -6450,7 +6450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^4.0.1":
+"govuk-frontend@npm:^4.5.0":
   version: 4.5.0
   resolution: "govuk-frontend@npm:4.5.0"
   checksum: 7a999ffb49c2f32f9dc3b0b743b698f8385d39cd0213d8aea1d7f2dfcc9f035f597030faac34659e8981d3c4a596379e99f5ea8c4d088cf486340eeaafdc800d
@@ -6852,7 +6852,7 @@ __metadata:
     express-nunjucks: ^2.2.5
     express-session: ^1.17.2
     glob: ^8.0.3
-    govuk-frontend: ^4.0.1
+    govuk-frontend: ^4.5.0
     helmet: ^5.0.2
     html-webpack-plugin: ^5.5.0
     jest: ^27.5.1

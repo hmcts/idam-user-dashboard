@@ -63,7 +63,7 @@
     "express-nunjucks": "^2.2.5",
     "express-session": "^1.17.2",
     "glob": "^8.0.3",
-    "govuk-frontend": "^4.0.1",
+    "govuk-frontend": "^4.5.0",
     "helmet": "^5.0.2",
     "jest-when": "^3.5.1",
     "json2csv": "^5.0.7",
