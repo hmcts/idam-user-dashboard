@@ -9,6 +9,12 @@
     "module": "commonjs",
     "strictNullChecks": true,
     "types": ["jest", "codeceptjs", "node"],
+  },
+  "plugins": {
+    "autoDelay": {
+      "enabled": true,
+      "delayAfter": 3000
+    }
   }
 }
 

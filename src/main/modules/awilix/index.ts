@@ -23,6 +23,9 @@ import { GenerateReportController } from '../../controllers/GenerateReportContro
 import { ReportsHandler } from '../../app/reports/ReportsHandler';
 import { DownloadReportController } from '../../controllers/DownloadReportController';
 import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBetaServiceController';
+import { AuthorizedAxios } from '../../app/authorized-axios/AuthorizedAxios';
+import { InviteService } from '../../app/invite-service/InviteService';
+import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
 
 /**
  * Sets up the dependency injection container
@@ -36,6 +39,20 @@ export class Container {
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
       reportGenerator: asValue(new ReportsHandler(logger, defaultClient)),
+      idamApiAxios: asValue(
+        new AuthorizedAxios({
+          baseURL: config.get('services.idam.url.api'),
+          oauth: {
+            clientId: config.get('services.idam.clientID'),
+            clientSecret: config.get('services.idam.clientSecret'),
+            clientScope: config.get('services.idam.backendServiceScope'),
+            tokenEndpoint: config.get('services.idam.endpoint.token'),
+            autoRefresh: true,
+          },
+        })
+      ),
+      inviteService: asClass(InviteService),
+      serviceProviderService: asClass(ServiceProviderService),
       userOptionController: asClass(UserOptionController),
       addUserController: asClass(AddUserController),
       addUserDetailsController: asClass(AddUserDetailsController),
@@ -61,7 +78,7 @@ export class Container {
      */
     (function refreshSystemUser(): void {
       const idamAuth = new IdamAuth(logger, defaultClient);
-      const { username, password } = config.get('services.idam.systemUser');
+      const { username, password } = config.get('services.idam.systemUser') as any;
       let delay = 10 * 60;
 
       idamAuth.authorizePassword(username, password)
