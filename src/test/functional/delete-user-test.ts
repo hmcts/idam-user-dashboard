@@ -32,7 +32,7 @@ Scenario('I as a user should not be able delete user if I do not have the role w
       testConfig.USER_FIRSTNAME,
       [INDEPENDENT_CHILD_ROLE]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(nonDeletableUserEmail);
     I.dontSee('Delete user');
@@ -50,7 +50,7 @@ Scenario('I as a user should not be able delete user with both deletable and oth
       testConfig.USER_FIRSTNAME,
       [INDEPENDENT_CHILD_ROLE, ASSIGNABLE_CHILD_ROLE]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(nonDeletableUserEmail);
     I.dontSee('Delete user');
@@ -68,7 +68,7 @@ Scenario('I as a user should be able delete user successfully if I have the righ
       testConfig.USER_FIRSTNAME,
       [ASSIGNABLE_CHILD_ROLE]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
     I.click('Delete user');
@@ -98,7 +98,7 @@ Scenario('I as a user should be able delete users with same role successfully',
       testConfig.USER_FIRSTNAME,
       [PARENT_ROLE]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
     I.click('Delete user');
@@ -128,7 +128,7 @@ Scenario('I as a user should be able to cancel when deleting a user',
       testConfig.USER_FIRSTNAME,
       [ASSIGNABLE_CHILD_ROLE]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
     I.click('Delete user');
