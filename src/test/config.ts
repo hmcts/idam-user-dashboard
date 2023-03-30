@@ -17,11 +17,24 @@ export const config = {
   },
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 30000,
-  Gherkin: {
-    features: './features/**/*.feature',
-    steps: './steps/**/*.ts',
-  },
   helpers: {},
+  plugins: {
+    retryFailedStep: {
+      enabled: true,
+      retries: 2,
+    },
+    autoDelay: {
+      enabled: true,
+      delayAfter: 3000
+    },
+    retryTo: {
+      enabled: true
+    },
+    allure: {
+      enabled: true,
+      require: '@codeceptjs/allure-legacy'
+    },
+  }
 };
 
 config.helpers = {
