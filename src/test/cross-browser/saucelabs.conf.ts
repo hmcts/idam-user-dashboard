@@ -1,4 +1,4 @@
-import {config} from '../config';
+import {config as testConfig} from '../config';
 import supportedBrowsers from './supportedBrowsers';
 import {event, container} from 'codeceptjs';
 
@@ -24,36 +24,21 @@ const getBrowserConfig = browserGroup => {
 };
 
 const setupConfig = {
-  tests: '../functional/*-test.ts',
   name: 'cross-browser',
+  tests: '../functional/*-test.ts',
   output: '../../../functional-output/cross-browser/reports',
   helpers: {
-    ...config.helpers,
+    ...testConfig.helpers,
     Playwright: {
-      url: config.TEST_URL,
-      waitForTimeout: config.WaitForTimeout,
+      url: testConfig.TEST_URL,
+      waitForTimeout: testConfig.WaitForTimeout,
       waitForAction: 1500,
       waitForNavigation: 'domcontentloaded',
       ignoreHTTPSErrors: true,
       capabilities: {},
     },
   },
-  plugins: {
-    retryFailedStep: {
-      enabled: true,
-      retries: 2,
-    },
-    autoDelay: {
-      enabled: true,
-      delayAfter: 3000
-    },
-    retryTo: {
-      enabled: true
-    },
-    allure: {
-      enabled: true,
-    },
-  },
+  plugins: testConfig.plugins,
   include: {
     I: '../functional/custom-steps.ts',
   },
