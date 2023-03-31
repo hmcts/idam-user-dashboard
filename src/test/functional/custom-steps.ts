@@ -5,6 +5,7 @@ export = function () {
   return actor({
     loginAs: function (username, password = testConfig.PASSWORD) {
       this.amOnPage(LOGIN_URL);
+      this.wait(60);
       this.see('Sign in');
       this.fillField('#username', username);
       this.fillField('#password', password);
