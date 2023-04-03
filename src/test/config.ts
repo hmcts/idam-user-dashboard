@@ -25,7 +25,7 @@ export const config = {
     },
     autoDelay: {
       enabled: true,
-      delayAfter: 9000
+      delayAfter: 3000
     },
     retryTo: {
       enabled: true
