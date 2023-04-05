@@ -8,6 +8,7 @@ export = function () {
       this.see('Sign in');
       this.fillField('#username', username);
       this.fillField('#password', password);
+      this.wait(5);
       this.click('Sign in');
     },
     logout: function () {
