@@ -6,7 +6,7 @@ home: https://github.com/hmcts/idam-user-dashboard
 version: 0.0.22
 dependencies:
   - name: nodejs
-    version: 2.4.15
+    version: 2.4.16
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: idam-pr
     version: 2.3.0
