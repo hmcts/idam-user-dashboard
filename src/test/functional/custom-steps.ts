@@ -6,10 +6,9 @@ export = function () {
     loginAs: async function (username, password = testConfig.PASSWORD) {
       this.amOnPage(LOGIN_URL);
       this.waitForElement('#username');
-      await this.wait(5);
+      await this.wait(10);
       this.fillField('#username', username);
       this.fillField('#password', password);
-      this.waitForNavigation('input[type="submit"]');
       this.click('input[type="submit"]');
       this.wait(2);
     },
