@@ -45,7 +45,7 @@ config.helpers = {
     timeout: '30000',
     waitForTimeout: config.WaitForTimeout,
     waitForAction: 350,
-    waitForNavigation: 'networkidle0',
+    waitForNavigation: 'load',
     ignoreHTTPSErrors: true,
   },
   TestingSupportApiHelper: {
