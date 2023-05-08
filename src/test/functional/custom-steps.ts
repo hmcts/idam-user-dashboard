@@ -9,8 +9,7 @@ export = function () {
       this.wait(10);
       this.fillField('#username', username);
       this.fillField('#password', password);
-      this.click('input[type="submit"]');
-      this.wait(2);
+      this.click('//*[@name=\'save\']');
     },
     logout: function () {
       this.click('Sign out');
