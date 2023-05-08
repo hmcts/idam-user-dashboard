@@ -3,13 +3,15 @@ import { config as testConfig } from '../config';
 
 export = function () {
   return actor({
-    loginAs: function (username, password = testConfig.PASSWORD) {
+    loginAs: async function (username, password = testConfig.PASSWORD) {
       this.amOnPage(LOGIN_URL);
-      this.see('Sign in');
+      this.waitForElement('#username');
+      await this.wait(5);
       this.fillField('#username', username);
       this.fillField('#password', password);
-      this.wait(10);
-      this.click('Sign in');
+      this.waitForNavigation('input[type="submit"]');
+      this.click('input[type="submit"]');
+      this.wait(2);
     },
     logout: function () {
       this.click('Sign out');
