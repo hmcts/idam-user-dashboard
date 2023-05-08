@@ -3,10 +3,10 @@ import { config as testConfig } from '../config';
 
 export = function () {
   return actor({
-    loginAs: async function (username, password = testConfig.PASSWORD) {
+    loginAs:  function (username, password = testConfig.PASSWORD) {
       this.amOnPage(LOGIN_URL);
       this.waitForElement('#username');
-      await this.wait(10);
+      this.wait(10);
       this.fillField('#username', username);
       this.fillField('#password', password);
       this.click('input[type="submit"]');
