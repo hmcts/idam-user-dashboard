@@ -44,6 +44,7 @@ Scenario('I should be able to search with user-email', async ({I}) => {
   I.click('#search');
   I.fillField('#search', CITIZEN_USER_EMAIL);
   I.click('Search');
+  I.wait(5);
   I.see('User Details');
   I.see('ACTIVE');
   I.see(CITIZEN_USER_EMAIL);
