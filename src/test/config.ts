@@ -23,6 +23,9 @@ export const config = {
       enabled: true,
       retries: 3,
     },
+    retry: {
+      retries: 3
+    },
     autoDelay: {
       enabled: true,
       delayAfter: 3000
