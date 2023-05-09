@@ -1,4 +1,4 @@
-import {config as testConfig} from '../config';
+import {config, config as testConfig} from '../config';
 import supportedBrowsers from './supportedBrowsers';
 import {event, container} from 'codeceptjs';
 
@@ -31,9 +31,10 @@ const setupConfig = {
     ...testConfig.helpers,
     Playwright: {
       url: testConfig.TEST_URL,
-      waitForTimeout: testConfig.WaitForTimeout,
-      waitForAction: 1500,
-      waitForNavigation: 'domcontentloaded',
+      timeout: '30000',
+      waitForTimeout: config.WaitForTimeout,
+      waitForAction: 350,
+      waitForNavigation: 'load',
       ignoreHTTPSErrors: true,
       capabilities: {},
     },
