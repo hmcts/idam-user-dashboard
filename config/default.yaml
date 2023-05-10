@@ -8,9 +8,9 @@ services:
   name: 'IDAM User Dashboard'
   idam:
     url:
-      public: 'https://idam-web-public.preview.platform.hmcts.net'
-      api: 'https://idam-api.preview.platform.hmcts.net'
-      testingSupportApi: 'https://idam-testing-support-api.preview.platform.hmcts.net'
+      public: 'https://idam-web-public.aat.platform.hmcts.net'
+      api: 'https://idam-api.aat.platform.hmcts.net'
+      testingSupportApi: 'https://idam-testing-support-api.aat.platform.hmcts.net'
       dashboard: 'http://localhost:3100'
     endpoint:
       authorization: '/o/authorize'
