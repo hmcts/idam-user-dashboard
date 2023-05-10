@@ -49,6 +49,7 @@ Scenario('I as a user should be able to register new support user',
     I.click('#email');
     I.fillField('#email', registerUserEmail);
     I.click('Continue');
+    I.wait(5);
     I.see('First name');
     I.see('Last name');
     I.see('Select user type');
