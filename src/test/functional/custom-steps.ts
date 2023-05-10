@@ -38,7 +38,7 @@ export = function () {
       this.amOnPage(MANAGER_USER_URL);
       this.fillField('#search', id);
       this.click('Search');
-      this.waitFor('User Details');
+      this.wait(5);
       this.see('User Details');
       this.see(id);
     }
