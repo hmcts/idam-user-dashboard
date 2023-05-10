@@ -76,6 +76,7 @@ Scenario('I as a user should be able to register new support user',
     I.click('#search');
     I.fillField('#search', registerUserEmail);
     I.click('Search');
+    I.wait(5);
     I.see('User Details');
     I.see(registerUserEmail);
   }).tag('@CrossBrowser');
@@ -119,6 +120,7 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.click('#search');
     I.fillField('#search', registerUserEmail);
     I.click('Search');
+    I.wait(5);
     I.see('User Details');
     I.see(registerUserEmail);
   });

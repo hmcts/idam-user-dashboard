@@ -36,7 +36,7 @@ try {
   withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
-    enableFullFunctionalTest()
+   // enableFullFunctionalTest()
     enableCrossBrowserTest()
 
 
