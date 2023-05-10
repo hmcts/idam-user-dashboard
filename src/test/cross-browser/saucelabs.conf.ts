@@ -32,7 +32,7 @@ const setupConfig = {
     Playwright: {
       url: testConfig.TEST_URL,
       waitForTimeout: testConfig.WaitForTimeout,
-      waitForAction: 1500,
+      waitForAction: 1501,
       waitForNavigation: 'domcontentloaded',
       ignoreHTTPSErrors: true,
       capabilities: {},
