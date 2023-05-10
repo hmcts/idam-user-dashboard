@@ -47,12 +47,14 @@ Scenario('I as a user should be able to remove sso from user account', async ({I
   I.see(ssoId);
   I.see(ssoProvider);
   I.see('Remove SSO');
+  I.waitForText('Remove SSO',30);
   I.click('Remove SSO');
   I.see('Are you sure you want to remove single sign-on for this user? The user will need to reset their password.');
   I.click('#confirmRadio');
   I.click('Continue');
   I.see('Single sign-on removed successfully');
   I.click('Return to user details');
+  I.waitForText(ssoProvider,30);
   I.see('User Details');
   I.see(userEmail);
   I.dontSee('IdP User ID');
@@ -82,9 +84,11 @@ Scenario('I as a user should be able to select no while removing sso', async ({I
   I.see(ssoProvider);
   I.see('Remove SSO');
   I.click('Remove SSO');
+  I.waitForText('Are you sure you want to remove single sign-on for this user? The user will nee',30);
   I.see('Are you sure you want to remove single sign-on for this user? The user will need to reset their password.');
   I.click('#confirmRadio-2');
   I.click('Continue');
+  I.waitForText(ssoProvider,30);
   I.see('User Details');
   I.see(userEmail);
   I.see('IdP User ID');
