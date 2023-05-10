@@ -33,7 +33,7 @@ const setupConfig = {
       url: testConfig.TEST_URL,
       timeout: '90000',
       waitForTimeout: config.WaitForTimeout,
-      waitForAction: 350,
+      waitForAction: 1000,
       waitForNavigation: 'networkidle0',
       ignoreHTTPSErrors: true,
       capabilities: {},
