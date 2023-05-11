@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import os from 'os';
-import { infoRequestHandler } from '@hmcts/info-provider';
+import { infoRequestHandler } from '../info-provider';
 import { Request } from 'express';
 import config from 'config';
 const healthcheck = require('@hmcts/nodejs-healthcheck');
