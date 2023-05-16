@@ -50,7 +50,7 @@ export class AddUserDetailsController extends RootController {
       const allServices = await req.scope.cradle.api.getAllServices();
       const rolesMap = await this.getRolesMap(req);
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
-      const enablePrivateBeta = req.session.user.assignableRoles.includes(UserType.Citizen);
+      const enablePrivateBeta = req.appSession.user.assignableRoles.includes(UserType.Citizen);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
 
       return super.post(req, res, 'add-user-details', {

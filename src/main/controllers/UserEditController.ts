@@ -50,7 +50,7 @@ export class UserEditController extends RootController {
           content: {
             user,
             roles: roleAssignments,
-            showMfa: this.canShowMfa(req.session.user.assignableRoles),
+            showMfa: this.canShowMfa(req.appSession.user.assignableRoles),
             ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
           }
         });
@@ -68,7 +68,7 @@ export class UserEditController extends RootController {
     const rolesAdded = findDifferentElements(newRoleList, originalRolesWithMfaRemoved);
     const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
-    const mfaAssignable = this.canShowMfa(req.session.user.assignableRoles);
+    const mfaAssignable = this.canShowMfa(req.appSession.user.assignableRoles);
 
     let mfaAdded, mfaRemoved = false;
 

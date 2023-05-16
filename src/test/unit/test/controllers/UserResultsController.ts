@@ -57,7 +57,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -126,7 +126,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -162,7 +162,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -195,7 +195,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -359,7 +359,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -411,7 +411,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -464,7 +464,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.session = { user: { assignableRoles: [] } };
+    req.appSession = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
