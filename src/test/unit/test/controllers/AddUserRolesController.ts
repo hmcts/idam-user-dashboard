@@ -43,7 +43,7 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.body._usertype = UserType.Professional;
     req.body.roles = role;
-    req.session = {
+    req.appSession = {
       user: {
         id: 'some-user-id'
       }
@@ -61,7 +61,7 @@ describe('Add user roles controller', () => {
     req.body._forename = forename;
     req.body._surname = surname;
     req.body.roles = roleArray;
-    req.session = {
+    req.appSession = {
       user: {
         id: 'some-user-id'
       }
@@ -80,7 +80,7 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.body.roles = roleArray;
     req.body._usertype = UserType.Support;
-    req.session = {
+    req.appSession = {
       user: {
         id: 'some-user-id'
       }
@@ -93,7 +93,7 @@ describe('Add user roles controller', () => {
       surname,
       activationRoleNames: roleArray,
       clientId: service.clientId,
-      invitedBy: req.session.user.id,
+      invitedBy: req.appSession.user.id,
       successRedirect: service.hmctsAccess.postActivationRedirectUrl,
     });
   });
@@ -107,7 +107,7 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.body.roles = roleArray;
     req.body._userType = UserType.Professional;
-    req.session = {
+    req.appSession = {
       user: {
         id: 'some-user-id'
       }
@@ -120,7 +120,7 @@ describe('Add user roles controller', () => {
       surname,
       activationRoleNames: roleArray,
       clientId: service.clientId,
-      invitedBy: req.session.user.id
+      invitedBy: req.appSession.user.id
     });
   });
 
