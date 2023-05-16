@@ -46,7 +46,7 @@ export class AddPrivateBetaServiceController extends RootController {
       forename: fields._forename,
       surname: fields._surname,
       activationRoleNames: rolesToAdd,
-      invitedBy: req.session.user.id,
+      invitedBy: req.appSession.user.id,
       successRedirect: selectedService.activationRedirectUrl,
       clientId: selectedService.oauth2ClientId
     })

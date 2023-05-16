@@ -73,7 +73,7 @@ describe('Add private beta service controller', () => {
       _surname: surname,
       service: service2,
     };
-    req.session = {
+    req.appSession = {
       user: {
         id: 'some-user-id'
       }
@@ -94,7 +94,7 @@ describe('Add private beta service controller', () => {
       _surname: surname,
       service: service2,
     };
-    req.session = {
+    req.appSession = {
       user: {
         id: 'some-user-id'
       }
