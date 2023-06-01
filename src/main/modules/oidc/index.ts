@@ -34,7 +34,8 @@ export class OidcMiddleware {
     this.cacheSystemAccount(app);
 
     app.use(auth({
-      issuerBaseURL: this.idamBaseUrl + '/o',
+      issuerBaseURL: 'https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts',
+      // issuerBaseURL: this.idamBaseUrl + '/o',
       baseURL: this.baseUrl,
       clientID: this.clientId,
       secret: this.sessionSecret,
