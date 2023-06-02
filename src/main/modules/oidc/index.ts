@@ -22,7 +22,7 @@ export class OidcMiddleware {
   private readonly clientSecret: string = config.get('services.idam.clientSecret');
   private readonly clientScope: string = config.get('services.idam.scope');
   private readonly baseUrl: string = config.get('services.idam.url.dashboard');
-  private readonly idamBaseUrl: string = config.get('services.idam.url.public');
+  private readonly idamBaseUrl: string = config.get('services.idam.url.public'); //Set by STRATEGIC_PUBLIC_URL
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly accessRole: string = config.get('RBAC.access');
   private readonly systemAccountUsername = config.get('services.idam.systemUser.username');
@@ -34,7 +34,7 @@ export class OidcMiddleware {
     this.cacheSystemAccount(app);
 
     app.use(auth({
-      issuerBaseURL: 'https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts',
+      issuerBaseURL: 'https://forgerock-am.service.core-compute-idam-preview.internal:8443/openam/oauth2',
       // issuerBaseURL: this.idamBaseUrl + '/o',
       baseURL: this.baseUrl,
       clientID: this.clientId,
