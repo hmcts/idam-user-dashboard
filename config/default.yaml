@@ -20,7 +20,7 @@ services:
       services: '/api/v2/services'
     systemUser:
       username: 'idam-user-dashboard-system-user@user.idam'
-      password: 'Pa55word11'
+      password: 'ail8aifaethaThao0TheaveeQu4ier2o'
     clientID: 'idam_user_dashboard'
     clientSecret: 'idam_user_dashboard_secret'
     callbackURL: 'http://localhost:3100/oauth2/callback'
@@ -28,7 +28,7 @@ services:
     backendServiceScope: 'create-invitation view-service-provider'
     responseType: 'code'
 session:
-  secret: 'LONG_RANDOM_STRING'
+  secret: 'local'
   cookie:
     name: 'idam-user-dashboard-session'
   redis:
