@@ -26,7 +26,7 @@ export class AddUserRolesController extends RootController {
 
     if (!hasProperty(req.body, 'roles')) {
       const allRoles = await req.scope.cradle.api.getAllRoles();
-      const roleAssignment = constructAllRoleAssignments(allRoles, req.session.user.assignableRoles);
+      const roleAssignment = constructAllRoleAssignments(allRoles, req.appSession.user.assignableRoles);
 
       const user = {
         email: fields._email,
@@ -50,7 +50,7 @@ export class AddUserRolesController extends RootController {
         forename: fields._forename,
         surname: fields._surname,
         activationRoleNames: convertToArray(roles),
-        invitedBy: req.session.user.id,
+        invitedBy: req.appSession.user.id,
         clientId: serviceInfo.clientId,
         successRedirect: serviceInfo.hmctsAccess.postActivationRedirectUrl
       });
@@ -60,7 +60,7 @@ export class AddUserRolesController extends RootController {
         forename: fields._forename,
         surname: fields._surname,
         activationRoleNames: convertToArray(roles),
-        invitedBy: req.session.user.id,
+        invitedBy: req.appSession.user.id,
         clientId: serviceInfo.clientId
       });
     }
