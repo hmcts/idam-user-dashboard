@@ -1,79 +1,94 @@
 import { Application, NextFunction, Request, Response } from 'express';
-import config from 'config';
-import { AuthedRequest } from '../../interfaces/AuthedRequest';
 import { asClass, asValue } from 'awilix';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-import axios, { AxiosInstance } from 'axios';
-import jwtDecode from 'jwt-decode';
+import config from 'config';
+import { AppSession, AuthedRequest } from '../../interfaces/AuthedRequest';
+import { HOME_URL, LOGIN_URL, LOGOUT_URL, OAUTH2_CALLBACK_URL } from '../../utils/urls';
+import { Logger } from '../../interfaces/Logger';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
-import { Session } from 'express-openid-connect';
-import ConnectRedis from 'connect-redis';
-import session from 'express-session';
-import FileStoreFactory from 'session-file-store';
-import { createClient } from 'redis';
-import { User } from '../../interfaces/User';
-import { Issuer, TokenSet } from 'openid-client';
-import { auth } from 'express-openid-connect';
-import { Logger } from '../../interfaces/Logger';
+import { IdamAuth, OIDCSession } from '../../app/idam-auth/IdamAuth';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
+import { OIDCToken } from '../../app/idam-auth/OIDCToken';
+import { defaultClient } from 'applicationinsights';
 
 export class OidcMiddleware {
-  private readonly clientId: string = config.get('services.idam.clientID');
-  private readonly clientSecret: string = config.get('services.idam.clientSecret');
-  private readonly clientScope: string = config.get('services.idam.scope');
-  private readonly baseUrl: string = config.get('services.idam.url.dashboard');
-  private readonly idamBaseUrl: string = config.get('services.idam.url.public');
-  private readonly sessionSecret: string = config.get('session.secret');
-  private readonly accessRole: string = config.get('RBAC.access');
-  private readonly systemAccountUsername = config.get('services.idam.systemUser.username');
-  private readonly systemAccountPassword = config.get('services.idam.systemUser.password');
 
-  constructor(private readonly logger: Logger) {}
+  constructor(
+    private readonly logger: Logger
+  ) {}
 
   public enableFor(app: Application): void {
-    this.cacheSystemAccount(app);
+    const idamAuth = new IdamAuth(this.logger, defaultClient);
+    const ACCESS_ROLE: string = config.get('RBAC.access');
 
-    app.use(auth({
-      issuerBaseURL: this.idamBaseUrl + '/o',
-      baseURL: this.baseUrl,
-      clientID: this.clientId,
-      secret: this.sessionSecret,
-      clientSecret: this.clientSecret,
-      clientAuthMethod: 'client_secret_post',
-      idpLogout: true,
-      authorizationParams: {
-        'response_type': 'code',
-        scope: this.clientScope
-      },
-      session: {
-        rollingDuration: 20 * 60,
-        cookie: {
-          httpOnly: true,
-        },
-        rolling: true,
-        store: this.getSessionStore(app)
-      },
-      afterCallback: (req: Request, res: Response, session: Session) => {
-        const user = jwtDecode(session.id_token) as User;
+    app.get(LOGIN_URL, (req: Request, res: Response) => res.redirect(idamAuth.getAuthorizeRedirect()));
 
-        if (!user.roles.includes(this.accessRole)) {
-          throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
-        }
+    app.get(OAUTH2_CALLBACK_URL, (req: Request, res: Response, next: NextFunction) => {
+      return idamAuth.authorizeCode(req.query.code as string)
+        .then(newSession => this.saveConfiguredSession(newSession, req.session))
+        .then(() => res.redirect(HOME_URL))
+        .catch(error => next(error));
+    });
 
-        return { ...session, user };
+    app.get(LOGOUT_URL, (req: AuthedRequest, res: Response) => {
+      if (!req.session.user) return res.redirect(LOGIN_URL);
+      const idToken = req.session.tokens.idToken;
+
+      req.session.destroy(() => {
+        res.clearCookie(config.get('session.cookie.name'));
+        res.redirect(idamAuth.getEndSessionRedirect(idToken));
+      });
+    });
+
+    // Reject any logged out, expired or bad sessions
+    app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
+      const {user, tokens} = req.session;
+
+      if (!user) {
+        return res.redirect(LOGIN_URL);
       }
-    }));
 
+      if (OIDCToken.isExpired(tokens.accessToken)) {
+        return req.session.destroy(() => {
+          res.clearCookie(config.get('session.cookie.name'));
+          res.redirect(LOGIN_URL);
+        });
+      }
+
+      if (!user.roles.includes(ACCESS_ROLE)) {
+        return req.session.destroy(() => {
+          res.clearCookie(config.get('session.cookie.name'));
+          next(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
+        });
+      }
+
+      return next();
+    });
+
+    // Refresh access token if close to expiring
+    app.use(async (req: AuthedRequest, res: Response, next: NextFunction) => {
+      const {accessToken, refreshToken} = req.session.tokens;
+
+      if (OIDCToken.isStale(accessToken)) {
+        await idamAuth.authorizeRefresh(refreshToken.raw)
+          .then(refreshedSession => this.saveConfiguredSession(refreshedSession, req.session))
+          .catch(error => next(error));
+      }
+
+      return next();
+    });
+
+    // Configure API
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       req.scope = req.app.locals.container.createScope().register({
-        userAxios: asValue(this.createAuthedAxiosInstance(req.appSession.access_token)),
+        userAxios: asValue(idamAuth.getUserAxios(req.session.tokens.accessToken)),
         api: asClass(IdamAPI)
       });
 
-      if (!req.appSession.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.appSession.user.roles)
+      if (!req.session.user.assignableRoles) {
+        return req.scope.cradle.api.getAssignableRoles(req.session.user.roles)
           .then(assignableRoles => {
-            req.appSession.user.assignableRoles = assignableRoles;
+            req.session.user.assignableRoles = assignableRoles;
             next();
           })
           .catch(err => next(err));
@@ -83,63 +98,11 @@ export class OidcMiddleware {
     });
   }
 
-  private getSessionStore(app: Application): any {
-    const redisStore = ConnectRedis(session);
-    const fileStore = FileStoreFactory(session);
-
-    const redisHost: string = config.get('session.redis.host');
-    const redisPort: number = config.get('session.redis.port');
-    const redisPass: string = config.get('session.redis.key');
-
-    if (redisHost && redisPass) {
-      const client = createClient({
-        host: redisHost,
-        password: redisPass,
-        port: redisPort ?? 6380,
-        tls: true
-      });
-
-      app.locals.redisClient = client;
-      return new redisStore({ client });
-    }
-
-    return new fileStore({ path: '/tmp' });
-  }
-
-  private cacheSystemAccount = (app: Application): void => {
-    let delay = 10 * 60;
-
-    this.getSystemUserAccessToken()
-      .then(tokenSet => {
-        app.locals.container.register({
-          systemAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token))
-        });
-
-        delay = tokenSet.expires_in/2;
-        this.logger.info('Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
-      })
-      .catch(() => this.logger.info('Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
-      .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
-  }
-
-  private createAuthedAxiosInstance(accessToken: string): AxiosInstance {
-    return axios.create({
-      baseURL: config.get('services.idam.url.api'),
-      headers: {Authorization: 'Bearer ' + accessToken}
+  private saveConfiguredSession(newSession: OIDCSession, session: Partial<AppSession>): Promise<AppSession> {
+    return new Promise((resolve) => {
+      session.user = newSession.user;
+      session.tokens = newSession.tokens;
+      session.save(() => resolve(session as AppSession));
     });
-  }
-
-  private async getSystemUserAccessToken(): Promise<TokenSet> {
-    return new (await Issuer.discover(this.idamBaseUrl + '/o'))
-      .Client({
-        'client_id': this.clientId,
-        'client_secret': this.clientSecret,
-        'token_endpoint_auth_method': 'client_secret_post'
-      }).grant({
-        'grant_type': 'password',
-        'username': this.systemAccountUsername,
-        'password': this.systemAccountPassword,
-        'scope': this.clientScope,
-      });
   }
 }

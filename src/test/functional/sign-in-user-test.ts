@@ -15,7 +15,7 @@ Scenario('I as a user with access role can sign in', async ({I}) => {
   I.loginAs(userEmail);
   I.dontSee('Sorry, access to this resource is forbidden');
   I.dontSee('Status code: 403');
-  I.seeCookie('appSession');
+  I.seeCookie('idam-user-dashboard-session');
 }).tag('@CrossBrowser');
 
 Scenario('I as a user without access role cannot access service and is shown error page', async ({I}) => {
@@ -30,7 +30,7 @@ Scenario('I as a user without access role cannot access service and is shown err
   I.loginAs(userEmail);
   I.see('Sorry, access to this resource is forbidden');
   I.see('Status code: 403');
-  I.dontSeeCookie('appSession');
+  I.dontSeeCookie('idam-user-dashboard-session');
 });
 
 Scenario('I as a user with citizen role cannot access service and is shown error page', async ({I}) => {
@@ -45,7 +45,7 @@ Scenario('I as a user with citizen role cannot access service and is shown error
   I.loginAs(userEmail);
   I.see('Sorry, access to this resource is forbidden');
   I.see('Status code: 403');
-  I.dontSeeCookie('appSession');
+  I.dontSeeCookie('idam-user-dashboard-session');
 });
 
 
