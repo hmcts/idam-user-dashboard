@@ -38,7 +38,7 @@ export class OidcMiddleware {
       issuerBaseURL: this.idamBaseUrl + '/o',
       baseURL: this.baseUrl,
       clientID: this.clientId,
-      secret: this.sessionSecret,//TODO change this from LONG_RANDOM_STRING
+      secret: this.sessionSecret,
       clientSecret: this.clientSecret,
       clientAuthMethod: 'client_secret_post',
       idpLogout: true,
