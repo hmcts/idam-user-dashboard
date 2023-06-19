@@ -33,8 +33,8 @@ export class RootController {
       }
     }
 
-    if(req.appSession) {
-      const user = req.appSession.user;
+    if(req.idam_user_dashboard_session) {
+      const user = req.idam_user_dashboard_session.user;
       if(!isObjectEmpty(user)) {
         constructedData.user = user;
       }

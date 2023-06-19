@@ -25,8 +25,9 @@ export class OidcMiddleware {
   private readonly idamBaseUrl: string = config.get('services.idam.url.public');
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly accessRole: string = config.get('RBAC.access');
-  private readonly systemAccountUsername = config.get('services.idam.systemUser.username');
-  private readonly systemAccountPassword = config.get('services.idam.systemUser.password');
+  private readonly systemAccountUsername: string = config.get('services.idam.systemUser.username');
+  private readonly systemAccountPassword: string = config.get('services.idam.systemUser.password');
+  private readonly sessionCookieName: string = config.get('session.cookie.name');
 
   constructor(private readonly logger: Logger) {}
 
@@ -37,7 +38,7 @@ export class OidcMiddleware {
       issuerBaseURL: this.idamBaseUrl + '/o',
       baseURL: this.baseUrl,
       clientID: this.clientId,
-      secret: this.sessionSecret,
+      secret: this.sessionSecret,//TODO change this from LONG_RANDOM_STRING
       clientSecret: this.clientSecret,
       clientAuthMethod: 'client_secret_post',
       idpLogout: true,
@@ -46,6 +47,7 @@ export class OidcMiddleware {
         scope: this.clientScope
       },
       session: {
+        name: this.sessionCookieName,
         rollingDuration: 20 * 60,
         cookie: {
           httpOnly: true,
@@ -66,14 +68,14 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       req.scope = req.app.locals.container.createScope().register({
-        userAxios: asValue(this.createAuthedAxiosInstance(req.appSession.access_token)),
+        userAxios: asValue(this.createAuthedAxiosInstance(req.idam_user_dashboard_session.access_token)),
         api: asClass(IdamAPI)
       });
 
-      if (!req.appSession.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.appSession.user.roles)
+      if (!req.idam_user_dashboard_session.user.assignableRoles) {
+        return req.scope.cradle.api.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
           .then(assignableRoles => {
-            req.appSession.user.assignableRoles = assignableRoles;
+            req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
           .catch(err => next(err));

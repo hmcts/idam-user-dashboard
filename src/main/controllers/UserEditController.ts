@@ -39,7 +39,7 @@ export class UserEditController extends RootController {
   public post(req: AuthedRequest, res: Response) {
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
-        const roleAssignments = constructUserRoleAssignments(req.appSession.user.assignableRoles, user.roles);
+        const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
         processMfaRole(user);
 
         if(req.body._action === 'save') {
@@ -50,7 +50,7 @@ export class UserEditController extends RootController {
           content: {
             user,
             roles: roleAssignments,
-            showMfa: this.canShowMfa(req.appSession.user.assignableRoles),
+            showMfa: this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles),
             ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
           }
         });
@@ -68,7 +68,7 @@ export class UserEditController extends RootController {
     const rolesAdded = findDifferentElements(newRoleList, originalRolesWithMfaRemoved);
     const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
-    const mfaAssignable = this.canShowMfa(req.appSession.user.assignableRoles);
+    const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
 
     let mfaAdded, mfaRemoved = false;
 
@@ -168,7 +168,7 @@ export class UserEditController extends RootController {
   }
 
   private getUserRolesAfterUpdate(req: AuthedRequest, originalRoles: string[], editedRoles: string[]): string[] {
-    const nonAssignableRoles = determineUserNonAssignableRoles(req.appSession.user.assignableRoles, originalRoles);
+    const nonAssignableRoles = determineUserNonAssignableRoles(req.idam_user_dashboard_session.user.assignableRoles, originalRoles);
     const rolesToAssign = editedRoles ? convertToArray(editedRoles) : [];
 
     const newRoleList = [];
@@ -203,11 +203,11 @@ export class UserEditController extends RootController {
   private async reconstructRoleAssignments(req: AuthedRequest, userId: string, newRoles: string[]): Promise<UserRoleAssignment[]> {
     // if the users are editing their owned roles, we need to get the users' new assignable roles again as these might have changed
     // after their roles are updated
-    if (req.appSession.user.id === userId) {
+    if (req.idam_user_dashboard_session.user.id === userId) {
       const newAssignableRoles = await req.scope.cradle.api.getAssignableRoles(newRoles);
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
-    return constructUserRoleAssignments(req.appSession.user.assignableRoles, newRoles);
+    return constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, newRoles);
   }
 
   private generateMFAMessage(ssoProvider: string): string {

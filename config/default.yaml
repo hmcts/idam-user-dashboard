@@ -30,7 +30,7 @@ services:
 session:
   secret: 'LONG_RANDOM_STRING'
   cookie:
-    name: 'idam-user-dashboard-session'
+    name: 'idam_user_dashboard_session'
   redis:
     host:
     port:
