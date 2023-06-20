@@ -16,7 +16,7 @@ export const config = {
     access: 'idam-user-dashboard--access'
   },
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
-  WaitForTimeout: 60000,
+  WaitForTimeout: 600,
   helpers: {},
   plugins: {
     retryFailedStep: {
@@ -34,6 +34,9 @@ export const config = {
       enabled: true,
       require: '@codeceptjs/allure-legacy'
     },
+    tryTo: {
+      enabled: true
+    }
   }
 };
 

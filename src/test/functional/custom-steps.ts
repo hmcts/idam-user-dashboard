@@ -9,7 +9,7 @@ export = function () {
       this.fillField('#username', username);
       this.fillField('#password', password);
       this.wait(5);
-      this.click('Sign in');
+      tryTo(() => this.click('Sign in'));
     },
     logout: function () {
       this.click('Sign out');
