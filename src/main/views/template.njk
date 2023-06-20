@@ -12,7 +12,7 @@
     serviceName: "IDAM User Dashboard",
     serviceUrl: "/",
     navigation: [
-      { text: user.forename + " " + user.surname } if user,
+      { text: user.name } if user,
       { text: 'Sign out' if user else 'Sign in', href: "/logout" if user else "/login"}
     ]
   }) }}
