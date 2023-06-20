@@ -50,7 +50,7 @@ export class UserResultsController extends RootController {
         return super.post(req, res, 'user-details', {
           content: {
             user,
-            canManage: this.canManageUser(req.idam_user_dashboard_session.user, user),
+            canManage: this.canManageUser(req.session.user, user),
             lockedMessage: this.composeLockedMessage(user),
             notificationBannerMessage: notificationBannerMessage,
             providerName: providerName,

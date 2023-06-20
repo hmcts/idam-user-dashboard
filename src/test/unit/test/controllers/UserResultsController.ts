@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { UserResultsController } from '../../../../main/controllers/UserResultsController';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
@@ -58,7 +57,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -93,7 +92,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -127,7 +126,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -163,7 +162,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -196,7 +195,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -229,7 +228,7 @@ describe('User results controller', () => {
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -262,7 +261,7 @@ describe('User results controller', () => {
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details',{
       content: {
@@ -308,7 +307,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -360,7 +359,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -412,7 +411,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {
@@ -465,7 +464,7 @@ describe('User results controller', () => {
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    req.session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
       content: {

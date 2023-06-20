@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { RootController } from '../../../../main/controllers/RootController';
@@ -45,7 +44,7 @@ describe('Root controller', () => {
       name: 'JOHN SMITH',
       email: 'johnsmith@user.test'
     };
-    req.idam_user_dashboard_session = { user: userDetails };
+    req.session = { user: userDetails };
     const expectedPageData: PageData = {
       user: userDetails,
       urls
@@ -85,7 +84,7 @@ describe('Root controller', () => {
     mockFeatureToggles.getAllFlagValues = jest.fn(() => {
       return Promise.resolve({ 'unit-test': true });
     });
-    req.idam_user_dashboard_session = { user: userDetails };
+    req.session = { user: userDetails };
 
     await controller.post(req, res, 'view', { content: pageData });
     expect(res.render).toBeCalledWith('view', expectedPageData);

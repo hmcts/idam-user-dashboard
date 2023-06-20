@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {when} from 'jest-when';
 import { mockResponse } from '../../utils/mockResponse';
 import { AddUserRolesController } from '../../../../main/controllers/AddUserRolesController';
@@ -44,7 +43,7 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.body._usertype = UserType.Professional;
     req.body.roles = role;
-    req.idam_user_dashboard_session = {
+    req.session = {
       user: {
         id: 'some-user-id'
       }
@@ -62,7 +61,7 @@ describe('Add user roles controller', () => {
     req.body._forename = forename;
     req.body._surname = surname;
     req.body.roles = roleArray;
-    req.idam_user_dashboard_session = {
+    req.session = {
       user: {
         id: 'some-user-id'
       }
@@ -81,7 +80,7 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.body.roles = roleArray;
     req.body._usertype = UserType.Support;
-    req.idam_user_dashboard_session = {
+    req.session = {
       user: {
         id: 'some-user-id'
       }
@@ -94,7 +93,7 @@ describe('Add user roles controller', () => {
       surname,
       activationRoleNames: roleArray,
       clientId: service.clientId,
-      invitedBy: req.idam_user_dashboard_session.user.id,
+      invitedBy: req.session.user.id,
       successRedirect: service.hmctsAccess.postActivationRedirectUrl,
     });
   });
@@ -108,7 +107,7 @@ describe('Add user roles controller', () => {
     req.body._surname = surname;
     req.body.roles = roleArray;
     req.body._userType = UserType.Professional;
-    req.idam_user_dashboard_session = {
+    req.session = {
       user: {
         id: 'some-user-id'
       }
@@ -121,7 +120,7 @@ describe('Add user roles controller', () => {
       surname,
       activationRoleNames: roleArray,
       clientId: service.clientId,
-      invitedBy: req.idam_user_dashboard_session.user.id
+      invitedBy: req.session.user.id
     });
   });
 
@@ -149,7 +148,7 @@ describe('Add user roles controller', () => {
     req.body._email = email;
     req.body._forename = forename;
     req.body._surname = surname;
-    req.idam_user_dashboard_session = { user: { assignableRoles: [role2] } };
+    req.session = { user: { assignableRoles: [role2] } };
 
     const expectedContent = {
       user: { email: email, forename: forename, surname: surname },
