@@ -3,7 +3,7 @@ import { config as testConfig } from '../config';
 
 export = function () {
   return actor({
-    loginAs: function (username, password = testConfig.PASSWORD) {
+    tryLoginAs: function (username, password = testConfig.PASSWORD) {
       this.amOnPage(LOGIN_URL);
       this.see('Sign in');
       this.fillField('#username', username);

@@ -39,7 +39,7 @@ Scenario('I as a user should be able to remove sso from user account', async ({I
     randomData.getRandomSSOId()
   );
 
-  I.loginAs(dashboardUser.email, testConfig.PASSWORD);
+  I.tryLoginAs(dashboardUser.email, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('IdP User ID');
@@ -73,7 +73,7 @@ Scenario('I as a user should be able to select no while removing sso', async ({I
     randomData.getRandomSSOId()
   );
 
-  I.loginAs(dashboardUser.email);
+  I.tryLoginAs(dashboardUser.email);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('IdP User ID');

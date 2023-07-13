@@ -10,7 +10,7 @@ BeforeSuite(async () => {
 });
 
 Scenario('I as a system owner should be able to see Status code: 404 error code if page not exists', async ({I}) => {
-  I.loginAs(dashboardUserEMAIL, testConfig.PASSWORD);
+  I.tryLoginAs(dashboardUserEMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.amOnPage('/pageNotFound');
   I.see('Page not found');

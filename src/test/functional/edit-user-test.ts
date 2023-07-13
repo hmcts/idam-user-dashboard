@@ -44,7 +44,7 @@ Scenario('I as a user should be able to edit and update the user-details success
       [testConfig.USER_ROLE_CITIZEN]
     );
 
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.tryLoginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
@@ -100,7 +100,7 @@ Data(incorrectEmailAddresses).Scenario('I as a user should see proper error mess
       testConfig.USER_FIRSTNAME,
       [testConfig.USER_ROLE_CITIZEN]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.tryLoginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
@@ -121,7 +121,7 @@ Scenario('I as a user should see proper error message when mandatory fields left
       testConfig.USER_FIRSTNAME,
       [testConfig.USER_ROLE_CITIZEN]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.tryLoginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
@@ -155,7 +155,7 @@ Scenario('I as a user should see proper error message when no changes were made 
       testConfig.USER_FIRSTNAME,
       [testConfig.USER_ROLE_CITIZEN]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.tryLoginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
@@ -176,7 +176,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
       testConfig.USER_FIRSTNAME,
       [INDEPENDANT_CHILD_ROLE]
     );
-    I.loginAs(PARENT_ROLE_EMAIL);
+    I.tryLoginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.see(INDEPENDANT_CHILD_ROLE);
@@ -212,7 +212,7 @@ Scenario('I as a user should be able to edit mfa',
       [testConfig.RBAC.access, testConfig.USER_ROLE_IDAM_MFA_DISABLED, PARENT_ROLE_WITH_MFA_ASSIGNABLE]
     );
 
-    I.loginAs(activeUserEmail);
+    I.tryLoginAs(activeUserEmail);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.see(MFA_DISABLED_TEXT);
@@ -248,7 +248,7 @@ Scenario('I as a user should not be able to edit or update the user`s email when
       [INDEPENDANT_CHILD_ROLE],
       activeUserSsoId
     );
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
+    I.tryLoginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.see(activeUserEmail);
@@ -278,7 +278,7 @@ Scenario('I as a user should be able to filter through roles while updating the 
       testConfig.USER_FIRSTNAME,
       [ASSIGNABLE_CHILD_ROLE1]
     );
-    I.loginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
+    I.tryLoginAs(PARENT_ROLE_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');

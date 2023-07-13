@@ -19,7 +19,7 @@ Scenario('I should be see a warning when viewing a user who is locked', async ({
     [testConfig.USER_ROLE_CITIZEN]
   );
   I.lockAccountOf(userEmail);
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
@@ -37,7 +37,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   );
   I.lockAccountOf(userEmail);
 
-  I.loginAs(userEmail);
+  I.tryLoginAs(userEmail);
   I.see('You can reset your password to unlock your account.');
   I.click('reset your password');
   I.see('Reset your password');
@@ -56,7 +56,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.click('Continue');
   I.see('Your password has been changed');
 
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.dontSee('This account has been temporarily locked due to multiple failed login attempts.');

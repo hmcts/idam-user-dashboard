@@ -31,7 +31,7 @@ Scenario('I as a user should be able to see the details of a user', async ({I}) 
     testConfig.USER_FIRSTNAME,
     [ASSIGNABLE_CHILD_ROLE]
   );
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.gotoUserDetails(userEmail);
   I.see(id);
   I.see(userEmail);
@@ -52,7 +52,7 @@ Scenario('I as a user should be able to see the SSO details of a user', async ({
     [ASSIGNABLE_CHILD_ROLE],
     'azure'
   );
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.gotoUserDetails(userEmail);
   I.see(ssoId);
   I.see('eJudiciary.net');
@@ -68,7 +68,7 @@ Scenario('I as a user should be able to see the active status of a user', async 
     [ASSIGNABLE_CHILD_ROLE],
     randomData.getRandomSSOId()
   );
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.gotoUserDetails(userEmail);
   I.see('ACTIVE');
 }).tag('@CrossBrowser');
@@ -83,7 +83,7 @@ Scenario('I as a user should be able to see the eJudiciary info message.', async
     [ASSIGNABLE_CHILD_ROLE],
     'azure'
   );
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.gotoUserDetails(userEmail);
   I.see('Please check with the eJudiciary support team to see if there are related accounts.');
 }).tag('@CrossBrowser');
@@ -98,7 +98,7 @@ Scenario('I as a user should be able to see the suspended status of a user', asy
     [ASSIGNABLE_CHILD_ROLE]
   );
   I.suspendUser(id);
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.gotoUserDetails(userEmail);
   I.see('SUSPENDED');
 });
@@ -113,7 +113,7 @@ Scenario('I as a user should be able to see the stale status of a user', async (
     [ASSIGNABLE_CHILD_ROLE]
   );
   I.retireStaleUser(id);
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.tryLoginAs(DASHBOARD_USER_EMAIL);
   I.gotoUserDetails(userEmail);
   I.see('ARCHIVED');
   I.dontSee('Edit user');
