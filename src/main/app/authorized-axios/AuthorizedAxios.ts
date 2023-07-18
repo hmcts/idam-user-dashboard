@@ -121,7 +121,7 @@ export class AuthorizedAxios extends Axios {
         console.log(error?.response?.status);
         console.log(error?.response?.statusText);
         console.log(error?.response?.headers);
-        console.log("url: " + error?.response?.request?.url);
+        console.log('url: ' + error?.response?.request?.url);
         if (error?.response?.status === 401) {
           return this.refreshToken().then(() => this.request(error.config));
         }
