@@ -48,7 +48,7 @@ Scenario('I as a user should be able to edit and update the user-details success
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
 
@@ -125,7 +125,7 @@ Scenario('I as a user should see proper error message when mandatory fields left
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.clearField('#forename');
     I.clearField('#surname');
     I.clearField('#email');
@@ -159,7 +159,7 @@ Scenario('I as a user should see proper error message when no changes were made 
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.click('Save');
     I.see('There is a problem');
     I.see('No changes to the user were made');
@@ -182,7 +182,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.see(INDEPENDANT_CHILD_ROLE);
     I.dontSee(ASSIGNABLE_CHILD_ROLE1);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(INDEPENDANT_CHILD_ROLE);
 
@@ -217,7 +217,7 @@ Scenario('I as a user should be able to edit mfa',
     I.gotoUserDetails(activeUserEmail);
     I.see(MFA_DISABLED_TEXT);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.dontSee(MFA_SECURITY_WARNING);
 
     const mfaFlag = await I.grabValueFrom(locate('//input[@name=\'multiFactorAuthentication\']'));
@@ -231,7 +231,7 @@ Scenario('I as a user should be able to edit mfa',
     I.see('User Details');
     I.see('ENABLED');
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.see(MFA_SECURITY_WARNING);
   });
 
@@ -254,7 +254,7 @@ Scenario('I as a user should not be able to edit or update the user`s email when
     I.see(activeUserEmail);
     I.see(activeUserSsoId);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     // attempt to fill disabled field
     I.seeElement('#email:disabled');
     I.fillField('#email', randomData.getRandomEmailAddress());
@@ -282,7 +282,7 @@ Scenario('I as a user should be able to filter through roles while updating the 
     I.see('Manage an existing user');
     I.gotoUserDetails(activeUserEmail);
     I.click('Edit user');
-    I.see('Edit User');
+    I.seeInCurrentUrl('/user/edit')
     I.dontSee('Suspend user');
     I.dontSee('Delete user');
     I.see(ASSIGNABLE_CHILD_ROLE1);
