@@ -42,7 +42,7 @@ config.helpers = {
     url: config.TEST_URL,
     show: !config.TestHeadlessBrowser,
     browser: 'chromium',
-    waitForTimeout: config.WaitForTimeout,
+    waitForTimeout: 60000,
     waitForAction: 4000,
     waitForNavigation: 'networkidle0',
     ignoreHTTPSErrors: true,
