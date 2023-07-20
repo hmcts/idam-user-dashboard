@@ -15,6 +15,7 @@ Scenario('I as a user with access role can sign in', async ({I}) => {
   I.loginAs(userEmail);
   I.dontSee('Sorry, access to this resource is forbidden');
   I.dontSee('Status code: 403');
+  I.dontSee('Status code: 400');
   I.seeCookie('idam_user_dashboard_session');
 }).tag('@CrossBrowser');
 
