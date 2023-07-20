@@ -57,7 +57,6 @@ export class OidcMiddleware {
       },
       afterCallback: (req: Request, res: Response, session: Session) => {
         const user = jwtDecode(session.id_token) as User;
-        this.logger.info('after callback with ' + user.email);
 
         if (!user.roles.includes(this.accessRole)) {
           throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);

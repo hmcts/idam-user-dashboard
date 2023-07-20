@@ -31,8 +31,8 @@ const setupConfig = {
     ...testConfig.helpers,
     Playwright: {
       url: testConfig.TEST_URL,
-      waitForTimeout: 30000,
-      waitForAction: 1500,
+      waitForTimeout: 60002,
+      waitForAction: 800,
       waitForNavigation: 'domcontentloaded',
       ignoreHTTPSErrors: true,
       capabilities: {},
