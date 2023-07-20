@@ -24,8 +24,7 @@ export const config = {
       retries: 2,
     },
     autoDelay: {
-      enabled: true,
-      delayAfter: 3000
+      enabled: true
     },
     retryTo: {
       enabled: true
@@ -43,7 +42,7 @@ config.helpers = {
     show: !config.TestHeadlessBrowser,
     browser: 'chromium',
     waitForTimeout: 60000,
-    waitForAction: 4000,
+    waitForAction: 500,
     waitForNavigation: 'networkidle0',
     ignoreHTTPSErrors: true,
   },
