@@ -23,6 +23,7 @@ export = function () {
 
       for (let i = 0; i < LOGIN_ATTEMPT_LIMIT; i++) {
         this.click('Sign in');
+        this.wait(1);
 
         if (i === LOGIN_ATTEMPT_LIMIT - 1) {
           this.see('There is a problem with your account login details');
