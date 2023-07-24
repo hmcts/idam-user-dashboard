@@ -9,6 +9,7 @@ export = function () {
       this.fillField('#username', username);
       this.fillField('#password', password);
       this.click('Sign in');
+      this.seeInCurrentUrl(testConfig.TEST_URL);
     },
     logout: function () {
       this.click('Sign out');
@@ -38,6 +39,7 @@ export = function () {
       this.amOnPage(MANAGER_USER_URL);
       this.fillField('#search', id);
       this.click('Search');
+      this.seeInCurrentUrl('/user/details');
       this.see('User Details');
       this.see(id);
     }
