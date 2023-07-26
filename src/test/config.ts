@@ -16,7 +16,7 @@ export const config = {
     access: 'idam-user-dashboard--access'
   },
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
-  WaitForTimeout: 60009,
+  WaitForTimeout: 60008,
   helpers: {},
   plugins: {
     retryFailedStep: {
