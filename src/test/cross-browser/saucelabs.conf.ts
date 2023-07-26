@@ -33,6 +33,7 @@ const setupConfig = {
       url: testConfig.TEST_URL,
       waitForTimeout: 60002,
       waitForAction: 800,
+      timeout: 20004,
       waitForNavigation: 'domcontentloaded',
       ignoreHTTPSErrors: true,
       capabilities: {},
