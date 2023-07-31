@@ -59,6 +59,7 @@ export class OidcMiddleware {
         const user = jwtDecode(session.id_token) as User;
 
         if (!user.roles.includes(this.accessRole)) {
+          console.log('missing access role');
           throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
         }
 
