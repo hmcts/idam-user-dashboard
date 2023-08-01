@@ -37,6 +37,7 @@ export class OidcMiddleware {
     app.use(auth({
       issuerBaseURL: this.idamBaseUrl + '/o',
       baseURL: this.baseUrl,
+      httpTimeout: 15099,
       clientID: this.clientId,
       secret: this.sessionSecret,
       clientSecret: this.clientSecret,
