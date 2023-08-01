@@ -2,10 +2,11 @@ import {config as testConfig} from '../config';
 import {deleteAllTestData} from './shared/testingSupportApi';
 
 export const config: CodeceptJS.Config = {
+  name: 'functional',
   tests: './*-test.ts',
   output: '../../../functional-output/functional/reports',
   helpers: testConfig.helpers,
-  timeout: testConfig.WaitForTimeout,
+  timeout: 59000,
   include: {
     I: './custom-steps.ts',
   },
@@ -13,23 +14,5 @@ export const config: CodeceptJS.Config = {
     await deleteAllTestData(testConfig.TEST_SUITE_PREFIX);
   },
   mocha: {},
-  name: 'functional',
-  plugins: {
-    pauseOnFail: {},
-    retryFailedStep: {
-      enabled: true,
-    },
-    allure: {
-      enabled: true,
-    },
-    tryTo: {
-      enabled: true,
-    },
-    retryTo: {
-      enabled: true
-    },
-    screenshotOnFail: {
-      enabled: true,
-    }
-  },
+  plugins: testConfig.plugins,
 };

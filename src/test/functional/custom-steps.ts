@@ -9,6 +9,7 @@ export = function () {
       this.fillField('#username', username);
       this.fillField('#password', password);
       this.click('Sign in');
+      this.seeInCurrentUrl(testConfig.TEST_URL);
     },
     logout: function () {
       this.click('Sign out');
@@ -23,6 +24,7 @@ export = function () {
 
       for (let i = 0; i < LOGIN_ATTEMPT_LIMIT; i++) {
         this.click('Sign in');
+        this.wait(1);
 
         if (i === LOGIN_ATTEMPT_LIMIT - 1) {
           this.see('There is a problem with your account login details');
@@ -37,6 +39,7 @@ export = function () {
       this.amOnPage(MANAGER_USER_URL);
       this.fillField('#search', id);
       this.click('Search');
+      this.seeInCurrentUrl('/user/details');
       this.see('User Details');
       this.see(id);
     }

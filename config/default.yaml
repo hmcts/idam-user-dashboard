@@ -16,6 +16,8 @@ services:
       authorization: '/o/authorize'
       token: '/o/token'
       endSession: '/o/endSession'
+      invite: '/api/v2/invitations'
+      services: '/api/v2/services'
     systemUser:
       username: 'idam-user-dashboard-system-user@user.idam'
       password: 'Pa55word11'
@@ -23,11 +25,12 @@ services:
     clientSecret: 'idam_user_dashboard_secret'
     callbackURL: 'http://localhost:3100/oauth2/callback'
     scope: 'openid profile roles manage-user search-user create-user'
+    backendServiceScope: 'create-invitation view-service-provider'
     responseType: 'code'
 session:
-  secret: 'local'
+  secret: 'LONG_RANDOM_STRING'
   cookie:
-    name: 'idam-user-dashboard-session'
+    name: 'idam_user_dashboard_session'
   redis:
     host:
     port:

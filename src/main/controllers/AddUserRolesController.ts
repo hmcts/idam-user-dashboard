@@ -6,21 +6,33 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { convertToArray, hasProperty } from '../utils/utils';
 import { MISSING_ROLE_ASSIGNMENT_ERROR } from '../utils/error';
 import { constructAllRoleAssignments } from '../utils/roleUtils';
+import { InviteService } from '../app/invite-service/InviteService';
+import { ServiceProviderService } from '../app/service-provider-service/ServiceProviderService';
+import config from 'config';
+import { UserType } from '../utils/UserType';
 
 @autobind
 export class AddUserRolesController extends RootController {
+  constructor(
+    private readonly inviteService: InviteService,
+    private readonly serviceProviderService: ServiceProviderService
+  ) {
+    super();
+  }
+
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const fields = req.body;
 
     if (!hasProperty(req.body, 'roles')) {
       const allRoles = await req.scope.cradle.api.getAllRoles();
-      const roleAssignment = constructAllRoleAssignments(allRoles, req.session.user.assignableRoles);
+      const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
 
       const user = {
         email: fields._email,
         forename: fields._forename,
-        surname: fields._surname
+        surname: fields._surname,
+        userType: fields._usertype
       };
 
       return super.post(req, res, 'add-user-roles', {
@@ -30,12 +42,29 @@ export class AddUserRolesController extends RootController {
     }
 
     const roles = fields.roles;
-    await req.scope.cradle.api.registerUser({
-      email: fields._email,
-      firstName: fields._forename,
-      lastName: fields._surname,
-      roles: convertToArray(roles)
-    });
+    const serviceInfo = await this.serviceProviderService.getService(config.get('services.idam.clientID'));
+
+    if(fields._usertype === UserType.Support) {
+      await this.inviteService.inviteUser({
+        email: fields._email,
+        forename: fields._forename,
+        surname: fields._surname,
+        activationRoleNames: convertToArray(roles),
+        invitedBy: req.idam_user_dashboard_session.user.id,
+        clientId: serviceInfo.clientId,
+        successRedirect: serviceInfo.hmctsAccess.postActivationRedirectUrl
+      });
+    } else {
+      await this.inviteService.inviteUser({
+        email: fields._email,
+        forename: fields._forename,
+        surname: fields._surname,
+        activationRoleNames: convertToArray(roles),
+        invitedBy: req.idam_user_dashboard_session.user.id,
+        clientId: serviceInfo.clientId
+      });
+    }
+
 
     return super.post(req, res, 'add-user-completion');
   }
