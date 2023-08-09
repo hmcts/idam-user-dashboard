@@ -3,8 +3,8 @@ plugins {
     id 'application'
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 17
+targetCompatibility = 17
 
 // tag::repositories[]
 repositories {
@@ -18,8 +18,8 @@ repositories {
 
 // tag::dependencies[]
 dependencies {
-    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.4'
-    testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
+    testCompileOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.4'
+    testCompileOnly 'com.github.hmcts:fortify-client:1.2.0:all'
 }
 // end::dependencies[]
 
