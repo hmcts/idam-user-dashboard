@@ -22,6 +22,22 @@ Running the application requires the following tools to be installed in your env
 $ yarn install
 ```
 
+#### Managing dependencies:
+
+To update the versions in package.json use:
+
+```bash
+$ yarn upgrade-interactive
+```
+
+and choose the appropriate version for each dependency.
+
+The jenkins pipeline will check dependency versions for vulnerabilities. If you wish to suppress the issues that the pipeline is looking for you can populate the "yarn-audit-known-issues" file by running:
+
+```bash
+$ yarn npm audit --recursive --environment production --json > yarn-audit-known-issues
+```
+
 #### Generate assets bundle:
 
 ```bash

@@ -40,9 +40,11 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.loginAs(userEmail);
   I.see('You can reset your password to unlock your account.');
   I.click('reset your password');
+  I.seeInCurrentUrl('/reset/forgotpassword');
   I.see('Reset your password');
   I.fillField('#email', userEmail);
   I.click('Submit');
+  I.seeInCurrentUrl('/reset/doForgotPassword');
   I.see('Check your email');
 
   const response = await I.extractUrlFromNotifyEmail(userEmail);
@@ -54,6 +56,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.fillField('#password1', postResetPassword);
   I.fillField('#password2', postResetPassword);
   I.click('Continue');
+  I.seeInCurrentUrl('/doResetPassword');
   I.see('Your password has been changed');
 
   I.loginAs(DASHBOARD_USER_EMAIL);
