@@ -99,7 +99,7 @@
     "allure-commandline": "^2.23.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.3.0",
-    "codeceptjs": "^3.5.2",
+    "codeceptjs": "^3.5.3",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.8.1",
     "eslint": "^6.8.0",
