@@ -3701,10 +3701,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.195":
-  version: 4.14.195
-  resolution: "@types/lodash@npm:4.14.195"
-  checksum: 39b75ca635b3fa943d17d3d3aabc750babe4c8212485a4df166fe0516e39288e14b0c60afc6e21913cc0e5a84734633c71e617e2bd14eaa1cf51b8d7799c432e
+"@types/lodash@npm:^4.14.197":
+  version: 4.14.197
+  resolution: "@types/lodash@npm:4.14.197"
+  checksum: 53d7567d1704de76cf33266c78062e0fd722d4b846e5b1417d0b6ef0ee41c0d9c451b92bc34f73d5f1fcc45c7d36511e92f6f47a9279b48157ba60a92ddaa078
   languageName: node
   linkType: hard
 
@@ -8476,7 +8476,7 @@ __metadata:
     "@types/jest": ^27.5.2
     "@types/jest-when": ^3.5.2
     "@types/json2csv": ^5.0.3
-    "@types/lodash": ^4.14.195
+    "@types/lodash": ^4.14.197
     "@types/mini-css-extract-plugin": ^2.5.1
     "@types/node": ^17.0.45
     "@types/nunjucks": ^3.2.3
