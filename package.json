@@ -44,7 +44,7 @@
     "@types/helmet": "^4.0.0",
     "@types/jest-when": "^3.5.2",
     "@types/json2csv": "^5.0.3",
-    "@types/lodash": "^4.14.195",
+    "@types/lodash": "^4.14.197",
     "@types/node": "^17.0.45",
     "@types/nunjucks": "^3.2.3",
     "@types/require-directory": "^2.1.2",
