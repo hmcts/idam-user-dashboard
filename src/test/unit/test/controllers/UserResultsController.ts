@@ -72,6 +72,44 @@ describe('User results controller', () => {
     });
   });
 
+  test('Should render the stale user details page with notification banner', async () => {
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: email,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        multiFactorAuthentication: true,
+        ssoId: ssoId,
+        stale: true,
+        ssoProvider: 'azure',
+        createDate: '',
+        lastModified: ''
+      }
+    ];
+
+    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+
+    req.body.search = email;
+    req.scope.cradle.api = mockApi;
+    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: results[0],
+        canManage: false,
+        providerIdField: 'eJudiciary User ID',
+        providerName: 'eJudiciary.net',
+        notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.' + '\n' 
+        + 'Archived accounts are read only.',
+        lockedMessage: ''
+      }
+    });
+  });
+
   test('Should render the user details page when searching with a valid email', async () => {
     const results = [
       {
