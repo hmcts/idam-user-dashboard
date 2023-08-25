@@ -2586,13 +2586,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codeceptjs/configure@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@codeceptjs/configure@npm:0.8.0"
+"@codeceptjs/configure@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@codeceptjs/configure@npm:0.10.0"
   dependencies:
     lodash.merge: ^4.6.2
     lodash.mergewith: ^4.6.2
-  checksum: ec530dcf16a04c9484ee65be88887ad46f4a4b700da7679abe9aa57581f2c43ce156361926f82c0d8c5b63e724e650ea9ea7e71c4af76af55e260a2ab0c8509d
+  peerDependencies:
+    codeceptjs: ">= 2.3.3"
+  checksum: e4556a9c1fdea92ede4a9bae296403d677bf89d5070cf53e7637d62062e00bf40c09fa34345d2fbca468c31d33bc0b3fdc3626e67f8d74a6d589f1e060e52f81
   languageName: node
   linkType: hard
 
@@ -3699,10 +3701,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.195":
-  version: 4.14.195
-  resolution: "@types/lodash@npm:4.14.195"
-  checksum: 39b75ca635b3fa943d17d3d3aabc750babe4c8212485a4df166fe0516e39288e14b0c60afc6e21913cc0e5a84734633c71e617e2bd14eaa1cf51b8d7799c432e
+"@types/lodash@npm:^4.14.197":
+  version: 4.14.197
+  resolution: "@types/lodash@npm:4.14.197"
+  checksum: 53d7567d1704de76cf33266c78062e0fd722d4b846e5b1417d0b6ef0ee41c0d9c451b92bc34f73d5f1fcc45c7d36511e92f6f47a9279b48157ba60a92ddaa078
   languageName: node
   linkType: hard
 
@@ -4620,6 +4622,13 @@ __metadata:
   version: 4.1.3
   resolution: "arg@npm:4.1.3"
   checksum: 544af8dd3f60546d3e4aff084d451b96961d2267d668670199692f8d054f0415d86fc5497d0e641e91546f0aa920e7c29e5250e99fc89f5552a34b5d93b77f43
+  languageName: node
+  linkType: hard
+
+"arg@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "arg@npm:5.0.2"
+  checksum: 6c69ada1a9943d332d9e5382393e897c500908d91d5cb735a01120d5f71daf1b339b7b8980cbeaba8fd1afc68e658a739746179e4315a26e8a28951ff9930078
   languageName: node
   linkType: hard
 
@@ -5758,11 +5767,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codeceptjs@npm:^3.5.2":
-  version: 3.5.2
-  resolution: "codeceptjs@npm:3.5.2"
+"codeceptjs@npm:^3.5.3":
+  version: 3.5.3
+  resolution: "codeceptjs@npm:3.5.3"
   dependencies:
-    "@codeceptjs/configure": ^0.8.0
+    "@codeceptjs/configure": ^0.10.0
     "@codeceptjs/helper": ^1.0.2
     "@cucumber/cucumber-expressions": ^16
     "@cucumber/gherkin": ^26
@@ -5802,7 +5811,7 @@ __metadata:
     uuid: ^9.0
   bin:
     codeceptjs: bin/codecept.js
-  checksum: b1b3f19d62419e42685598789639051f81a74b7ce8e618d05c986011b99ad06e9ea016bbfa51216897e8a662f87123cb206d17d9ac923ab00524b7c16b431000
+  checksum: 0e4542b6f56906623fb5bfdb4872f6649ac6cc590916463c381f0f3cdc572cc8b1922a941d0df59201abd729ec71f6f08b0d8c6e8d882faca29b1fc0db6a76c5
   languageName: node
   linkType: hard
 
@@ -7659,13 +7668,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-monkey@npm:^1.0.4":
-  version: 1.0.4
-  resolution: "fs-monkey@npm:1.0.4"
-  checksum: 8b254c982905c0b7e028eab22b410dc35a5c0019c1c860456f5f54ae6a61666e1cb8c6b700d6c88cc873694c00953c935847b9959cc4dcf274aacb8673c1e8bf
-  languageName: node
-  linkType: hard
-
 "fs.realpath@npm:^1.0.0":
   version: 1.0.0
   resolution: "fs.realpath@npm:1.0.0"
@@ -8415,6 +8417,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hyperdyperid@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "hyperdyperid@npm:1.2.0"
+  checksum: 210029d1c86926f09109f6317d143f8b056fc38e8dd11b0c3e3205fc6c6ff8429fb55b4b9c2bce065462719ed9d34366eced387aaa0035d93eb76b306a8547ef
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -8467,7 +8476,7 @@ __metadata:
     "@types/jest": ^27.5.2
     "@types/jest-when": ^3.5.2
     "@types/json2csv": ^5.0.3
-    "@types/lodash": ^4.14.195
+    "@types/lodash": ^4.14.197
     "@types/mini-css-extract-plugin": ^2.5.1
     "@types/node": ^17.0.45
     "@types/nunjucks": ^3.2.3
@@ -8486,7 +8495,7 @@ __metadata:
     axios: ^0.27.2
     babel-eslint: ^10.1.0
     babel-loader: ^8.3.0
-    codeceptjs: ^3.5.2
+    codeceptjs: ^3.5.3
     config: ^3.3.9
     connect-redis: ^6.1.3
     cookie-parser: ^1.4.6
@@ -8510,7 +8519,7 @@ __metadata:
     jwt-decode: ^3.1.2
     launchdarkly-node-server-sdk: ^7.0.2
     lodash: ^4.17.21
-    memfs: ^3.5.3
+    memfs: ^4.2.1
     mini-css-extract-plugin: ^2.7.6
     nock: ^13.3.2
     node-sass: ^8.0.0
@@ -9829,6 +9838,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-joy@npm:^9.2.0":
+  version: 9.5.1
+  resolution: "json-joy@npm:9.5.1"
+  dependencies:
+    arg: ^5.0.2
+    hyperdyperid: ^1.2.0
+  peerDependencies:
+    quill-delta: ^5
+    rxjs: 7
+    tslib: 2
+  bin:
+    json-pack: bin/json-pack.js
+    json-pack-test: bin/json-pack-test.js
+    json-patch: bin/json-patch.js
+    json-patch-test: bin/json-patch-test.js
+    json-pointer: bin/json-pointer.js
+    json-pointer-test: bin/json-pointer-test.js
+    json-unpack: bin/json-unpack.js
+  checksum: 01b8a26a5b168a36a041c9aaf2942fa4ea636f06a7b9e76814b921c1fd5f0a4bcbd96a39cdf45cfd8a939766ffdf5f7e93c9c593af2a3a8e33fe7bd5548e7d7e
+  languageName: node
+  linkType: hard
+
 "json-parse-better-errors@npm:^1.0.1":
   version: 1.0.2
   resolution: "json-parse-better-errors@npm:1.0.2"
@@ -10418,12 +10449,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memfs@npm:^3.5.3":
-  version: 3.5.3
-  resolution: "memfs@npm:3.5.3"
+"memfs@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "memfs@npm:4.2.1"
   dependencies:
-    fs-monkey: ^1.0.4
-  checksum: 18dfdeacad7c8047b976a6ccd58bc98ba76e122ad3ca0e50a21837fe2075fc0d9aafc58ab9cf2576c2b6889da1dd2503083f2364191b695273f40969db2ecc44
+    json-joy: ^9.2.0
+    thingies: ^1.11.1
+  peerDependencies:
+    tslib: 2
+  checksum: a6c055a020245f27a4460ebfabd19a002d8c5c2b2270baeed9f35fc8f12e40578edbade63b7a5834ae54238309bcb3e6b223f43fad818c9b8be400ebd71586c9
   languageName: node
   linkType: hard
 
@@ -13679,6 +13713,15 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: b6937a38c80c7f84d9c11dd75e49d5c44f71d95e810a3250bd1f1797fc7117c57698204adf676b71497acc205d769d65c16ae8fa10afad832ae1322630aef10a
+  languageName: node
+  linkType: hard
+
+"thingies@npm:^1.11.1":
+  version: 1.12.0
+  resolution: "thingies@npm:1.12.0"
+  peerDependencies:
+    tslib: ^2
+  checksum: 04b75d264e1880676fb9f400b2c0e069abdd00de1fa006d9daee527ad6d899828169fd46bb17e7cabf2802b7dbd64053106e29e7a7aa271659f5b41b3a11657f
   languageName: node
   linkType: hard
 

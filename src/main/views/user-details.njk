@@ -22,7 +22,7 @@
 
 {% set eJudiciaryNotification %}
   <p class="govuk-notification-banner__heading">
-    {{ content.notificationBannerMessage }}
+    {{ content.notificationBannerMessage | striptags(true) | escape | nl2br }}
   </p>
 {% endset %}
 
