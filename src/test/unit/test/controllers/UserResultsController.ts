@@ -85,6 +85,7 @@ describe('User results controller', () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
     when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
 
+    req.params = { userUUID: userId };
     req.body.search = email;
     req.scope.cradle.api = mockApi;
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
@@ -95,7 +96,7 @@ describe('User results controller', () => {
         canManage: false,
         providerIdField: 'eJudiciary User ID',
         providerName: 'eJudiciary.net',
-        notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.' + '\n' 
+        notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.' + '\n'
         + 'Archived accounts are read only.',
         lockedMessage: ''
       }
