@@ -4473,12 +4473,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"allure-commandline@npm:^2.23.0":
-  version: 2.23.0
-  resolution: "allure-commandline@npm:2.23.0"
+"allure-commandline@npm:^2.23.1":
+  version: 2.23.1
+  resolution: "allure-commandline@npm:2.23.1"
   bin:
     allure: bin/allure
-  checksum: 8c80af902ce06329c0f55508e33430588008e364d5b6c3647c5316cc796cf5b59a5e69f5890f228a6e70b4f347519b627538839013168403ae1954e51846b207
+  checksum: 84088a4d26e57cec2580d5470e88c4973959d0258ead1d6cf5632703bcede9f68b179f2df493140908103508ba5c19054e38ff959ace0cdcb0ad15f1d80090c4
   languageName: node
   linkType: hard
 
@@ -8488,7 +8488,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^2.34.0
     "@typescript-eslint/eslint-plugin-tslint": ^6.4.0
     "@typescript-eslint/parser": ^2.34.0
-    allure-commandline: ^2.23.0
+    allure-commandline: ^2.23.1
     applicationinsights: ^2.7.0
     autobind-decorator: ^2.4.0
     awilix: ^7.0.3
