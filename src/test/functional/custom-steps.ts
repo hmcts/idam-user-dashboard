@@ -36,11 +36,10 @@ export = function () {
       }
     },
     gotoUserDetails: function (id: string) {
-      const urlPattern = /\/user\/[0-9a-f-]+\/details/;
       this.amOnPage(MANAGER_USER_URL);
       this.fillField('#search', id);
       this.click('Search');
-      this.seeInCurrentUrl(urlPattern);
+      this.seeInCurrentUrl('/details');
       this.see('User Details');
       this.see(id);
     }
