@@ -67,7 +67,7 @@ describe('User remove SSO controller', () => {
     when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL);
+    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
   });
 
   test('Should render the remove sso page with validation errors after confirming', async () => {

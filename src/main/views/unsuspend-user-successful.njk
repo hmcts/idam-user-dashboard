@@ -29,9 +29,8 @@
        <p class="govuk-body-m"><strong>{{ content.user.email }}</strong></p>
      </div>
 
-     <form method="POST" action="{{ urls.USER_DETAILS_URL }}">
+     <form method="POST" action="{{ urls.USER_DETAILS_URL | replace(":userUUID", content.user.id) }}">
        {{ csrfProtection(csrfToken) }}
-       <input type="hidden" name="_userId" value="{{ content.user.id }}">
        {{ govukButton({ text: "Return to user details", classes: "govuk-button" }) }}
      </form>
    </div>

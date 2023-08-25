@@ -39,7 +39,7 @@ export = function () {
       this.amOnPage(MANAGER_USER_URL);
       this.fillField('#search', id);
       this.click('Search');
-      this.seeInCurrentUrl('/user/details');
+      this.seeInCurrentUrl('/details');
       this.see('User Details');
       this.see(id);
     }
