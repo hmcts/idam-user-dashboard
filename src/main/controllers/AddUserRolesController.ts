@@ -11,6 +11,16 @@ import { ServiceProviderService } from '../app/service-provider-service/ServiceP
 import config from 'config';
 import { UserType } from '../utils/UserType';
 
+function isJusticeEmail(email: string): boolean {
+  const emailSuffix = email.split('@')[1];
+  return emailSuffix === 'justice.gov.uk';
+}
+
+function isEjudiciaryEmail(email: string): boolean {
+  const emailSuffix = email.split('@')[1];
+  return emailSuffix === 'ejudiciary.net';
+}
+
 @autobind
 export class AddUserRolesController extends RootController {
   constructor(
@@ -43,28 +53,32 @@ export class AddUserRolesController extends RootController {
 
     const roles = fields.roles;
     const serviceInfo = await this.serviceProviderService.getService(config.get('services.idam.clientID'));
+    const isJusticeOrEjudiciaryUser = isJusticeEmail(fields._email) || isEjudiciaryEmail(fields._email);
 
-    if(fields._usertype === UserType.Support) {
-      await this.inviteService.inviteUser({
-        email: fields._email,
-        forename: fields._forename,
-        surname: fields._surname,
-        activationRoleNames: convertToArray(roles),
-        invitedBy: req.idam_user_dashboard_session.user.id,
-        clientId: serviceInfo.clientId,
-        successRedirect: serviceInfo.hmctsAccess.postActivationRedirectUrl
-      });
-    } else {
-      await this.inviteService.inviteUser({
-        email: fields._email,
-        forename: fields._forename,
-        surname: fields._surname,
-        activationRoleNames: convertToArray(roles),
-        invitedBy: req.idam_user_dashboard_session.user.id,
-        clientId: serviceInfo.clientId
-      });
+    if(!isJusticeOrEjudiciaryUser) {
+
+      if(fields._usertype === UserType.Support) {
+        await this.inviteService.inviteUser({
+          email: fields._email,
+          forename: fields._forename,
+          surname: fields._surname,
+          activationRoleNames: convertToArray(roles),
+          invitedBy: req.idam_user_dashboard_session.user.id,
+          clientId: serviceInfo.clientId,
+          successRedirect: serviceInfo.hmctsAccess.postActivationRedirectUrl
+        });
+      } else {
+        await this.inviteService.inviteUser({
+          email: fields._email,
+          forename: fields._forename,
+          surname: fields._surname,
+          activationRoleNames: convertToArray(roles),
+          invitedBy: req.idam_user_dashboard_session.user.id,
+          clientId: serviceInfo.clientId
+        });
+      }
+
     }
-
 
     return super.post(req, res, 'add-user-completion');
   }
