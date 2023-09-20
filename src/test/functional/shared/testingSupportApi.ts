@@ -231,17 +231,27 @@ export const assignRolesToParentRole = async (parentRoleId: string, assignableRo
 };
 
 export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
+  let retries = 0;
+  let maxRetries = 5;
+  let retryInterval = 1000;
+  let exception = null;
+
   const OIDCToken = await getOIDCToken();
-  try {
-    return (await axios.get(
-      `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
-      {
-        headers: {'Authorization': 'Bearer ' + OIDCToken},
-      }
-    )).data;
-  } catch (e) {
-    throw new Error(`Failed to extract email from Notify for ${searchEmail}, http-status: ${e.response?.status}`);
+  while (retries < maxRetries) {
+    try {
+      return (await axios.get(
+        `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
+        {
+          headers: {'Authorization': 'Bearer ' + OIDCToken},
+        }
+      )).data;
+    } catch (e) {
+      exception = e;
+      retries++;
+      await new Promise(resolve => setTimeout(resolve, retryInterval));
+    }
   }
+  throw new Error(`Max retries reached. Failed to extract email from Notify for ${searchEmail}, http-status: ${exception.response?.status}`);
 };
 
 export const activateUserAccount = async (code: string, token: string) => {
