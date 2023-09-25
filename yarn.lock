@@ -3752,10 +3752,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^17.0.45":
-  version: 17.0.45
-  resolution: "@types/node@npm:17.0.45"
-  checksum: aa04366b9103b7d6cfd6b2ef64182e0eaa7d4462c3f817618486ea0422984c51fc69fd0d436eae6c9e696ddfdbec9ccaa27a917f7c2e8c75c5d57827fe3d95e8
+"@types/node@npm:^18.0.0":
+  version: 18.18.0
+  resolution: "@types/node@npm:18.18.0"
+  checksum: 61bcffa28eb713e7a4c66fd369df603369c3f834a783faeced95fe3e78903faa25f1a704d49e054f41d71b7915eeb066d10a37cc699421fcf5dd267f96ad5808
   languageName: node
   linkType: hard
 
@@ -8478,7 +8478,7 @@ __metadata:
     "@types/json2csv": ^5.0.3
     "@types/lodash": ^4.14.197
     "@types/mini-css-extract-plugin": ^2.5.1
-    "@types/node": ^17.0.45
+    "@types/node": ^18.0.0
     "@types/nunjucks": ^3.2.3
     "@types/require-directory": ^2.1.2
     "@types/serve-favicon": ^2.5.4
