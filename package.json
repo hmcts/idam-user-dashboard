@@ -34,7 +34,7 @@
     "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/properties-volume": "^0.0.14",
     "@types/config": "^0.0.41",
-    "@types/connect-redis": "^0.0.20",
+    "@types/connect-redis": "^0.0.21",
     "@types/cookie-parser": "^1.4.3",
     "@types/csurf": "^1.11.2",
     "@types/es6-promisify": "^6.0.1",
