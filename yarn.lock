@@ -7202,8 +7202,8 @@ __metadata:
   linkType: hard
 
 "express-openid-connect@npm:^2.16.0":
-  version: 2.16.0
-  resolution: "express-openid-connect@npm:2.16.0"
+  version: 2.17.0
+  resolution: "express-openid-connect@npm:2.17.0"
   dependencies:
     base64url: ^3.0.1
     clone: ^2.1.2
@@ -7218,7 +7218,7 @@ __metadata:
     url-join: ^4.0.1
   peerDependencies:
     express: ">= 4.17.0"
-  checksum: 855f6f43a6ab2d46e95a6983ce4fd253462f486f64bb8967340b42096a16f958c251cba6f7314a6d424e65b638b94469479766d39adf53e6f0db4da17e5e9e3c
+  checksum: 058fc17f208b5fce3a3ca9a90fa931973c5b322055dc334c0d15f341f0b2c34f781f40c934181fd32d1f116a6baa575f5324f944f5aaa0ad402bce31411fc87e
   languageName: node
   linkType: hard
 
