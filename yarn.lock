@@ -10062,17 +10062,17 @@ __metadata:
   linkType: hard
 
 "launchdarkly-node-server-sdk@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "launchdarkly-node-server-sdk@npm:7.0.2"
+  version: 7.0.3
+  resolution: "launchdarkly-node-server-sdk@npm:7.0.3"
   dependencies:
     async: ^3.2.4
     launchdarkly-eventsource: 1.4.4
     lru-cache: ^6.0.0
     node-cache: ^5.1.0
-    semver: ^7.3.0
+    semver: ^7.5.4
     tunnel: 0.0.6
     uuid: ^8.3.2
-  checksum: 7abbc4f0cf04f07cef272e0d3a88464ca105cbfb36d21a2897015c25a663e1cbf56ac4a69453ade34d00dca142241e07032488b19e3d976e80fe4b91a5ee2416
+  checksum: d21b91ea8880d2845fc16f80f3df39780e471471fc5cbe791ae0251a3dc1da03e0b4cf2a706241db972c98e75e968971b0b1a7cfb9882c82cef10dccb8ddf400
   languageName: node
   linkType: hard
 
@@ -12827,7 +12827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.x, semver@npm:^7.3.0, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8":
+"semver@npm:7.x, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8":
   version: 7.5.1
   resolution: "semver@npm:7.5.1"
   dependencies:
