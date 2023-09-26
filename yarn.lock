@@ -3451,10 +3451,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^0.0.41":
-  version: 0.0.41
-  resolution: "@types/config@npm:0.0.41"
-  checksum: 528eb5e5d60c48cf82a2b0988ee1e5e088472698ad25944131b0ba87b2e3bb0989f3b4d45edb9d49eefcc8bf158c267905c386aaec15857b9fb24be449c3f27c
+"@types/config@npm:^3.0.0":
+  version: 3.3.1
+  resolution: "@types/config@npm:3.3.1"
+  checksum: dc6604a6bb90179ea7fbe5a3de23301999dd5b115f9999f9e48db412b7c86224919bd9af8915e7ed8734bd5f729fcbcc0eb5adf37fe2422bccd98deae1063530
   languageName: node
   linkType: hard
 
@@ -8463,7 +8463,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": ^1.8.0
     "@hmcts/nodejs-logging": ^4.0.4
     "@hmcts/properties-volume": ^0.0.14
-    "@types/config": ^0.0.41
+    "@types/config": ^3.0.0
     "@types/connect-redis": ^0.0.20
     "@types/cookie-parser": ^1.4.3
     "@types/copy-webpack-plugin": ^10.1.0
