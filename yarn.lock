@@ -2975,13 +2975,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/glob@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@types/glob@npm:7.2.0"
+"@types/glob@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "@types/glob@npm:8.1.0"
   dependencies:
-    "@types/minimatch": "*"
+    "@types/minimatch": ^5.1.2
     "@types/node": "*"
-  checksum: 6ae717fedfdfdad25f3d5a568323926c64f52ef35897bcac8aca8e19bc50c0bd84630bbd063e5d52078b2137d8e7d3c26eabebd1a2f03ff350fff8a91e79fc19
+  checksum: 9101f3a9061e40137190f70626aa0e202369b5ec4012c3fabe6f5d229cce04772db9a94fa5a0eb39655e2e4ad105c38afbb4af56a56c0996a8c7d4fc72350e3d
   languageName: node
   linkType: hard
 
@@ -3126,7 +3126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/minimatch@npm:*":
+"@types/minimatch@npm:^5.1.2":
   version: 5.1.2
   resolution: "@types/minimatch@npm:5.1.2"
   checksum: 0391a282860c7cb6fe262c12b99564732401bdaa5e395bee9ca323c312c1a0f45efbf34dce974682036e857db59a5c9b1da522f3d6055aeead7097264c8705a8
@@ -7807,7 +7807,7 @@ __metadata:
     "@types/es6-promisify": ^6.0.1
     "@types/express": ^4.17.17
     "@types/express-session": ^1.17.7
-    "@types/glob": ^7.2.0
+    "@types/glob": ^8.0.0
     "@types/helmet": ^4.0.0
     "@types/jest": ^27.5.2
     "@types/jest-when": ^3.5.2
