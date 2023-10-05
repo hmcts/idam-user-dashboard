@@ -63,7 +63,7 @@
     "express-nunjucks": "^3.0.0",
     "express-openid-connect": "^2.16.0",
     "express-session": "^1.17.3",
-    "glob": "^8.1.0",
+    "glob": "^10.0.0",
     "govuk-frontend": "^4.7.0",
     "helmet": "^5.1.1",
     "jest-when": "^3.5.2",
