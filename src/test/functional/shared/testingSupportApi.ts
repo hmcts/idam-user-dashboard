@@ -18,6 +18,22 @@ const getAuthToken = async () => {
   }
 };
 
+export const getTestingServiceClientToken = async () => {
+  const credentials = {
+    'grant_type': 'client_credentials',
+    'client_secret': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET as string,
+    'client_id': 'idam-functional-test-service',
+    'scope': 'profile'
+  };
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/o/token`,
+      new URLSearchParams(credentials)
+    )).data.access_token;
+  } catch (e) {
+    throw new Error(`Failed to get admin auth-token with ${credentials.client_id}:${credentials.client_secret}, http-status: ${e.response?.status}`);
+  }
+};
 export const getOIDCToken = async () => {
   const credentials = {
     'grant_type': 'password',
@@ -216,6 +232,27 @@ export const createAssignableRoles = async (roleName: string) => {
   }
 };
 
+export const createRoles = async (roleName: string,assignableRoleNames: string[] ) => {
+  try {
+    const accessToken = await getTestingServiceClientToken();
+    const role = {
+      name: roleName,
+      id: roleName,
+      description: 'assignable role',
+      assignableRoleNames: assignableRoleNames,
+    };
+    return (await axios.post(
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/roles`,
+      role,
+      {
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken},
+      })).data;
+  } catch (e) {
+    throw new Error(`Failed to create assignable role ${roleName}, http-status: ${e.response?.status}`);
+  }
+};
+
+
 export const assignRolesToParentRole = async (parentRoleId: string, assignableRoleIds: string[]) => {
   try {
     const authToken = await getAuthToken();
@@ -279,6 +316,27 @@ export const createService = async (label: string, description: string, clientId
       `${config.get('services.idam.url.api')}/services`,
       JSON.stringify(data),
       {headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken}}
+    ));
+  } catch (e) {
+    throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
+  }
+};
+export const createServices = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[] = []) => {
+  const data = {
+    label: label,
+    description: description,
+    oauth2ClientId: clientId,
+    oauth2ClientSecret: clientSecret,
+    oauth2RedirectUris: redirectUris,
+    onboardingRoles: onboardingRoles
+  };
+
+  try {
+    const bearerToken = await getTestingServiceClientToken();
+    return (await axios.post(
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/services`,
+      JSON.stringify(data),
+      {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + bearerToken}}
     ));
   } catch (e) {
     throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);

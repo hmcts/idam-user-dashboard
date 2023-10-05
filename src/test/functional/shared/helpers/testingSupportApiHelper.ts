@@ -19,6 +19,9 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   activateUserAccount = TestingSupportAPI.activateUserAccount
   createService = TestingSupportAPI.createService
   getOIDCToken = TestingSupportAPI.getOIDCToken
+  getTestingServiceClientToken = TestingSupportAPI.getTestingServiceClientToken
+  createRoles = TestingSupportAPI.createRoles
+  createServices = TestingSupportAPI.createServices
 }
 
 export = TestingSupportApi;
