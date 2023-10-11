@@ -23,7 +23,7 @@ Scenario('I should be see a warning when viewing a user who is locked', async ({
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
-});
+}).tag('@chand');
 
 Scenario('I should not see a warning when viewing a user who is not locked', async ({I}) => {
   const userEmail = randomData.getRandomEmailAddress();
@@ -63,4 +63,4 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.dontSee('This account has been temporarily locked due to multiple failed login attempts.');
-});
+}).tag('@chand');

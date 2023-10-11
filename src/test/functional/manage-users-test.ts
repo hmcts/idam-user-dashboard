@@ -1,7 +1,6 @@
 import {
-  assignRolesToParentRole,
-  createAssignableRoles,
-  createUserWithRoles
+  createUserWithRoles,
+  createRoleFromTestingSupport
 } from './shared/testingSupportApi';
 import '../../main/utils/utils';
 import {config as testConfig} from '../config';
@@ -15,10 +14,9 @@ const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 
 BeforeSuite(async () => {
-  await createAssignableRoles(PARENT_ROLE);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
+  await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE,[]);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
+  await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
 });
 

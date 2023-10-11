@@ -5,9 +5,7 @@ import {randomData} from '../functional/shared/random-data';
 import * as urls from '../../main/utils/urls';
 import {config as testConfig} from '../config';
 import {
-  assignRolesToParentRole,
-  createAssignableRoles,
-  createUserWithRoles, deleteAllTestData
+  createUserWithRoles, createRoleFromTestingSupport,deleteAllTestData
 } from '../functional/shared/testingSupportApi';
 import {
   ADD_USER_DETAILS_URL,
@@ -110,10 +108,9 @@ describe('Accessibility', () => {
     if (browser) {
       await browser.close();
     }
-    await createAssignableRoles(PARENT_ROLE);
-    await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
-    await createAssignableRoles(INDEPENDENT_CHILD_ROLE);
-    await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
+    await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE,[]);
+    await createRoleFromTestingSupport(INDEPENDENT_CHILD_ROLE,[]);
+    await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
     await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
     const childUser = await createUserWithRoles(CHILD_ROLE_EMAIL, testConfig.PASSWORD, USER_FIRSTNAME, [ASSIGNABLE_CHILD_ROLE, INDEPENDENT_CHILD_ROLE]);
     CHILD_USER_ID = childUser.id;

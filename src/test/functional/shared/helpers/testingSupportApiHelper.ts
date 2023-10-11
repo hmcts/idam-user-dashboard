@@ -1,4 +1,5 @@
 import * as TestingSupportAPI from '../testingSupportApi';
+import {loginAsUser, loginUser} from '../testingSupportApi';
 
 const Helper = require('@codeceptjs/helper');
 type TestingSupportAPI = typeof TestingSupportAPI;
@@ -22,6 +23,11 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   getTestingServiceClientToken = TestingSupportAPI.getTestingServiceClientToken
   createRoles = TestingSupportAPI.createRoles
   createServices = TestingSupportAPI.createServices
+  loginUser = TestingSupportAPI.loginUser
+  loginAsUser = TestingSupportAPI.loginAsUser
+  createRoleFromTestingSupport = TestingSupportAPI.createRoleFromTestingSupport
+  createServiceFromTestingSupport = TestingSupportAPI.createServiceFromTestingSupport
+
 }
 
 export = TestingSupportApi;

@@ -1,7 +1,4 @@
-import {
-  assignRolesToParentRole,
-  createAssignableRoles,
-  createUserWithRoles
+import {createRoleFromTestingSupport, createUserWithRoles
 } from './shared/testingSupportApi';
 import {config as testConfig} from '../config';
 import * as Assert from 'assert';
@@ -22,14 +19,12 @@ const MFA_DISABLED_TEXT = 'DISABLED';
 const MFA_SECURITY_WARNING = 'Only disable MFA for a user if they have a \'justice.gov.uk\' or \'hmcts.net\' email address. Contact the information security team if you want to make an exception.';
 
 BeforeSuite(async () => {
-  await createAssignableRoles(PARENT_ROLE);
-  await createAssignableRoles(PARENT_ROLE_WITH_MFA_ASSIGNABLE);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE1);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE2);
-  await createAssignableRoles(INDEPENDANT_CHILD_ROLE);
+  await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE1,[]);
+  await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE2,[]);
+  await createRoleFromTestingSupport(INDEPENDANT_CHILD_ROLE,[]);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, PARENT_ROLE, ASSIGNABLE_CHILD_ROLE2]);
-  await assignRolesToParentRole(PARENT_ROLE_WITH_MFA_ASSIGNABLE, [ASSIGNABLE_CHILD_ROLE1, PARENT_ROLE_WITH_MFA_ASSIGNABLE, testConfig.USER_ROLE_IDAM_MFA_DISABLED]);
+  await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, PARENT_ROLE, ASSIGNABLE_CHILD_ROLE2]);
+  await createRoleFromTestingSupport(PARENT_ROLE_WITH_MFA_ASSIGNABLE, [ASSIGNABLE_CHILD_ROLE1, PARENT_ROLE_WITH_MFA_ASSIGNABLE, testConfig.USER_ROLE_IDAM_MFA_DISABLED]);
   await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
 });
 
