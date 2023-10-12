@@ -21,7 +21,14 @@ export = function () {
     lockAccountOf: function (username) {
       const LOGIN_ATTEMPT_LIMIT = 5;
       for (let i = 0; i < LOGIN_ATTEMPT_LIMIT; i++) {
-        const response =  loginAsUser(username);
+        loginUser(username,'InvalidPassword%')
+          .then((response) => {
+            // Access the response data and print it
+            console.log('Response Data:', response.data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
         console.error(response);
       }
     },

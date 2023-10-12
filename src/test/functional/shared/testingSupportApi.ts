@@ -343,8 +343,9 @@ export const createServices = async (label: string, description: string, clientI
   }
 
 };
-export const loginUser = async (email: string, password: string) => {
 
+
+export const loginUser = async (email: string, password: string) => {
   const credentials = {
     username: email,
     password: password
@@ -355,10 +356,10 @@ export const loginUser = async (email: string, password: string) => {
       new URLSearchParams(credentials)
     )).data.api_auth_token;
   } catch (e) {
-    throw new Error(`Failed to get admin auth-token with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+    throw new Error(`Failed  login user using  ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+
   }
 };
-
 export const createRoleFromTestingSupport = async (roleName: string,assignableRoleNames: string[] ) => {
 
   const accessToken = await getTestingServiceClientToken();
@@ -407,6 +408,7 @@ export const createServiceFromTestingSupport = async (label: string, description
     console.error(bearerToken);
     return (await axios.post(
       `${config.get('services.idam.url.testingSupportApi')}/test/idam/services`,
+      data,
       {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + bearerToken}}
     ));
   } catch (e) {
