@@ -289,6 +289,29 @@ describe('IdamAPI', () => {
     });
   });
 
+  describe('deleteStaleUserById', () => {
+    test('Should delete stale user using valid user ID', async () => {
+      const mockAxios = {delete: jest.fn().mockReturnValue(Promise.resolve())} as any;
+      const mockLogger = {} as any;
+      const mockTelemetryClient = {} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      await expect(api.deleteStaleUserById(testUserId)).resolves.not.toThrow();
+      expect(mockAxios.delete).toBeCalledWith('/api/v1/staleUsers/12345');
+    });
+
+    test('Should not return stale user details when using invalid ID', async () => {
+      const mockAxios = {delete: jest.fn().mockReturnValue(Promise.reject('Delete failed'))} as any;
+      const mockLogger = {error: jest.fn()} as any;
+      const mockTelemetryClient = {trackTrace: jest.fn()} as any;
+      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+
+      await expect(api.deleteStaleUserById('-1')).rejects.toThrowError('Error deleting stale user by ID from IDAM API');
+      expect(mockAxios.delete).toBeCalledWith('/api/v1/staleUsers/-1');
+      expect(mockLogger.error).toBeCalledWith('Delete failed');
+    });
+  });
+
   describe('deleteUserById', () => {
     test('Should delete user using valid user ID', async () => {
       const mockAxios = {delete: jest.fn().mockReturnValue(Promise.resolve())} as any;
