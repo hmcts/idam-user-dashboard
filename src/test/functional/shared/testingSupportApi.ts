@@ -338,7 +338,6 @@ export const createServiceFromTestingSupport = async (label: string, description
     }
   };
   console.error(JSON.stringify(data));
-
   try {
     const bearerToken = await getTestingServiceClientToken();
     return (await axios.post(

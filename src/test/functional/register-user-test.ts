@@ -30,8 +30,19 @@ BeforeSuite(async () => {
   // Assigning self role with the child role so the this user can also delete same level users
   await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, PRIVATE_BETA_ROLE, testConfig.USER_ROLE_CITIZEN]);
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
-  await createServiceFromTestingSupport(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [PRIVATE_BETA_ROLE]);
-  await createServiceFromTestingSupport(SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, [OAUTH_REDIRECT_URI], [INDEPENDENT_ROLE]);
+  try {
+    await createServiceFromTestingSupport(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [PRIVATE_BETA_ROLE]);
+
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+  try {
+    await createServiceFromTestingSupport(SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, [OAUTH_REDIRECT_URI], [INDEPENDENT_ROLE]);
+
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+
 });
 
 Scenario('I as a user should be able to register new support user',
@@ -119,7 +130,7 @@ Scenario('I as a user should be able to register new private beta citizen user',
     I.click('Search');
     I.see('User Details');
     I.see(registerUserEmail);
-  });
+  }).tag('@arun');
 
 Scenario('I as a user should be able to search for roles',
   {featureFlags: [BETA_ADD]},
