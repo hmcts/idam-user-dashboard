@@ -14,7 +14,6 @@ const ASSIGNABLE_CHILD_ROLE = randomData.getRandomRole();
 let dashboardUser: User;
 
 BeforeSuite(async () => {
-  await createRoleFromTestingSupport(PARENT_ROLE,[]);
   await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE,[]);
   // Assigning self role with the child role so the this user can also delete same level users
   await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
