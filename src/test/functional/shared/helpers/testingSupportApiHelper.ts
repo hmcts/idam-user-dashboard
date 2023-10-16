@@ -1,5 +1,5 @@
 import * as TestingSupportAPI from '../testingSupportApi';
-import {createRoleFromTestingSupport} from "../testingSupportApi";
+import {createRoleFromTestingSupport} from '../testingSupportApi';
 
 const Helper = require('@codeceptjs/helper');
 type TestingSupportAPI = typeof TestingSupportAPI;
