@@ -36,14 +36,25 @@ export class UserDeleteController extends RootController{
   }
 
   private deleteUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.deleteUserById(req.body._userId)
-      .then(() => {
-        return super.post(req, res, 'delete-user-successful', { content: { user } } );
-      })
-      .catch(() => {
-        const error = { userDeleteForm: { message: USER_DELETE_FAILED_ERROR } };
-        return super.post(req, res, 'delete-user', { content: { user }, error } );
-      });
+    if (user.stale) {
+      return req.scope.cradle.api.deleteStaleUserById(req.body._userId)
+        .then(() => {
+          return super.post(req, res, 'delete-user-successful', { content: { user } } );
+        })
+        .catch(() => {
+          const error = { userDeleteForm: { message: USER_DELETE_FAILED_ERROR } };
+          return super.post(req, res, 'delete-user', { content: { user }, error } );
+        });
+    } else {
+      return req.scope.cradle.api.deleteUserById(req.body._userId)
+        .then(() => {
+          return super.post(req, res, 'delete-user-successful', {content: {user}});
+        })
+        .catch(() => {
+          const error = {userDeleteForm: {message: USER_DELETE_FAILED_ERROR}};
+          return super.post(req, res, 'delete-user', {content: {user}, error});
+        });
+    }
   }
 
   private validateFields(fields: any): PageError {
