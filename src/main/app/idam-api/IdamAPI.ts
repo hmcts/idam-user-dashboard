@@ -15,6 +15,7 @@ export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
     private readonly systemAxios: AxiosInstance,
+    private readonly idamApiAxios: AxiosInstance,
     private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
@@ -63,20 +64,9 @@ export class IdamAPI {
       });
   }
 
-  public deleteStaleUserById(id: string) {
-    return this.systemAxios
-      .delete('/api/v1/staleUsers/' + id)
-      .catch(error => {
-        const errorMessage = 'Error deleting stale user by ID from IDAM API';
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
-        throw new Error(errorMessage);
-      });
-  }
-
   public deleteUserById(id: string) {
-    return this.userAxios
-      .delete('/api/v1/users/' + id)
+    return this.idamApiAxios
+      .delete('/api/v2/users/' + id)
       .catch(error => {
         const errorMessage = 'Error deleting user by ID from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
