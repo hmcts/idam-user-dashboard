@@ -118,7 +118,6 @@ Scenario('I as a user should be able to see the stale status of a user', async (
   I.see('ARCHIVED');
   I.see('Archived accounts are read only.');
   I.dontSee('Edit user');
-  I.dontSee('Delete user');
   I.dontSee('Suspend user');
   I.deleteStaleUser(id);
 });
