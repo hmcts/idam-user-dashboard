@@ -1,6 +1,5 @@
 import {
-  assignRolesToParentRole,
-  createAssignableRoles,
+  createRoleFromTestingSupport,
   createService,
   createUserWithRoles
 } from './shared/testingSupportApi';
@@ -24,13 +23,12 @@ const SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE = randomData.getRandomRole();
 const OAUTH_REDIRECT_URI = 'http://test.com/oauth2/callback';
 
 BeforeSuite(async () => {
-  await createAssignableRoles(PARENT_ROLE);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE1);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE2);
-  await createAssignableRoles(PRIVATE_BETA_ROLE);
-  await createAssignableRoles(INDEPENDENT_ROLE);
+  await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE1,[]);
+  await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE2,[]);
+  await createRoleFromTestingSupport(PRIVATE_BETA_ROLE,[]);
+  await createRoleFromTestingSupport(INDEPENDENT_ROLE,[]);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, PRIVATE_BETA_ROLE, testConfig.USER_ROLE_CITIZEN]);
+  await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE1, ASSIGNABLE_CHILD_ROLE2, PARENT_ROLE, PRIVATE_BETA_ROLE, testConfig.USER_ROLE_CITIZEN]);
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
   await createService(SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, SERVICE_WITH_PRIVATE_BETA, [OAUTH_REDIRECT_URI], [PRIVATE_BETA_ROLE]);
   await createService(SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, SERVICE_WITH_UNASSIGNED_PRIVATE_BETA_ROLE, [OAUTH_REDIRECT_URI], [INDEPENDENT_ROLE]);

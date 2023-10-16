@@ -1,5 +1,5 @@
 import {
-  createUserWithRoles, createAssignableRoles, assignRolesToParentRole, createRoleFromTestingSupport,
+  createUserWithRoles, createRoleFromTestingSupport,
 } from './shared/testingSupportApi';
 import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
