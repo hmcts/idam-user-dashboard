@@ -1,8 +1,7 @@
 import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
 import {
-  assignRolesToParentRole,
-  createAssignableRoles, createRoleFromTestingSupport,
+  createRoleFromTestingSupport,
   createUserWithRoles
 } from './shared/testingSupportApi';
 import { User } from '../../main/interfaces/User';

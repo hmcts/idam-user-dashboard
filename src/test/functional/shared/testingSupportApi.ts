@@ -323,3 +323,32 @@ export const createRoleFromTestingSupport = async (roleName: string,assignableRo
     throw new Error(`Failed to create role from testingSupport   ${roleName}, http-status: ${e.response?.status}`);
   }
 };
+
+
+export const createServiceFromTestingSupport = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[]) => {
+  const data = {
+    clientId: clientId,
+    clientSecret: clientSecret,
+    serviceLabel: label,
+    description: description,
+    onboardingRoleNames: onboardingRoles,
+    oauth2: {
+      redirectUris: redirectUris,
+      scopes: ['openid', 'profile', 'roles']
+    }
+  };
+  console.error(JSON.stringify(data));
+
+  try {
+    const bearerToken = await getTestingServiceClientToken();
+    return (await axios.post(
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/services`,
+      data,
+      {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + bearerToken}}
+    ));
+  } catch (e) {
+    console.error(e.response);
+
+    throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
+  }
+};
