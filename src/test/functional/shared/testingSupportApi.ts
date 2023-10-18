@@ -351,3 +351,23 @@ export const createServiceFromTestingSupport = async (label: string, description
     throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
   }
 };
+
+
+export const loginUsingPasswordGrant = async (userEmail: string) => {
+  const credentials = {
+    'grant_type': 'password',
+    username: userEmail,
+    password: 'invalidPassw0rd',
+    'client_secret': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET as string,
+    'client_id': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_ID as string,
+    scope: config.get('services.idam.scope') as string
+  };
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/o/token`,
+      new URLSearchParams(credentials)
+    )).data.access_token;
+  } catch (e) {
+    throw new Error(`Failed to login using password grant ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+  }
+};

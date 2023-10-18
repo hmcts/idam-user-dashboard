@@ -22,6 +22,7 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   getTestingServiceClientToken = TestingSupportAPI.getTestingServiceClientToken
   createRoleFromTestingSupport = TestingSupportAPI.createRoleFromTestingSupport
   createServiceFromTestingSupport = TestingSupportAPI.createServiceFromTestingSupport;
+  loginUsingPasswordGrant= TestingSupportAPI.loginUsingPasswordGrant;
 
 }
 
