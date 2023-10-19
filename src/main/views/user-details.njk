@@ -164,6 +164,16 @@
     ]
   }) }}
 
+  <a id="openInNewTab" href="#" target="_blank" class="govuk-link" rel="noopener noreferrer">Open this in a new tab</a>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const currentURL = window.location.href;
+      const openInNewTabLink = document.getElementById('openInNewTab');
+      openInNewTabLink.href = currentURL;
+    });
+  </script>
+
   <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
     {{ csrfProtection(csrfToken) }}
     <input type="hidden" name="_userId" value="{{ content.user.id }}">
