@@ -1,5 +1,6 @@
 import { LOGIN_URL, MANAGER_USER_URL } from '../../main/utils/urls';
 import { config as testConfig } from '../config';
+import error = CodeceptJS.output.error;
 import {loginUsingPasswordGrant} from './shared/testingSupportApi';
 
 export = function () {
@@ -16,13 +17,21 @@ export = function () {
       this.click('Sign out');
       this.see('Sign in');
     },
-    lockAccountOf: function (username) {
-      const LOGIN_ATTEMPT_LIMIT = 5;
+    lockAccountOf: async function (username) {
+      const LOGIN_ATTEMPT_LIMIT = 8;
 
-
+      console.error('****************');
       for (let i = 0; i < LOGIN_ATTEMPT_LIMIT; i++) {
-        loginUsingPasswordGrant(username);
+        console.error('****************'+username);
+
+        loginUsingPasswordGrant(username).then((data) => {
+          console.error('****************'+'success'+data.response);
+        }).catch((error) => {
+          console.error(error.response.data.error_description);
+
+        });
         this.wait(1);
+
       }
     },
     gotoUserDetails: function (id: string) {
