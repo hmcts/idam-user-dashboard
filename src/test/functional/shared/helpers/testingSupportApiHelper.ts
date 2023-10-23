@@ -1,5 +1,5 @@
 import * as TestingSupportAPI from '../testingSupportApi';
-import {loginUsingPasswordGrant} from "../testingSupportApi";
+import {loginUsingPasswordGrant} from '../testingSupportApi';
 
 const Helper = require('@codeceptjs/helper');
 type TestingSupportAPI = typeof TestingSupportAPI;
