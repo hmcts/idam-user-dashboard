@@ -1,5 +1,4 @@
 import * as TestingSupportAPI from '../testingSupportApi';
-import {loginUsingPasswordGrant} from '../testingSupportApi';
 
 const Helper = require('@codeceptjs/helper');
 type TestingSupportAPI = typeof TestingSupportAPI;
@@ -18,14 +17,10 @@ class TestingSupportApi extends Helper implements TestingSupportAPI {
   assignRolesToParentRole = TestingSupportAPI.assignRolesToParentRole
   extractUrlFromNotifyEmail = TestingSupportAPI.extractUrlFromNotifyEmail
   activateUserAccount = TestingSupportAPI.activateUserAccount
-  createService = TestingSupportAPI.createService
   getOIDCToken = TestingSupportAPI.getOIDCToken
   getTestingServiceClientToken = TestingSupportAPI.getTestingServiceClientToken
   createRoleFromTestingSupport = TestingSupportAPI.createRoleFromTestingSupport
   createServiceFromTestingSupport = TestingSupportAPI.createServiceFromTestingSupport;
-  loginAs = TestingSupportAPI.loginAs
-  login = TestingSupportAPI.login
-  loginUsingPasswordGrant = TestingSupportAPI.loginUsingPasswordGrant;
 }
 
 export = TestingSupportApi;

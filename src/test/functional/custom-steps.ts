@@ -1,7 +1,5 @@
 import { LOGIN_URL, MANAGER_USER_URL } from '../../main/utils/urls';
 import { config as testConfig } from '../config';
-import error = CodeceptJS.output.error;
-import {loginUsingPasswordGrant} from './shared/testingSupportApi';
 
 export = function () {
   return actor({
@@ -17,21 +15,24 @@ export = function () {
       this.click('Sign out');
       this.see('Sign in');
     },
-    lockAccountOf: async function (username) {
-      const LOGIN_ATTEMPT_LIMIT = 8;
+    lockAccountOf: function (username) {
+      const LOGIN_ATTEMPT_LIMIT = 5;
+      this.amOnPage(LOGIN_URL);
+      this.see('Sign in');
+      this.fillField('#username', username);
+      this.fillField('#password', 'SOME_WRONG_PASSWORD');
 
-      console.error('****************');
       for (let i = 0; i < LOGIN_ATTEMPT_LIMIT; i++) {
-        console.error('****************'+username);
-
-        loginUsingPasswordGrant(username).then((data) => {
-          console.error('****************'+'success'+data.response);
-        }).catch((error) => {
-          console.error(error.response.data.error_description);
-
-        });
+        this.click('Sign in');
         this.wait(1);
 
+        if (i === LOGIN_ATTEMPT_LIMIT - 1) {
+          this.see('There is a problem with your account login details');
+          this.see('Your account is locked due to too many unsuccessful attempts.');
+          this.see('You can reset your password to unlock your account.');
+        } else {
+          this.see('Incorrect email or password');
+        }
       }
     },
     gotoUserDetails: function (id: string) {

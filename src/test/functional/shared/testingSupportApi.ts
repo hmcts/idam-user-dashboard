@@ -263,28 +263,6 @@ export const activateUserAccount = async (code: string, token: string) => {
   }
 };
 
-export const createService = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[] = []) => {
-  const data = {
-    label: label,
-    description: description,
-    oauth2ClientId: clientId,
-    oauth2ClientSecret: clientSecret,
-    oauth2RedirectUris: redirectUris,
-    onboardingRoles: onboardingRoles
-  };
-
-  try {
-    const authToken = await getAuthToken();
-    return (await axios.post(
-      `${config.get('services.idam.url.api')}/services`,
-      JSON.stringify(data),
-      {headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken}}
-    ));
-  } catch (e) {
-    throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
-  }
-};
-
 export const getTestingServiceClientToken = async () => {
   const credentials = {
     'grant_type': 'client_credentials',
@@ -358,63 +336,3 @@ export const createServiceFromTestingSupport = async (label: string, description
   }
 };
 
-export const loginAs = async (userEmail: string, password: string) => {
-  const credentials = {
-    username: userEmail,
-    password: password
-  };
-  try {
-    return (await axios.post(
-      `${config.get('services.idam.url.api')}/loginUser`,
-      new URLSearchParams(credentials)
-    )).data.api_auth_token;
-  } catch (e) {
-    throw new Error(`Failed to loginAs with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
-  }
-};
-
-export const login = async (userEmail: string, password: string) => {
-  const headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  };
-
-  const data = new URLSearchParams();
-  data.append('grant_type', 'password');
-  data.append('username', userEmail);
-  data.append('password', password);
-  data.append('client_id', 'idam-functional-test-service');
-  data.append('client_secret', 'cie8moot8soo0dae8iesixielohgh8Jo');
-  data.append('scope', 'profile');
-
-  try {
-    const response = await axios.post(
-      `${config.get('services.idam.url.api')}/o/token`,
-      data, { headers });
-    return response.data;
-  } catch (error) {
-    const errorDescription = error.response.data.error_description;
-    console.error(errorDescription);
-    throw error; // You can re-throw the error or handle it as needed.
-  }
-};
-
-export const loginUsingPasswordGrant = async (userEmail: string) => {
-  const credentials = {
-    'grant_type': 'password',
-    username: userEmail,
-    password: testConfig.SMOKE_TEST_USER_PASSWORD as string,
-    'client_secret': config.get('services.idam.clientSecret') as string,
-    'client_id': config.get('services.idam.clientID') as string,
-    scope: config.get('services.idam.scope') as string
-  };
-  console.error(JSON.stringify(credentials));
-  try {
-    return (await axios.post(
-      `${config.get('services.idam.url.api')}/o/token`,
-      new URLSearchParams(credentials)
-    )).data.access_token;
-  } catch (e) {
-    console.error(e.response.data.error_description);
-    throw new Error(`Failed to get loginUsingPasswordGrant with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
-  }
-};
