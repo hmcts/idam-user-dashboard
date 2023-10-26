@@ -17,7 +17,7 @@ export const config = {
   RBAC: {
     access: 'idam-user-dashboard--access'
   },
-  TestHeadlessBrowser: false,
+  TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 60008,
   helpers: {},
   plugins: {
