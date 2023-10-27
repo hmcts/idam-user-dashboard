@@ -229,7 +229,7 @@ export const activateUserAccount = async (code: string, token: string) => {
   }
 };
 //used to cache the testing service client token
-let testingServiceClientToken = null;
+let testingServiceClientToken: string | null = null;
 export const getTestingServiceClientToken = async () => {
   if (testingServiceClientToken) {
     return testingServiceClientToken;
