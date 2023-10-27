@@ -336,3 +336,22 @@ export const createServiceFromTestingSupport = async (label: string, description
   }
 };
 
+export const loginUsingPasswordGrant = async (username: string, pass: string) => {
+  const credentials = {
+    'grant_type': 'password',
+    username: username,
+    password: pass,
+    'client_secret': config.get('services.idam.clientSecret') as string,
+    'client_id': config.get('services.idam.clientID') as string,
+    scope: config.get('services.idam.scope') as string
+  };
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/o/token`,
+      new URLSearchParams(credentials)
+    )).data.access_token;
+  } catch (e) {
+    //throw new Error(`Failed to get OIDCToken with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+  }
+};
+

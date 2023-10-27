@@ -18,12 +18,15 @@ Scenario('I should be see a warning when viewing a user who is locked', async ({
     testConfig.USER_FIRSTNAME,
     [testConfig.USER_ROLE_CITIZEN]
   );
-  I.lockAccountOf(userEmail);
+  for (let i = 0; i < 5; i++) {
+    await I.loginUsingPasswordGrant(userEmail, 'Invalid');
+    I.wait(1);
+  }
   I.loginAs(DASHBOARD_USER_EMAIL);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
-}).tag(' @orange');
+});
 
 Scenario('I should not see a warning when viewing a user who is not locked', async ({I}) => {
   const userEmail = randomData.getRandomEmailAddress();
@@ -35,8 +38,10 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
     testConfig.USER_FIRSTNAME,
     [testConfig.USER_ROLE_CITIZEN]
   );
-  I.lockAccountOf(userEmail);
-
+  for (let i = 0; i < 5; i++) {
+    await I.loginUsingPasswordGrant(userEmail, 'Invalid');
+    I.wait(1);
+  }
   I.loginAs(userEmail);
   I.see('You can reset your password to unlock your account.');
   I.click('reset your password');
