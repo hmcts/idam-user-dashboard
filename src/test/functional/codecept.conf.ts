@@ -11,7 +11,7 @@ export const config: CodeceptJS.Config = {
     I: './custom-steps.ts',
   },
   async teardownAll() {
-    //await deleteAllTestData(testConfig.TEST_SUITE_PREFIX);
+    await deleteAllTestData(testConfig.TEST_SUITE_PREFIX);
   },
   mocha: {},
   plugins: testConfig.plugins,

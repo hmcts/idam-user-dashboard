@@ -276,7 +276,7 @@ export const getTestingServiceClientToken = async () => {
       new URLSearchParams(credentials)
     )).data.access_token;
   } catch (e) {
-    throw new Error(`Failed to get admin auth-token with ${credentials.client_id}:${credentials.client_secret}, http-status: ${e.response?.status}`);
+    throw new Error(`Failed to getTestingServiceClientToken with ${credentials.client_id}:${credentials.client_secret}, http-status: ${e.response?.status}`);
   }
 };
 
@@ -298,10 +298,9 @@ export const createRoleFromTestingSupport = async (roleName: string,assignableRo
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken},
       })).data;
   } catch (e) {
-    throw new Error(`Failed to create role from testingSupport   ${roleName}, http-status: ${e.response?.status}`);
+    throw new Error(`Failed to createRoleFromTestingSupport endpoint  ${roleName}, http-status: ${e.response?.status}`);
   }
 };
-
 
 export const createServiceFromTestingSupport = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[]) => {
   const data = {
@@ -321,7 +320,6 @@ export const createServiceFromTestingSupport = async (label: string, description
 
     }
   };
-  console.error(JSON.stringify(data));
   try {
     const bearerToken = await getTestingServiceClientToken();
     return (await axios.post(
@@ -330,8 +328,6 @@ export const createServiceFromTestingSupport = async (label: string, description
       {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + bearerToken}}
     ));
   } catch (e) {
-    console.error(e.response);
-
     throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
   }
 };
@@ -351,7 +347,7 @@ export const loginUsingPasswordGrant = async (username: string, pass: string) =>
       new URLSearchParams(credentials)
     )).data.access_token;
   } catch (e) {
-    //throw new Error(`Failed to get OIDCToken with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+    console.error(e.response);
   }
 };
 
