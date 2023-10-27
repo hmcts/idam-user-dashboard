@@ -228,19 +228,28 @@ export const activateUserAccount = async (code: string, token: string) => {
     throw new Error(`Failed to activate user, http-status: ${e.response?.status}`);
   }
 };
-
+//used to cache the testing service client token
+let testingServiceClientToken = null;
 export const getTestingServiceClientToken = async () => {
+  if (testingServiceClientToken) {
+    return testingServiceClientToken;
+  }
+
   const credentials = {
     'grant_type': 'client_credentials',
     'client_secret': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET as string,
     'client_id': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_ID as string,
     'scope': 'profile'
   };
+
   try {
-    return (await axios.post(
+    const response = await axios.post(
       `${config.get('services.idam.url.api')}/o/token`,
       new URLSearchParams(credentials)
-    )).data.access_token;
+    );
+
+    testingServiceClientToken = response.data.access_token;
+    return testingServiceClientToken;
   } catch (e) {
     throw new Error(`Failed to getTestingServiceClientToken with ${credentials.client_id}:${credentials.client_secret}, http-status: ${e.response?.status}`);
   }
