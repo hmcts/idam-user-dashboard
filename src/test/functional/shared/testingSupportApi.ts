@@ -196,40 +196,6 @@ export const deleteAllTestData = async (testDataPrefix = '', userNames: string[]
   }
 };
 
-export const createAssignableRoles = async (roleName: string) => {
-  try {
-    const authToken = await getAuthToken();
-    return (await axios.post(
-      `${config.get('services.idam.url.api')}/roles`,
-      {
-        assignableRoles: [null],
-        conflictingRoles: [null],
-        description: 'assignable role',
-        id: roleName,
-        name: roleName
-      },
-      {
-        headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken},
-      })).data;
-  } catch (e) {
-    throw new Error(`Failed to create assignable role ${roleName}, http-status: ${e.response?.status}`);
-  }
-};
-
-export const assignRolesToParentRole = async (parentRoleId: string, assignableRoleIds: string[]) => {
-  try {
-    const authToken = await getAuthToken();
-    return (await axios.put(
-      `${config.get('services.idam.url.api')}/roles/${parentRoleId}/assignableRoles`,
-      assignableRoleIds,
-      {
-        headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken},
-      }));
-  } catch (e) {
-    throw new Error(`Failed to assign roles ${assignableRoleIds} to parent role ${parentRoleId}, http-status: ${e.response?.status}`);
-  }
-};
-
 export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
   const OIDCToken = await getOIDCToken();
   try {
