@@ -1,5 +1,5 @@
 import {
-  createAssignableRoles, createRoleFromTestingSupport,
+  createRoleFromTestingSupport,
   createUserWithRoles
 } from './shared/testingSupportApi';
 import '../../main/utils/utils';
