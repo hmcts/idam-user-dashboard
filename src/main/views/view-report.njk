@@ -71,10 +71,7 @@
         {% endset %}
 
         {% set accountViewHTML %}
-          <form method="POST" action="{{ urls.USER_DETAILS_URL | replace(":userUUID", content.user.id) }}">
-            {{ csrfProtection(csrfToken) }}
-            <button type="submit" class="govuk-link">View user</button>
-          </form>
+          <a href="{{ urls.USER_DETAILS_URL | replace(":userUUID", user.id) }}" class="govuk-link" rel="noreferrer noopener" target="_blank">View user</a>
         {% endset %}
 
         {% set users = (users.push(

@@ -85,7 +85,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.23.0",
+    "@babel/core": "7.23.2",
     "@babel/preset-env": "^7.22.9",
     "@codeceptjs/allure-legacy": "^1.0.2",
     "@codeceptjs/helper": "^2.0.0",
@@ -111,7 +111,7 @@
     "nock": "^13.3.2",
     "node-sass": "^9.0.0",
     "nodemon": "^3.0.0",
-    "notifications-node-client": "^4.9.0",
+    "notifications-node-client": "^7.0.0",
     "npm-run-all": "^4.1.5",
     "pa11y": "^6.2.3",
     "playwright": "^1.37.1",
@@ -131,5 +131,5 @@
     "cookiejar": ">=2.1.4",
     "qs": ">=6.9.7"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.4"
 }

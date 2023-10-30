@@ -116,6 +116,38 @@ Scenario('I as a user should be able delete users with same role successfully',
   }
 );
 
+Scenario('I as a user should be able delete a stale user successfully if I have the right role',
+  {featureFlags: [BETA_DELETE]},
+  async ({I}) => {
+    const deletableUserEmail = randomData.getRandomEmailAddress();
+
+    const { id } = await I.createUserWithRoles(
+      deletableUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [ASSIGNABLE_CHILD_ROLE]
+    );
+    I.retireStaleUser(id);
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(deletableUserEmail);
+    I.see('ARCHIVED');
+    I.click('Delete user');
+    I.see('Are you sure you want to delete this user? This action is not reversible.');
+    I.click('Yes');
+    I.click('Continue');
+    I.see('User deleted successfully');
+    I.click('Return to main menu');
+    I.click('Manage an existing user');
+    I.click('Continue');
+    I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', deletableUserEmail);
+    I.click('Search');
+    I.see('No user matches your search for: ' + deletableUserEmail);
+  }
+).tag('@CrossBrowser');
+
 Scenario('I as a user should be able to cancel when deleting a user',
   {featureFlags: [BETA_DELETE]},
   async ({I}) => {
