@@ -19,7 +19,8 @@ def secrets = [
     secret('smoke-test-user-username', 'SMOKE_TEST_USER_USERNAME'),
     secret('smoke-test-user-password', 'SMOKE_TEST_USER_PASSWORD'),
     secret('launchdarkly-sdk-key', 'LAUNCHDARKLY_SDK_KEY'),
-    secret('notify-api-key', 'NOTIFY_API_KEY')
+    secret('notify-api-key', 'NOTIFY_API_KEY'),
+    secret('idam-functional-test-service-client-secret', 'FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET')
   ]
 ]
 
