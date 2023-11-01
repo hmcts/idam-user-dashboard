@@ -165,7 +165,7 @@ export class IdamAPI {
       });
   }
 
-  public getUsersWithRoles(roles: string[]): Promise<User[]> {
+  public getUsersWithRoles(roles: string[], size: number = 20, page: number = 0): Promise<User[]> {
     let queryString = '';
     roles.forEach((role, index, roles) => {
       queryString += 'roles:' + role;
@@ -175,7 +175,7 @@ export class IdamAPI {
     });
 
     return this.userAxios
-      .get(`/api/v1/users?size=500&query=(${queryString})`,
+      .get(`/api/v1/users?size=${size}&page=${page}&query=(${queryString})`,
         {
           timeout: 20000
         })

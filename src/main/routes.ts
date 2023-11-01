@@ -14,7 +14,7 @@ import {
   ACCESSIBILITY_STATEMENT,
   GENERATE_REPORT_URL,
   DOWNLOAD_REPORT_URL,
-  ADD_PRIVATE_BETA_SERVICE_URL,
+  ADD_PRIVATE_BETA_SERVICE_URL, VIEW_REPORT_URL,
 } from './utils/urls';
 import { FeatureFlags } from './app/feature-flags/FeatureFlags';
 import {
@@ -46,6 +46,8 @@ export default function(app: Application): void {
   app.post(USER_SUSPEND_URL, featureFlags.toggleRoute(BETA_SUSPEND), app.locals.container.cradle.userSuspendController.post);
   app.post(USER_DISABLE_SSO_URL, featureFlags.toggleRoute(BETA_REMOVE_SSO), app.locals.container.cradle.userSsoController.post);
   app.get(ACCESSIBILITY_STATEMENT, app.locals.container.cradle.accessibilityStatementController.get);
+  app.get(VIEW_REPORT_URL, app.locals.container.cradle.viewReportController.get);
+  app.post(VIEW_REPORT_URL, app.locals.container.cradle.viewReportController.post);
   app.get(GENERATE_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.generateReportController.get);
   app.post(GENERATE_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.generateReportController.post);
   app.get(DOWNLOAD_REPORT_URL, featureFlags.toggleRoute(GAMMA_GENERATE_REPORT), app.locals.container.cradle.downloadReportController.get);
