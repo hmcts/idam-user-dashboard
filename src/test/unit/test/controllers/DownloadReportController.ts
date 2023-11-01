@@ -2,8 +2,8 @@ import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
 import { mockApi } from '../../utils/mockApi';
 import { DownloadReportController } from '../../../../main/controllers/DownloadReportController';
-import { User } from "../../../../main/interfaces/User";
-import { when } from "jest-when";
+import { User } from '../../../../main/interfaces/User';
+import { when } from 'jest-when';
 import * as json2csv from 'json2csv';
 
 jest.mock('json2csv');

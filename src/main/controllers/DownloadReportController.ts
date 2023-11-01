@@ -3,7 +3,7 @@ import { ReportsHandler } from '../app/reports/ReportsHandler';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { NextFunction, Response } from 'express';
 import { parse } from 'json2csv';
-import {Logger} from "../interfaces/Logger";
+import {Logger} from '../interfaces/Logger';
 
 @autobind
 export class DownloadReportController {

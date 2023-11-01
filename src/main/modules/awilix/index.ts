@@ -25,7 +25,7 @@ import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBet
 import { AuthorizedAxios } from '../../app/authorized-axios/AuthorizedAxios';
 import { InviteService } from '../../app/invite-service/InviteService';
 import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
-import { ViewReportController } from "../../controllers/ViewReportController";
+import { ViewReportController } from '../../controllers/ViewReportController';
 
 /**
  * Sets up the dependency injection container

@@ -8,7 +8,7 @@ import {
   GENERATING_REPORT_ERROR,
   GENERATING_REPORT_FILE_ERROR,
   GENERATING_REPORT_NO_USERS_MATCHED
-} from "../utils/error";
+} from '../utils/error';
 
 @autobind
 export class ViewReportController extends RootController {

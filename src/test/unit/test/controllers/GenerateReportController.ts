@@ -8,7 +8,7 @@ import {
   GENERATING_REPORT_ERROR,
   MISSING_ROLE_INPUT_ERROR
 } from '../../../../main/utils/error';
-import {VIEW_REPORT_URL} from "../../../../main/utils/urls";
+import {VIEW_REPORT_URL} from '../../../../main/utils/urls';
 
 describe('Generate report controller', () => {
   mockRootController();

@@ -11,7 +11,7 @@ import {
 } from '../utils/error';
 import { ReportsHandler } from '../app/reports/ReportsHandler';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import { VIEW_REPORT_URL } from "../utils/urls";
+import { VIEW_REPORT_URL } from '../utils/urls';
 
 @autobind
 export class GenerateReportController extends RootController {
