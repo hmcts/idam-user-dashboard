@@ -58,6 +58,7 @@ export class UserEditController extends RootController {
   }
 
   private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {_action, _csrf, _userId, ...editedUser} = req.body;
 
     const {roles: originalRoles, multiFactorAuthentication: originalMfa, ...originalFields} = user;

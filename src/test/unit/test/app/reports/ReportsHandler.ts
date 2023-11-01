@@ -1,16 +1,13 @@
 import { ReportsHandler } from '../../../../../main/app/reports/ReportsHandler';
-import { User } from '../../../../../main/interfaces/User';
 import { fs } from 'memfs';
 import * as uuid from 'uuid';
 import config from 'config';
 import { when } from 'jest-when';
 import * as redis from 'redis';
-import * as json2csv from 'json2csv';
 
 jest.mock('memfs');
 jest.mock('uuid');
 jest.mock('config');
-jest.mock('json2csv');
 const redisClientMock = {
   set: jest.fn((a, b, c, d, callback) => callback(null, true)),
   get: jest.fn((a, callback) => callback(null, true))
@@ -25,34 +22,8 @@ describe('Report handler', () => {
 
   const mockLogger = { error: jest.fn(), info: jest.fn() } as any;
   const mockTelemetryClient = { trackTrace: jest.fn() } as any;
-  const singleUser = [
-    {
-      id: '1',
-      forename: 'test',
-      surname: 'test',
-      email: 'test@test.email',
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-    },
-  ] as User[];
-  const multiUser = [
-    {
-      id: '1',
-      forename: 'test',
-      surname: 'test',
-      email: 'test@test.email',
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-    },
-    {
-      id: '2',
-      forename: 'test',
-      surname: 'test',
-      email: 'test2@test.email',
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-    }
-  ] as User[];
+  const singleRole = [ 'IDAM_SUPER_USER' ];
+  const multipleRoles = [ 'IDAM_SUPER_USER', 'IDAM_ADMIN_USER' ];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -62,9 +33,9 @@ describe('Report handler', () => {
     fs.promises.writeFile = jest.fn();
     fs.promises.readFile = jest.fn();
 
-    describe('saveReport', () => {
+    describe('saveReportQueryRoles', () => {
 
-      test('Generates report with single user details', async () => {
+      test('Saves report query with single role', async () => {
         const reportUUID = '5';
 
         when(fs.promises.writeFile).mockResolvedValue();
@@ -72,11 +43,11 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.saveReport(singleUser)).resolves.toEqual(reportUUID);
-        expect(fs.promises.writeFile).toHaveBeenCalledWith('/' + reportUUID, JSON.stringify(singleUser));
+        await expect(reportsHandler.saveReportQueryRoles(singleRole)).resolves.toEqual(reportUUID);
+        expect(fs.promises.writeFile).toHaveBeenCalledWith('/' + reportUUID, JSON.stringify(singleRole));
       });
 
-      test('Generates report with multiple user details', async () => {
+      test('Saves report query with multiple user roles', async () => {
         const reportUUID = '5';
 
         when(fs.promises.writeFile).mockResolvedValue();
@@ -84,8 +55,8 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.saveReport(multiUser)).resolves.toEqual(reportUUID);
-        expect(fs.promises.writeFile).toHaveBeenCalledWith('/' + reportUUID, JSON.stringify(multiUser));
+        await expect(reportsHandler.saveReportQueryRoles(multipleRoles)).resolves.toEqual(reportUUID);
+        expect(fs.promises.writeFile).toHaveBeenCalledWith('/' + reportUUID, JSON.stringify(multipleRoles));
       });
 
       test('Return rejected promise when failing to write file', async () => {
@@ -96,7 +67,7 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.saveReport(singleUser)).rejects.toThrowError();
+        await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrowError();
         expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
         expect(mockLogger.error).toHaveBeenCalledTimes(1);
       });
@@ -104,29 +75,26 @@ describe('Report handler', () => {
 
     describe('getReport', () => {
 
-      test('Load report file that exists', async () => {
+      test('Load report role query that exists', async () => {
         const reportUUID = '10';
 
-        when(fs.promises.readFile).mockResolvedValue(JSON.stringify(singleUser));
-        when(json2csv.parse).mockReturnValue(singleUser.toString());
+        when(fs.promises.readFile).mockResolvedValue(JSON.stringify(singleRole));
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.getReport(reportUUID)).resolves.toEqual(singleUser.toString());
+        await expect(reportsHandler.getReportQueryRoles(reportUUID)).resolves.toEqual(singleRole);
         expect(fs.promises.readFile).toHaveBeenCalledWith('/' + reportUUID);
-        expect(json2csv.parse).toHaveBeenCalledWith(singleUser);
       });
 
-      test('Throw error when report does not exist', () => {
+      test('Throw error when report query does not exist', () => {
         const reportUUID = '10';
 
         when(fs.promises.readFile).mockRejectedValue('fail');
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        expect(reportsHandler.getReport(reportUUID)).rejects.toThrowError();
+        expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrowError();
         expect(fs.promises.readFile).toHaveBeenCalledWith('/' + reportUUID);
-        expect(json2csv.parse).not.toHaveBeenCalled();
       });
     });
   });
@@ -141,26 +109,26 @@ describe('Report handler', () => {
 
     describe('saveReport', () => {
 
-      test('Generates report with single user details', async () => {
+      test('Saves report query with single user roles', async () => {
         const reportUUID = '5';
 
         when(uuid.v4).mockReturnValue(reportUUID);
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.saveReport(singleUser)).resolves.toEqual(reportUUID);
-        expect(redisClientMock.set).toHaveBeenCalledWith(reportUUID, JSON.stringify(singleUser), 'EX', 30 * 60, expect.any(Function));
+        await expect(reportsHandler.saveReportQueryRoles(singleRole)).resolves.toEqual(reportUUID);
+        expect(redisClientMock.set).toHaveBeenCalledWith(reportUUID, JSON.stringify(singleRole), 'EX', 30 * 60, expect.any(Function));
       });
 
-      test('Generates report with multiple user details', async () => {
+      test('Saves report query with multiple user roles', async () => {
         const reportUUID = '5';
 
         when(uuid.v4).mockReturnValue(reportUUID);
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.saveReport(multiUser)).resolves.toEqual(reportUUID);
-        expect(redisClientMock.set).toHaveBeenCalledWith(reportUUID, JSON.stringify(multiUser), 'EX', 30 * 60, expect.any(Function));
+        await expect(reportsHandler.saveReportQueryRoles(multipleRoles)).resolves.toEqual(reportUUID);
+        expect(redisClientMock.set).toHaveBeenCalledWith(reportUUID, JSON.stringify(multipleRoles), 'EX', 30 * 60, expect.any(Function));
       });
 
       test('Return rejected promise when failing to add record to redis', async () => {
@@ -171,7 +139,7 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.saveReport(singleUser)).rejects.toThrowError();
+        await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrowError();
         expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
         expect(mockLogger.error).toHaveBeenCalledTimes(1);
       });
@@ -179,30 +147,26 @@ describe('Report handler', () => {
 
     describe('getReport', () => {
 
-      test('Load report that exists', async () => {
+      test('Load report query that exists', async () => {
         const reportUUID = '10';
 
-        when(redisClientMock.get).mockImplementation((a, callback) => callback(null, JSON.stringify(singleUser)));
-
-        when(json2csv.parse).mockReturnValue(singleUser.toString());
+        when(redisClientMock.get).mockImplementation((a, callback) => callback(null, JSON.stringify(singleRole)));
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        await expect(reportsHandler.getReport(reportUUID)).resolves.toEqual(singleUser.toString());
+        await expect(reportsHandler.getReportQueryRoles(reportUUID)).resolves.toEqual(singleRole);
         expect(redisClientMock.get).toHaveBeenCalledWith(reportUUID, expect.any(Function));
-        expect(json2csv.parse).toHaveBeenCalledWith(singleUser);
       });
 
-      test('Throw error when report does not exist', () => {
+      test('Throw error when report query does not exist', () => {
         const reportUUID = '10';
 
         when(redisClientMock.get).mockImplementation((a, callback) => callback(true, null));
 
         const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
 
-        expect(reportsHandler.getReport(reportUUID)).rejects.toThrowError();
+        expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrowError();
         expect(redisClientMock.get).toHaveBeenCalledWith(reportUUID, expect.any(Function));
-        expect(json2csv.parse).not.toHaveBeenCalled();
       });
     });
   });

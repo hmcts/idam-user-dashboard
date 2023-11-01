@@ -44,6 +44,7 @@ export class ErrorHandler {
     });
 
     // error handler
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     app.use((error: HTTPError, req: express.Request, res: express.Response, next: NextFunction) => {
       res.locals.error = app.locals.ENV === 'development' ? error : {};
       let errorSummary: ErrorSummary;

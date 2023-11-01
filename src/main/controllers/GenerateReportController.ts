@@ -7,12 +7,11 @@ import { isArrayEmpty, isObjectEmpty } from '../utils/utils';
 import {
   GENERATING_REPORT_CITIZEN_ERROR,
   GENERATING_REPORT_ERROR,
-  GENERATING_REPORT_FILE_ERROR,
-  GENERATING_REPORT_NO_USERS_MATCHED,
   MISSING_ROLE_INPUT_ERROR
 } from '../utils/error';
 import { ReportsHandler } from '../app/reports/ReportsHandler';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
+import { VIEW_REPORT_URL } from '../utils/urls';
 
 @autobind
 export class GenerateReportController extends RootController {
@@ -38,11 +37,9 @@ export class GenerateReportController extends RootController {
       return super.post(req, res,'generate-report', { error: errors });
     }
 
-    let reportData;
-
+    let reportUUID;
     try {
-      reportData = (await req.scope.cradle.api.getUsersWithRoles(roles))
-        .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
+      reportUUID = await this.reportGenerator.saveReportQueryRoles(roles);
     } catch (e) {
       return super.post(req, res,'generate-report', {
         error: {
@@ -51,35 +48,7 @@ export class GenerateReportController extends RootController {
       });
     }
 
-    try {
-      if(reportData.length < 1) {
-        return super.post(req, res, 'view-report', {
-          content: {
-            reportData, query: roles,
-          },
-          error: {
-            'body': {message: GENERATING_REPORT_NO_USERS_MATCHED}
-          }
-        });
-      }
-
-      const reportFileName = await this.reportGenerator.saveReport(reportData);
-
-      return super.post(req, res,'view-report', {
-        content: {
-          reportFileName, reportData, query: roles
-        },
-      });
-    } catch (e) {
-      return super.post(req, res,'view-report', {
-        content: {
-          reportData, query: roles,
-        },
-        error: {
-          'body': { message: GENERATING_REPORT_FILE_ERROR }
-        }
-      });
-    }
+    return res.redirect(307, VIEW_REPORT_URL.replace(':reportUUID', reportUUID));
   }
 
   private validateFields(fields: { search: string[] }): PageError {

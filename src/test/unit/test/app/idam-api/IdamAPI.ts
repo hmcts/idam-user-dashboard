@@ -470,7 +470,7 @@ describe('IdamAPI', () => {
         }]
       };
       const roles = ['IDAM_SUPER_USER'];
-      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER)';
+      const expectedAxiosCall = '/api/v1/users?size=20&page=0&query=(roles:IDAM_SUPER_USER)';
 
       const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
       const mockLogger = {} as any;
@@ -501,7 +501,7 @@ describe('IdamAPI', () => {
         }]
       };
       const roles = ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'];
-      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER)';
+      const expectedAxiosCall = '/api/v1/users?size=20&page=0&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER)';
 
       const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
       const mockLogger = {} as any;

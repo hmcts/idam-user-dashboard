@@ -23,7 +23,7 @@ export class FeatureFlags {
       .then(values => {
         return { ...values, ...localFlags };
       });
-  }
+  };
 
   public toggleRoute = (flagKey: string, defaultValue = false) => {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -35,7 +35,7 @@ export class FeatureFlags {
           next(new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR));
         });
     };
-  }
+  };
 }
 
 export interface FeatureFlagClient {

@@ -124,7 +124,7 @@ export class OidcMiddleware {
       })
       .catch(() => this.logger.info('Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
-  }
+  };
 
   private createAuthedAxiosInstance(accessToken: string): AxiosInstance {
     return axios.create({
