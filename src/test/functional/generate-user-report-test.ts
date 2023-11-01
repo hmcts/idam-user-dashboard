@@ -1,5 +1,5 @@
 import {
-  createAssignableRoles,
+  createRoleFromTestingSupport,
   createUserWithRoles
 } from './shared/testingSupportApi';
 import '../../main/utils/utils';
@@ -19,9 +19,9 @@ const ROLE_NOT_EXIST = randomData.getRandomRole();
 const DASHBOARD_USER_EMAIL = randomData.getRandomEmailAddress();
 
 BeforeSuite(async () => {
-  await createAssignableRoles(DASHBOARD_USER_ROLE);
-  await createAssignableRoles(SEARCHABLE_ROLE);
-  await createAssignableRoles(SEARCHABLE_ROLE_WITHOUT_USER);
+  await createRoleFromTestingSupport(DASHBOARD_USER_ROLE,[]);
+  await createRoleFromTestingSupport(SEARCHABLE_ROLE,[]);
+  await createRoleFromTestingSupport(SEARCHABLE_ROLE_WITHOUT_USER,[]);
   await createUserWithRoles(DASHBOARD_USER_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, DASHBOARD_USER_ROLE, SEARCHABLE_ROLE]);
 });
 
