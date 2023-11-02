@@ -1,18 +1,22 @@
 import autobind from 'autobind-decorator';
 import { ReportsHandler } from '../app/reports/ReportsHandler';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
-import { NextFunction, Response } from 'express';
+import { Response } from 'express';
 import { parse } from 'json2csv';
-import {Logger} from '../interfaces/Logger';
+import { Logger } from '../interfaces/Logger';
+import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
+import { RootController } from './RootController';
 
 @autobind
-export class DownloadReportController {
+export class DownloadReportController extends RootController {
   constructor(
     private readonly logger: Logger,
     private readonly reportGenerator: ReportsHandler
-  ) {}
+  ) {
+    super();
+  }
 
-  public async get(req: AuthedRequest, res: Response, next: NextFunction): Promise<void> {
+  public async get(req: AuthedRequest, res: Response): Promise<void> {
     const reportUUID = req.params.reportUUID;
     return this.generateReport(reportUUID, req)
       .then(csv => {
@@ -23,7 +27,11 @@ export class DownloadReportController {
         res.attachment( 'user-report-' + timestamp + '.csv');
         res.send(csv);
       })
-      .catch(() => next());
+      .catch(() => super.post(req, res, 'view-report', {
+        error: {
+          'body': {message: GENERATING_FILE_FAILED_TRY_AGAIN}
+        }
+      }));
   }
 
   private async generateReport(reportUUID: string, req: AuthedRequest) {
@@ -35,7 +43,7 @@ export class DownloadReportController {
     do {
       reportData = (await req.scope.cradle.api.getUsersWithRoles(roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
-      if (reportData && reportData.length > 0) {
+      if (reportData && reportData.length > 1) {
         reportCsv += parse(reportData);
       }
       pageNo++;
