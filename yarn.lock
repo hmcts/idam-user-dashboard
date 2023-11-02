@@ -3183,15 +3183,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/connect-redis@npm:^0.0.20":
-  version: 0.0.20
-  resolution: "@types/connect-redis@npm:0.0.20"
+"@types/connect-redis@npm:^0.0.22":
+  version: 0.0.22
+  resolution: "@types/connect-redis@npm:0.0.22"
   dependencies:
     "@types/express": "*"
     "@types/express-session": "*"
+    "@types/node": "*"
     "@types/redis": ^2.8.0
     ioredis: ^5.3.0
-  checksum: 11e22b06b2338ab651e819902467292765bd24a11a0b0fd251b8226c0e0962c048106e715d2f71ebef53f161709c81df1e7b153c81388e51a9a8ca60b78d8886
+  checksum: 605be511ce56b97b1c73ccd6e6cd179d10b21912c70b43263e8ecb39c7e2dce14719d5b3f8532e6fe3244a0cfacb8c4a43c35e859bc166dab014afff39f00345
   languageName: node
   linkType: hard
 
@@ -7903,7 +7904,7 @@ __metadata:
     "@hmcts/nodejs-logging": ^4.0.4
     "@hmcts/properties-volume": ^1.0.0
     "@types/config": ^3.0.0
-    "@types/connect-redis": ^0.0.20
+    "@types/connect-redis": ^0.0.22
     "@types/cookie-parser": ^1.4.3
     "@types/copy-webpack-plugin": ^10.1.0
     "@types/csurf": ^1.11.2
