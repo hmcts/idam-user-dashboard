@@ -4,12 +4,11 @@ import { createClient } from 'redis';
 import { User } from '../../interfaces/User';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import { parse } from 'json2csv';
 import { TelemetryClient } from 'applicationinsights';
 import { Logger } from '../../interfaces/Logger';
 
 type Store = {
-  set: (reportUUID: string, users: User[]) => Promise<void>;
+  set: (reportUUID: string, data: Object[]) => Promise<void>;
   get: (reportUUID: string) => Promise<string>;
 }
 
@@ -24,10 +23,10 @@ export class ReportsHandler {
     this.store = this.getStore();
   }
 
-  public saveReport(users: User[]): Promise<string | void> {
+  public saveReportQueryRoles(roles: string[]): Promise<string> {
     const uuid = uuidv4();
     return this.store
-      .set(uuid, users)
+      .set(`${uuid}`, roles)
       .then(() => uuid)
       .catch(e => {
         this.logger.error(e);
@@ -36,10 +35,9 @@ export class ReportsHandler {
       });
   }
 
-  public getReport(reportUUID: string): Promise<string> {
-    return this.store.get(reportUUID)
+  public getReportQueryRoles(reportUUID: string): Promise<string[]> {
+    return this.store.get(`${reportUUID}`)
       .then((data: string) => JSON.parse(data))
-      .then((data: User[]) => parse(data))
       .catch(e => {
         this.logger.error(e);
         this.telemetryClient.trackTrace(e);

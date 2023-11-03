@@ -25,6 +25,7 @@ import { AddPrivateBetaServiceController } from '../../controllers/AddPrivateBet
 import { AuthorizedAxios } from '../../app/authorized-axios/AuthorizedAxios';
 import { InviteService } from '../../app/invite-service/InviteService';
 import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
+import { ViewReportController } from '../../controllers/ViewReportController';
 
 /**
  * Sets up the dependency injection container
@@ -65,6 +66,7 @@ export class Container {
       userDeleteController: asClass(UserDeleteController),
       userSuspendController: asClass(UserSuspendController),
       accessibilityStatementController: asClass(AccessibilityStatementController),
+      viewReportController: asClass(ViewReportController),
       generateReportController: asClass(GenerateReportController),
       downloadReportController: asClass(DownloadReportController)
     });
