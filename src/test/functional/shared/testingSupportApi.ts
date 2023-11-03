@@ -33,7 +33,7 @@ export const getOIDCToken = async () => {
       new URLSearchParams(credentials)
     )).data.access_token;
   } catch (e) {
-    throw new Error(`Failed to get OIDCToken with ${credentials.username}:${credentials.password}, http-status: ${e.response?.status}`);
+    throw new Error(`Failed to get OIDCToken using ${credentials} from ${config.get('services.idam.url.api')}, http-status: ${e.response?.status}`);
   }
 };
 
