@@ -3393,11 +3393,11 @@ __metadata:
   linkType: hard
 
 "@types/json2csv@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "@types/json2csv@npm:5.0.3"
+  version: 5.0.5
+  resolution: "@types/json2csv@npm:5.0.5"
   dependencies:
     "@types/node": "*"
-  checksum: 7a9faf4a7ec0fb488cf953ba18aea1e48fb586476e7aa9d8c6d03860b729a508cfe836170c90f3ba3656d9621df95a264bf0452f69771e8df06d1ce221980533
+  checksum: fe5ef91b3c02aabb15504288b14f0ea8938d5e04d35ca2c9669a074ce28f5756ad4a6cefecd5b628275d4d165d3319d3a721e1c5a5a56a52bf5af9a907685576
   languageName: node
   linkType: hard
 
