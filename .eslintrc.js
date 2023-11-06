@@ -2,8 +2,9 @@ module.exports = {
       "env": { "browser": true, "es6": true, "node": true },
       "extends": ["eslint:recommended","plugin:codeceptjs/recommended"],
       "globals": { "Atomics": "readonly", "SharedArrayBuffer": "readonly" },
-      "parser": "babel-eslint",
+      "parser": "@babel/eslint-parser",
       "parserOptions": {
+        "requireConfigFile": false,
         "ecmaVersion": 2018,
         "sourceType": "module"
       },
@@ -37,6 +38,23 @@ module.exports = {
             "quotes": ["error", "single", { "avoidEscape": true }],
             "comma-dangle": ["error", "only-multiline"],
             "@typescript-eslint/no-var-requires": 0,
+            "@typescript-eslint/no-explicit-any": ["off"],
+            "@typescript-eslint/ban-ts-comment": ["off"],
+            "@typescript-eslint/ban-types": ["error",
+              {
+                "types": {
+                  "String": false,
+                  "Boolean": false,
+                  "Number": false,
+                  "Symbol": false,
+                  "{}": false,
+                  "Object": false,
+                  "object": false,
+                  "Function": false,
+                },
+                "extendDefaults": true
+              }
+            ]
           }
         }
       ]

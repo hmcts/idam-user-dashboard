@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { mockRequest} from '../../utils/mockRequest';
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRootController } from '../../utils/mockRootController';
@@ -74,7 +73,6 @@ describe('Add private beta service controller', () => {
       _surname: surname,
       service: service2,
     };
-    // eslint-disable-next-line @typescript-eslint/camelcase
     req.idam_user_dashboard_session = {
       user: {
         id: 'some-user-id'

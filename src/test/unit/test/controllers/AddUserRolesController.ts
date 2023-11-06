@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {when} from 'jest-when';
 import { mockResponse } from '../../utils/mockResponse';
 import { AddUserRolesController } from '../../../../main/controllers/AddUserRolesController';
