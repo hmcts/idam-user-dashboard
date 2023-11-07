@@ -6,6 +6,8 @@ export interface HelmetConfig {
 }
 
 const self = "'self'";
+const view_report_script_1 = "'sha256-jVI3dCx2J6gL6bzR1ljQZftjkTtjif8MLnKuMb2CK4w='";
+const view_report_script_2 = "'sha256-8x0U8ucWIxYD4ShTA5KJD1fGCerO0FA90OiUpT5Y5b0='";
 
 /**
  * Module that enables helmet in the application
@@ -22,7 +24,7 @@ export class Helmet {
   }
 
   private setContentSecurityPolicy(app: express.Express): void {
-    const scriptSrc = [self];
+    const scriptSrc = [self, view_report_script_1, view_report_script_2];
 
     if (app.locals.ENV === 'development') {
       scriptSrc.push("'unsafe-inline'");
