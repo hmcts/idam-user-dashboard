@@ -3,8 +3,8 @@
     "files": true
   },
   "compilerOptions": {
-    "target": "es2020",
-    "lib": ["es2020", "dom", "dom.iterable"],
+    "target": "es6",
+    "lib": ["es6", "dom", "dom.iterable"],
     "esModuleInterop": true,
     "module": "commonjs",
     "strictNullChecks": true,
