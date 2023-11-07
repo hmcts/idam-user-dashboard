@@ -196,40 +196,6 @@ export const deleteAllTestData = async (testDataPrefix = '', userNames: string[]
   }
 };
 
-export const createAssignableRoles = async (roleName: string) => {
-  try {
-    const authToken = await getAuthToken();
-    return (await axios.post(
-      `${config.get('services.idam.url.api')}/roles`,
-      {
-        assignableRoles: [null],
-        conflictingRoles: [null],
-        description: 'assignable role',
-        id: roleName,
-        name: roleName
-      },
-      {
-        headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken},
-      })).data;
-  } catch (e) {
-    throw new Error(`Failed to create assignable role ${roleName}, http-status: ${e.response?.status}`);
-  }
-};
-
-export const assignRolesToParentRole = async (parentRoleId: string, assignableRoleIds: string[]) => {
-  try {
-    const authToken = await getAuthToken();
-    return (await axios.put(
-      `${config.get('services.idam.url.api')}/roles/${parentRoleId}/assignableRoles`,
-      assignableRoleIds,
-      {
-        headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken},
-      }));
-  } catch (e) {
-    throw new Error(`Failed to assign roles ${assignableRoleIds} to parent role ${parentRoleId}, http-status: ${e.response?.status}`);
-  }
-};
-
 export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
   let retries = 0;
   const maxRetries = 5;
@@ -270,25 +236,101 @@ export const activateUserAccount = async (code: string, token: string) => {
     throw new Error(`Failed to activate user, http-status: ${e.response?.status}`);
   }
 };
+//used to cache the testing service client token
+let testingServiceClientToken: string | null = null;
+export const getTestingServiceClientToken = async () => {
+  if (testingServiceClientToken) {
+    return testingServiceClientToken;
+  }
 
-export const createService = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[] = []) => {
-  const data = {
-    label: label,
-    description: description,
-    oauth2ClientId: clientId,
-    oauth2ClientSecret: clientSecret,
-    oauth2RedirectUris: redirectUris,
-    onboardingRoles: onboardingRoles
+  const credentials = {
+    'grant_type': 'client_credentials',
+    'client_secret': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET as string,
+    'client_id': testConfig.FUNCTIONAL_TEST_SERVICE_CLIENT_ID as string,
+    'scope': 'profile'
   };
 
   try {
-    const authToken = await getAuthToken();
+    const response = await axios.post(
+      `${config.get('services.idam.url.api')}/o/token`,
+      new URLSearchParams(credentials)
+    );
+
+    testingServiceClientToken = response.data.access_token;
+    return testingServiceClientToken;
+  } catch (e) {
+    throw new Error(`Failed to getTestingServiceClientToken with ${credentials.client_id}:${credentials.client_secret}, http-status: ${e.response?.status}`);
+  }
+};
+
+export const createRoleFromTestingSupport = async (roleName: string,assignableRoleNames: string[] ) => {
+
+  const accessToken = await getTestingServiceClientToken();
+  try {
+    const role = {
+      name: roleName,
+      id: roleName,
+      description: 'assignable role',
+      assignableRoleNames: assignableRoleNames,
+    };
+
     return (await axios.post(
-      `${config.get('services.idam.url.api')}/services`,
-      JSON.stringify(data),
-      {headers: {'Content-Type': 'application/json', 'Authorization': 'AdminApiAuthToken ' + authToken}}
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/roles`,
+      role,
+      {
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken},
+      })).data;
+  } catch (e) {
+    throw new Error(`Failed to createRoleFromTestingSupport endpoint  ${roleName}, http-status: ${e.response?.status}`);
+  }
+};
+
+export const createServiceFromTestingSupport = async (label: string, description: string, clientId: string, clientSecret: string, redirectUris: string[], onboardingRoles: string[]) => {
+  const data = {
+    clientId: clientId,
+    clientSecret: clientSecret,
+    serviceLabel: label,
+    description: description,
+    hmctsAccess : {
+      mfaRequired : true,
+      selfRegistrationAllowed : true,
+      postActivationRedirectUrl : 'http://postactivation',
+      onboardingRoleNames : onboardingRoles
+    },
+    oauth2: {
+      redirectUris: redirectUris,
+      scopes: ['openid', 'profile', 'roles'],
+
+    }
+  };
+  try {
+    const bearerToken = await getTestingServiceClientToken();
+    return (await axios.post(
+      `${config.get('services.idam.url.testingSupportApi')}/test/idam/services`,
+      data,
+      {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + bearerToken}}
     ));
   } catch (e) {
     throw new Error(`Failed to create new service ${label}, http-status: ${e.response?.status}`);
   }
 };
+
+export const loginUsingPasswordGrant = async (username: string, pass: string) => {
+  const credentials = {
+    'grant_type': 'password',
+    username: username,
+    password: pass,
+    'client_secret': config.get('services.idam.clientSecret') as string,
+    'client_id': config.get('services.idam.clientID') as string,
+    scope: config.get('services.idam.scope') as string
+  };
+  try {
+    return (await axios.post(
+      `${config.get('services.idam.url.api')}/o/token`,
+      new URLSearchParams(credentials)
+    )).data.access_token;
+  } catch (e) {
+    console.error(e.response);
+  }
+};
+

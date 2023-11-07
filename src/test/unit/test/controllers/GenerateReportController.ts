@@ -6,11 +6,9 @@ import { GenerateReportController } from '../../../../main/controllers/GenerateR
 import {
   GENERATING_REPORT_CITIZEN_ERROR,
   GENERATING_REPORT_ERROR,
-  GENERATING_REPORT_FILE_ERROR,
-  GENERATING_REPORT_NO_USERS_MATCHED,
   MISSING_ROLE_INPUT_ERROR
 } from '../../../../main/utils/error';
-import { User } from '../../../../main/interfaces/User';
+import {VIEW_REPORT_URL} from '../../../../main/utils/urls';
 
 describe('Generate report controller', () => {
   mockRootController();
@@ -18,8 +16,8 @@ describe('Generate report controller', () => {
   let req: any;
   const res = mockResponse();
   const mockReportGenerator: any = {
-    saveReport: jest.fn(),
-    getReport: jest.fn(),
+    saveReportQueryRoles: jest.fn(),
+    getReportQueryRoles: jest.fn(),
   };
   const controller = new GenerateReportController(mockReportGenerator);
 
@@ -56,12 +54,10 @@ describe('Generate report controller', () => {
   });
 
   test('Should render the generate report page with error when an API error has occurred', async () => {
-    req.body.search = 'IDAM_SUPER_USER';
-
-    mockApi.getUsersWithRoles.mockRejectedValue(false);
-
+    const query = ['IDAM_SUPER_USER'];
+    req.body.search = query[0];
+    mockReportGenerator.saveReportQueryRoles.mockRejectedValue(false);
     await controller.post(req, res);
-
     expect(res.render).toBeCalledWith('generate-report', {
       error: {
         body: { message: GENERATING_REPORT_ERROR }
@@ -69,85 +65,15 @@ describe('Generate report controller', () => {
     });
   });
 
-  test('Should render the view report page', async () => {
+  test('Should redirect to the view report', async () => {
     const query = ['IDAM_SUPER_USER'];
     req.body.search = query[0];
-    const users = [
-      {
-        id: '1',
-        forename: 'test',
-        surname: 'test',
-        email: 'test@test.email',
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
-      },
-    ] as User[];
-    const reportFileName = 'someUUID.csv';
+    const reportUUID = 'someUUID';
 
-    mockApi.getUsersWithRoles.mockResolvedValue(users);
-    mockReportGenerator.saveReport.mockResolvedValue(reportFileName);
+    mockReportGenerator.saveReportQueryRoles.mockResolvedValue(reportUUID);
 
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('view-report', {
-      content: {
-        query,
-        reportFileName,
-        reportData: users
-      }
-    });
-  });
-
-  test('Should render the view report page with no users matched error when searching non existent / unassigned role', async () => {
-    const query = ['XYZ'];
-    req.body.search = query[0];
-
-    const users = [] as User[];
-    const reportFileName = 'someUUID.csv';
-
-    mockApi.getUsersWithRoles.mockResolvedValue(users);
-    mockReportGenerator.saveReport.mockResolvedValue(reportFileName);
-
-    await controller.post(req, res);
-    expect(res.render).toBeCalledWith('view-report', {
-      content: {
-        reportData: users,
-        query
-      },
-      error: {
-        body: { message: GENERATING_REPORT_NO_USERS_MATCHED }
-      },
-    });
-
-  });
-
-  test('Should render the view report page with a warning when an error has occurred creating the report file', async () => {
-    const query = ['IDAM_SUPER_USER'];
-    req.body.search = query[0];
-    const users = [
-      {
-        id: '1',
-        forename: 'test',
-        surname: 'test',
-        email: 'test@test.email',
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
-      },
-    ] as User[];
-
-    mockApi.getUsersWithRoles.mockResolvedValue(users);
-    mockReportGenerator.saveReport.mockRejectedValue(false);
-
-    await controller.post(req, res);
-
-    expect(res.render).toBeCalledWith('view-report', {
-      content: {
-        query,
-        reportData: users
-      },
-      error: {
-        body: { message: GENERATING_REPORT_FILE_ERROR }
-      },
-    });
+    expect(res.redirect).toBeCalledWith(307, VIEW_REPORT_URL.replace(':reportUUID', reportUUID));
   });
 });

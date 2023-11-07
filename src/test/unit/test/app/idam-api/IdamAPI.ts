@@ -31,7 +31,7 @@ describe('IdamAPI', () => {
         const mockAxios = {get: async () => results} as any;
         const mockLogger = {} as any;
         const mockTelemetryClient = {} as any;
-        const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+        const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
         await expect(api.searchUsersByEmail(parameter.input)).resolves.toEqual(results.data);
       });
@@ -41,7 +41,7 @@ describe('IdamAPI', () => {
       const mockAxios = { get: async () => { throw new Error ('error'); } } as any;
       const mockLogger = { error: jest.fn() } as any;
       const mockTelemetryClient = { trackTrace: jest.fn() } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.searchUsersByEmail('')).rejects.toEqual('Error retrieving user by email from IDAM API');
     });
@@ -63,7 +63,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.searchUsersBySsoId(testSsoId)).resolves.toEqual(results.data);
     });
@@ -78,7 +78,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.searchUsersBySsoId('')).rejects.toEqual('Error retrieving user by ssoId from IDAM API');
     });
@@ -100,7 +100,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUserById(testUserId)).resolves.toEqual(results.data);
     });
@@ -115,7 +115,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUserById('')).rejects.toEqual('Error retrieving user by ID from IDAM API');
     });
@@ -145,7 +145,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getAllRoles()).resolves.toEqual(results.data);
     });
@@ -154,7 +154,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: () => Promise.reject('')} as any;
       const mockLogger = {error: jest.fn()} as any;
       const mockTelemetryClient = {trackTrace: jest.fn()} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       await expect(api.getAllRoles()).rejects.toThrowError();
       expect(mockLogger.error).toBeCalled();
@@ -174,7 +174,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
       api.getAllRoles = jest.fn();
 
       when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
@@ -199,7 +199,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
       api.getAllRoles = jest.fn();
 
       when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
@@ -217,7 +217,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
       api.getAllRoles = jest.fn();
 
       when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
@@ -236,7 +236,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => jest.fn()} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
       api.getAllRoles = jest.fn();
 
       when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
@@ -264,7 +264,7 @@ describe('IdamAPI', () => {
       const mockAxios = {patch: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.editUserById(testUserId, fields)).resolves.toEqual(results.data);
     });
@@ -283,7 +283,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.editUserById(testUserId, fields)).rejects.toEqual('Error patching user details in IDAM API');
     });
@@ -294,20 +294,20 @@ describe('IdamAPI', () => {
       const mockAxios = {delete: jest.fn().mockReturnValue(Promise.resolve())} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       await expect(api.deleteUserById(testUserId)).resolves.not.toThrow();
-      expect(mockAxios.delete).toBeCalledWith('/api/v1/users/12345');
+      expect(mockAxios.delete).toBeCalledWith('/api/v2/users/12345');
     });
 
     test('Should not return user details when using invalid ID', async () => {
       const mockAxios = {delete: jest.fn().mockReturnValue(Promise.reject('Delete failed'))} as any;
       const mockLogger = {error: jest.fn()} as any;
       const mockTelemetryClient = {trackTrace: jest.fn()} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       await expect(api.deleteUserById('-1')).rejects.toThrowError('Error deleting user by ID from IDAM API');
-      expect(mockAxios.delete).toBeCalledWith('/api/v1/users/-1');
+      expect(mockAxios.delete).toBeCalledWith('/api/v2/users/-1');
       expect(mockLogger.error).toBeCalledWith('Delete failed');
     });
   });
@@ -326,7 +326,7 @@ describe('IdamAPI', () => {
       const mockAxios = {post: async () => Promise.resolve(result)} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.registerUser(input)).resolves.toEqual(testValue);
     });
@@ -339,7 +339,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {
         trackTrace: jest.fn()
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.registerUser(input)).rejects.toEqual('Error register new user in IDAM API');
     });
@@ -363,7 +363,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: async () => results} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getAllServices()).resolves.toEqual(results.data);
     });
@@ -378,7 +378,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getAllServices()).rejects.toEqual('Error retrieving all services from IDAM API');
     });
@@ -400,7 +400,7 @@ describe('IdamAPI', () => {
       const mockAxios = {post: async () => Promise.resolve(result)} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.grantRolesToUser(testUserId, roleDefinitions)).resolves.toEqual(testValue);
     });
@@ -415,7 +415,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.grantRolesToUser(testUserId, roleDefinitions)).rejects.toEqual('Error granting user roles in IDAM API');
     });
@@ -428,7 +428,7 @@ describe('IdamAPI', () => {
       const mockAxios = {delete: async () => Promise.resolve(result)} as any;
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.removeRoleFromUser(testUserId, 'role1')).resolves.toEqual(testValue);
     });
@@ -443,7 +443,7 @@ describe('IdamAPI', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         trackTrace : () => {}
       } as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.removeRoleFromUser(testUserId, 'role1')).rejects.toEqual('Error deleting user role in IDAM API');
     });
@@ -470,12 +470,12 @@ describe('IdamAPI', () => {
         }]
       };
       const roles = ['IDAM_SUPER_USER'];
-      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER)';
+      const expectedAxiosCall = '/api/v1/users?size=20&page=0&query=(roles:IDAM_SUPER_USER)';
 
       const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
       expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
@@ -501,12 +501,12 @@ describe('IdamAPI', () => {
         }]
       };
       const roles = ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'];
-      const expectedAxiosCall = '/api/v1/users?size=500&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER)';
+      const expectedAxiosCall = '/api/v1/users?size=20&page=0&query=(roles:IDAM_SUPER_USER OR roles:IDAM_ADMIN_USER)';
 
       const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
       expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
@@ -518,7 +518,7 @@ describe('IdamAPI', () => {
       const mockAxios: any = {get: jest.fn().mockRejectedValue('')};
       const mockLogger = {error: jest.fn()} as any;
       const mockTelemetryClient = {trackTrace: jest.fn()} as any;
-      const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
+      const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
       await expect(api.getUsersWithRoles(roles)).rejects.toThrowError();
       expect(mockLogger.error).toBeCalled();

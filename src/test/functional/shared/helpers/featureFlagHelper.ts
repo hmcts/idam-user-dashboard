@@ -13,7 +13,6 @@ class FeatureFlagHelper extends Helper {
     launchDarkly.closeConnection();
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   _before(test: Mocha.Test & { opts: any }) {
     if(!isArrayEmpty(test.opts?.featureFlags) && !isObjectEmpty(this.flagValues) && !test.opts.featureFlags.every(flag => this.flagValues[flag])) {

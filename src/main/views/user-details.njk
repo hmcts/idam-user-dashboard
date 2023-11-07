@@ -164,11 +164,21 @@
     ]
   }) }}
 
-  {% if not content.user.stale %}
-    <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
-      {{ csrfProtection(csrfToken) }}
-      <input type="hidden" name="_userId" value="{{ content.user.id }}">
-      <div class="govuk-button-group">
+  <a id="openInNewTab" href="#" target="_blank" class="govuk-link" rel="noopener noreferrer">Open this in a new tab</a>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const currentURL = window.location.href;
+      const openInNewTabLink = document.getElementById('openInNewTab');
+      openInNewTabLink.href = currentURL;
+    });
+  </script>
+
+  <form method="POST" action="{{ urls.USER_ACTIONS_URL }}">
+    {{ csrfProtection(csrfToken) }}
+    <input type="hidden" name="_userId" value="{{ content.user.id }}">
+    <div class="govuk-button-group">
+      {% if not content.user.stale %}
         {% if featureFlags.values[featureFlags.flags.BETA_EDIT] %}
           {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
         {% endif %}
@@ -181,13 +191,13 @@
         {% if featureFlags.values[featureFlags.flags.BETA_REMOVE_SSO] and (content.user.ssoProvider or content.user.ssoId) %}
           {{ govukButton({ text: "Remove SSO", name: "_action", value: "remove-sso", classes: "govuk-button--secondary" })}}
         {% endif %}
+      {% endif %}
 
-        {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
-          {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.canManage }}
-        {% endif %}
-      </div>
-    </form>
-  {% endif %}
+      {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
+        {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.canManage }}
+      {% endif %}
+    </div>
+  </form>
 
   {{ govukBackLink({
     text: "Return to search",

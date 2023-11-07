@@ -1,5 +1,5 @@
 import {
-  createUserWithRoles, createAssignableRoles, assignRolesToParentRole,
+  createUserWithRoles, createRoleFromTestingSupport,
 } from './shared/testingSupportApi';
 import {config as testConfig} from '../config';
 import {randomData} from './shared/random-data';
@@ -13,11 +13,10 @@ const INDEPENDENT_CHILD_ROLE = randomData.getRandomRole();
 const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
 BeforeSuite(async () => {
-  await createAssignableRoles(PARENT_ROLE);
-  await createAssignableRoles(ASSIGNABLE_CHILD_ROLE);
-  await createAssignableRoles(INDEPENDENT_CHILD_ROLE);
+  await createRoleFromTestingSupport(ASSIGNABLE_CHILD_ROLE,[]);
+  await createRoleFromTestingSupport(INDEPENDENT_CHILD_ROLE,[]);
   // Assigning self role with the child role so the this user can also delete same level users
-  await assignRolesToParentRole(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
+  await createRoleFromTestingSupport(PARENT_ROLE, [ASSIGNABLE_CHILD_ROLE, PARENT_ROLE]);
   await createUserWithRoles(PARENT_ROLE_EMAIL, testConfig.PASSWORD, testConfig.USER_FIRSTNAME, [testConfig.RBAC.access, PARENT_ROLE]);
 });
 
@@ -116,6 +115,38 @@ Scenario('I as a user should be able delete users with same role successfully',
     I.see('No user matches your search for: ' + deletableUserEmail);
   }
 );
+
+Scenario('I as a user should be able delete a stale user successfully if I have the right role',
+  {featureFlags: [BETA_DELETE]},
+  async ({I}) => {
+    const deletableUserEmail = randomData.getRandomEmailAddress();
+
+    const { id } = await I.createUserWithRoles(
+      deletableUserEmail,
+      testConfig.PASSWORD,
+      testConfig.USER_FIRSTNAME,
+      [ASSIGNABLE_CHILD_ROLE]
+    );
+    I.retireStaleUser(id);
+    I.loginAs(PARENT_ROLE_EMAIL);
+    I.see('Manage an existing user');
+    I.gotoUserDetails(deletableUserEmail);
+    I.see('ARCHIVED');
+    I.click('Delete user');
+    I.see('Are you sure you want to delete this user? This action is not reversible.');
+    I.click('Yes');
+    I.click('Continue');
+    I.see('User deleted successfully');
+    I.click('Return to main menu');
+    I.click('Manage an existing user');
+    I.click('Continue');
+    I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
+    I.click('#search');
+    I.fillField('#search', deletableUserEmail);
+    I.click('Search');
+    I.see('No user matches your search for: ' + deletableUserEmail);
+  }
+).tag('@CrossBrowser');
 
 Scenario('I as a user should be able to cancel when deleting a user',
   {featureFlags: [BETA_DELETE]},
