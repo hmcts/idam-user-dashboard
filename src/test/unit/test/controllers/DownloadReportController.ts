@@ -11,7 +11,6 @@ jest.mock('json2csv');
 describe('Download report controller', () => {
   let req: any;
   let res: any;
-  const next = jest.fn();
   const mockLogger = { info: jest.fn() } as any;
   const mockReportGenerator: any = {
     saveReportQueryRoles: jest.fn(),
@@ -52,18 +51,18 @@ describe('Download report controller', () => {
     mockApi.getUsersWithRoles.mockReturnValueOnce(users).mockReturnValue([]);
     when(json2csv.parse).mockReturnValue(fileData);
 
-    await controller.get(req, res, next);
+    await controller.get(req, res);
     expect(res.send).toHaveBeenCalledWith(fileData);
     expect(res.attachment).toHaveBeenCalled();
     expect(res.header).toHaveBeenCalledWith('Content-Type', 'text/csv');
   });
 
-  test('Should pass to next middleware (404) if file doesnt exist', async () => {
+  test('Should render view reports page with error if no data returns', async () => {
     req.params = { reportUUID: 'someUUID' };
     mockReportGenerator.getReportQueryRoles.mockRejectedValue(false);
 
-    await controller.get(req, res, next);
+    await controller.get(req, res);
     expect(res.send).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalled();
+    expect(res.render).toBeCalledWith('view-report', expect.any(Object));
   });
 });
