@@ -5,7 +5,13 @@ properties([
   parameters([
     string(name: 'ENVIRONMENT', defaultValue: 'aat', description: 'Environment to test'),
     string(name: 'TEST_URL', defaultValue: 'https://idam-user-dashboard.aat.platform.hmcts.net', description: 'The URL you want to run tests against'),
-    string(name: 'TESTING_SUPPORT_URL', defaultValue: 'https://idam-testing-support-api.aat.platform.hmcts.net', description: 'The URL for the testing support api')
+    string(name: 'STRATEGIC_SERVICE_URL', defaultValue: 'https://idam-api.aat.platform.hmcts.net', description: 'The URL for idam-api'),
+    string(name: 'TESTING_SUPPORT_URL', defaultValue: 'https://idam-testing-support-api.aat.platform.hmcts.net', description: 'The URL for the testing support api'),
+    string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(0\\).regex='https?:\\/\\/(?:.*idam-web-public.*)+'"),
+    booleanParam(name: 'skipFortifyScan', defaultValue: false, description: 'Tick the checkbox for skip'),
+    booleanParam(name: 'skipSecurityScanTests', defaultValue: false, description: 'Tick the checkbox for skip'),
+    booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox for skip'),
+    booleanParam(name: 'skipCrossBrowserTest', defaultValue: false, description: 'Tick the checkbox for skip')
   ])
 ])
 
@@ -14,6 +20,7 @@ properties([
 def type = "nodejs"
 def product = "idam"
 def component = "user-dashboard"
+def urlExclusions = params.ZAP_URL_EXCLUSIONS
 
 def secrets = [
   'idam-idam-${env}': [
@@ -37,9 +44,21 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 try {
   withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
-    enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
-    enableFullFunctionalTest()
-    enableCrossBrowserTest()
+    if (params.ENVIRONMENT == 'aat' && !params.skipSecurityScanTests) {
+      enableSecurityScan(
+        urlExclusions: urlExclusions,
+        scanType: "frontend"
+      )
+    }
+    if (!params.skipFortifyScan) {
+      enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
+    }
+    if (!params.skipFullFunctionalTests) {
+      enableFullFunctionalTest()
+    }
+    if (!params.skipCrossBrowserTest) {
+      enableCrossBrowserTest()
+    }
 
 
     afterAlways('fortify-scan') {
