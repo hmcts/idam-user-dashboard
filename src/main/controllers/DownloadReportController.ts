@@ -43,7 +43,7 @@ export class DownloadReportController extends RootController {
     do {
       reportData = (await req.scope.cradle.api.getUsersWithRoles(roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
-      if (reportData && reportData.length < 1) {
+      if (reportData && reportData.length > 0) {
         reportCsv += parse(reportData);
       }
       pageNo++;
