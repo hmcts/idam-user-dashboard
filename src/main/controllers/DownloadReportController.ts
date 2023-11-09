@@ -29,7 +29,7 @@ export class DownloadReportController extends RootController {
       })
       .catch(() => super.post(req, res, 'view-report', {
         error: {
-          'body': {message: GENERATING_FILE_FAILED_TRY_AGAIN}
+          '': {message: GENERATING_FILE_FAILED_TRY_AGAIN}
         }
       }));
   }
@@ -43,7 +43,7 @@ export class DownloadReportController extends RootController {
     do {
       reportData = (await req.scope.cradle.api.getUsersWithRoles(roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
-      if (reportData && reportData.length > 0) {
+      if (reportData && reportData.length < 1) {
         reportCsv += parse(reportData);
       }
       pageNo++;
