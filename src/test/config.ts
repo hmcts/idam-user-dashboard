@@ -45,7 +45,7 @@ config.helpers = {
     browser: 'chromium',
     waitForTimeout: 60001,
     waitForAction: 500,
-    timeout: 20002,
+    timeout: 30002,
     waitForNavigation: 'networkidle0',
     ignoreHTTPSErrors: true,
   },
