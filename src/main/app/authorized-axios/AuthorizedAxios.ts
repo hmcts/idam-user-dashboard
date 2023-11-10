@@ -108,7 +108,6 @@ export class AuthorizedAxios extends Axios {
         config.headers = config.headers ?? {} as AxiosRequestHeaders;
         config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
       }
-
       return config;
     });
   };
