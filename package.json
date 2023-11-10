@@ -127,6 +127,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
+    "axios": "^1.6.0",
     "async": "^3.2.2",
     "cookiejar": ">=2.1.4",
     "qs": ">=6.9.7"
