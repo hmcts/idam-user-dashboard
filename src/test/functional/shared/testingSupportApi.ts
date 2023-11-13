@@ -2,7 +2,8 @@ import axios from 'axios';
 import config from 'config';
 import {config as testConfig} from '../../config';
 import {v4 as uuid} from 'uuid';
-
+console.debug(`***********services.idam.url.testingSupportApi ******** ${config.get('services.idam.url.testingSupportApi')}`);
+console.debug(`*******services.idam.url.api**************: ${config.get('services.idam.url.api')}`);
 const getAuthToken = async () => {
   const credentials = {
     username: testConfig.SMOKE_TEST_USER_USERNAME as string,
