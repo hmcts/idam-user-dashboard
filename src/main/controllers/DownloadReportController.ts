@@ -29,7 +29,7 @@ export class DownloadReportController extends RootController {
       })
       .catch(() => super.post(req, res, 'view-report', {
         error: {
-          'body': {message: GENERATING_FILE_FAILED_TRY_AGAIN}
+          '': {message: GENERATING_FILE_FAILED_TRY_AGAIN}
         }
       }));
   }
