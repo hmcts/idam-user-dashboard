@@ -9925,12 +9925,12 @@ __metadata:
   linkType: hard
 
 "notifications-node-client@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "notifications-node-client@npm:7.0.3"
+  version: 7.0.6
+  resolution: "notifications-node-client@npm:7.0.6"
   dependencies:
-    axios: ^0.25.0
+    axios: ^1.6.1
     jsonwebtoken: ^9.0.0
-  checksum: 5e3ab2bd02c8ca72b9b77fde2c3be67690dad4b00564506846fc80a375aa8919ed3a04d0475509d15de275f3c9af5209ad0ebd0b146cae78440f0c441d1824e4
+  checksum: 91025e05a0d4c34459b15e7bb8a256222a59ce39ed0d74d6245ed749a6d03ad52d511413a931295064b0f4db27a7c670054ac60dfd823432cf8bcd7beb7bba21
   languageName: node
   linkType: hard
 
