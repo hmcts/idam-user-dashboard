@@ -197,17 +197,25 @@ export const deleteAllTestData = async (testDataPrefix = '', userNames: string[]
 };
 
 export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
+  let retries = 0;
+  const maxRetries = 5;
+  const retryInterval = 1000;
+
   const OIDCToken = await getOIDCToken();
-  try {
-    return (await axios.get(
-      `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
-      {
-        headers: {'Authorization': 'Bearer ' + OIDCToken},
-      }
-    )).data;
-  } catch (e) {
-    throw new Error(`Failed to extract email from Notify for ${searchEmail}, http-status: ${e.response?.status}`);
+  while (retries < maxRetries) {
+    try {
+      return (await axios.get(
+        `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
+        {
+          headers: {'Authorization': 'Bearer ' + OIDCToken},
+        }
+      )).data;
+    } catch (e) {
+      retries++;
+      await new Promise(resolve => setTimeout(resolve, retryInterval));
+    }
   }
+  throw new Error(`Max retries reached. Failed to extract email from Notify for ${searchEmail}`);
 };
 
 export const activateUserAccount = async (code: string, token: string) => {
