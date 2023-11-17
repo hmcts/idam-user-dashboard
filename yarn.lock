@@ -261,30 +261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.23.2":
-  version: 7.23.2
-  resolution: "@babel/core@npm:7.23.2"
-  dependencies:
-    "@ampproject/remapping": ^2.2.0
-    "@babel/code-frame": ^7.22.13
-    "@babel/generator": ^7.23.0
-    "@babel/helper-compilation-targets": ^7.22.15
-    "@babel/helper-module-transforms": ^7.23.0
-    "@babel/helpers": ^7.23.2
-    "@babel/parser": ^7.23.0
-    "@babel/template": ^7.22.15
-    "@babel/traverse": ^7.23.2
-    "@babel/types": ^7.23.0
-    convert-source-map: ^2.0.0
-    debug: ^4.1.0
-    gensync: ^1.0.0-beta.2
-    json5: ^2.2.3
-    semver: ^6.3.1
-  checksum: 003897718ded16f3b75632d63cd49486bf67ff206cc7ebd1a10d49e2456f8d45740910d5ec7e42e3faf0deec7a2e96b1a02e766d19a67a8309053f0d4e57c0fe
-  languageName: node
-  linkType: hard
-
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3":
+"@babel/core@npm:7.23.3, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3":
   version: 7.23.3
   resolution: "@babel/core@npm:7.23.3"
   dependencies:
@@ -321,7 +298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.23.0, @babel/generator@npm:^7.23.3, @babel/generator@npm:^7.7.2":
+"@babel/generator@npm:^7.23.3, @babel/generator@npm:^7.7.2":
   version: 7.23.3
   resolution: "@babel/generator@npm:7.23.3"
   dependencies:
@@ -455,7 +432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-transforms@npm:^7.23.0, @babel/helper-module-transforms@npm:^7.23.3":
+"@babel/helper-module-transforms@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/helper-module-transforms@npm:7.23.3"
   dependencies:
@@ -593,7 +570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.23.3, @babel/parser@npm:^7.8.3":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.23.3, @babel/parser@npm:^7.8.3":
   version: 7.23.3
   resolution: "@babel/parser@npm:7.23.3"
   bin:
@@ -3848,13 +3825,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.6.1":
-  version: 1.6.1
-  resolution: "axios@npm:1.6.1"
+  version: 1.6.2
+  resolution: "axios@npm:1.6.2"
   dependencies:
     follow-redirects: ^1.15.0
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 573f03f59b7487d54551b16f5e155d1d130ad4864ed32d1da93d522b78a57123b34e3bde37f822a65ee297e79f1db840f9ad6514addff50d3cbf5caeed39e8dc
+  checksum: 4a7429e2b784be0f2902ca2680964391eae7236faa3967715f30ea45464b98ae3f1c6f631303b13dfe721b17126b01f486c7644b9ef276bfc63112db9fd379f8
   languageName: node
   linkType: hard
 
@@ -4721,8 +4698,8 @@ __metadata:
   linkType: hard
 
 "codeceptjs@npm:^3.5.7":
-  version: 3.5.7
-  resolution: "codeceptjs@npm:3.5.7"
+  version: 3.5.8
+  resolution: "codeceptjs@npm:3.5.8"
   dependencies:
     "@codeceptjs/configure": 0.10.0
     "@codeceptjs/helper": 2.0.1
@@ -4769,7 +4746,7 @@ __metadata:
     uuid: 9.0
   bin:
     codeceptjs: bin/codecept.js
-  checksum: 19009d442fc1ebb450dacbbee78f4628afb7f8284b3c33afd74240481af42dbf0ee666cf417c4fb6b5ba3643679ec746d7815da73831568ef2754db8335a5841
+  checksum: d15dab6f427521d12d3831267fbaf90275bf704cf101efaa4925cdc24e3a73e10a9cd2929951143187c5f9582bccb82f394cee60e97b8a8e0b67976019378211
   languageName: node
   linkType: hard
 
@@ -7279,7 +7256,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "idam-user-dashboard@workspace:."
   dependencies:
-    "@babel/core": 7.23.2
+    "@babel/core": 7.23.3
     "@babel/eslint-parser": ^7.22.15
     "@babel/preset-env": ^7.22.9
     "@codeceptjs/allure-legacy": ^1.0.2
@@ -9948,12 +9925,12 @@ __metadata:
   linkType: hard
 
 "notifications-node-client@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "notifications-node-client@npm:7.0.3"
+  version: 7.0.6
+  resolution: "notifications-node-client@npm:7.0.6"
   dependencies:
-    axios: ^0.25.0
+    axios: ^1.6.1
     jsonwebtoken: ^9.0.0
-  checksum: 5e3ab2bd02c8ca72b9b77fde2c3be67690dad4b00564506846fc80a375aa8919ed3a04d0475509d15de275f3c9af5209ad0ebd0b146cae78440f0c441d1824e4
+  checksum: 91025e05a0d4c34459b15e7bb8a256222a59ce39ed0d74d6245ed749a6d03ad52d511413a931295064b0f4db27a7c670054ac60dfd823432cf8bcd7beb7bba21
   languageName: node
   linkType: hard
 
