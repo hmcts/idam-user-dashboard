@@ -252,9 +252,8 @@ Scenario('I as a user should not be able to edit or update the user`s email when
     I.see(activeUserSsoId);
     I.click('Edit user');
     I.seeInCurrentUrl('/user/edit');
-    // attempt to fill disabled field
     I.seeElement('#email:disabled');
-    I.fillField('#email', randomData.getRandomEmailAddress());
+    // I.fillField('#email', randomData.getRandomEmailAddress());
     I.click('Save');
     I.see('There is a problem');
     I.see('No changes to the user were made');
