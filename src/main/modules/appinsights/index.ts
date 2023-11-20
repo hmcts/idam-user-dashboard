@@ -11,6 +11,7 @@ export class AppInsights {
       const data = envelope.data.baseData;
       if (data.url.match(/\/assets\/|\.js|\.css/)) {
         data.name = 'GET /**';
+        envelope.sampleRate = 1;
       }
 
       if (contextObjects['http.ServerRequest'].session) {
