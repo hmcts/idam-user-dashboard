@@ -11,6 +11,7 @@ export class AppInsights {
       const data = envelope.data.baseData;
       if (data.url.match(/\/assets\/|\.js|\.css/)) {
         data.name = 'GET /**';
+        envelope.sampleRate = 1;
       }
 
       if (contextObjects['http.ServerRequest'].session) {
@@ -28,14 +29,15 @@ export class AppInsights {
       return true;
     }
 
-    if (config.get('appInsights.instrumentationKey')) {
-      appInsights.setup(config.get('appInsights.instrumentationKey'))
+    if (config.get('appInsights.connectionString')) {
+      appInsights.setup(config.get('appInsights.connectionString'))
         .setSendLiveMetrics(true)
         .setAutoCollectConsole(true, true)
         .start();
 
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
       appInsights.defaultClient.addTelemetryProcessor(preprocessAppInsightData);
+      appInsights.defaultClient.config.samplingPercentage = 33; // 33% of all telemetry will be sent to Application Insights
     }
   }
 }

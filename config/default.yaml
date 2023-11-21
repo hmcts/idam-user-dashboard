@@ -2,7 +2,7 @@ useCSRFProtection: true,
 security:
   referrerPolicy: 'origin'
 appInsights:
-  instrumentationKey: false
+  connectionString: false
 port: 3100
 services:
   name: 'IDAM User Dashboard'
