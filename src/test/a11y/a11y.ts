@@ -6,7 +6,7 @@ import * as urls from '../../main/utils/urls';
 import {config as testConfig} from '../config';
 import {
   createRoleFromTestingSupport,
-  createUserWithRoles, deleteAllTestData
+  createUserWithRoles
 } from '../functional/shared/testingSupportApi';
 import {
   ADD_USER_DETAILS_URL,
@@ -142,7 +142,6 @@ describe('Accessibility', () => {
     if (browser) {
       await browser.close();
     }
-    await deleteAllTestData(ACCESSIBILITY_TEST_SUITE_PREFIX);
   });
 
   const urlsNoSignOut = Object.values(urls).filter(url => !IGNORED_URLS.includes(url));
