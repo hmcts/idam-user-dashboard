@@ -94,7 +94,7 @@ function expectNoErrors(messages: PallyIssue[]): void {
   }
 }
 
-jest.retryTimes(3);
+jest.retryTimes(1);
 jest.setTimeout(60000);
 
 describe('Accessibility', () => {
