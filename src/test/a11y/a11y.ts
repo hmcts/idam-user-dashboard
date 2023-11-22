@@ -65,6 +65,7 @@ function runPally(url: string, browser: any): Promise<Pa11yResult> {
   let screenCapture: string | boolean = false;
   if (!testConfig.TestHeadlessBrowser) {
     const screenshotDir = `${__dirname}/../../../test-output/accessibility/pa11y`;
+    console.log(screenshotDir);
 
     fs.mkdirSync(screenshotDir, {recursive: true});
     screenCapture = `${screenshotDir}/${url.replace(/^\/$/, 'home').replace('/', '')}.png`;
@@ -81,6 +82,9 @@ function runPally(url: string, browser: any): Promise<Pa11yResult> {
     browser,
     screenCapture,
     hideElements: '.govuk-footer__licence-logo, .govuk-header__logotype-crown',
+    actions: [
+      'wait for url to be PAGE_URL'.replace('PAGE_URL', url)
+    ]
   };
   return pa11y(`${testConfig.TEST_URL}${url}`, options);
 }
