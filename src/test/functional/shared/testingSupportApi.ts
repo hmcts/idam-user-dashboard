@@ -131,20 +131,6 @@ export const retireStaleUser = async (userId: string) => {
   }
 };
 
-export const deleteStaleUser = async (userId: string) => {
-  const authToken = await getAuthToken();
-  try {
-    await axios.delete(
-      `${config.get('services.idam.url.api')}/api/v1/staleUsers/${userId}`,
-      {
-        headers: {'Authorization': 'AdminApiAuthToken ' + authToken},
-      }
-    );
-  } catch (e) {
-    throw new Error(`Failed to delete stale user: ${userId}, http-status: ${e.response?.status}`);
-  }
-};
-
 export const suspendUser = async (userId: string) => {
   const OIDCToken = await getOIDCToken();
   try {
@@ -173,26 +159,6 @@ export const getUserDetails = async (email: string) => {
     )).data;
   } catch (e) {
     throw new Error(`Failed to get user deatils for ${email}, http-status: ${e.response?.status}`);
-  }
-};
-
-export const deleteUser = async (email: string) => {
-  try {
-    await axios.delete(
-      `${config.get('services.idam.url.api')}/testing-support/accounts/${email}`
-    );
-  } catch (e) {
-    throw new Error(`Failed to delete user with email ${email}, http-status: ${e.response?.status}`);
-  }
-};
-
-export const deleteAllTestData = async (testDataPrefix = '', userNames: string[] = [], roleNames: string[] = [], serviceNames: string[] = [], async = true) => {
-  try {
-    await axios.delete(
-      `${config.get('services.idam.url.api')}/testing-support/test-data?async=${async}&userNames=${userNames.join(',')}&roleNames=${roleNames.join(',')}&testDataPrefix=${testDataPrefix}&serviceNames=${serviceNames.join(',')}`
-    );
-  } catch (e) {
-    throw new Error(`Error deleting test data with prefix  ${testDataPrefix}, response ${e.response?.status}`);
   }
 };
 
