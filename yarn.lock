@@ -3809,13 +3809,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"awilix@npm:^8.0.0":
-  version: 8.0.1
-  resolution: "awilix@npm:8.0.1"
+"awilix@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "awilix@npm:9.0.0"
   dependencies:
     camel-case: ^4.1.2
-    fast-glob: ^3.2.12
-  checksum: 0cc2a236d219cf2b7ee4c20086d619739b53ff0555eccbedae5424c862f341fccfd1c113201c5ca9dafdf2392fd8054dc9d4f6b4a69704fa40b1bc682454a1c1
+    fast-glob: ^3.3.1
+  checksum: ae32ca2d8291d7000409398a2d74809b79cf0f4e53aa39cf5e7eb0a0fa94ebe5dd120693dc01cbe3d88cac2d1a4a015b124efa8f985466eeb4f78b91c90de846
   languageName: node
   linkType: hard
 
@@ -6150,7 +6150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0":
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -7295,7 +7295,7 @@ __metadata:
     allure-commandline: ^2.23.0
     applicationinsights: ^2.9.1
     autobind-decorator: ^2.4.0
-    awilix: ^8.0.0
+    awilix: ^9.0.0
     axios: ^1.6.1
     babel-loader: ^9.1.3
     codeceptjs: ^3.5.7
