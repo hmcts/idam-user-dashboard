@@ -2728,11 +2728,11 @@ __metadata:
   linkType: hard
 
 "@types/json2csv@npm:^5.0.3":
-  version: 5.0.6
-  resolution: "@types/json2csv@npm:5.0.6"
+  version: 5.0.7
+  resolution: "@types/json2csv@npm:5.0.7"
   dependencies:
     "@types/node": "*"
-  checksum: 2fd08e02425b68db6c6613f732e5c1e6fec8bff318e712b4e2c10462561c48110f372451fec076b7c41e430f1b7a7853451e57a6fe08e54039e3dc1ce6942071
+  checksum: 8b354f11f8efa1a8af6f7ca9d5ef091409ade121df790c7f97ba556c47b60cb9d7ae732876a9405c827132ee5d38ba351d4fb6c56693a31482e727ece07ed349
   languageName: node
   linkType: hard
 
