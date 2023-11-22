@@ -22,8 +22,8 @@ export const config = {
   helpers: {},
   plugins: {
     retryFailedStep: {
-      enabled: true,
-      retries: 2,
+      enabled: false,
+      retries: 1,
     },
     autoDelay: {
       enabled: true
