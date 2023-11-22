@@ -78,7 +78,7 @@ export class UserResultsController extends RootController {
 
   private getBannerIfRequired(user: User): string {
     let notificationBannerMessage;
-    if (user.ssoProvider && user.ssoProvider.toLowerCase().includes(config.get('providers.azure.internalName'))) {
+    if (user.ssoProvider?.toLowerCase().includes(config.get('providers.azure.internalName'))) {
       notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
     }
     if (user.stale) {
