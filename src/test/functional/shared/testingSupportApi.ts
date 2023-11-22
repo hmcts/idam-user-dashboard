@@ -177,6 +177,7 @@ export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
         }
       )).data;
     } catch (e) {
+      console.error(`Error while searching for notifications ${e.response}. Retry ${retries} of ${maxRetries}.`);
       retries++;
       await new Promise(resolve => setTimeout(resolve, retryInterval));
     }
