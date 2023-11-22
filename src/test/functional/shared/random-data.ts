@@ -17,8 +17,8 @@ export const randomAlphabeticString = (length = 10) => {
 export const randomData = {
   getRandomString: randomString,
   getRandomAlphabeticString: randomAlphabeticString,
-  getRandomEmailAddress: () => testConfig.TEST_SUITE_PREFIX + randomString() + '@idam.test',
-  getRandomRole: () => testConfig.TEST_SUITE_PREFIX + randomString(10),
-  getRandomServiceName: () => testConfig.TEST_SUITE_PREFIX + randomString(10),
+  getRandomEmailAddress: () => testConfig.TEST_SUITE_PREFIX + randomAlphabeticString() + '@idam.test',
+  getRandomRole: () => testConfig.TEST_SUITE_PREFIX + randomAlphabeticString(10),
+  getRandomServiceName: () => testConfig.TEST_SUITE_PREFIX + randomAlphabeticString(10),
   getRandomSSOId: () => randomString(10)
 };
