@@ -14,8 +14,7 @@ export const hasPrivateBetaServices = (services: Service[], rolesMap: Map<string
 };
 
 export const getServicesForSelect = (services: Service[], rolesMap: Map<string, Role>): SelectItem[] => {
-  const privateBetaServices = getServicesWithPrivateBetaRole(services, rolesMap);
-  return privateBetaServices
-    .sort((a: Service, b: Service) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1)
-    .map((service) => ({ value: service.label, text: service.label, selected: false }));
+  const privateBetaServices = getServicesWithPrivateBetaRole(services, rolesMap)
+    .sort((a: Service, b: Service) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1);
+  return privateBetaServices.map((service) => ({ value: service.label, text: service.label, selected: false }));
 };
