@@ -64,7 +64,7 @@ function ensurePageCallWillSucceed(url: string): Promise<void> {
 function runPally(url: string, browser: any): Promise<Pa11yResult> {
   let screenCapture: string | boolean = false;
   if (!testConfig.TestHeadlessBrowser) {
-    const screenshotDir = `${__dirname}/../../../functional-output/pa11y`;
+    const screenshotDir = `${__dirname}/../../../test-output/accessibility/pa11y`;
 
     fs.mkdirSync(screenshotDir, {recursive: true});
     screenCapture = `${screenshotDir}/${url.replace(/^\/$/, 'home').replace('/', '')}.png`;
