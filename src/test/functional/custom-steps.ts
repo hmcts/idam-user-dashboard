@@ -23,7 +23,7 @@ export = function () {
         this.seeInCurrentUrl(testConfig.TEST_URL);
         if (this.tryToSee('Our services aren’t available right now')) {
           this.say('Failed with services not available on attempt ' + x);
-        else if (this.tryToSee('Sorry, there is a problem with the service')) {
+        } else if (this.tryToSee('Sorry, there is a problem with the service')) {
           this.say('Failed with problem in service ' + x);
         } else {
           loginDone = true;
