@@ -35,6 +35,9 @@ export const config = {
       enabled: true,
       require: '@codeceptjs/allure-legacy'
     },
+    tryTo: {
+      enabled: true
+    }
   }
 };
 

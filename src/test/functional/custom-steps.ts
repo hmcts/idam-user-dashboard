@@ -9,7 +9,7 @@ export = function () {
         let canSeeLogin = false;
         for (let i = 0; i < 3 && !canSeeLogin; i++) {
           this.amOnPage(LOGIN_URL);
-          if (this.tryToSee('Sign in')) {
+          if (tryTo(() => this.see('Sign in'))) {
             canSeeLogin = true;
             this.say('I can see login page');
           } else {
@@ -21,9 +21,9 @@ export = function () {
         this.fillField('#password', password);
         this.click('Sign in');
         this.seeInCurrentUrl(testConfig.TEST_URL);
-        if (this.tryToSee('Our services aren’t available right now')) {
+        if (tryTo(() => this.see('Our services aren’t available right now'))) {
           this.say('Failed with services not available on attempt ' + x);
-        } else if (this.tryToSee('Sorry, there is a problem with the service')) {
+        } else if (tryTo(() => this.see('Sorry, there is a problem with the service'))) {
           this.say('Failed with problem in service ' + x);
         } else {
           loginDone = true;
