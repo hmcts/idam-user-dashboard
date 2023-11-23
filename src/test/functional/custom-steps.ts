@@ -9,7 +9,7 @@ export = function () {
         let canSeeLogin = false;
         for (let i = 0; i < 3 && !canSeeLogin; i++) {
           this.amOnPage(LOGIN_URL);
-          let signInVisible = await tryTo(() => this.see('Sign in'));
+          const signInVisible = await tryTo(() => this.see('Sign in'));
           if (signInVisible) {
             canSeeLogin = true;
             this.say('I can see login page');
