@@ -40,7 +40,7 @@ Scenario('I as a user should be able to register new support user',
   {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -84,7 +84,7 @@ Scenario('I as a user should be able to register new private beta citizen user',
   {featureFlags: [BETA_ADD, GAMMA_PRIVATE_BETA]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -128,7 +128,7 @@ Scenario('I as a user should be able to search for roles',
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -167,7 +167,7 @@ incorrectEmailAddresses.add(['email@com..']);
 Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when register users email format is not correct',
   {featureFlags: [BETA_ADD]},
   async ({I, current}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -183,7 +183,7 @@ Scenario('I as a user should be able to see proper error messages when add-user 
   {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');

@@ -22,7 +22,7 @@ Scenario('I should be see a warning when viewing a user who is locked', async ({
     await I.loginUsingPasswordGrant(userEmail, 'Invalid');
     I.wait(1);
   }
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.see('This account has been temporarily locked due to multiple failed login attempts.');
@@ -42,7 +42,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
     await I.loginUsingPasswordGrant(userEmail, 'Invalid');
     I.wait(1);
   }
-  I.loginAs(userEmail);
+  I.retry(3).loginAs(userEmail);
   I.see('You can reset your password to unlock your account.');
   I.click('reset your password');
   I.seeInCurrentUrl('/reset/forgotpassword');
@@ -64,7 +64,7 @@ Scenario('I should not see a warning when viewing a user who is not locked', asy
   I.seeInCurrentUrl('/doResetPassword');
   I.see('Your password has been changed');
 
-  I.loginAs(DASHBOARD_USER_EMAIL);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
   I.see('Manage an existing user');
   I.gotoUserDetails(userEmail);
   I.dontSee('This account has been temporarily locked due to multiple failed login attempts.');
