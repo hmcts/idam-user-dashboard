@@ -9,7 +9,8 @@ export = function () {
         let canSeeLogin = false;
         for (let i = 0; i < 3 && !canSeeLogin; i++) {
           this.amOnPage(LOGIN_URL);
-          if (tryTo(() => this.see('Sign in'))) {
+          let signInVisible = await tryTo(() => this.see('Sign in'));
+          if (signInVisible) {
             canSeeLogin = true;
             this.say('I can see login page');
           } else {
@@ -21,9 +22,9 @@ export = function () {
         this.fillField('#password', password);
         this.click('Sign in');
         this.seeInCurrentUrl(testConfig.TEST_URL);
-        if (tryTo(() => this.see('Our services aren’t available right now'))) {
+        if (await tryTo(() => this.see('Our services aren’t available right now'))) {
           this.say('Failed with services not available on attempt ' + x);
-        } else if (tryTo(() => this.see('Sorry, there is a problem with the service'))) {
+        } else if (await tryTo(() => this.see('Sorry, there is a problem with the service'))) {
           this.say('Failed with problem in service ' + x);
         } else {
           loginDone = true;
