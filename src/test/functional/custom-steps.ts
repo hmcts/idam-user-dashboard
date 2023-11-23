@@ -4,12 +4,31 @@ import { config as testConfig } from '../config';
 export = function () {
   return actor({
     loginAs: function (username, password = testConfig.PASSWORD) {
-      this.amOnPage(LOGIN_URL);
-      this.see('Sign in');
-      this.fillField('#username', username);
-      this.fillField('#password', password);
-      this.click('Sign in');
-      this.seeInCurrentUrl(testConfig.TEST_URL);
+      let loginDone = false;
+      for (let x = 0; x < 3 && !loginDone; x++) {
+        let canSeeLogin = false;
+        for (let i = 0; i < 3 && !canSeeLogin; i++) {
+          this.amOnPage(LOGIN_URL);
+          if (this.tryToSee('Sign in')) {
+            canSeeLogin = true;
+            this.say('I can see login page');
+          } else {
+            this.say('Failed to see login screen on attempt ' + i);
+          }
+        }
+        this.see('Sign in');
+        this.fillField('#username', username);
+        this.fillField('#password', password);
+        this.click('Sign in');
+        this.seeInCurrentUrl(testConfig.TEST_URL);
+        if (this.tryToSee('Our services aren’t available right now')) {
+          this.say('Failed with services not available on attempt ' + x);
+        else if (this.tryToSee('Sorry, there is a problem with the service')) {
+          this.say('Failed with problem in service ' + x);
+        } else {
+          loginDone = true;
+        }
+      }
     },
     logout: function () {
       this.click('Sign out');
