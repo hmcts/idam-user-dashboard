@@ -61,7 +61,7 @@ Scenario('I as a user should be able to register new support user',
     I.see(PARENT_ROLE);
     I.checkOption(ASSIGNABLE_CHILD_ROLE2);
     I.scrollPageToBottom();
-    I.click('Save');
+    I.retry(3).click('Save');
     I.see('User registered');
 
     const response = await I.extractUrlFromNotifyEmail(registerUserEmail);
