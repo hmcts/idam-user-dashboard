@@ -60,6 +60,7 @@ Scenario('I as a user should be able to register new support user',
     I.see(ASSIGNABLE_CHILD_ROLE2);
     I.see(PARENT_ROLE);
     I.checkOption(ASSIGNABLE_CHILD_ROLE2);
+    I.scrollPageToBottom();
     I.click('Save');
     I.see('User registered');
 
@@ -222,6 +223,7 @@ Scenario('I as a user should be able to see proper error messages when add-user 
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(ASSIGNABLE_CHILD_ROLE2);
     I.see(PARENT_ROLE);
+    I.scrollPageToBottom();
     I.click('Save');
     I.see('There is a problem');
     I.see('A user must have at least one role assigned to be able to create them');
