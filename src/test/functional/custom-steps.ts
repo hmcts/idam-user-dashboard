@@ -10,6 +10,9 @@ export = function () {
       this.fillField('#password', password);
       this.click('Sign in');
       this.seeInCurrentUrl(testConfig.TEST_URL);
+      this.dontSee('Sorry, there is a problem with the service');
+      this.dontSee('Our services aren\'t available right now');
+      this.dontSee('Page not found');
     },
     logout: function () {
       this.click('Sign out');
