@@ -27,7 +27,7 @@ Scenario('I as a user should be able to suspend a user',
       testConfig.USER_FIRSTNAME,
       [testConfig.USER_ROLE_CITIZEN]
     );
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
     I.see('ACTIVE');
@@ -55,7 +55,7 @@ Scenario('I as a user should be able to unsuspend a user',
       [testConfig.USER_ROLE_CITIZEN]
     );
     I.suspendUser(id);
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
     I.see('SUSPENDED');
@@ -82,7 +82,7 @@ Scenario('I as a user should be redirected to user-details page if I select no w
       testConfig.USER_FIRSTNAME,
       [testConfig.USER_ROLE_CITIZEN]
     );
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
     I.see('ACTIVE');
@@ -108,7 +108,7 @@ Scenario('I as a user should be redirected to user-details page if I select no w
       [testConfig.USER_ROLE_CITIZEN]
     );
     I.suspendUser(id);
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
     I.see('SUSPENDED');

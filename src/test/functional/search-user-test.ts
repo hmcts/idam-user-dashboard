@@ -23,7 +23,7 @@ incorrectEmailAddresses.add(['email@com']);
 
 Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper error message if search text is not in the right format',
   async ({I, current}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.click('Manage an existing user');
     I.click('Continue');
@@ -36,7 +36,7 @@ Data(incorrectEmailAddresses).Scenario('I as a user should be able to see proper
   });
 
 Scenario('I should be able to search with user-email', async ({I}) => {
-  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
@@ -53,7 +53,7 @@ Scenario('I should be able to search with user-email', async ({I}) => {
 }).tag('@CrossBrowser');
 
 Scenario('I should be able to search with user-id', async ({I}) => {
-  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
@@ -70,7 +70,7 @@ Scenario('I should be able to search with user-id', async ({I}) => {
 }).tag('@CrossBrowser');
 
 Scenario('I should be able to search with sso-id', async ({I}) => {
-  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
@@ -87,7 +87,7 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
 }).tag('@CrossBrowser');
 
 Scenario('When there is a collision between user-id and sso-id, user details should be shown based on user-id', async ({I}) => {
-  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
@@ -100,7 +100,7 @@ Scenario('When there is a collision between user-id and sso-id, user details sho
 });
 
 Scenario('I as a user should be able to see proper error message if search text left blank', async ({I}) => {
-  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
@@ -115,7 +115,7 @@ Scenario('I as a user should be able to see proper error message if search text 
 });
 
 Scenario('I as a user should be able to see proper error message if user does not exist', async ({I}) => {
-  I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+  I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
   I.see('Manage an existing user');
   I.click('Manage an existing user');
   I.click('Continue');
