@@ -13,7 +13,7 @@ properties([
 def type = "nodejs"
 def product = "idam"
 def component = "user-dashboard"
-
+def branchesToSync = ['nightly-dev']
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -38,6 +38,7 @@ def secrets = [
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   disableLegacyDeployment()
+  syncBranchesWithMaster(branchesToSync)
 
   afterSuccess('build') {
     yarnBuilder.yarn('build')
