@@ -3,5 +3,6 @@
   "extends": [
     "local>hmcts/.github:renovate-config",
     "local>hmcts/.github//renovate/automerge-all"
-  ]
+  ],
+  "schedule": "after 1pm and before 5pm every weekday",
 }
