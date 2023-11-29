@@ -86,7 +86,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.23.3",
+    "@babel/core": "7.23.5",
     "@babel/eslint-parser": "^7.22.15",
     "@babel/preset-env": "^7.22.9",
     "@codeceptjs/allure-legacy": "^1.0.2",
