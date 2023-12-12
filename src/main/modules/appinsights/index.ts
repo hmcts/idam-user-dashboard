@@ -13,6 +13,9 @@ export class AppInsights {
         data.name = 'GET /**';
         envelope.sampleRate = 1;
       }
+      if (data.url.match(/\/callback/)) {
+        envelope.sampleRate = 100;
+      }
 
       if (contextObjects['http.ServerRequest'].session) {
         appInsights.defaultClient.commonProperties['session_id'] = contextObjects['http.ServerRequest'].sessionID;
