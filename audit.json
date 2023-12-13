@@ -36,6 +36,8 @@
   "40025_Proxy Disclosure_https://idam-user-dashboard.aat.platform.hmcts.net/_GET" : "ignore",
   "40025_Proxy Disclosure_https://idam-user-dashboard.aat.platform.hmcts.net/robots.txt_GET" : "ignore",
   "40025_Proxy Disclosure_https://idam-user-dashboard.aat.platform.hmcts.net/sitemap.xml_GET" : "ignore",
-  "10096_Timestamp Disclosure - Unix_https://idam-user-dashboard.aat.platform.hmcts.net/robots.txt_GET" : "ignore"
-
+  "10096_Timestamp Disclosure - Unix_https://idam-user-dashboard.aat.platform.hmcts.net_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_https://idam-user-dashboard.aat.platform.hmcts.net/_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_https://idam-user-dashboard.aat.platform.hmcts.net/robots.txt_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_https://idam-user-dashboard.aat.platform.hmcts.net/sitemap.xml_GET" : "ignore"
 }
