@@ -150,9 +150,16 @@ Scenario('I as a user should be able to search for roles',
     I.see(PARENT_ROLE);
     I.click('#roles__search-box');
     I.fillField('#roles__search-box', searchText);
-    I.waitForElement({ xpath: '//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']' }, 5);
-    const checkboxes = await I.grabValueFromAll({ xpath: '//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']' });
-    //const checkboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
+
+    I.say('Before waiting for elements');
+    I.waitForElement(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'), 30);
+    I.say('After waiting for elements');
+
+    I.say('Before grabbing values');
+    const checkboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
+    I.say('After grabbing values');
+
+
     checkboxes.forEach(function (checkbox) {
       if (checkbox.includes(searchText)) {
         Assert.ok(true);
