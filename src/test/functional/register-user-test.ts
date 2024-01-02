@@ -151,6 +151,7 @@ Scenario('I as a user should be able to search for roles',
     I.click('#roles__search-box');
     I.fillField('#roles__search-box', searchText);
     const checkboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
+    I.wait(5);
     checkboxes.forEach(function (checkbox) {
       if (checkbox.includes(searchText)) {
         Assert.ok(true);
