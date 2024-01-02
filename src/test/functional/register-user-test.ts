@@ -150,8 +150,9 @@ Scenario('I as a user should be able to search for roles',
     I.see(PARENT_ROLE);
     I.click('#roles__search-box');
     I.fillField('#roles__search-box', searchText);
-    const checkboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
-    I.wait(5);
+    I.waitForElement({ xpath: '//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']' }, 5);
+    const checkboxes = await I.grabValueFromAll({ xpath: '//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']' });
+    //const checkboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
     checkboxes.forEach(function (checkbox) {
       if (checkbox.includes(searchText)) {
         Assert.ok(true);
