@@ -1,6 +1,6 @@
 export const config: CodeceptJS.MainConfig = {
   tests: './*_test.ts',
-  output: './output',
+  output: '../../../functional-output/functional/reports',
   helpers: {
     Playwright: {
       browser: 'chromium',
