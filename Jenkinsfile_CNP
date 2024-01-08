@@ -64,65 +64,25 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('smoketest:idam-preview') {
+  afterAlways('smoketest:preview') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
       reportDir            : "test-output/smoke",
       reportFiles          : "test-report.html",
-      reportName           : "Smoke Test Report"
+      reportName           : "Smoke Test Report - Preview"
     ]
   }
 
-  afterAlways('smoketest:idam-aat') {
+  afterAlways('smoketest:aat') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
       reportDir            : "test-output/smoke",
       reportFiles          : "test-report.html",
-      reportName           : "Smoke Test Report"
-    ]
-  }
-
-  afterAlways('functionalTest:idam-preview') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "functional-output/functional/allure",
-      reportFiles          : "index.html",
-      reportName           : "Functional Test Report"
-    ]
-
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "test-output/accessibility",
-      reportFiles          : "test-report.html",
-      reportName           : "Accessibility Test Report"
-    ]
-  }
-
-  afterAlways('functionalTest:idam-aat') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "functional-output/functional/allure",
-      reportFiles          : "index.html",
-      reportName           : "Functional Test Report"
-    ]
-
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "test-output/accessibility",
-      reportFiles          : "test-report.html",
-      reportName           : "Accessibility Test Report"
+      reportName           : "Smoke Test Report - AAT"
     ]
   }
 
@@ -133,7 +93,7 @@ withPipeline(type, product, component) {
       keepAll              : true,
       reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
-      reportName           : "Functional Preview Test Report"
+      reportName           : "Functional Test Report - Preview"
     ]
 
     publishHTML target: [
@@ -142,7 +102,28 @@ withPipeline(type, product, component) {
       keepAll              : true,
       reportDir            : "test-output/accessibility",
       reportFiles          : "test-report.html",
-      reportName           : "Accessibility Preview Test Report"
+      reportName           : "Accessibility Test Report - Preview"
     ]
   }
+
+  afterAlways('functionalTest:aat') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "functional-output/functional/allure",
+      reportFiles          : "index.html",
+      reportName           : "Functional Test Report - AAT"
+    ]
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "test-output/accessibility",
+      reportFiles          : "test-report.html",
+      reportName           : "Accessibility Test Report - AAT"
+    ]
+  }
+
 }
