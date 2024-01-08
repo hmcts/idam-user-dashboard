@@ -126,14 +126,14 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('functionalTest:aat') {
+  afterAlways('functionalTest:preview') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
       reportDir            : "functional-output/functional/allure",
       reportFiles          : "index.html",
-      reportName           : "Functional AAT Test Report"
+      reportName           : "Functional Preview Test Report"
     ]
 
     publishHTML target: [
@@ -142,7 +142,7 @@ withPipeline(type, product, component) {
       keepAll              : true,
       reportDir            : "test-output/accessibility",
       reportFiles          : "test-report.html",
-      reportName           : "Accessibility AAT Test Report"
+      reportName           : "Accessibility Preview Test Report"
     ]
   }
 }
