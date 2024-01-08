@@ -11,5 +11,11 @@ export const config: CodeceptJS.MainConfig = {
   include: {
     I: './steps_file'
   },
+  plugins: {
+    allure: {
+      "enabled": true,
+      require: '@codeceptjs/allure-legacy'
+    }
+  },
   name: 'best-practice'
 };
