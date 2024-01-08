@@ -13,7 +13,7 @@ export const config: CodeceptJS.MainConfig = {
   },
   plugins: {
     allure: {
-      "enabled": true,
+      enabled: true,
       require: '@codeceptjs/allure-legacy'
     }
   },
