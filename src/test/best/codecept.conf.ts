@@ -8,7 +8,7 @@ export const config: CodeceptJS.MainConfig = {
       show: false
     },
     REST: {
-      endpoint: "https://idam-testing-support-api.aat.platform.hmcts.net",
+      endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       timeout: 30000
     },
     Testing_support: {
