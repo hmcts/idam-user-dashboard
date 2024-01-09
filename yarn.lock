@@ -2828,11 +2828,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:^20.0.0":
-  version: 20.10.7
-  resolution: "@types/node@npm:20.10.7"
+  version: 20.10.8
+  resolution: "@types/node@npm:20.10.8"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 86f4f96f5169538f47bbd652ab8e3712cd307701481ff3e9ce0c1ea7d8424a38b5ac4a1d33088cdd9ea1bfe68fd27bbae005a21969aa6d9a36295904da6f09f2
+  checksum: ce9b7ee545b3605f667be2ea900e38ab58d7b561192a7342443e5d7f61c44fd9d016eac48e95d3011f090ceea65a727e83a31d51fabdd9fc20ff9992edcbc682
   languageName: node
   linkType: hard
 
@@ -5229,20 +5229,20 @@ __metadata:
   linkType: hard
 
 "css-loader@npm:^6.8.1":
-  version: 6.8.1
-  resolution: "css-loader@npm:6.8.1"
+  version: 6.9.0
+  resolution: "css-loader@npm:6.9.0"
   dependencies:
     icss-utils: ^5.1.0
-    postcss: ^8.4.21
+    postcss: ^8.4.31
     postcss-modules-extract-imports: ^3.0.0
     postcss-modules-local-by-default: ^4.0.3
-    postcss-modules-scope: ^3.0.0
+    postcss-modules-scope: ^3.1.0
     postcss-modules-values: ^4.0.0
     postcss-value-parser: ^4.2.0
-    semver: ^7.3.8
+    semver: ^7.5.4
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 7c1784247bdbe76dc5c55fb1ac84f1d4177a74c47259942c9cfdb7a8e6baef11967a0bc85ac285f26bd26d5059decb848af8154a03fdb4f4894f41212f45eef3
+  checksum: 71f20ee5eb5a4a9373ab41a5c17df411cb4f6f2de037297a2b0c2150681578f4979f319f4307a61e23c231dd6546e657ae95cba5a0698ad13ca43f91d4d2a0bc
   languageName: node
   linkType: hard
 
@@ -7638,6 +7638,7 @@ __metadata:
     playwright: ^1.37.1
     redis: ^3.1.2
     require-directory: ^2.1.1
+    rosie: ^2.1.1
     sass-loader: ^13.3.2
     serve-favicon: ^2.5.0
     session-file-store: ^1.5.0
@@ -10980,7 +10981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-modules-scope@npm:^3.0.0":
+"postcss-modules-scope@npm:^3.1.0":
   version: 3.1.0
   resolution: "postcss-modules-scope@npm:3.1.0"
   dependencies:
@@ -11019,7 +11020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.21":
+"postcss@npm:^8.4.31":
   version: 8.4.33
   resolution: "postcss@npm:8.4.33"
   dependencies:
@@ -11730,6 +11731,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rosie@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "rosie@npm:2.1.1"
+  checksum: f259fa9f3ffbef6eb78b9996706755a2cd0e00a43d6ded229355a198f02289529201e114b6459f3fe311c1eb5d695a4645a508453657876c56fb13eeb0fe3711
+  languageName: node
+  linkType: hard
+
 "run-async@npm:^2.2.0":
   version: 2.4.1
   resolution: "run-async@npm:2.4.1"
@@ -11911,7 +11919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.1, semver@npm:^7.5.3, semver@npm:^7.5.4":
+"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.1, semver@npm:^7.5.3, semver@npm:^7.5.4":
   version: 7.5.4
   resolution: "semver@npm:7.5.4"
   dependencies:
@@ -12598,11 +12606,11 @@ __metadata:
   linkType: hard
 
 "style-loader@npm:^3.3.3":
-  version: 3.3.3
-  resolution: "style-loader@npm:3.3.3"
+  version: 3.3.4
+  resolution: "style-loader@npm:3.3.4"
   peerDependencies:
     webpack: ^5.0.0
-  checksum: f59c953f56f6a935bd6a1dfa409f1128fed2b66b48ce4a7a75b85862a7156e5e90ab163878962762f528ec4d510903d828da645e143fbffd26f055dc1c094078
+  checksum: caac3f2fe2c3c89e49b7a2a9329e1cfa515ecf5f36b9c4885f9b218019fda207a9029939b2c35821dec177a264a007e7c391ccdd3ff7401881ce6287b9c8f38b
   languageName: node
   linkType: hard
 

@@ -5,7 +5,9 @@ export const config: CodeceptJS.MainConfig = {
     Playwright: {
       browser: 'chromium',
       url: process.env.TEST_URL || 'https://idam-user-dashboard.aat.platform.hmcts.net/',
-      show: false
+      show: true,
+      timeout: 20002,
+      bypassCSP: false
     },
     REST: {
       endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
@@ -14,6 +16,25 @@ export const config: CodeceptJS.MainConfig = {
     JSONResponse: {},
     Testing_support: {
       require: './helpers/testing_support_helper.ts',
+    },
+    ApiDataFactory: {
+      endpoint: "https://idam-testing-support-api.aat.platform.hmcts.net",
+      cleanup: false,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      onRequest: async (request) => {
+        let testToken = await codeceptjs.container.support('testingToken');
+        console.log('Adding header with value ' + testToken);
+        request.headers = { 'Authorization': 'bearer ' + testToken };
+      }, 
+      factories: {
+        user: {
+          factory: "./factories/users.ts",
+          create: (data) =>  ({ method: 'POST',  url: '/test/idam/users', data })
+        },
+      }
     },
   },
   include: {

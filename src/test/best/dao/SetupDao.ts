@@ -2,31 +2,31 @@ const { I } = inject();
 
 class SetupDAO {
 
-  testingToken : string;
-
   setToken(tokenValue: string) {
-    this.testingToken = tokenValue;
+    codeceptjs.container.append({
+      support: {
+        testingToken: tokenValue
+      }
+    });
   }
   
   async getToken() {
-    if (this.testingToken) {
-      console.log('testing token is set');
-      return this.testingToken;
+    if (!codeceptjs.container.support('testingToken')) {
+      console.log('testing token is not set');
+      const tokenRsp = await I.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', { 
+        'grant_type':'client_credentials',
+        'client_id':'idam-functional-test-service',
+        'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
+        'scope':'profile roles' ,
+      },
+      {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      I.seeResponseCodeIsSuccessful();
+      this.setToken(tokenRsp.data.access_token);
     }
         
-    const tokenRsp = await I.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', { 
-      'grant_type':'client_credentials',
-      'client_id':'idam-functional-test-service',
-      'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
-      'scope':'profile roles' ,
-    },
-    {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    I.seeResponseCodeIsSuccessful();
-    this.setToken(tokenRsp.data.access_token);
-    return this.testingToken;
-  
+    return codeceptjs.container.support('testingToken');
   }
 
   async setupAdmin() {
