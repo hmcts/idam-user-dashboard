@@ -31,7 +31,14 @@ class SetupDAO {
     }
 
     async setupAdmin() {
+
+      if (codeceptjs.container.support('adminIdentity')) {
+        console.log('admin already setup');
+        return;
+      }
+
       console.log('setup admin');
+
       var testToken = await this.getToken();
       I.amBearerAuthenticated(testToken);
       const email = 'testadmin@admin.local';
