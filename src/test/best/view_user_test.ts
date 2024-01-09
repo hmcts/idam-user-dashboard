@@ -2,7 +2,7 @@ const { faker } = require('@faker-js/faker');
 
 Feature('view_user');
 
-Before(async ({ I, setupDAO, login }) => {
+Before(async ({ setupDAO, login }) => {
 
   await setupDAO.setupAdmin();
   login('admin');
@@ -17,17 +17,17 @@ Scenario('view admin user details',  ({ I }) => {
 });
 
 Scenario('view test user details',  async ({ I }) => {
-  let testUser = await I.have('user');
+  const testUser = await I.have('user');
   I.navigateToManageUser(testUser.email);
   I.see('User Details', 'h1');
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
   I.see('Active', locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
-  I.see('IDAM', locate('dd').after(locate('dt').withText('Identity Provider')))
+  I.see('IDAM', locate('dd').after(locate('dt').withText('Identity Provider')));
   I.dontSeeElement(locate('dt').withText('IdP User ID'));
 });
 
 Scenario('view test user with sso details',  async ({ I }) => {
-  let testUser = await I.have('user', {
+  const testUser = await I.have('user', {
     ssoId: faker.string.uuid(),
     ssoProvider: 'idam-sso'
   });
@@ -35,6 +35,6 @@ Scenario('view test user with sso details',  async ({ I }) => {
   I.see('User Details', 'h1');
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
   I.see('Active', locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
-  I.see('idam-sso', locate('dd').after(locate('dt').withText('Identity Provider')))
-  I.see(testUser.ssoId, locate('dd').after(locate('dt').withText('IdP User ID')))
+  I.see('idam-sso', locate('dd').after(locate('dt').withText('Identity Provider')));
+  I.see(testUser.ssoId, locate('dd').after(locate('dt').withText('IdP User ID')));
 });

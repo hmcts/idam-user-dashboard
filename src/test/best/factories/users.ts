@@ -5,7 +5,7 @@ class UserFactory extends Factory {
 
   build(attributes, options) {
     console.log('overriding build!');
-    let user = super.build(attributes, options);
+    const user = super.build(attributes, options);
     return {
       password: user.password,
       user: user
