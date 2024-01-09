@@ -3,8 +3,11 @@
 export = function() {
   return actor({
 
-    // Define custom steps here, use 'this' to access default methods of I.
-    // It is recommended to place a general 'login' function here.
-
+    loginAs(email, password) {
+      this.amOnPage('/');
+      this.fillField('Email', email);
+      this.fillField('Password', secret(password));
+      this.click('Sign in');  
+    }
   });
 }

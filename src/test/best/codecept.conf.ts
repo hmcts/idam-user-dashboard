@@ -11,6 +11,7 @@ export const config: CodeceptJS.MainConfig = {
       endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       timeout: 30000
     },
+    JSONResponse: {},
     Testing_support: {
       require: './helpers/testing_support_helper.ts',
     },
@@ -23,6 +24,24 @@ export const config: CodeceptJS.MainConfig = {
     allure: {
       enabled: true,
       require: '@codeceptjs/allure-legacy'
+    },
+    autoLogin: {
+      enabled: true,
+      saveToFile: false,
+      inject: 'login',
+      users: {
+        admin: {
+          // loginAs function is defined in `steps_file.js`
+          login: (I) => {
+            const adminIdentity = codeceptjs.container.support('adminIdentity');
+            I.loginAs(adminIdentity.email, adminIdentity.secret)},
+          // if we see manage users page,  we are logged in
+          check: (I) => {
+            I.amOnPage('/');
+            I.see('What do you want to do?');
+          }
+        }
+      }
     }
   },
   name: 'best-practice'
