@@ -1,12 +1,6 @@
 Feature('view_user');
 
-BeforeSuite(async ({ I, setupDAO }) => {
-
-  console.log('In BeforeSuite');
-
-});
-
-Before(async ({ I, setupDAO, login }) => {
+Before(async ({ setupDAO, login }) => {
 
   console.log('In Before');
   await setupDAO.setupAdmin();

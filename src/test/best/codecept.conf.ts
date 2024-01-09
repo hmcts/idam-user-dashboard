@@ -34,7 +34,8 @@ export const config: CodeceptJS.MainConfig = {
           // loginAs function is defined in `steps_file.js`
           login: (I) => {
             const adminIdentity = codeceptjs.container.support('adminIdentity');
-            I.loginAs(adminIdentity.email, adminIdentity.secret)},
+            I.loginAs(adminIdentity.email, adminIdentity.secret);
+          },
           // if we see manage users page,  we are logged in
           check: (I) => {
             I.amOnPage('/');

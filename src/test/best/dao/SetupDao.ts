@@ -16,13 +16,13 @@ class SetupDAO {
       }
         
       var tokenRsp = await I.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', { 
-          'grant_type':'client_credentials',
-          'client_id':'idam-functional-test-service',
-          'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
-          'scope':'profile roles' ,
+        'grant_type':'client_credentials',
+        'client_id':'idam-functional-test-service',
+        'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
+        'scope':'profile roles' ,
       },
       {
-          'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded'
       });
       I.seeResponseCodeIsSuccessful();
       this.setToken(tokenRsp.data.access_token);
@@ -44,17 +44,17 @@ class SetupDAO {
       const email = 'testadmin@admin.local';
       const secret = process.env.SMOKE_TEST_USER_PASSWORD;
       var adminRsp = await I.sendPostRequest('/test/idam/users', { 
-          'password': secret,
-          'user' : {
-              'email':email,
-              'forename':'admin',
-              'surname':'test',
-              'roleNames': [
-                  'idam-user-dashboard--access'
-              ]
+        'password': secret,
+        'user' : {
+          'email':email,
+          'forename':'admin',
+          'surname':'test',
+          'roleNames': [
+            'idam-user-dashboard--access'
+          ]
       }},
       {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       });
       if (adminRsp.status == 409) {
           I.seeResponseCodeIs(409);
