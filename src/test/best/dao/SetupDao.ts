@@ -17,7 +17,7 @@ class SetupDAO {
         'grant_type':'client_credentials',
         'client_id':'idam-functional-test-service',
         'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
-        'scope':'profile roles' ,
+        'scope':'profile roles',
       },
       {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -69,6 +69,7 @@ class SetupDAO {
       }
     });
   }
+
 }
 
 export = new SetupDAO();

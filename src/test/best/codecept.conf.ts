@@ -5,7 +5,7 @@ export const config: CodeceptJS.MainConfig = {
     Playwright: {
       browser: 'chromium',
       url: process.env.TEST_URL || 'https://idam-user-dashboard.aat.platform.hmcts.net/',
-      show: false,
+      show: true,
       timeout: 20002,
       bypassCSP: false
     },

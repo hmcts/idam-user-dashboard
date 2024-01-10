@@ -13,12 +13,28 @@ export = function() {
       this.checkOption('Manage an existing user');
       this.click('Continue');
       this.seeInCurrentUrl('/user/manage');
-      this.fillField('#search', searchValue);
       this.retry(3).see('Search for an existing user', 'h1');
+      this.fillField('#search', searchValue);
       this.click('Search');
       this.seeInCurrentUrl('/details');
       //this.retry(3).waitForText('User Details', '.h1'); // can cause screenshot problem
       this.retry(3).see('User Details', 'h1');
+    },
+    lockTestUser(email) {
+      for (let i=0; i<5; i++) {
+        this.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', { 
+          'grant_type':'password',
+          'client_id':'idam-functional-test-service',
+          'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
+          'scope':'profile roles',
+          'username':email,
+          'password':'invalid'
+        },
+        {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        });
+        this.wait(1);
+      }
     }
   });
 }

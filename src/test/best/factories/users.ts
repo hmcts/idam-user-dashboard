@@ -4,7 +4,6 @@ const { faker } = require('@faker-js/faker');
 class UserFactory extends Factory {
 
   build(attributes, options) {
-    console.log('overriding build!');
     const user = super.build(attributes, options);
     return {
       password: user.password,
