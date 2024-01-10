@@ -14,6 +14,9 @@ export const config: CodeceptJS.MainConfig = {
       timeout: 30000
     },
     JSONResponse: {},
+    ChaiWrapper: {
+      require: 'codeceptjs-chai'
+    },
     Testing_support: {
       require: './helpers/testing_support_helper.ts',
     },

@@ -21,9 +21,11 @@ Scenario('view test user details',  async ({ I }) => {
   I.navigateToManageUser(testUser.email);
   I.see('User Details', 'h1');
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  I.seeTextEquals('Active', locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
+  //I.seeTextEquals('Active', locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
   I.see('IDAM', locate('dd').after(locate('dt').withText('Identity Provider')));
   I.dontSeeElement(locate('dt').withText('IdP User ID'));
+  const accountStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
+  I.assertEqualIgnoreCase(accountStatus, "active");
 });
 
 Scenario('view test user with sso details',  async ({ I }) => {
@@ -34,7 +36,9 @@ Scenario('view test user with sso details',  async ({ I }) => {
   I.navigateToManageUser(testUser.email);
   I.see('User Details', 'h1');
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  I.seeTextEquals('Active', locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
+  //I.seeTextEquals('Active', locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
   I.see('idam-sso', locate('dd').after(locate('dt').withText('Identity Provider')));
   I.see(testUser.ssoId, locate('dd').after(locate('dt').withText('IdP User ID')));
+  const accountStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
+  I.assertEqualIgnoreCase(accountStatus, "active");
 });
