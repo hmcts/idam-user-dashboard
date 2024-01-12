@@ -7563,17 +7563,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:*":
+"helmet@npm:*, helmet@npm:^7.0.0":
   version: 7.1.0
   resolution: "helmet@npm:7.1.0"
   checksum: 16aaa0df997eaa18821e71389bc9ceffeeaa935df98427ede2bb006065f7e02bb1941caabea16d5a93a791cb3fe7d8a760266bc57b3b9ca5dd7da17ea84244b8
-  languageName: node
-  linkType: hard
-
-"helmet@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "helmet@npm:5.1.1"
-  checksum: b72ba26cc431804ad3b8ecdc18db95409a492cbb7a7e825efc27fc502b9433fec39fc083f2aad4fe7ed1a89a4287560b59f4435f9689eebbae6a2b61a1ec1b7d
   languageName: node
   linkType: hard
 
@@ -7905,7 +7898,7 @@ __metadata:
     express-session: ^1.17.3
     glob: ^10.3.10
     govuk-frontend: ^4.7.0
-    helmet: ^5.1.1
+    helmet: ^7.0.0
     html-webpack-plugin: ^5.6.0
     jest: ^29.7.0
     jest-html-reporter: ^3.10.2
