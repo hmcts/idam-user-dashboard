@@ -7904,7 +7904,7 @@ __metadata:
     uuid: ^9.0.0
     webpack: 5.89.0
     webpack-cli: ^5.0.0
-    webpack-dev-middleware: ^6.1.1
+    webpack-dev-middleware: ^7.0.0
     webpack-node-externals: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -9758,7 +9758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memfs@npm:^4.2.1":
+"memfs@npm:^4.2.1, memfs@npm:^4.6.0":
   version: 4.6.0
   resolution: "memfs@npm:4.6.0"
   dependencies:
@@ -13859,7 +13859,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-middleware@npm:*, webpack-dev-middleware@npm:^6.1.1":
+"webpack-dev-middleware@npm:*":
   version: 6.1.1
   resolution: "webpack-dev-middleware@npm:6.1.1"
   dependencies:
@@ -13874,6 +13874,24 @@ __metadata:
     webpack:
       optional: true
   checksum: 3bced6ef644b20f2e76df9db1c5209f4a73761d7d307fe29ae20bc00397d4f9727af2607f98794c6c7c57d5c1a48bfa12690168b08f5d46820b07aab2c63640c
+  languageName: node
+  linkType: hard
+
+"webpack-dev-middleware@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "webpack-dev-middleware@npm:7.0.0"
+  dependencies:
+    colorette: ^2.0.10
+    memfs: ^4.6.0
+    mime-types: ^2.1.31
+    range-parser: ^1.2.1
+    schema-utils: ^4.0.0
+  peerDependencies:
+    webpack: ^5.0.0
+  peerDependenciesMeta:
+    webpack:
+      optional: true
+  checksum: 90f6c87c80bd5849c34f3a1761ac7dc1b123def2e6e9922f55102ff4b7532538641fa8c7169ce8254b0d471c27d882cdf4a1c32979952474fc8eacc8b3447915
   languageName: node
   linkType: hard
 
