@@ -7882,7 +7882,7 @@ __metadata:
     nock: ^13.4.0
     node-sass: ^9.0.0
     nodemon: ^3.0.2
-    notifications-node-client: ^7.0.6
+    notifications-node-client: ^8.0.0
     npm-run-all: ^4.1.5
     nunjucks: ^3.2.4
     openid-client: ^5.6.4
@@ -10571,13 +10571,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"notifications-node-client@npm:^7.0.6":
-  version: 7.0.6
-  resolution: "notifications-node-client@npm:7.0.6"
+"notifications-node-client@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "notifications-node-client@npm:8.0.0"
   dependencies:
     axios: ^1.6.1
     jsonwebtoken: ^9.0.0
-  checksum: 91025e05a0d4c34459b15e7bb8a256222a59ce39ed0d74d6245ed749a6d03ad52d511413a931295064b0f4db27a7c670054ac60dfd823432cf8bcd7beb7bba21
+  checksum: 2f0ecdf32c0a181d45c071f453214ecf1b05edf571596548f20821326bf345096badd6e3dd9f860599afdc6e885a8356117e570a87d2eb17286ef0338508fe6c
   languageName: node
   linkType: hard
 
