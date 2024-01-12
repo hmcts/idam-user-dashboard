@@ -54,7 +54,7 @@
     "@types/uuid": "^9.0.7",
     "applicationinsights": "^2.9.2",
     "autobind-decorator": "^2.4.0",
-    "awilix": "^9.0.0",
+    "awilix": "^10.0.0",
     "axios": "^1.6.5",
     "config": "^3.3.10",
     "connect-redis": "^6.1.3",
