@@ -14,9 +14,9 @@ class UserFactory extends Factory {
 }
 
 export = new UserFactory()
-  .attr('password', faker.internet.password())
-  .attr('forename', faker.person.firstName())
-  .attr('surname', faker.person.lastName())
+  .attr('password', () => { return faker.internet.password({prefix: '0'});})
+  .attr('forename', () => { return faker.person.firstName();})
+  .attr('surname', () => { return faker.person.lastName();})
   .attr('email', ['forename', 'surname'], (forename, surname) => {
     return faker.internet.email({firstName : forename, lastName : surname, provider: 'test.local'});
   })
