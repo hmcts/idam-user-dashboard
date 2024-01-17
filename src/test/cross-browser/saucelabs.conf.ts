@@ -1,5 +1,4 @@
 import supportedBrowsers from './supportedBrowsers';
-import {event, container} from 'codeceptjs';
 
 const getBrowserConfig = browserGroup => {
   const browserConfig: any[] = [];
