@@ -19,7 +19,7 @@ export = function() {
       this.fillField('search', searchValue);
       this.click('Search');
       this.seeInCurrentUrl('/details');
-      //this.retry(3).waitForText('User Details', '.h1'); // can cause screenshot problem
+      this.waitForText('User Details', '.h1'); // can cause screenshot problem
       this.retry(3).see('User Details', 'h1');
     },
     lockTestUser(email : string) {

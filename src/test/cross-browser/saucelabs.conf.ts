@@ -93,7 +93,6 @@ export const config: CodeceptJS.MainConfig = {
   },
   name: 'cross-best-practice',
   multiple: {
-    /*
     bestcross: {
       browsers: [
         {
@@ -128,7 +127,6 @@ export const config: CodeceptJS.MainConfig = {
         }
       ]
     },
-    */
     webkit: {
       browsers: getBrowserConfig('webkit'),
     },
