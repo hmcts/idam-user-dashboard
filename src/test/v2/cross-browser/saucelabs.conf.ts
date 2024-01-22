@@ -4,7 +4,7 @@ import {event, container} from 'codeceptjs';
 const setupConfig = {
   name: 'cross-browser',
   tests: '../functional/*_test.ts',
-  output: '../../../../functional-output/functional/reports',
+  output: '../../../../functional-output/cross-browser/reports',
   include: sharedConfig.include,
   helpers: sharedConfig.helpers,
   plugins: sharedConfig.plugins,
