@@ -3082,6 +3082,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pa11y@npm:^5.3.7":
+  version: 5.3.7
+  resolution: "@types/pa11y@npm:5.3.7"
+  dependencies:
+    "@types/puppeteer": ^5.4.0
+  checksum: bcaa8b895d849b1a0877d5ed99bd8cc8643d6331450d9b9625d1658f68490fe49e2dae07d40af222eef445cd4a889e7cd9ff153c47c0126db73cd8306d3effa6
+  languageName: node
+  linkType: hard
+
+"@types/puppeteer@npm:^5.4.0":
+  version: 5.4.7
+  resolution: "@types/puppeteer@npm:5.4.7"
+  dependencies:
+    "@types/node": "*"
+  checksum: 491c0ca2d879b72e869f5152a9ea7de1356a66f44ef6210fdd5c5036d893b4ee2956212e2f3353c7045b9e56d1a4cea408f41a26d7cf3708774c4d6c19a7c654
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:*":
   version: 6.9.10
   resolution: "@types/qs@npm:6.9.10"
@@ -7876,6 +7894,7 @@ __metadata:
     "@types/mini-css-extract-plugin": ^2.5.1
     "@types/node": ^20.11.0
     "@types/nunjucks": ^3.2.6
+    "@types/pa11y": ^5.3.7
     "@types/require-directory": ^2.1.6
     "@types/serve-favicon": ^2.5.7
     "@types/session-file-store": ^1.2.5
