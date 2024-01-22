@@ -19,9 +19,6 @@ shared_config.helpers = {
   ChaiWrapper: {
     require: 'codeceptjs-chai'
   },
-  Testing_support: {
-    require: './helpers/testing_support_helper.ts',
-  },
   ApiDataFactory: {
     endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
     cleanup: false,
@@ -35,7 +32,7 @@ shared_config.helpers = {
     }, 
     factories: {
       user: {
-        factory: './factories/users.ts',
+        factory: '../common/factories/users.ts',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/users', data })
       },
     }

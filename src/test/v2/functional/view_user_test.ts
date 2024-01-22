@@ -1,6 +1,6 @@
 const { faker } = require('@faker-js/faker');
 
-Feature('view_user');
+Feature('v2_view_user');
 
 Before(async ({ setupDAO, login }) => {
 
