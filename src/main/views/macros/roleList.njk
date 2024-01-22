@@ -28,6 +28,43 @@
         classes: "role-list__search-box " + params.searchBox.classes
       }) }}
 
+      {{ govukCheckboxes({
+        name: "show-hidden",
+        classes: "govuk-checkboxes--small",
+        items: [
+          {
+            value: "showHidden",
+            text: "Hide roles I cannot assign",
+            checked: true
+          }
+        ]
+      }) }}
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const hideCheckbox = document.getElementById('show-hidden');
+
+          const disabledElements = document.querySelectorAll(':disabled');
+          for (let i = 0; i < disabledElements.length; i++) {
+              disabledElements[i].parentElement.style.display = 'none';
+          }
+
+          hideCheckbox.addEventListener('change', function () {
+            const disabledElements = document.querySelectorAll(':disabled');
+
+            if (hideCheckbox.checked) {
+              for (let i = 0; i < disabledElements.length; i++) {
+                  disabledElements[i].parentElement.style.display = 'none';
+              }
+            } else {
+              for (let i = 0; i < disabledElements.length; i++) {
+                  disabledElements[i].parentElement.style.display = '';
+              }
+            }
+          });
+        });
+      </script>
+
       <p class='role-list__number-of-roles govuk-hint'></p>
     {% endif %}
 
