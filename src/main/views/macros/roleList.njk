@@ -43,11 +43,36 @@
       <script>
         document.addEventListener('DOMContentLoaded', function () {
           const hideCheckbox = document.getElementById('show-hidden');
+          const roleList = document.getElementById('role-count');
+          let previousContent = roleList.textContent;
 
           const disabledElements = document.querySelectorAll(':disabled');
           for (let i = 0; i < disabledElements.length; i++) {
               disabledElements[i].parentElement.style.display = 'none';
           }
+
+          const checkTextChanges = () => {
+            const currentContent = roleList.textContent;
+
+            if (previousContent !== currentContent) {
+              if (previousContent.includes('filtered') && !currentContent.includes('filtered')) {
+                hideCheckbox.disabled = false;
+                if (hideCheckbox.checked) {
+                  const disabledElements = document.querySelectorAll(':disabled');
+                  for (let i = 0; i < disabledElements.length; i++) {
+                    disabledElements[i].parentElement.style.display = 'none';
+                  }
+                }
+              } else if (!previousContent.includes('filtered') && currentContent.includes('filtered')) {
+                hideCheckbox.disabled = true;
+              }
+              previousContent = currentContent;
+            }
+          };
+
+          const observer = new MutationObserver(checkTextChanges);
+          const config = { childList: true, characterData: true, subtree: true };
+          observer.observe(roleList, config);
 
           hideCheckbox.addEventListener('change', function () {
             const disabledElements = document.querySelectorAll(':disabled');
@@ -65,7 +90,7 @@
         });
       </script>
 
-      <p class='role-list__number-of-roles govuk-hint'></p>
+      <p id='role-count' class='role-list__number-of-roles govuk-hint'></p>
     {% endif %}
 
     <div class="role-list__list">
