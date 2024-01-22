@@ -1,6 +1,12 @@
 export const shared_config = {
+  include: {},
   helpers: {},
-  plugins: {}
+  plugins: {},
+}
+
+shared_config.include = {
+  I: '../common/steps_file',
+  setupDAO: '../common/dao/SetupDao.ts'
 }
 
 shared_config.helpers = {
@@ -9,7 +15,8 @@ shared_config.helpers = {
     url: process.env.TEST_URL || 'https://idam-user-dashboard.aat.platform.hmcts.net/',
     show: false,
     timeout: 20002,
-    bypassCSP: false
+    bypassCSP: false,
+    capabilities: {}
   },
   REST: {
     endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
