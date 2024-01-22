@@ -182,6 +182,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.seeInCurrentUrl('/user/edit');
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(INDEPENDANT_CHILD_ROLE);
+    I.click('Hide roles I cannot assign');
 
     //Checking the role which user doesn't have permission to assign is disabled
     const disabledRoles = await I.grabValueFromAll(locate('//input[@name=\'roles\' and @disabled]'));

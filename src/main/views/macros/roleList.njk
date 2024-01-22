@@ -46,7 +46,7 @@
           const roleList = document.getElementById('role-count');
           let previousContent = roleList.textContent;
 
-          const disabledElements = document.querySelectorAll(':disabled');
+          const disabledElements = document.querySelectorAll('input[type="checkbox"]:disabled');
           for (let i = 0; i < disabledElements.length; i++) {
               disabledElements[i].parentElement.style.display = 'none';
           }
@@ -58,7 +58,7 @@
               if (previousContent.includes('filtered') && !currentContent.includes('filtered')) {
                 hideCheckbox.disabled = false;
                 if (hideCheckbox.checked) {
-                  const disabledElements = document.querySelectorAll(':disabled');
+                  const disabledElements = document.querySelectorAll('input[type="checkbox"]:disabled');
                   for (let i = 0; i < disabledElements.length; i++) {
                     disabledElements[i].parentElement.style.display = 'none';
                   }
@@ -75,7 +75,7 @@
           observer.observe(roleList, config);
 
           hideCheckbox.addEventListener('change', function () {
-            const disabledElements = document.querySelectorAll(':disabled');
+            const disabledElements = document.querySelectorAll('input[type="checkbox"]:disabled');
 
             if (hideCheckbox.checked) {
               for (let i = 0; i < disabledElements.length; i++) {
