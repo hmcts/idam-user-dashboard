@@ -2,12 +2,12 @@ export const shared_config = {
   include: {},
   helpers: {},
   plugins: {},
-}
+};
 
 shared_config.include = {
   I: '../common/steps_file',
   setupDAO: '../common/dao/SetupDao.ts'
-}
+};
 
 shared_config.helpers = {
   Playwright: {
@@ -44,7 +44,7 @@ shared_config.helpers = {
       },
     }
   },
-}
+};
 
 shared_config.plugins = {
   allure: {
@@ -70,4 +70,4 @@ shared_config.plugins = {
       }
     }
   }
-}
+};
