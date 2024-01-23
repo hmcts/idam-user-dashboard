@@ -180,6 +180,7 @@ Scenario('I as a user should be able to edit roles only if I have the permission
     I.dontSee(ASSIGNABLE_CHILD_ROLE1);
     I.click('Edit user');
     I.seeInCurrentUrl('/user/edit');
+    I.click('Hide roles I cannot assign');
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(INDEPENDANT_CHILD_ROLE);
 
