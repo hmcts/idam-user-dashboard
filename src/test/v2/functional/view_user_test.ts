@@ -73,3 +73,14 @@ Scenario('view locked user details',  async ({ I }) => {
   I.assertEqualIgnoreCase(accountStatus, 'active');
   I.see('This account has been temporarily locked', locate('div.govuk-warning-text'));
 });
+
+Scenario('view archived user details',  async ({ I }) => {
+  const testUser = await I.have('user', {recordType: 'ARCHIVED'});
+  I.navigateToManageUser(testUser.email);
+  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
+  I.see('IDAM', locate('dd').after(locate('dt').withText('Identity Provider')));
+  I.dontSeeElement(locate('dt').withText('IdP User ID'));
+  const accountStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
+  I.assertEqualIgnoreCase(accountStatus, 'archived');
+  I.see('Archived accounts are read only.', locate('div.govuk-notification-banner'));
+});
