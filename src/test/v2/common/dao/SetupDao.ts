@@ -1,3 +1,4 @@
+const envConfig = require('config');
 const { I } = inject();
 
 class SetupDAO {
@@ -13,7 +14,7 @@ class SetupDAO {
   async getToken() {
     if (!codeceptjs.container.support('testingToken')) {
       console.log('testing token is not set');
-      const tokenRsp = await I.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', { 
+      const tokenRsp = await I.sendPostRequest(`${envConfig.get('services.idam.url.api')}/o/token`, { 
         'grant_type':'client_credentials',
         'client_id':'idam-functional-test-service',
         'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,

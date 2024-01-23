@@ -1,3 +1,5 @@
+const envConfig = require('config');
+
 export const shared_config = {
   include: {},
   helpers: {},
@@ -19,7 +21,7 @@ shared_config.helpers = {
     capabilities: {}
   },
   REST: {
-    endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+    endpoint: envConfig.get('services.idam.url.testingSupportApi'),
     timeout: 30000
   },
   JSONResponse: {},
@@ -27,7 +29,7 @@ shared_config.helpers = {
     require: 'codeceptjs-chai'
   },
   ApiDataFactory: {
-    endpoint: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+    endpoint: envConfig.get('services.idam.url.testingSupportApi'),
     cleanup: false,
     headers: {
       'Content-Type': 'application/json',
