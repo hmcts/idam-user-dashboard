@@ -44,6 +44,9 @@ shared_config.helpers = {
         factory: '../common/factories/users.ts',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/users', data })
       },
+    },
+    REST : {
+      timeout: 29999
     }
   },
 };
