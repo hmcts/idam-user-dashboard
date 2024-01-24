@@ -121,7 +121,7 @@
     "pa11y": "^7.0.0",
     "playwright": "^1.40.1",
     "rosie": "^2.1.1",
-    "sass-loader": "^13.3.3",
+    "sass-loader": "^14.0.0",
     "sonar-scanner": "^3.1.0",
     "style-loader": "^3.3.4",
     "ts-jest": "^29.1.1",
