@@ -1,5 +1,7 @@
 // in this file you can append custom step methods to 'I' object
 
+const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
+
 export = function() {
   return actor({
     loginAs(email : string, password : string) {
@@ -7,20 +9,18 @@ export = function() {
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
       this.click('Sign in');  
-      this.retry(3).see('What do you want to do?');
+      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?');
     },
     navigateToManageUser(searchValue : string) {
       this.amOnPage('/');
       this.checkOption('Manage an existing user');
       this.click('Continue');
       this.seeInCurrentUrl('/user/manage');
-      this.retry(3).see('Search for an existing user', 'h1');
-      //this.retry(3).seeElement('input[name=search]');
+      this.retry(AFTER_CLICK_RETRY).see('Search for an existing user', 'h1');
       this.fillField('search', searchValue);
       this.click('Search');
       this.seeInCurrentUrl('/details');
-      //this..waitForText('User Details', '.h1'); // can cause screenshot problem
-      this.retry(3).see('User Details', 'h1');
+      this.retry(AFTER_CLICK_RETRY).see('User Details', 'h1');
     },
     lockTestUser(email : string) {
       for (let i=0; i<5; i++) {
