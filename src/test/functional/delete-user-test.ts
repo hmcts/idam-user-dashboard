@@ -131,7 +131,7 @@ Scenario('I as a user should be able delete a stale user successfully if I have 
     I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
-    I.see('ARCHIVED');
+    I.see('Archived');
     I.click('Delete user');
     I.see('Are you sure you want to delete this user? This action is not reversible.');
     I.click('Yes');
