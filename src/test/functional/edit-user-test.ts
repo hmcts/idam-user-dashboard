@@ -227,7 +227,7 @@ Scenario('I as a user should be able to edit mfa',
     I.see('User details updated successfully');
     I.click('Return to user details');
     I.see('User Details');
-    I.see('ENABLED');
+    I.see('Enabled');
     I.click('Edit user');
     I.seeInCurrentUrl('/user/edit');
     I.see(MFA_SECURITY_WARNING);
