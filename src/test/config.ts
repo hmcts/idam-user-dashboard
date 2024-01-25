@@ -54,6 +54,9 @@ config.helpers = {
   },
   FeatureFlagHelper: {
     require: '../functional/shared/helpers/featureFlagHelper.ts'
+  },
+  A11yHelper: {
+    require: 'codeceptjs-a11y-helper'
   }
 };
 

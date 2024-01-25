@@ -35,6 +35,9 @@ Scenario('I as a user should not be able delete user if I do not have the role w
     I.see('Manage an existing user');
     I.gotoUserDetails(nonDeletableUserEmail);
     I.dontSee('Delete user');
+
+    await I.runA11yCheck();
+
   }
 );
 
@@ -53,6 +56,9 @@ Scenario('I as a user should not be able delete user with both deletable and oth
     I.see('Manage an existing user');
     I.gotoUserDetails(nonDeletableUserEmail);
     I.dontSee('Delete user');
+
+    await I.runA11yCheck();
+
   }
 );
 
@@ -70,12 +76,18 @@ Scenario('I as a user should be able delete user successfully if I have the righ
     I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
+
+    await I.runA11yCheck();
+
     I.click('Delete user');
     I.see('Are you sure you want to delete this user? This action is not reversible.');
     I.click('Yes');
     I.click('Continue');
     I.see('User deleted successfully');
     I.click('Return to main menu');
+
+    await I.runA11yCheck();
+
     I.click('Manage an existing user');
     I.click('Continue');
     I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
@@ -83,6 +95,9 @@ Scenario('I as a user should be able delete user successfully if I have the righ
     I.fillField('#search', deletableUserEmail);
     I.click('Search');
     I.see('No user matches your search for: ' + deletableUserEmail);
+
+    await I.runA11yCheck();
+
   }
 ).tag('@CrossBrowser');
 
@@ -100,12 +115,18 @@ Scenario('I as a user should be able delete users with same role successfully',
     I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
+
+    await I.runA11yCheck();
+
     I.click('Delete user');
     I.see('Are you sure you want to delete this user? This action is not reversible.');
     I.click('Yes');
     I.click('Continue');
     I.see('User deleted successfully');
     I.click('Return to main menu');
+
+    await I.runA11yCheck();
+
     I.click('Manage an existing user');
     I.click('Continue');
     I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
@@ -113,6 +134,9 @@ Scenario('I as a user should be able delete users with same role successfully',
     I.fillField('#search', deletableUserEmail);
     I.click('Search');
     I.see('No user matches your search for: ' + deletableUserEmail);
+
+    await I.runA11yCheck();
+
   }
 );
 
@@ -131,6 +155,9 @@ Scenario('I as a user should be able delete a stale user successfully if I have 
     I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
+
+    await I.runA11yCheck();
+
     I.see('ARCHIVED');
     I.click('Delete user');
     I.see('Are you sure you want to delete this user? This action is not reversible.');
@@ -138,6 +165,9 @@ Scenario('I as a user should be able delete a stale user successfully if I have 
     I.click('Continue');
     I.see('User deleted successfully');
     I.click('Return to main menu');
+
+    await I.runA11yCheck();
+
     I.click('Manage an existing user');
     I.click('Continue');
     I.see('Please enter the email address, user ID or SSO ID of the user you wish to manage');
@@ -145,6 +175,9 @@ Scenario('I as a user should be able delete a stale user successfully if I have 
     I.fillField('#search', deletableUserEmail);
     I.click('Search');
     I.see('No user matches your search for: ' + deletableUserEmail);
+
+    await I.runA11yCheck();
+
   }
 ).tag('@CrossBrowser');
 
@@ -162,11 +195,17 @@ Scenario('I as a user should be able to cancel when deleting a user',
     I.retry(3).loginAs(PARENT_ROLE_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(deletableUserEmail);
+
+    await I.runA11yCheck();
+
     I.click('Delete user');
     I.see('Are you sure you want to delete this user? This action is not reversible.');
     I.click('No');
     I.click('Continue');
     I.see('User Details');
     I.see(deletableUserEmail);
+
+    await I.runA11yCheck();
+    
   }
 );
