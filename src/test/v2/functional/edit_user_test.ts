@@ -19,7 +19,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 
   const changedForename = faker.person.firstName();
   const changedSurname = faker.person.lastName();
-  const changedEmail = faker.internet.email({firstName : changedForename, lastName : changedSurname, provider: 'test.local'})
+  const changedEmail = faker.internet.email({firstName : changedForename, lastName : changedSurname, provider: 'test.local'});
   I.fillField('forename', changedForename);
   I.fillField('surname', changedSurname);
   I.fillField('email', changedEmail);
