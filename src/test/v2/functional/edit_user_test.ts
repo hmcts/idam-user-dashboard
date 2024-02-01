@@ -31,7 +31,12 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeInField('surname', changedSurname);
   I.seeInField('email', changedEmail);
   I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+
+  I.click('Return to user details');
+  I.seeAfterClick('User Details', 'h1');
+  I.seeElement(locate('button').withText('Delete user'))
 });
+
 
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
   const testRole = await I.have('role');
@@ -41,6 +46,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
   const testRoleDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name: 'roles', value: testRole.name}));
   I.assertTrue(testRoleDisabled);
+  I.seeElement(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   
   I.checkOption(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
@@ -51,6 +57,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
   I.see(setupDAO.getWorkerRole().name, locate('dd').after(locate('dt').withText('Assigned roles')));
+  I.dontSeeElement(locate('button').withText('Delete user'))
 });
 
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
@@ -126,4 +133,19 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
   I.navigateToEditUser(testUser.email);
   const emailDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name:'email'}));
   I.assertTrue(emailDisabled);
+});
+
+Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
+  const testRole = await I.have('role', { name: 'iud-filter-role-' + faker.word.noun()});
+  const testUser = await I.have('user', {roleNames: [testRole.name]});
+  I.navigateToEditUser(testUser.email);
+  pause();
+  I.seeInField('email', testUser.email);
+
+  I.fillField('#roles__search-box', 'iud-filter-role-');
+
+  const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
+  roleCheckboxes.forEach(function (checkbox) {
+    I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
+  });
 });
