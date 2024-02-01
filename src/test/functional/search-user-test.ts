@@ -45,7 +45,7 @@ Scenario('I should be able to search with user-email', async ({I}) => {
   I.fillField('#search', CITIZEN_USER_EMAIL);
   I.click('Search');
   I.see('User Details');
-  I.see('ACTIVE');
+  I.see('Active');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
   I.see(testConfig.USER_LASTNAME);
@@ -62,7 +62,7 @@ Scenario('I should be able to search with user-id', async ({I}) => {
   I.fillField('#search', citizenUser.id);
   I.click('Search');
   I.see('User Details');
-  I.see('ACTIVE');
+  I.see('Active');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
   I.see(testConfig.USER_LASTNAME);
@@ -79,7 +79,7 @@ Scenario('I should be able to search with sso-id', async ({I}) => {
   I.fillField('#search', citizenUser.ssoId);
   I.click('Search');
   I.see('User Details');
-  I.see('ACTIVE');
+  I.see('Active');
   I.see(CITIZEN_USER_EMAIL);
   I.see(testConfig.USER_FIRSTNAME);
   I.see(testConfig.USER_LASTNAME);

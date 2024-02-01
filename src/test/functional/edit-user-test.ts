@@ -17,7 +17,7 @@ const INDEPENDANT_CHILD_ROLE = randomData.getRandomRole();
 const PARENT_ROLE_EMAIL = randomData.getRandomEmailAddress();
 
 const MFA_ENABLED_FLAG = 'enabled';
-const MFA_DISABLED_TEXT = 'DISABLED';
+const MFA_DISABLED_TEXT = 'Disabled';
 const MFA_SECURITY_WARNING = 'Only disable MFA for a user if they have a \'justice.gov.uk\' or \'hmcts.net\' email address. Contact the information security team if you want to make an exception.';
 
 BeforeSuite(async () => {
@@ -227,7 +227,7 @@ Scenario('I as a user should be able to edit mfa',
     I.see('User details updated successfully');
     I.click('Return to user details');
     I.see('User Details');
-    I.see('ENABLED');
+    I.see('Enabled');
     I.click('Edit user');
     I.seeInCurrentUrl('/user/edit');
     I.see(MFA_SECURITY_WARNING);
