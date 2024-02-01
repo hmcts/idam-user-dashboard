@@ -2,7 +2,7 @@ import {shared_config as sharedConfig} from '../common/shared_config';
 
 export const config: CodeceptJS.MainConfig = {
   name: 'best-practice',
-  tests: './edit*_test.ts',
+  tests: './*_test.ts',
   output: '../../../../functional-output/functional/reports',
   include: {
     I: '../common/steps_file',
