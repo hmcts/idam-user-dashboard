@@ -41,7 +41,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
   const testRoleDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name: 'roles', value: testRole.name}));
   I.assertTrue(testRoleDisabled);
-  I.dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   
   I.checkOption(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   I.click('Save');
@@ -52,7 +52,6 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.seeAfterClick('User Details', 'h1');
   I.see(setupDAO.getWorkerRole().name, locate('dd').after(locate('dt').withText('Assigned roles')));
 });
-
 
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
   const testUser = await I.have('user');
@@ -100,4 +99,21 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('No changes to the user were made');
 
+});
+
+Scenario('I as an admin can enable MFA', async ({ I, setupDAO }) => {
+  const testUser = await I.have('user', {roleNames: ['idam-mfa-disabled']});
+  I.navigateToEditUser(testUser.email);
+  I.seeInField('email', testUser.email);
+  I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+
+  I.checkOption(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  I.click('Save');
+  I.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
+  I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
+
+  I.click('Return to user details');
+  I.seeAfterClick('User Details', 'h1');
+  const accountStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Multi-factor authentication'))));
+  I.assertEqualIgnoreCase(accountStatus, 'enabled');
 });
