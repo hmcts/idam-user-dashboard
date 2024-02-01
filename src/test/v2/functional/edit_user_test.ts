@@ -114,6 +114,16 @@ Scenario('I as an admin can enable MFA', async ({ I }) => {
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  const accountStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Multi-factor authentication'))));
-  I.assertEqualIgnoreCase(accountStatus, 'enabled');
+  const mfaStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Multi-factor authentication'))));
+  I.assertEqualIgnoreCase(mfaStatus, 'enabled');
+});
+
+Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
+  const testUser = await I.have('user', {
+    ssoId: faker.string.uuid(),
+    ssoProvider: 'azure'
+  });
+  I.navigateToEditUser(testUser.email);
+  const emailDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name:'email'}));
+  I.assertTrue(emailDisabled);
 });
