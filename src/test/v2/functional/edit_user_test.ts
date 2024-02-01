@@ -30,13 +30,13 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeInField('forename', changedForename);
   I.seeInField('surname', changedSurname);
   I.seeInField('email', changedEmail);
-  I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.retry(9).seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
+  I.scrollPageToBottom();
   I.seeElement(locate('button').withText('Delete user'));
 });
-
 
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
   const testRole = await I.have('role');
@@ -53,6 +53,8 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.click('Save');
   I.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
+
+  I.scrollPageToBottom();
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
