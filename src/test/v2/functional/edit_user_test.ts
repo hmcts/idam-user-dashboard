@@ -34,7 +34,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  I.seeElement(locate('button').withText('Delete user'))
+  I.seeElement(locate('button').withText('Delete user'));
 });
 
 
@@ -57,7 +57,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
   I.see(setupDAO.getWorkerRole().name, locate('dd').after(locate('dt').withText('Assigned roles')));
-  I.dontSeeElement(locate('button').withText('Delete user'))
+  I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
@@ -135,17 +135,16 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
   I.assertTrue(emailDisabled);
 });
 
-Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
+Scenario('I as an admin can filter roles', async ({ I }) => {
   const testRole = await I.have('role', { name: 'iud-filter-role-' + faker.word.noun()});
   const testUser = await I.have('user', {roleNames: [testRole.name]});
   I.navigateToEditUser(testUser.email);
-  pause();
   I.seeInField('email', testUser.email);
 
   I.fillField('#roles__search-box', 'iud-filter-role-');
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
-  roleCheckboxes.forEach(function (checkbox) {
+  roleCheckboxes.forEach(function () {
     I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
   });
 });
