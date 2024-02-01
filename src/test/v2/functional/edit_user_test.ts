@@ -101,7 +101,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
 });
 
-Scenario('I as an admin can enable MFA', async ({ I, setupDAO }) => {
+Scenario('I as an admin can enable MFA', async ({ I }) => {
   const testUser = await I.have('user', {roleNames: ['idam-mfa-disabled']});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
