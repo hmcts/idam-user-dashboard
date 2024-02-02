@@ -23,6 +23,7 @@ npm-debug.log.*
 dist/
 public/
 functional-output/
+src/main/views/govuk
 test-output/
 
 # Yarn 3 files

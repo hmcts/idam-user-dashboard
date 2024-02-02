@@ -30,7 +30,7 @@ Scenario('I as a user should be able to suspend a user',
     I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
-    I.see('ACTIVE');
+    I.see('Active');
     I.click('Suspend user');
     I.see('Are you sure you want to suspend this user?');
     I.click('Yes');
@@ -38,7 +38,7 @@ Scenario('I as a user should be able to suspend a user',
     I.see('User suspended successfully');
     I.see(userEmail);
     I.click('Return to user details');
-    I.see('SUSPENDED');
+    I.see('Suspended');
     I.see(userEmail);
   }
 ).tag('@CrossBrowser');
@@ -58,7 +58,7 @@ Scenario('I as a user should be able to unsuspend a user',
     I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
-    I.see('SUSPENDED');
+    I.see('Suspended');
     I.click('Unsuspend user');
     I.see('Are you sure you want to unsuspend this user?');
     I.click('Yes');
@@ -66,7 +66,7 @@ Scenario('I as a user should be able to unsuspend a user',
     I.see('User unsuspended successfully');
     I.see(userEmail);
     I.click('Return to user details');
-    I.see('ACTIVE');
+    I.see('Active');
     I.see(userEmail);
   }
 );
@@ -85,12 +85,12 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
-    I.see('ACTIVE');
+    I.see('Active');
     I.click('Suspend user');
     I.see('Are you sure you want to suspend this user?');
     I.click('No');
     I.click('Continue');
-    I.see('ACTIVE');
+    I.see('Active');
     I.see('Suspend user');
     I.see(userEmail);
   }
@@ -111,12 +111,12 @@ Scenario('I as a user should be redirected to user-details page if I select no w
     I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.see('Manage an existing user');
     I.gotoUserDetails(userEmail);
-    I.see('SUSPENDED');
+    I.see('Suspended');
     I.click('Unsuspend user');
     I.see('Are you sure you want to unsuspend this user?');
     I.click('No');
     I.click('Continue');
-    I.see('SUSPENDED');
+    I.see('Suspended');
     I.see('Unsuspend user');
     I.see(userEmail);
   }
