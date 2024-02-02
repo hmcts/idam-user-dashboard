@@ -34,9 +34,10 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  //I.scrollPageToBottom();
+  I.scrollPageToBottom();
   I.seeElement(locate('button').withText('Suspend user'));
   //I.seeElement(locate('button').withText('Delete user'));
+  I.seeElement('Delete user');
 });
 
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
@@ -49,7 +50,8 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.assertTrue(testRoleDisabled);
   //I.seeElement(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   //I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
-  
+  I.dontSeeCheckboxIsChecked(setupDAO.getWorkerRole().name);
+
   I.checkOption(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   I.click('Save');
   I.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
