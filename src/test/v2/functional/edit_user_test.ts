@@ -36,8 +36,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeAfterClick('User Details', 'h1');
   I.scrollPageToBottom();
   I.seeElement(locate('button').withText('Suspend user'));
-  //I.seeElement(locate('button').withText('Delete user'));
-  I.seeElement('Delete user');
+  I.seeElement(locate('button').withText('Delete user'));
 });
 
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
@@ -48,9 +47,8 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
   const testRoleDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name: 'roles', value: testRole.name}));
   I.assertTrue(testRoleDisabled);
-  //I.seeElement(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
-  //I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
-  I.dontSeeCheckboxIsChecked(setupDAO.getWorkerRole().name);
+  I.seeElement(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
 
   I.checkOption(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
   I.click('Save');
