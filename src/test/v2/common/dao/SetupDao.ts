@@ -147,6 +147,10 @@ class SetupDAO {
     return codeceptjs.container.support('workerRole');
   }
 
+  getAdminRole() {
+    return codeceptjs.container.support('adminRole');
+  }
+
 }
 
 export = new SetupDAO();
