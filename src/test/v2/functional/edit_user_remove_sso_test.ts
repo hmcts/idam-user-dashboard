@@ -9,7 +9,7 @@ Before(async ({ setupDAO, login }) => {
 
 });
 
-Scenario('I as an admin can remove SSO successfully',  async ({ I, setupDAO }) => {
+Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
   const testUser = await I.have('user', {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
@@ -34,7 +34,7 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I, setupDAO }) =
   I.dontSeeElement(locate('dt').withText('IdP User ID'));
 });
 
-Scenario('I as an admin can cancel removing SSO',  async ({ I, setupDAO }) => {
+Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
   const testUser = await I.have('user', {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'

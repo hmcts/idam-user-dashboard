@@ -7,7 +7,7 @@ Before(async ({ setupDAO, login }) => {
 
 });
 
-Scenario('I as an admin can delete user successfully',  async ({ I, setupDAO }) => {
+Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   const testUser = await I.have('user');
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
@@ -36,7 +36,7 @@ Scenario('I as an admin cannot delete user with unmanageable roles',  async ({ I
   I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
-Scenario('I as an admin can delete archived user successfully',  async ({ I, setupDAO }) => {
+Scenario('I as an admin can delete archived user successfully',  async ({ I }) => {
   const testUser = await I.have('user', {recordType: 'ARCHIVED'});
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
@@ -59,7 +59,7 @@ Scenario('I as an admin can delete archived user successfully',  async ({ I, set
   I.see('No user matches your search for: ' + testUser.email);
 });
 
-Scenario('I as an admin can cancel deleting a user',  async ({ I, setupDAO }) => {
+Scenario('I as an admin can cancel deleting a user',  async ({ I }) => {
   const testUser = await I.have('user');
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
