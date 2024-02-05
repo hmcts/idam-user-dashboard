@@ -12,15 +12,18 @@ export = function() {
       this.seeAfterClick('What do you want to do?');
     },
     navigateToManageUser(searchValue : string) {
+      this.navigateToSearchUser();
+      this.fillField('search', searchValue);
+      this.click('Search');
+      this.seeInCurrentUrl('/details');
+      this.seeAfterClick('User Details', 'h1');
+    },
+    navigateToSearchUser() {
       this.amOnPage('/');
       this.checkOption('Manage an existing user');
       this.click('Continue');
       this.seeInCurrentUrl('/user/manage');
       this.seeAfterClick('Search for an existing user', 'h1');
-      this.fillField('search', searchValue);
-      this.click('Search');
-      this.seeInCurrentUrl('/details');
-      this.seeAfterClick('User Details', 'h1');
     },
     navigateToEditUser(searchValue : string) {
       this.navigateToManageUser(searchValue);
