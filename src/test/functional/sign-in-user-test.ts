@@ -12,7 +12,7 @@ Scenario('I as a user with access role can sign in', async ({I}) => {
     testConfig.USER_FIRSTNAME,
     [testConfig.RBAC.access]
   );
-  I.loginAs(userEmail);
+  I.retry(3).loginAs(userEmail);
   I.dontSee('Sorry, access to this resource is forbidden');
   I.dontSee('Status code: 403');
   I.dontSee('Status code: 400');
@@ -28,7 +28,7 @@ Scenario('I as a user without access role cannot access service and is shown err
     testConfig.USER_FIRSTNAME,
     [testConfig.USER_ROLE_CITIZEN]
   );
-  I.loginAs(userEmail);
+  I.retry(3).loginAs(userEmail);
   I.see('Sorry, access to this resource is forbidden');
   I.see('Status code: 403');
   I.dontSeeCookie('idam_user_dashboard_session');
@@ -43,7 +43,7 @@ Scenario('I as a user with citizen role cannot access service and is shown error
     testConfig.USER_FIRSTNAME,
     [testConfig.USER_ROLE_CITIZEN]
   );
-  I.loginAs(userEmail);
+  I.retry(3).loginAs(userEmail);
   I.see('Sorry, access to this resource is forbidden');
   I.see('Status code: 403');
   I.dontSeeCookie('idam_user_dashboard_session');

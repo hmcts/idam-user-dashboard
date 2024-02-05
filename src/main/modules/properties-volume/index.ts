@@ -9,7 +9,7 @@ export class PropertiesVolume {
   enableFor(app: Application): void {
     if (app.locals.ENV !== 'development') {
       propertiesVolume.addTo(config);
-      this.setSecret('secrets.idam-idam.AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
+      this.setSecret('secrets.idam-idam.AppInsightsConnectionString', 'appInsights.connectionString');
       this.setSecret('secrets.idam-idam.launchdarkly-sdk-key', 'featureFlags.launchdarkly.sdkKey');
       this.setSecret('secrets.idam-idam.idam-user-dashboard-client-secret', 'services.idam.clientSecret');
       this.setSecret('secrets.idam-idam.idam-user-dashboard-systemUser-username', 'services.idam.systemUser.username');
@@ -28,7 +28,7 @@ export class PropertiesVolume {
 
       this.setSecret('session.redis.key', 'session.secret');
     } else {
-      this.setLocalSecret('AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
+      this.setLocalSecret('AppInsightsConnectionString', 'appInsights.connectionString');
       this.setLocalSecret('launchdarkly-sdk-key', 'featureFlags.launchdarkly.sdkKey');
       this.setLocalSecret('idam-user-dashboard-client-secret', 'services.idam.clientSecret');
     }

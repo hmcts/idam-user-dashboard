@@ -131,20 +131,6 @@ export const retireStaleUser = async (userId: string) => {
   }
 };
 
-export const deleteStaleUser = async (userId: string) => {
-  const authToken = await getAuthToken();
-  try {
-    await axios.delete(
-      `${config.get('services.idam.url.api')}/api/v1/staleUsers/${userId}`,
-      {
-        headers: {'Authorization': 'AdminApiAuthToken ' + authToken},
-      }
-    );
-  } catch (e) {
-    throw new Error(`Failed to delete stale user: ${userId}, http-status: ${e.response?.status}`);
-  }
-};
-
 export const suspendUser = async (userId: string) => {
   const OIDCToken = await getOIDCToken();
   try {
@@ -176,38 +162,27 @@ export const getUserDetails = async (email: string) => {
   }
 };
 
-export const deleteUser = async (email: string) => {
-  try {
-    await axios.delete(
-      `${config.get('services.idam.url.api')}/testing-support/accounts/${email}`
-    );
-  } catch (e) {
-    throw new Error(`Failed to delete user with email ${email}, http-status: ${e.response?.status}`);
-  }
-};
-
-export const deleteAllTestData = async (testDataPrefix = '', userNames: string[] = [], roleNames: string[] = [], serviceNames: string[] = [], async = true) => {
-  try {
-    await axios.delete(
-      `${config.get('services.idam.url.api')}/testing-support/test-data?async=${async}&userNames=${userNames.join(',')}&roleNames=${roleNames.join(',')}&testDataPrefix=${testDataPrefix}&serviceNames=${serviceNames.join(',')}`
-    );
-  } catch (e) {
-    throw new Error(`Error deleting test data with prefix  ${testDataPrefix}, response ${e.response?.status}`);
-  }
-};
-
 export const extractUrlFromNotifyEmail = async (searchEmail: string) => {
+  let retries = 0;
+  const maxRetries = 5;
+  const retryInterval = 1000;
+
   const OIDCToken = await getOIDCToken();
-  try {
-    return (await axios.get(
-      `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
-      {
-        headers: {'Authorization': 'Bearer ' + OIDCToken},
-      }
-    )).data;
-  } catch (e) {
-    throw new Error(`Failed to extract email from Notify for ${searchEmail}, http-status: ${e.response?.status}`);
+  while (retries < maxRetries) {
+    try {
+      return (await axios.get(
+        `${config.get('services.idam.url.testingSupportApi')}/test/idam/notifications/latest/${searchEmail}`,
+        {
+          headers: {'Authorization': 'Bearer ' + OIDCToken},
+        }
+      )).data;
+    } catch (e) {
+      console.error(`Error while searching for notifications ${e.response}. Retry ${retries} of ${maxRetries}.`);
+      retries++;
+      await new Promise(resolve => setTimeout(resolve, retryInterval));
+    }
   }
+  throw new Error(`Max retries reached. Failed to extract email from Notify for ${searchEmail}`);
 };
 
 export const activateUserAccount = async (code: string, token: string) => {

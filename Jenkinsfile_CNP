@@ -1,11 +1,19 @@
 #!groovy
 
+properties([
+  parameters([
+    string(name: 'ENVIRONMENT', defaultValue: 'aat', description: 'Environment to test'),
+    string(name: 'TEST_URL', defaultValue: 'https://idam-user-dashboard.aat.platform.hmcts.net', description: 'The URL you want to run tests against'),
+    string(name: 'TESTING_SUPPORT_URL', defaultValue: 'https://idam-testing-support-api.aat.platform.hmcts.net', description: 'The URL for the testing support api')
+  ])
+])
+
 @Library("Infrastructure")
 
 def type = "nodejs"
 def product = "idam"
 def component = "user-dashboard"
-
+def branchesToSync = ['nightly-dev']
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -30,6 +38,7 @@ def secrets = [
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   disableLegacyDeployment()
+  syncBranchesWithMaster(branchesToSync)
 
   afterSuccess('build') {
     yarnBuilder.yarn('build')
@@ -55,7 +64,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('smoketest:idam-preview') {
+  afterAlways('smoketest:preview') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -66,7 +75,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('smoketest:idam-aat') {
+  afterAlways('smoketest:aat') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -77,7 +86,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('functionalTest:idam-preview') {
+  afterAlways('functionalTest:preview') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -97,7 +106,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('functionalTest:idam-aat') {
+  afterAlways('functionalTest:aat') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,

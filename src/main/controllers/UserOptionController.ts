@@ -54,8 +54,8 @@ export class UserOptionController extends RootController {
 
   private composeOptions(options: SelectItem[]): string {
     const optionsText = [];
-    for (let i = 0; i < options.length; i++) {
-      optionsText.push(options[i].text.toLowerCase());
+    for (const item of options) {
+      optionsText.push(item.text.toLowerCase());
     }
     return constructOptionsStringFromArray(optionsText);
   }

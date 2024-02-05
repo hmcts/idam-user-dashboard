@@ -5,7 +5,11 @@ import { User } from '../interfaces/User';
 export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
 
 const sortRolesByName = (a: string, b: string): number => {
-  return a < b ? -1 : a > b ? 1 : 0;
+  if (a < b) {
+    return -1;
+  } else {
+    return a > b ? 1 : 0;
+  }
 };
 
 const sortRolesByAssignableAndName = (a: UserRoleAssignment, b: UserRoleAssignment): number => {

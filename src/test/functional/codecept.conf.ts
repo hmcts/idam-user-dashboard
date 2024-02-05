@@ -1,5 +1,4 @@
 import {config as testConfig} from '../config';
-import {deleteAllTestData} from './shared/testingSupportApi';
 
 export const config: CodeceptJS.Config = {
   name: 'functional',
@@ -9,9 +8,6 @@ export const config: CodeceptJS.Config = {
   timeout: 59000,
   include: {
     I: './custom-steps.ts',
-  },
-  async teardownAll() {
-    await deleteAllTestData(testConfig.TEST_SUITE_PREFIX);
   },
   mocha: {},
   plugins: testConfig.plugins,

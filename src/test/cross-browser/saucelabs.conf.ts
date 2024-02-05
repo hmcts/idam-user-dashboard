@@ -34,7 +34,7 @@ const setupConfig = {
       waitForTimeout: 60002,
       waitForAction: 800,
       timeout: 20004,
-      waitForNavigation: 'domcontentloaded',
+      waitForNavigation: 'networkidle0',
       ignoreHTTPSErrors: true,
       capabilities: {},
     },

@@ -70,29 +70,14 @@ export class UserEditController extends RootController {
     const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
     const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
-
-    let mfaAdded, mfaRemoved = false;
-
-    if (!user.ssoProvider) {
-      mfaAdded = mfaAssignable && !originalMfa && typeof editedMfa !== 'undefined';
-      mfaRemoved = mfaAssignable && originalMfa && typeof editedMfa === 'undefined';
-    }
+    const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
 
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved;
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
     // No changes
     if (isObjectEmpty(changedFields) && !rolesChanged) {
-      const error = { userEditForm: { message: USER_UPDATE_NO_CHANGE_ERROR }};
-      return super.post(req, res, 'edit-user', {
-        content: {
-          user,
-          roles: roleAssignments,
-          showMfa: mfaAssignable,
-          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
-        },
-        error
-      });
+      return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments, mfaAssignable);
     }
 
     Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
@@ -146,6 +131,29 @@ export class UserEditController extends RootController {
         error
       });
     }
+  }
+
+  private userWasNotChangedErrorMessage(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[], mfaAssignable: any) {
+    const error = {userEditForm: {message: USER_UPDATE_NO_CHANGE_ERROR}};
+    return super.post(req, res, 'edit-user', {
+      content: {
+        user,
+        roles: roleAssignments,
+        showMfa: mfaAssignable,
+        ...(user.ssoProvider) && {mfaMessage: this.generateMFAMessage(user.ssoProvider)}
+      },
+      error
+    });
+  }
+
+  private wasMfaAddedOrRemoved(user: User, mfaAssignable: any, originalMfa: boolean, editedMfa: boolean) {
+    let mfaAdded, mfaRemoved = false;
+
+    if (!user.ssoProvider) {
+      mfaAdded = mfaAssignable && !originalMfa && typeof editedMfa !== 'undefined';
+      mfaRemoved = mfaAssignable && originalMfa && typeof editedMfa === 'undefined';
+    }
+    return {mfaAdded, mfaRemoved};
   }
 
   private comparePartialUsers(userA: Partial<User>, userB: Partial<User>) {

@@ -46,7 +46,7 @@ Scenario('I as a user should be able to generate user report',
     );
     I.retireStaleUser(archivedUser.id);
 
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.click('Generate a user report');
     I.click('Continue');
     I.see('Generate report');
@@ -71,13 +71,12 @@ Scenario('I as a user should be able to generate user report',
     Assert.equal(emails.includes(activeUserEmail), true);
     Assert.equal(emails.includes(archivedUserEmail), false);
 
-    I.deleteStaleUser(archivedUser.id);
   }).tag('@CrossBrowser').retry(2);
 
 Scenario('I as a user should not be able to see the users with citizen role and I should see proper error message',
   {featureFlags: [GAMMA_GENERATE_REPORT]},
   async ({I}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.click('Generate a user report');
     I.click('Continue');
     I.see('Generate report');
@@ -91,7 +90,7 @@ Scenario('I as a user should not be able to see the users with citizen role and 
 Scenario('I as a user should see proper error message when role name not entered',
   {featureFlags: [GAMMA_GENERATE_REPORT]},
   async ({I}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.click('Generate a user report');
     I.click('Continue');
     I.see('Generate report');
@@ -105,7 +104,7 @@ Scenario('I as a user should see proper error message when role name not entered
 Scenario('I as a user should see proper error message when role entered does not exist',
   {featureFlags: [GAMMA_GENERATE_REPORT]},
   async ({I}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.click('Generate a user report');
     I.click('Continue');
     I.see('Generate report');
@@ -119,7 +118,7 @@ Scenario('I as a user should see proper error message when role entered does not
 Scenario('I as a user should see proper error message when role entered does not have any user',
   {featureFlags: [GAMMA_GENERATE_REPORT]},
   async ({I}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL);
     I.click('Generate a user report');
     I.click('Continue');
     I.see('Generate report');

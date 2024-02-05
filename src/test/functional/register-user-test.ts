@@ -40,7 +40,7 @@ Scenario('I as a user should be able to register new support user',
   {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -60,7 +60,8 @@ Scenario('I as a user should be able to register new support user',
     I.see(ASSIGNABLE_CHILD_ROLE2);
     I.see(PARENT_ROLE);
     I.checkOption(ASSIGNABLE_CHILD_ROLE2);
-    I.click('Save');
+    I.scrollPageToBottom();
+    I.retry(3).click('Save');
     I.see('User registered');
 
     const response = await I.extractUrlFromNotifyEmail(registerUserEmail);
@@ -84,7 +85,7 @@ Scenario('I as a user should be able to register new private beta citizen user',
   {featureFlags: [BETA_ADD, GAMMA_PRIVATE_BETA]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -128,7 +129,7 @@ Scenario('I as a user should be able to search for roles',
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
     const searchText = ASSIGNABLE_CHILD_ROLE2.substring(0, 10);
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -167,7 +168,7 @@ incorrectEmailAddresses.add(['email@com..']);
 Data(incorrectEmailAddresses).Scenario('I as a user should see proper error message when register users email format is not correct',
   {featureFlags: [BETA_ADD]},
   async ({I, current}) => {
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -183,7 +184,7 @@ Scenario('I as a user should be able to see proper error messages when add-user 
   {featureFlags: [BETA_ADD]},
   async ({I}) => {
     const registerUserEmail = randomData.getRandomEmailAddress();
-    I.loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
+    I.retry(3).loginAs(DASHBOARD_USER_EMAIL, testConfig.PASSWORD);
     I.see('Manage an existing user');
     I.see('Add a new user');
     I.click('Add a new user');
@@ -222,6 +223,7 @@ Scenario('I as a user should be able to see proper error messages when add-user 
     I.see(ASSIGNABLE_CHILD_ROLE1);
     I.see(ASSIGNABLE_CHILD_ROLE2);
     I.see(PARENT_ROLE);
+    I.scrollPageToBottom();
     I.click('Save');
     I.see('There is a problem');
     I.see('A user must have at least one role assigned to be able to create them');
