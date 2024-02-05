@@ -46,6 +46,19 @@ export = function() {
         });
         this.wait(1);
       }
+    },
+    locateDataForTitle(title: string) {
+      return locate('dd').after(locate('dt').withText(title).as(title));
+    },
+    locateStrongDataForTitle(title: string) {
+      return locate('strong').inside(locate('dd').after(locate('dt').withText(title)).as(title));
+    },
+    locateTitle(title: string) {
+      return locate('dt').withText(title).as(title);
+    },
+    async seeIgnoreCase(expectedValue: string, location) {
+      const actualValue = await this.grabTextFrom(location);
+      this.assertEqualIgnoreCase(actualValue, expectedValue);
     }
   });
 }
