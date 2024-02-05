@@ -1,6 +1,4 @@
-import { faker } from '@faker-js/faker';
-
-Feature('v2_view_user');
+Feature('v2_generate_report');
 
 Before(async ({ setupDAO, login }) => {
 
@@ -49,7 +47,6 @@ Scenario('I as an admin can generate a report', async ({ I }) => {
   I.fillField('search', testRole.name);
   I.click('Generate report');
   I.wait(5);
-  pause();
   I.seeAfterClick('Generated Report', 'h1');
 
   I.see('Download report (CSV)');

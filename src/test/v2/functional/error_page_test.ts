@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 Feature('v2_error_page');
 
 Before(async ({ setupDAO, login }) => {
