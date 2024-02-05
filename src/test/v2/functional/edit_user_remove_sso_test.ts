@@ -30,7 +30,7 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
   I.see(testUser.email, I.locateDataForTitle('Email'));
-  I.see('IDAM.net', I.locateDataForTitle('Identity Provider'));
+  I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
 });
 
