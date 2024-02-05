@@ -56,6 +56,9 @@ export = function() {
     locateTitle(title: string) {
       return locate('dt').withText(title).as(title);
     },
+    locateInput(locateName: string, locateValue: string) {
+      return locate('input').withAttr({name: locateName, value: locateValue});
+    },
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
       this.assertEqualIgnoreCase(actualValue, expectedValue);
