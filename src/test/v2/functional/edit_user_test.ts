@@ -123,7 +123,7 @@ Scenario('I as an admin can enable MFA', async ({ I }) => {
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  I.seeIgnoreCase('enabled', I.locateStrongDataForTitle('Multi-factor authentication'))
+  I.seeIgnoreCase('enabled', I.locateStrongDataForTitle('Multi-factor authentication'));
 });
 
 Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
