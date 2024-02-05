@@ -15,7 +15,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeInField('forename', testUser.forename);
   I.seeInField('surname', testUser.surname);
   I.seeInField('email', testUser.email);
-  I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
   const changedForename = faker.person.firstName();
   const changedSurname = faker.person.lastName();
@@ -30,7 +30,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeInField('forename', changedForename);
   I.seeInField('surname', changedSurname);
   I.seeInField('email', changedEmail);
-  I.retry(9).seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
@@ -44,13 +44,12 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   const testUser = await I.have('user', {roleNames: [testRole.name]});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
-  I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
-  const testRoleDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name: 'roles', value: testRole.name}));
+  I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
+  const testRoleDisabled = await I.grabDisabledElementStatus(I.locateInput('roles', testRole.name));
   I.assertTrue(testRoleDisabled);
-  I.seeElement(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
-  I.dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.dontSeeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
-  I.checkOption(locate('input').withAttr({name: 'roles', value: setupDAO.getWorkerRole().name}));
+  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
   I.click('Save');
   I.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
@@ -59,7 +58,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  I.see(setupDAO.getWorkerRole().name, locate('dd').after(locate('dt').withText('Assigned roles')));
+  I.see(setupDAO.getWorkerRole().name, I.locateDataForTitle('Assigned roles'));
   I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
@@ -124,8 +123,7 @@ Scenario('I as an admin can enable MFA', async ({ I }) => {
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  const mfaStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Multi-factor authentication'))));
-  I.assertEqualIgnoreCase(mfaStatus, 'enabled');
+  I.seeIgnoreCase('enabled', I.locateStrongDataForTitle('Multi-factor authentication'));
 });
 
 Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
@@ -148,6 +146,6 @@ Scenario('I as an admin can filter roles', async ({ I }) => {
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
   roleCheckboxes.forEach(function () {
-    I.seeCheckboxIsChecked(locate('input').withAttr({name: 'roles', value: testRole.name}));
+    I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
   });
 });

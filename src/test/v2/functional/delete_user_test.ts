@@ -10,7 +10,7 @@ Before(async ({ setupDAO, login }) => {
 Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   const testUser = await I.have('user');
   I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
@@ -32,16 +32,15 @@ Scenario('I as an admin cannot delete user with unmanageable roles',  async ({ I
   const testRole = await I.have('role');
   const testUser = await I.have('user', {roleNames: [testRole.name, setupDAO.getWorkerRole().name]});
   I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
   I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
 Scenario('I as an admin can delete archived user successfully',  async ({ I }) => {
   const testUser = await I.have('user', {recordType: 'ARCHIVED'});
   I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  const accountStatus = await I.grabTextFrom(locate('strong').inside(locate('dd').after(locate('dt').withText('Account state'))));
-  I.assertEqualIgnoreCase(accountStatus, 'archived');
+  I.see(testUser.email, I.locateDataForTitle('Email'));
+  I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
   I.seeElement(locate('button').withText('Delete user'));
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
@@ -62,12 +61,12 @@ Scenario('I as an admin can delete archived user successfully',  async ({ I }) =
 Scenario('I as an admin can cancel deleting a user',  async ({ I }) => {
   const testUser = await I.have('user');
   I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
   I.checkOption('#confirmRadio-2');
   I.click('Continue');
   I.seeAfterClick('User Details', 'h1');
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
 });

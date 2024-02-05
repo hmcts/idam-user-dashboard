@@ -16,9 +16,9 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
   });
 
   I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  I.see('eJudiciary.net', locate('dd').after(locate('dt').withText('Identity Provider')));
-  I.see(testUser.ssoId, locate('dd').after(locate('dt').withText('eJudiciary User ID')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
+  I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
+  I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
 
   I.see('Remove SSO');
   I.click('Remove SSO');
@@ -29,9 +29,9 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
 
   I.click('Return to user details');
   I.seeAfterClick('User Details', 'h1');
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  I.see('IDAM', locate('dd').after(locate('dt').withText('Identity Provider')));
-  I.dontSeeElement(locate('dt').withText('IdP User ID'));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
+  I.see('IDAM', I.locateDataForTitle('Identity Provider'));
+  I.dontSeeElement(I.locateTitle('IdP User ID'));
 });
 
 Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
@@ -41,9 +41,9 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
   });
 
   I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  I.see('eJudiciary.net', locate('dd').after(locate('dt').withText('Identity Provider')));
-  I.see(testUser.ssoId, locate('dd').after(locate('dt').withText('eJudiciary User ID')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
+  I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
+  I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
 
   I.see('Remove SSO');
   I.click('Remove SSO');
@@ -51,8 +51,8 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
   I.checkOption('#confirmRadio-2');
   I.click('Continue');
   I.seeAfterClick('User Details', 'h1');
-  I.see(testUser.email, locate('dd').after(locate('dt').withText('Email')));
-  I.see('eJudiciary.net', locate('dd').after(locate('dt').withText('Identity Provider')));
-  I.see(testUser.ssoId, locate('dd').after(locate('dt').withText('eJudiciary User ID')));
+  I.see(testUser.email, I.locateDataForTitle('Email'));
+  I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
+  I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
 
 });
