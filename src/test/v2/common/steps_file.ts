@@ -31,6 +31,12 @@ export = function() {
       this.seeInCurrentUrl('/user/edit');
       this.seeAfterClick('Edit User', 'h1');
     },
+    navigateToGenerateReport() {
+      this.amOnPage('/');
+      this.checkOption('Generate a user report');
+      this.click('Continue');
+      this.seeAfterClick('Generate report', 'h1');
+    },
     seeAfterClick(seeValue : string, location) {
       this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
     },
