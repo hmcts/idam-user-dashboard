@@ -16,10 +16,10 @@ const setupConfig = {
   helpers: sharedConfig.helpers,
   plugins: sharedConfig.plugins,
   bootstrap() {
-    const sleepMs = getRandomInt(99) * 100;
-    setTimeout(function() {
-      console.log('Sleeping in bootstrap for ' + sleepMs + '(ms)');
-    }, sleepMs);
+    const {Playwright} = container.helpers();
+    const sauceName = Playwright.options.capabilities['sauce:options'].name;
+    console.log('bootstrapping for ' + sauceName);
+    process.env.TEST_ADMIN_EMAIL = 'test' + sauceName.replaceAll('_', '').toLowerCase() + '@admin.local';
   },
   multiple: {
     cross_browser: {

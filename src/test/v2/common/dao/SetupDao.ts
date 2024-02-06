@@ -40,7 +40,7 @@ class SetupDAO {
       return;
     }
 
-    console.log('setup admin');
+    console.log('setup admin: ' + ADMIN_EMAIL);
     await this.setupAdminRole();
 
     const testToken = await this.getToken();
