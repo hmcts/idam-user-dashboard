@@ -4,10 +4,6 @@ import {event, container} from 'codeceptjs';
 const LATEST_MAC = 'macOS 10.15';
 const LATEST_WINDOWS = 'Windows 10';
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
 const setupConfig = {
   name: 'cross-browser',
   tests: '../functional/*_test.ts',
