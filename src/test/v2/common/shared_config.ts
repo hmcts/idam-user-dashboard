@@ -15,7 +15,7 @@ shared_config.helpers = {
   Playwright: {
     browser: 'chromium',
     url: process.env.TEST_URL || 'https://idam-user-dashboard.aat.platform.hmcts.net/',
-    show: true,
+    show: false,
     timeout: 20002,
     bypassCSP: false,
     capabilities: {}
@@ -47,6 +47,10 @@ shared_config.helpers = {
       role: {
         factory: '../common/factories/roles.ts',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/roles', data })
+      },
+      service: {
+        factory: '../common/factories/services.ts',
+        create: (data) =>  ({ method: 'POST',  url: '/test/idam/services', data })
       }
     },
     REST : {

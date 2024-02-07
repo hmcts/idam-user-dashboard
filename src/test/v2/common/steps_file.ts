@@ -63,6 +63,13 @@ export = function() {
         this.wait(1);
       }
     },
+    async getSingleInvite(email: string, token: string) {
+      this.amBearerAuthenticated(token);
+      const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
+      this.seeResponseCodeIsSuccessful();
+      this.assertEqual(invitationRsp.data.length, 1);
+      return invitationRsp.data[0];
+    },
     locateDataForTitle(title: string) {
       return locate('dd').after(locate('dt').withText(title).as(title));
     },
