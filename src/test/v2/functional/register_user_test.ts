@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-Feature('v2_view_user');
+Feature('v2_register_user');
 
 Before(async ({ setupDAO, login }) => {
 
@@ -134,4 +134,27 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.click('Save');
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('A user must have at least one role assigned to be able to create them');
+});
+
+Scenario('I as an admin can search for roles to add', async ({ I }) => {
+
+  const testRole = await I.have('role', { name: 'iud-filter-role-' + faker.word.noun()});
+
+  I.navigateToRegisterUser();
+  I.fillField('email', faker.internet.email());
+  I.click('Continue');
+  I.seeAfterClick('Add new user details', 'h1');
+  I.fillField('#forename', faker.person.firstName());
+  I.fillField('#surname', faker.person.lastName());
+  I.click('Support');
+  I.click('Continue');
+  I.seeAfterClick('Add new user roles', locate('h1'));
+
+  I.fillField('#roles__search-box', 'iud-filter-role-');
+
+  const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
+  roleCheckboxes.forEach(function (checkbox) {
+    I.assertStartsWith(checkbox, 'iud-filter-role-');
+  });
+
 });

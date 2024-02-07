@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-Feature('v2_view_user');
+Feature('v2_search_user');
 
 Before(async ({ setupDAO, login }) => {
 
