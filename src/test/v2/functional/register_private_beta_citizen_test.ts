@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 Feature('v2_view_user');
 
-Before(async ({ setupDAO, login }) => {
+Before(async ({ setupDAO }) => {
 
   await setupDAO.setupAdmin();
 
@@ -33,7 +33,6 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   I.click('Continue');
   I.seeAfterClick('Add a new user', 'h1');
   I.see('Please select a service you would want to associate with the private beta citizen');
-  pause();
   I.selectOption('#service', privateBetaService.clientId);
   I.click('Save');
   I.seeAfterClick('User registered', 'h1');

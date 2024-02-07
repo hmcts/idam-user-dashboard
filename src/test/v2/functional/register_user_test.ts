@@ -63,36 +63,6 @@ Scenario('I as an admin should be able to register professional user', async ({ 
 
 });
 
-Scenario('I as an admin should be able to register private beta citizen', async ({ I, setupDAO }) => {
-  const privateBetaRole = await I.have('role');
-  const privateBetaService = await I.have('service', {onboardingRoleNames: [privateBetaRole.name]});
-
-  const registerForename = faker.person.firstName();
-  const registerSurname = faker.person.lastName();
-  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
-  I.navigateToRegisterUser();
-  I.fillField('email', registerEmail);
-  I.click('Continue');
-  I.seeAfterClick('Add new user details', 'h1');
-  I.fillField('#forename', registerForename);
-  I.fillField('#surname', registerSurname);
-  I.click('Private Beta Citizen');
-  I.click('Continue');
-  pause();
-  I.seeAfterClick('Add new user roles', locate('h1'));
-  I.wait(3);
-  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
-  I.click('Save');
-  I.seeAfterClick('User registered', 'h1');
-
-  const testingToken = await setupDAO.getToken();
-  const invite = await I.getSingleInvite(registerEmail, testingToken);
-  I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'SELF_REGISTER');
-  I.assertEqual(invite.invitationStatus, 'PENDING');
-
-});
-
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
   I.navigateToRegisterUser();
   I.fillField('email', 'email..@test.com');
