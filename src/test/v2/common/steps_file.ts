@@ -37,6 +37,13 @@ export = function() {
       this.click('Continue');
       this.seeAfterClick('Generate report', 'h1');
     },
+    navigateToRegisterUser() {
+      this.amOnPage('/');
+      this.checkOption('Add a new user');
+      this.click('Continue');
+      this.seeInCurrentUrl('/user/add');
+      this.seeAfterClick('Add new user email', 'h1');
+    },
     seeAfterClick(seeValue : string, location) {
       this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
     },
