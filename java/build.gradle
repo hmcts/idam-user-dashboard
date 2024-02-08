@@ -18,7 +18,7 @@ repositories {
 
 // tag::dependencies[]
 dependencies {
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.11'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.12'
     testImplementation 'com.github.hmcts:fortify-client:1.4.1:all'
 }
 // end::dependencies[]
