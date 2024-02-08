@@ -17,7 +17,7 @@ Scenario('login as admin successfully',  ({ I, login }) => {
 });
 
 Scenario('login as user without access', async ({ I }) => {
-  const testSecret = faker.internet.password();
+  const testSecret = faker.internet.password({prefix: '0'});
   const testUser = await I.have('user', {password: testSecret});
   I.amOnPage('/');
   I.fillField('Email', testUser.email);

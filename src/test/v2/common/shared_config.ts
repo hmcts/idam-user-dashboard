@@ -47,6 +47,10 @@ shared_config.helpers = {
       role: {
         factory: '../common/factories/roles.ts',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/roles', data })
+      },
+      service: {
+        factory: '../common/factories/services.ts',
+        create: (data) =>  ({ method: 'POST',  url: '/test/idam/services', data })
       }
     },
     REST : {

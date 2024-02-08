@@ -37,6 +37,13 @@ export = function() {
       this.click('Continue');
       this.seeAfterClick('Generate report', 'h1');
     },
+    navigateToRegisterUser() {
+      this.amOnPage('/');
+      this.checkOption('Add a new user');
+      this.click('Continue');
+      this.seeInCurrentUrl('/user/add');
+      this.seeAfterClick('Add new user email', 'h1');
+    },
     seeAfterClick(seeValue : string, location) {
       this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
     },
@@ -55,6 +62,13 @@ export = function() {
         });
         this.wait(1);
       }
+    },
+    async getSingleInvite(email: string, token: string) {
+      this.amBearerAuthenticated(token);
+      const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
+      this.seeResponseCodeIsSuccessful();
+      this.assertEqual(invitationRsp.data.length, 1);
+      return invitationRsp.data[0];
     },
     locateDataForTitle(title: string) {
       return locate('dd').after(locate('dt').withText(title).as(title));
