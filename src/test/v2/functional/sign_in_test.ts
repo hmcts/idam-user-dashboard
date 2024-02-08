@@ -23,7 +23,7 @@ Scenario('login as user without access', async ({ I }) => {
   I.fillField('Email', testUser.email);
   I.fillField('Password', secret(testSecret));
   I.click('Sign in');  
-  I.see('Sorry, access to this resource is forbidden');
+  I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
   I.see('Status code: 403');
   I.dontSeeCookie('idam_user_dashboard_session');
 });
