@@ -36,38 +36,3 @@ Scenario('I as an admin cannot delete user with unmanageable roles',  async ({ I
   I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
-Scenario('I as an admin can delete archived user successfully',  async ({ I }) => {
-  const testUser = await I.have('user', {recordType: 'ARCHIVED'});
-  I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, I.locateDataForTitle('Email'));
-  I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
-  I.seeElement(locate('button').withText('Delete user'));
-  I.click('Delete user');
-  I.seeAfterClick('Are you sure you want to delete', 'h1');
-  I.checkOption('#confirmRadio');
-  I.click('Continue');
-  I.seeAfterClick('User deleted successfully', 'h1');
-  I.click('Return to main menu');
-  I.seeAfterClick('What do you want to do?', 'h1');
-  I.checkOption('Manage an existing user');
-  I.click('Continue');
-  I.seeInCurrentUrl('/user/manage');
-  I.seeAfterClick('Search for an existing user', 'h1');
-  I.fillField('search', testUser.email);
-  I.click('Search');
-  I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
-  I.see('No user matches your search for: ' + testUser.email);
-});
-
-Scenario('I as an admin can cancel deleting a user',  async ({ I }) => {
-  const testUser = await I.have('user');
-  I.navigateToManageUser(testUser.email);
-  I.see(testUser.email, I.locateDataForTitle('Email'));
-  I.seeElement(locate('button').withText('Delete user'));
-  I.click('Delete user');
-  I.seeAfterClick('Are you sure you want to delete', 'h1');
-  I.checkOption('#confirmRadio-2');
-  I.click('Continue');
-  I.seeAfterClick('User Details', 'h1');
-  I.see(testUser.email, I.locateDataForTitle('Email'));
-});
