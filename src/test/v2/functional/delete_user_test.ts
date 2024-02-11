@@ -19,18 +19,19 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   //const page = I.usePlaywright().page;
   //await axeTest(page);
 
-  I.executeScript(async () => {
-    const { default: axe } = await import('axe-core');
-    const results = await axe.run();
+  const accessibilityViolations = I.executeScript(async () => {
+    // Import axe-core
+    const { AxeBuilder } = require('@axe-core/playwright');
+
+    // Create an AxeBuilder instance
+    const axeBuilder = AxeBuilder({ /* Axe options */ });
+
+    // Analyze the current page
+    const results = await axeBuilder.analyze();
+
+    // Return accessibility violations
     return results.violations;
   });
-
-  // const accessibilityViolations = I.executeScript(() => window.axeResults);
-  // if (accessibilityViolations.length > 0) {
-  //   console.error('Accessibility violations:', accessibilityViolations);
-  // } else {
-  //   console.log('No accessibility violations found.');
-  // }
 
 
   I.click('Delete user');
