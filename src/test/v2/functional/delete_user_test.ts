@@ -1,3 +1,6 @@
+import axeTest from '../../a11y/accessibilityTestHelper';
+//import { expect, Page } from "@playwright/test";
+
 Feature('v2_delete_user');
 
 Before(async ({ setupDAO, login }) => {
@@ -12,6 +15,13 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
+
+ 
+
+  const page = await I.grabService('playwright').getPage();
+
+  await axeTest(page);
+
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
   I.checkOption('#confirmRadio');
