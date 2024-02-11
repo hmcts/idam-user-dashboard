@@ -6,7 +6,7 @@ export = function() {
   return actor({
 
     getPage() {
-      this.getPage;
+      return this.getPage;
     },
 
     loginAs(email : string, password : string) {
