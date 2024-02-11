@@ -16,19 +16,18 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
 
-//   const page = I.usePlaywright().page;
-//   await axeTest(page);
+  //const page = I.usePlaywright().page;
+  //await axeTest(page);
 
-I.executeScript(async () => {
-  // Import axe-core
-  const { default: axe } = await import('axe-core');
+  I.executeScript(async () => {
+    const { default: axe } = await import('axe-core');
 
-  // Run accessibility checks
-  const results = await axe.run();
+ 
+    const results = await axe.run();
   
-  // Return accessibility violations
-  return results.violations;
-});
+  
+    return results.violations;
+  });
 
 
   I.click('Delete user');
