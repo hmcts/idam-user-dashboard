@@ -54,17 +54,6 @@ config.helpers = {
   },
   FeatureFlagHelper: {
     require: '../functional/shared/helpers/featureFlagHelper.ts'
-  },
-  A11yHelper: {
-    require: 'codeceptjs-a11y-helper',
-    axeOptions: {
-      runOnly: {
-        values: [
-          'wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa',
-          'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
-        ],
-      },
-    },
-  },
+  }
 };
 
