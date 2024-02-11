@@ -25,12 +25,12 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
     return results.violations;
   });
 
-  const accessibilityViolations = I.executeScript(() => window.axeResults);
-  if (accessibilityViolations.length > 0) {
-    console.error('Accessibility violations:', accessibilityViolations);
-  } else {
-    console.log('No accessibility violations found.');
-  }
+  // const accessibilityViolations = I.executeScript(() => window.axeResults);
+  // if (accessibilityViolations.length > 0) {
+  //   console.error('Accessibility violations:', accessibilityViolations);
+  // } else {
+  //   console.log('No accessibility violations found.');
+  // }
 
 
   I.click('Delete user');
