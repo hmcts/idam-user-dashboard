@@ -16,7 +16,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.seeElement(locate('button').withText('Delete user'));
 
   //I.checkA11y();
-  await I.runA11yCheck()
+  await I.runA11yCheck();
 
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
