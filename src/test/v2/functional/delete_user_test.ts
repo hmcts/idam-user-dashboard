@@ -18,7 +18,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
 
  
 
-  const page = await I.grabService('playwright').getPage();
+  const page = await I.getPage();
 
   await axeTest(page);
 

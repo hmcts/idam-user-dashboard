@@ -4,6 +4,11 @@ const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
 
 export = function() {
   return actor({
+
+    getPage() {
+      this.getPage;
+    },
+
     loginAs(email : string, password : string) {
       this.amOnPage('/');
       this.fillField('Email', email);
