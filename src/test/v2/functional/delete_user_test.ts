@@ -1,5 +1,6 @@
 //import axeTest from '../../a11y/accessibilityTestHelper';
 //import { expect, Page } from "@playwright/test";
+//import AxeBuilder from '@axe-core/playwright';
 
 Feature('v2_delete_user');
 
@@ -32,6 +33,9 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
     // Return accessibility violations
     return results.violations;
   });
+
+  console.error('Accessibility violations:', accessibilityViolations);
+  
 
 
   I.click('Delete user');
