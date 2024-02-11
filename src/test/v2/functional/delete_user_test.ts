@@ -19,15 +19,11 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   //const page = I.usePlaywright().page;
   //await axeTest(page);
 
-  I.executeScript(async () => {
-    const { default: axe } = await import('axe-core');
-
- 
-    const results = await axe.run();
-  
-  
-    return results.violations;
-  });
+  // I.executeScript(async () => {
+  //   const { default: axe } = await import('axe-core');
+  //   const results = await axe.run();
+  //   return results.violations;
+  // });
 
 
   I.click('Delete user');
