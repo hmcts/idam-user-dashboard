@@ -1,6 +1,7 @@
 //import axeTest from '../../a11y/accessibilityTestHelper';
 //import { expect, Page } from "@playwright/test";
-//import AxeBuilder from '@axe-core/playwright';
+
+const { AxeBuilder } = require('@axe-core/playwright');
 
 Feature('v2_delete_user');
 
@@ -21,16 +22,14 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   //await axeTest(page);
 
   const accessibilityViolations = I.executeScript(async () => {
-    // Import axe-core
-    const { AxeBuilder } = require('@axe-core/playwright');
 
-    // Create an AxeBuilder instance
-    const axeBuilder = AxeBuilder({ /* Axe options */ });
+   
+    const axeBuilder = AxeBuilder({});
 
-    // Analyze the current page
+    
     const results = await axeBuilder.analyze();
 
-    // Return accessibility violations
+    
     return results.violations;
   });
 
