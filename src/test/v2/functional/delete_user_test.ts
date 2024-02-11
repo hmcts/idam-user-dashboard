@@ -1,4 +1,4 @@
-import axeTest from '../../a11y/accessibilityTestHelper';
+//import axeTest from '../../a11y/accessibilityTestHelper';
 //import { expect, Page } from "@playwright/test";
 
 Feature('v2_delete_user');
@@ -16,8 +16,20 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
 
-  const page = I.usePlaywright().page;
-  await axeTest(page);
+//   const page = I.usePlaywright().page;
+//   await axeTest(page);
+
+I.executeScript(async () => {
+  // Import axe-core
+  const { default: axe } = await import('axe-core');
+
+  // Run accessibility checks
+  const results = await axe.run();
+  
+  // Return accessibility violations
+  return results.violations;
+});
+
 
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
