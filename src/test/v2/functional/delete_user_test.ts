@@ -16,10 +16,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
 
- 
-
-  const page = await I.getPage();
-
+  const page = I.usePlaywright().page;
   await axeTest(page);
 
   I.click('Delete user');
