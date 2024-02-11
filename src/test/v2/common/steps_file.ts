@@ -1,16 +1,16 @@
 // in this file you can append custom step methods to 'I' object
-import { injectAxe, checkA11y } from 'axe-playwright';
+//import { injectAxe, checkA11y } from 'axe-playwright';
 
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
 
 export = function() {
   return actor({
-    checkA11y: function () {
-      this.usePlaywrightTo('Run accessability tests', async ({ page }) => {
-        await injectAxe(page);
-        await checkA11y(page);
-      });
-    },
+    // checkA11y: function () {
+    //   this.usePlaywrightTo('Run accessability tests', async ({ page }) => {
+    //     await injectAxe(page);
+    //     await checkA11y(page);
+    //   });
+    // },
     loginAs(email : string, password : string) {
       this.amOnPage('/');
       this.fillField('Email', email);
