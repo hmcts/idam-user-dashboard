@@ -1,5 +1,6 @@
 
 
+const assert = require('assert');
 Feature('v2_delete_user');
 
 Before(async ({ setupDAO, login }) => {
@@ -16,7 +17,16 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.seeElement(locate('button').withText('Delete user'));
 
   //I.checkA11y();
-  await I.runA11yCheck({ outputDir: 'hello'});
+  const accessibilityResults = await I.runA11yCheck({ outputDir: 'hello'});
+
+     
+  if (accessibilityResults.violations.length > 0) {
+    console.error('Accessibility violations found:');
+    console.error(accessibilityResults.violations);
+    assert.fail('Accessibility violations found');
+  } else {
+    console.log('No accessibility violations found.');
+  }
 
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
