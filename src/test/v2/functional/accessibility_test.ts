@@ -32,8 +32,6 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
 Scenario('I as an admin can generate a report', async ({ I }) => {
 
   const testRole = await I.have('role');
-  const activeUser = await I.have('user', {roleNames: [testRole.name]});
-  const archivedUser = await I.have('user', {roleNames: [testRole.name], recordType: 'ARCHIVED'});
 
   I.navigateToGenerateReport();
   I.fillField('search', testRole.name);
