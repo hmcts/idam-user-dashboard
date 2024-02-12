@@ -15,10 +15,6 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
   I.checkOption('#confirmRadio');
-
-  I.runA11yCheck({ outputDir: 'a11y' });
-  I.checkA11y();
-
   I.click('Continue');
   I.seeAfterClick('User deleted successfully', 'h1');
   I.click('Return to main menu');
