@@ -1,4 +1,5 @@
 // in this file you can append custom step methods to 'I' object
+import { injectAxe, checkA11y } from 'axe-playwright';
 
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
 
@@ -85,6 +86,12 @@ export = function() {
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
       this.assertEqualIgnoreCase(actualValue, expectedValue);
-    }
+    },
+    checkA11y: function () {
+      this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
+        await injectAxe(page);
+        await checkA11y(page);
+      });
+    },
   });
 }
