@@ -22,14 +22,14 @@ shared_config.helpers = {
   },
   A11yHelper: {
     require: 'codeceptjs-a11y-helper',
-    // axeOptions: {
-    //   runOnly: {
-    //     values: [
-    //       'wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa',
-    //       'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
-    //     ],
-    //   },
-    // },
+    axeOptions: {
+      runOnly: {
+        values: [
+          'wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa',
+          'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
+        ],
+      },
+    },
   },
   REST: {
     endpoint: envConfig.get('services.idam.url.testingSupportApi'),
