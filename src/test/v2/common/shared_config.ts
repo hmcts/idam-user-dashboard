@@ -30,6 +30,8 @@ shared_config.helpers = {
         ],
       },
     },
+    outputDir: 'hello',
+    reportFileName: 'a11y-audit.html'
   },
   REST: {
     endpoint: envConfig.get('services.idam.url.testingSupportApi'),
