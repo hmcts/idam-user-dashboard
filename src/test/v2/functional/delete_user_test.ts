@@ -20,7 +20,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   const accessibilityResults = await I.runA11yCheck({ outputDir: 'hello'});
 
      
-  if (accessibilityResults.violations.length > 0) {
+  if (accessibilityResults.pass) {
     console.error('Accessibility violations found:');
     console.error(accessibilityResults.violations);
     assert.fail('Accessibility violations found');
