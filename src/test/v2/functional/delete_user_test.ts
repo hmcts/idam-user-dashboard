@@ -16,18 +16,8 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
 
-  //I.checkA11y();
-  const accessibilityResults = await I.runA11yCheck({ outputDir: 'a11y' });
-
- 
-     
-  if (accessibilityResults.violations.length > 0) {
-    console.error('Accessibility violations found:');
-    console.error(accessibilityResults.violations);
-    assert.fail('Accessibility violations found');
-  } else {
-    console.log('No accessibility violations found.');
-  }
+  I.runA11yCheck({ outputDir: 'a11y' });
+  I.checkA11y();
 
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
