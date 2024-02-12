@@ -17,7 +17,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.seeElement(locate('button').withText('Delete user'));
 
   //I.checkA11y();
-  const accessibilityResults = await I.runA11yCheck({ outputDir: 'functional-output/functional/reports/accessibility', skipFailures: false});
+  const accessibilityResults = await I.runA11yCheck({ outputDir: 'a11y', skipFailures: false});
 
      
   if (accessibilityResults.pass) {
