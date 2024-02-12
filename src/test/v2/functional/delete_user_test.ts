@@ -1,6 +1,3 @@
-
-
-const assert = require('assert');
 Feature('v2_delete_user');
 
 Before(async ({ setupDAO, login }) => {
