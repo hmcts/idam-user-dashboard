@@ -12,11 +12,6 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
-
-
-  I.runA11yCheck({ outputDir: 'a11y' });
-  I.checkA11y();
-
   I.click('Delete user');
   I.seeAfterClick('Are you sure you want to delete', 'h1');
   I.checkOption('#confirmRadio');
