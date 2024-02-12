@@ -28,3 +28,16 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
   I.runA11yCheck({ outputDir: 'a11y' });
   I.checkA11y();
 });
+
+Scenario('I as an admin can generate a report', async ({ I }) => {
+
+  const testRole = await I.have('role');
+  const activeUser = await I.have('user', {roleNames: [testRole.name]});
+  const archivedUser = await I.have('user', {roleNames: [testRole.name], recordType: 'ARCHIVED'});
+
+  I.navigateToGenerateReport();
+  I.fillField('search', testRole.name);
+  I.click('Generate report');
+  I.runA11yCheck({ outputDir: 'a11y' });
+  I.checkA11y();
+});
