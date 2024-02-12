@@ -5,8 +5,8 @@ export const config: CodeceptJS.MainConfig = {
   tests: './*_test.ts',
   output: '../../../../functional-output/functional/reports',
   include: {
-    I: '../common/steps_file',
-    setupDAO: '../common/dao/SetupDao.ts'
+    I: '../../v2/common/steps_file',
+    setupDAO: '../../v2/common/dao/SetupDao.ts'
   },
   helpers: sharedConfig.helpers,
   plugins: sharedConfig.plugins
