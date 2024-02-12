@@ -22,15 +22,15 @@ shared_config.helpers = {
   },
   A11yHelper: {
     require: 'codeceptjs-a11y-helper',
-    // axeOptions: {
-    //   runOnly: {
-    //     values: [
-    //       'wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa',
-    //       'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
-    //     ],
-    //   },
-    // },
-    outputDir: 'hello',
+    axeOptions: {
+      runOnly: {
+        values: [
+          'wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa',
+          'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
+        ],
+      },
+    },
+    outputDir: 'functional-output/functional/reports/accessibility',
     reportFileName: 'a11y-audit.html'
   },
   REST: {
