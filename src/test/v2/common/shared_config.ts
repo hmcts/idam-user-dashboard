@@ -30,7 +30,7 @@ shared_config.helpers = {
         ],
       },
     },
-    outputDir: 'functional-output/accessibility/a11y',
+    outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html'
   },
   REST: {
