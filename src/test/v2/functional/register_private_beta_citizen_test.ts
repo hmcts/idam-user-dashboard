@@ -14,7 +14,7 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   const privateBetaAdminRole = await I.have('role', {assignableRoleNames: ['citizen', privateBetaRole.name]});
 
   const testSecret = faker.internet.password({prefix: '0'});
-  const betaAdmin = await I.have('user', {
+  const betaAdmin = await I.haveUser({
     password: testSecret, 
     roleNames: [privateBetaAdminRole.name, 'idam-user-dashboard--access']
   });

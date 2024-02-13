@@ -85,6 +85,11 @@ export = function() {
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
       this.assertEqualIgnoreCase(actualValue, expectedValue);
+    },
+    async haveUser(body = null) {
+      const user = await this.have('user', body);
+      this.seeResponseCodeIsSuccessful();
+      return user;
     }
   });
 }
