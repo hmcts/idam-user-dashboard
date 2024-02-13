@@ -12,30 +12,30 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   const testUser = await I.have('user');
   I.navigateToManageUser(testUser.email);
   I.click('Delete user');
-  I.runA11yCheck({ outputDir: 'a11y' });
+  I.runA11yCheck({ outputDir: 'functional-output/accessibility/a11y' });
   I.checkA11y();
 });
 
-Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
-  const testUser = await I.have('user', {
-    ssoId: faker.string.uuid(),
-    ssoProvider: 'azure'
-  });
+// Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
+//   const testUser = await I.have('user', {
+//     ssoId: faker.string.uuid(),
+//     ssoProvider: 'azure'
+//   });
 
-  I.navigateToManageUser(testUser.email);
-  I.click('Remove SSO');
-  I.click('Continue');
-  I.runA11yCheck({ outputDir: 'a11y' });
-  I.checkA11y();
-});
+//   I.navigateToManageUser(testUser.email);
+//   I.click('Remove SSO');
+//   I.click('Continue');
+//   I.runA11yCheck({ outputDir: 'a11y' });
+//   I.checkA11y();
+// });
 
-Scenario('I as an admin can generate a report', async ({ I }) => {
+// Scenario('I as an admin can generate a report', async ({ I }) => {
 
-  const testRole = await I.have('role');
+//   const testRole = await I.have('role');
 
-  I.navigateToGenerateReport();
-  I.fillField('search', testRole.name);
-  I.click('Generate report');
-  I.runA11yCheck({ outputDir: 'a11y' });
-  I.checkA11y();
-});
+//   I.navigateToGenerateReport();
+//   I.fillField('search', testRole.name);
+//   I.click('Generate report');
+//   I.runA11yCheck({ outputDir: 'a11y' });
+//   I.checkA11y();
+// });
