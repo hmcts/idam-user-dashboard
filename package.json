@@ -138,5 +138,5 @@
     "cookiejar": ">=2.1.4",
     "qs": ">=6.9.7"
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@3.6.4"
 }
