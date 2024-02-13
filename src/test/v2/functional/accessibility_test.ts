@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+//import { faker } from '@faker-js/faker';
 Feature('v2_accessibility_tests');
 
 Before(async ({ setupDAO, login }) => {
