@@ -24,12 +24,9 @@
     "test:functional:v2": "codeceptjs run --steps --config ./src/test/v2/functional/codecept.conf.js",
     "test:functional:min": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-workers 1 --config ./src/test/functional/codecept.conf.js --grep \"(?=.*)^(?!.*@Nightly)\"",
     "test:functional:all": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-workers 1 --config ./src/test/functional/codecept.conf.js",
-    "test:functional:allreport": "npm-run-all -scl test:functional:report test:accessibility:fullreport test:accessibility:report",
+    "test:functional:allreport": "npm-run-all -scl test:functional:report test:accessibility:report",
     "test:functional:report": "allure generate functional-output/functional/reports -c -o functional-output/functional/allure",
-    "test:accessibility:report": "allure generate functional-output/accessibility/*.html -c -o functional-output/accessibility/allure",
-
-    "test:accessibility:fullreport": "node ./src/test/a11y/aggregateHTML.js",
-
+    "test:accessibility:report": "node ./src/test/a11y/aggregateHTML.js",
     "test:a11y": "echo 'nope' && exit 0",
     "test:pa11y": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.a11y.config.js --maxWorkers 1",
     "sonar-scan": "sonar-scanner",
