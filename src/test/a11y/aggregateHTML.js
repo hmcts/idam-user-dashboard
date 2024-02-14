@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-
 const htmlFilesDir = 'functional-output/accessibility';
 
 
@@ -9,7 +8,7 @@ const outputFile = 'functional-output/accessibility/accessibility_results.html';
 
 
 function aggregateHTML() {
-    
+
     fs.readdir(htmlFilesDir, (err, files) => {
         if (err) {
             console.error('Error reading directory:', err);
