@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-
 const htmlFilesDir = 'functional-output/accessibility';
-
-
 const outputFile = 'functional-output/accessibility/accessibility_results.html';
 
 
@@ -30,6 +27,5 @@ function aggregateHTML() {
         });
     });
 }
-
 
 aggregateHTML();
