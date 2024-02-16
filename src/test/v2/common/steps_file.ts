@@ -87,13 +87,22 @@ export = function() {
       this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
     async haveUser(body = null) {
-      const rsp = await this.have('user', body);
+      return this.safeHave('user', body);
+    },
+    async haveRole(body = null) {
+      return this.safeHave('role', body);
+    },
+    async haveService(body = null) {
+      return this.safeHave('service', body);
+    },
+    async safeHave(type, body = null) {
+      const rsp = await this.have(type, body);
       // error responses will always have a path attribute
       if (rsp.path) {
-        console.log('error creating user %j', rsp);
+        console.log('error creating %s: %j', type, rsp);
         this.assertEqual(rsp.status, 201);
       }
       return rsp;
-    }
+    },
   });
 }

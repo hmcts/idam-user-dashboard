@@ -138,7 +138,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
 Scenario('I as an admin can search for roles to add', async ({ I }) => {
 
-  await I.have('role', { name: 'iud-filter-role-' + faker.word.noun()});
+  await I.haveRole({ name: 'iud-filter-role-' + faker.word.noun()});
 
   I.navigateToRegisterUser();
   I.fillField('email', faker.internet.email());

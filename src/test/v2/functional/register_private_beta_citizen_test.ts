@@ -9,9 +9,9 @@ Before(async ({ setupDAO }) => {
 });
 
 Scenario('I as an admin should be able to register private beta citizen', async ({ I, setupDAO }) => {
-  const privateBetaRole = await I.have('role');
-  const privateBetaService = await I.have('service', {onboardingRoleNames: [privateBetaRole.name]});
-  const privateBetaAdminRole = await I.have('role', {assignableRoleNames: ['citizen', privateBetaRole.name]});
+  const privateBetaRole = await I.haveRole();
+  const privateBetaService = await I.haveService({onboardingRoleNames: [privateBetaRole.name]});
+  const privateBetaAdminRole = await I.haveRole({assignableRoleNames: ['citizen', privateBetaRole.name]});
 
   const testSecret = faker.internet.password({prefix: '0Ab'});
   const betaAdmin = await I.haveUser({
