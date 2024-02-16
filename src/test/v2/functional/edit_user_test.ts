@@ -40,7 +40,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 });
 
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
-  const testRole = await I.have('role');
+  const testRole = await I.haveRole();
   const testUser = await I.haveUser({roleNames: [testRole.name]});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
@@ -137,7 +137,7 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
 });
 
 Scenario('I as an admin can filter roles', async ({ I }) => {
-  const testRole = await I.have('role', { name: 'iud-filter-role-' + faker.word.noun()});
+  const testRole = await I.haveRole({ name: 'iud-filter-role-' + faker.word.noun()});
   const testUser = await I.haveUser({roleNames: [testRole.name]});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);

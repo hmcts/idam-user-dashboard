@@ -9,7 +9,7 @@ Before(async ({ setupDAO, login }) => {
 
 Scenario('I as an admin can see errors for invalid report values', async ({ I }) => {
 
-  const testRole = await I.have('role');
+  const testRole = await I.haveRole();
 
   I.navigateToGenerateReport();
   I.fillField('search', 'citizen');
@@ -39,7 +39,7 @@ Scenario('I as an admin can see errors for invalid report values', async ({ I })
 
 Scenario('I as an admin can generate a report', async ({ I }) => {
 
-  const testRole = await I.have('role');
+  const testRole = await I.haveRole();
   const activeUser = await I.haveUser({roleNames: [testRole.name]});
   const archivedUser = await I.haveUser({roleNames: [testRole.name], recordType: 'ARCHIVED'});
 

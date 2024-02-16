@@ -30,7 +30,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
 });
 
 Scenario('I as an admin cannot delete user with unmanageable roles',  async ({ I, setupDAO }) => {
-  const testRole = await I.have('role');
+  const testRole = await I.haveRole();
   const testUser = await I.haveUser({roleNames: [testRole.name, setupDAO.getWorkerRole().name]});
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
