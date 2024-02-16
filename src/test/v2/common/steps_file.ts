@@ -87,9 +87,13 @@ export = function() {
       this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
     async haveUser(body = null) {
-      const user = await this.have('user', body);
-      this.seeResponseCodeIsSuccessful();
-      return user;
+      const rsp = await this.have('user', body);
+      // error responses will always have a path attribute
+      if (rsp.path) {
+        console.log('error creating user %j', rsp);
+        this.assertEqual(rsp.status, 201);
+      }
+      return rsp;
     }
   });
 }

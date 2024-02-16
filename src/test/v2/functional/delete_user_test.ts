@@ -25,6 +25,7 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.seeAfterClick('Search for an existing user', 'h1');
   I.fillField('search', testUser.email);
   I.click('Search');
+  I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('No user matches your search for: ' + testUser.email);
 });
 
