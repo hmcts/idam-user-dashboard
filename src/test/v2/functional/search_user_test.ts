@@ -44,7 +44,7 @@ Scenario('I as an admin can see errors for invalid search values',  ({ I }) => {
 });
 
 Scenario('I as an admin can search for user by email, id or sso_id',  async ({ I }) => {
-  const testUser = await I.have('user', {
+  const testUser = await I.haveUser({
     ssoId: faker.string.uuid(),
     ssoProvider: 'idam-sso'
   });
@@ -60,9 +60,9 @@ Scenario('I as an admin can search for user by email, id or sso_id',  async ({ I
 });
 
 Scenario('I as an admin can search for user by id and not clash with sso_id',  async ({ I }) => {
-  const testUser = await I.have('user');
+  const testUser = await I.haveUser();
   
-  const ssoUser = await I.have('user', {
+  const ssoUser = await I.haveUser({
     ssoId: testUser.id,
     ssoProvider: 'idam-sso'
   });

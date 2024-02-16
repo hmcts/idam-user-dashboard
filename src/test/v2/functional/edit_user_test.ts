@@ -10,7 +10,7 @@ Before(async ({ setupDAO, login }) => {
 });
 
 Scenario('I as an admin should edit user details successfully',  async ({ I, setupDAO }) => {
-  const testUser = await I.have('user');
+  const testUser = await I.haveUser();
   I.navigateToEditUser(testUser.email);
   I.seeInField('forename', testUser.forename);
   I.seeInField('surname', testUser.surname);
@@ -41,7 +41,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
   const testRole = await I.have('role');
-  const testUser = await I.have('user', {roleNames: [testRole.name]});
+  const testUser = await I.haveUser({roleNames: [testRole.name]});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
   I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
@@ -63,7 +63,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
 });
 
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
-  const testUser = await I.have('user');
+  const testUser = await I.haveUser();
 
   I.navigateToEditUser(testUser.email);
   I.fillField('email', 'email..@test.com');
@@ -111,7 +111,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 });
 
 Scenario('I as an admin can enable MFA', async ({ I }) => {
-  const testUser = await I.have('user', {roleNames: ['idam-mfa-disabled']});
+  const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled']});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
   I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
@@ -127,7 +127,7 @@ Scenario('I as an admin can enable MFA', async ({ I }) => {
 });
 
 Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
-  const testUser = await I.have('user', {
+  const testUser = await I.haveUser({
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
@@ -138,7 +138,7 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
 
 Scenario('I as an admin can filter roles', async ({ I }) => {
   const testRole = await I.have('role', { name: 'iud-filter-role-' + faker.word.noun()});
-  const testUser = await I.have('user', {roleNames: [testRole.name]});
+  const testUser = await I.haveUser({roleNames: [testRole.name]});
   I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
 

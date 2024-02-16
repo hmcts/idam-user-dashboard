@@ -40,8 +40,8 @@ Scenario('I as an admin can see errors for invalid report values', async ({ I })
 Scenario('I as an admin can generate a report', async ({ I }) => {
 
   const testRole = await I.have('role');
-  const activeUser = await I.have('user', {roleNames: [testRole.name]});
-  const archivedUser = await I.have('user', {roleNames: [testRole.name], recordType: 'ARCHIVED'});
+  const activeUser = await I.haveUser({roleNames: [testRole.name]});
+  const archivedUser = await I.haveUser({roleNames: [testRole.name], recordType: 'ARCHIVED'});
 
   I.navigateToGenerateReport();
   I.fillField('search', testRole.name);

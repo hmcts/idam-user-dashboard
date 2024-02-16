@@ -85,6 +85,15 @@ export = function() {
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
       this.assertEqualIgnoreCase(actualValue, expectedValue);
+    },
+    async haveUser(body = null) {
+      const rsp = await this.have('user', body);
+      // error responses will always have a path attribute
+      if (rsp.path) {
+        console.log('error creating user %j', rsp);
+        this.assertEqual(rsp.status, 201);
+      }
+      return rsp;
     }
   });
 }

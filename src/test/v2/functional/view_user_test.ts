@@ -16,7 +16,7 @@ Scenario('view admin user details',  ({ I }) => {
 });
 
 Scenario('view test user details',  async ({ I }) => {
-  const testUser = await I.have('user');
+  const testUser = await I.haveUser();
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
@@ -25,7 +25,7 @@ Scenario('view test user details',  async ({ I }) => {
 });
 
 Scenario('view test user with sso details',  async ({ I }) => {
-  const testUser = await I.have('user', {
+  const testUser = await I.haveUser({
     ssoId: faker.string.uuid(),
     ssoProvider: 'idam-sso'
   });
@@ -37,7 +37,7 @@ Scenario('view test user with sso details',  async ({ I }) => {
 });
 
 Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
-  const testUser = await I.have('user', {
+  const testUser = await I.haveUser({
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
@@ -50,7 +50,7 @@ Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
 });
 
 Scenario('view suspended user details',  async ({ I }) => {
-  const testUser = await I.have('user', {accountStatus: 'SUSPENDED'});
+  const testUser = await I.haveUser({accountStatus: 'SUSPENDED'});
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
@@ -59,7 +59,7 @@ Scenario('view suspended user details',  async ({ I }) => {
 });
 
 Scenario('view locked user details',  async ({ I }) => {
-  const testUser = await I.have('user');
+  const testUser = await I.haveUser();
   I.lockTestUser(testUser.email);
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
@@ -70,7 +70,7 @@ Scenario('view locked user details',  async ({ I }) => {
 });
 
 Scenario('view archived user details',  async ({ I }) => {
-  const testUser = await I.have('user', {recordType: 'ARCHIVED'});
+  const testUser = await I.haveUser({recordType: 'ARCHIVED'});
   I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
