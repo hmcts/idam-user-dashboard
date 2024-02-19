@@ -58,17 +58,18 @@ export class OidcMiddleware {
       },
       afterCallback: (req: Request, res: Response, session: Session) => {
         try {
-          console.log('afterCallback response is %s', res.status);
+          console.log('afterCallback response code is %s', res.statusCode);
           const user = jwtDecode(session.id_token) as User;
           if (!user.roles.includes(this.accessRole)) {
-            console.log('afterCallback, missing access role for user id %s', user.id);
+            console.log('afterCallback, missing access role for user id %s', user.uid);
             throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
           } else {
-            console.log('afterCallback complete for user id %s', user.id);
+            console.log('afterCallback complete for user id %s', user.uid);
           }
           return { ...session, user };
         } catch (error) {
           console.log('afterCallback error: ', error);
+          throw error;
         }
       }
     }));
