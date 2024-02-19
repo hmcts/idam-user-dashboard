@@ -64,7 +64,7 @@ export class OidcMiddleware {
             console.log('afterCallback, missing access role for user id %s', user.id);
             throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
           } else {
-            console.log('afterCallback complete for user id %s', user.id)
+            console.log('afterCallback complete for user id %s', user.id);
           }
           return { ...session, user };
         } catch (error) {
