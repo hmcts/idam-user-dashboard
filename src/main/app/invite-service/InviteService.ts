@@ -45,7 +45,7 @@ export class InviteService {
     const matchedInvitationType: InvitationTypes =
       this.getEmailAppointmentMapEntryAsInvitationType(invite.email, APPOINTMENT_MAP);
     if (matchedInvitationType) {
-      return this.sendInvite(matchedInvitationType, invite, language)
+      return this.sendInvite(matchedInvitationType, invite, language);
     }
     return this.sendInvite(InvitationTypes.INVITE, invite, language);
   };
@@ -63,7 +63,7 @@ export class InviteService {
       return undefined;
     } else {
       const entries = Object.entries(InvitationTypes) as [keyof typeof InvitationTypes, string][];
-      const found = entries.find(([key, val]) => val === matchedValue);
+      const found = entries.find(([, val]) => val === matchedValue);
       return found ? InvitationTypes[found[0]] : undefined;
     }
   }
