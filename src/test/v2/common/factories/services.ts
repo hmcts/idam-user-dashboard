@@ -20,7 +20,7 @@ class ServiceFactory extends Factory {
 }
 
 export = new ServiceFactory()
-  .attr('clientId', () => { return 'iud-service-' + faker.word.noun();})
+  .attr('clientId', () => { return 'iud-service-' + faker.word.verb() + '-' + faker.word.noun();})
   .attr('clientSecret', ['clientId'], (clientId) => { return clientId; })
   .attr('redirectUris', ['clientId'], (clientId) => { return ['http://' + clientId];})
   .attr('onboardingRoleNames', []);
