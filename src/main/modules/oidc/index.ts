@@ -57,27 +57,31 @@ export class OidcMiddleware {
         store: this.getSessionStore(app)
       },
       afterCallback: (req: Request, res: Response, session: Session) => {
-        try {
-          console.log('afterCallback response code is %s', res.statusCode);
-          const tokenUser = jwtDecode(session.id_token) as {
-            uid: string, 
-            email: string,
-            roles:string[]};
+        if (res.statusCode == http.HTTP_STATUS_OK && session.id_token) {
+          let tokenUser;
+          try {
+            tokenUser = jwtDecode(session.id_token) as {
+              uid: string, 
+              email: string,
+              roles:string[]};
+          } catch (error) {
+            console.log('afterCallback: token decode error', error);
+            throw error;
+          }
           if (!tokenUser.roles.includes(this.accessRole)) {
-            console.log('afterCallback, missing access role for user id %s', tokenUser.uid);
+            console.log('afterCallback: missing access role for user id %s', tokenUser.uid);
             throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
-          } else {
-            console.log('afterCallback complete for user id %s', tokenUser.uid);
           }
           const user = {
             id: tokenUser.uid,
             email: tokenUser.email,
             roles: tokenUser.roles
           } as User;
+          console.log('afterCallback: complete for user id %s', tokenUser.uid);
           return { ...session, user };
-        } catch (error) {
-          console.log('afterCallback response: %s', res.statusCode, error);
-          throw error;
+        } else {
+          console.log('afterCallback: failed with response code %s', res.statusCode);
+          throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
         }
       }
     }));
