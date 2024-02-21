@@ -7980,6 +7980,7 @@ __metadata:
     govuk-frontend: 5.0.0
     helmet: ^5.1.1
     html-webpack-plugin: ^5.6.0
+    ip: ^1.1.9
     jest: ^29.7.0
     jest-html-reporter: ^3.10.2
     jest-when: ^3.6.0
@@ -8176,6 +8177,13 @@ __metadata:
   version: 1.1.8
   resolution: "ip@npm:1.1.8"
   checksum: a2ade53eb339fb0cbe9e69a44caab10d6e3784662285eb5d2677117ee4facc33a64679051c35e0dfdb1a3983a51ce2f5d2cb36446d52e10d01881789b76e28fb
+  languageName: node
+  linkType: hard
+
+"ip@npm:^1.1.9":
+  version: 1.1.9
+  resolution: "ip@npm:1.1.9"
+  checksum: b6d91fd45a856e3bd6d4f601ea0619d90f3517638f6918ebd079f959a8a6308568d8db5ef4fdf037e0d9cfdcf264f46833dfeea81ca31309cf0a7eb4b1307b84
   languageName: node
   linkType: hard
 
