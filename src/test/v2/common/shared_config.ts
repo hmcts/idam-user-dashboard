@@ -82,5 +82,8 @@ shared_config.plugins = {
         }
       }
     }
+  },
+  retryTo: {
+    enabled: true
   }
 };
