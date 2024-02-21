@@ -28,7 +28,7 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
   I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'SELF_REGISTER');
+  I.assertEqual(invite.invitationType, 'INVITE');
   I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });
@@ -52,7 +52,7 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
   I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'SELF_REGISTER');
+  I.assertEqual(invite.invitationType, 'INVITE');
   I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });
