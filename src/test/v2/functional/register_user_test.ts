@@ -31,7 +31,7 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
   I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'SELF_REGISTER');
+  I.assertEqual(invite.invitationType, 'INVITE');
   I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });
@@ -58,7 +58,7 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
   I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'SELF_REGISTER');
+  I.assertEqual(invite.invitationType, 'INVITE');
   I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });
@@ -69,19 +69,19 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.click('Continue');
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('The email address is not in the correct format');
-  
+
   I.navigateToRegisterUser();
   I.fillField('email', '@email@');
   I.click('Continue');
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('The email address is not in the correct format');
-  
+
   I.navigateToRegisterUser();
   I.fillField('email', 'email@com..');
   I.click('Continue');
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('The email address is not in the correct format');
-  
+
   I.navigateToRegisterUser();
   I.fillField('email', '');
   I.click('Continue');
@@ -110,7 +110,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
-  
+
   I.navigateToRegisterUser();
   I.fillField('email', faker.internet.email());
   I.click('Continue');
@@ -121,7 +121,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
-  
+
   I.navigateToRegisterUser();
   I.fillField('email', faker.internet.email());
   I.click('Continue');
