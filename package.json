@@ -28,7 +28,6 @@
     "test:functional:report": "allure generate functional-output/functional/reports -c -o functional-output/functional/allure",
     "test:accessibility:report": "node ./src/test/a11y/aggregateAccessibilityResults.js",
     "test:a11y": "echo 'nope' && exit 0",
-    "test:pa11y": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.a11y.config.js --maxWorkers 1",
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
     "cichecks": "yarn && npm-run-all -pl build lint test"
