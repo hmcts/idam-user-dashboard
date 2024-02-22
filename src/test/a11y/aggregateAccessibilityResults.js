@@ -1,14 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const htmlFilesDir = 'functional-output/accessibility';
-const outputFile = 'functional-output/accessibility/accessibility_results.html';
+const outputFile = 'functional-output/accessibility/all_results.html';
 
 
-function aggregateHTML() {
+function aggregateAccessibilityResults() {
 
     fs.readdir(htmlFilesDir, (err, files) => {
         if (err) {
-            console.error('Error reading directory:', err);
+            console.error('Error reading from accessibility results directory - ', err);
             return;
         }
         let htmlContent = '';
@@ -20,12 +20,12 @@ function aggregateHTML() {
 
         fs.writeFile(outputFile, htmlContent, (err) => {
             if (err) {
-                console.error('Error writing output file:', err);
+                console.error('Error writing output file - ', err);
                 return;
             }
-            console.log('HTML files aggregated successfully');
+            console.log('Accessibility results aggregated successfully');
         });
     });
 }
 
-aggregateHTML();
+aggregateAccessibilityResults();
