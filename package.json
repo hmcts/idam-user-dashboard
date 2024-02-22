@@ -25,7 +25,7 @@
     "test:accessibility:v2": "codeceptjs run --steps --config ./src/test/v2/accessibility/codecept.conf.js",
     "test:functional:min": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-workers 1 --config ./src/test/functional/codecept.conf.js --grep \"(?=.*)^(?!.*@Nightly)\"",
     "test:functional:all": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-workers 1 --config ./src/test/functional/codecept.conf.js",
-    "test:functional:allreport": "npm-run-all -scl test:functional:report test:accessibility:report test:accessibility:aggregatereport",
+    "test:functional:allreport": "npm-run-all -scl test:functional:report test:accessibility:aggregatereport test:accessibility:report",
     "test:functional:report": "allure generate functional-output/functional/reports -c -o functional-output/functional/allure",
     "test:accessibility:report": "allure generate functional-output/accessibility -c -o functional-output/accessibility/allure",
     "test:accessibility:aggregatereport": "node ./src/test/a11y/aggregateAccessibilityResults.js",
