@@ -15,7 +15,7 @@ Scenario('I as an admin should be able to register private beta citizen', async 
 
   const testSecret = faker.internet.password({prefix: '0Ab'});
   const betaAdmin = await I.haveUser({
-    password: testSecret, 
+    password: testSecret,
     roleNames: [privateBetaAdminRole.name, 'idam-user-dashboard--access']
   });
   I.loginAs(betaAdmin.email, testSecret);
@@ -40,7 +40,7 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
   I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'SELF_REGISTER');
+  I.assertEqual(invite.invitationType, 'INVITE');
   I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });

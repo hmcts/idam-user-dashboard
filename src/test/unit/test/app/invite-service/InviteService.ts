@@ -12,6 +12,7 @@ describe('InviteService', () => {
   const mockedLogger = mockLogger();
   const mockEndpoint = '/invites';
   when(config.get).mockReturnValue(mockEndpoint);
+  when(config.get).calledWith('services.idam.appointmentMap').mockReturnValue('{ "@eJudiciary.net" : "APPOINT" }');
   const inviteService = new InviteService(mockedAxios, mockedLogger);
 
   describe('inviteUser', () => {
@@ -44,7 +45,33 @@ describe('InviteService', () => {
         {
           ...invite,
           activationRoleNames: ['citizen'],
-          invitationType: 'SELF_REGISTER',
+          invitationType: 'INVITE',
+        },
+        {
+          headers: {
+            'Accept-Language': 'en',
+          },
+        }
+      );
+    });
+
+    test('Should pass all data into axios request for appointed user', () => {
+      const invite: Invite = {
+        email: 'dummy@ejudiciary.net',
+        forename: 'FORENAME',
+        surname: 'SURNAME',
+        clientId: 'hmcts-access',
+      };
+
+      (mockedAxios.post as jest.Mock).mockResolvedValue(true);
+
+      inviteService.inviteUser(invite);
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        mockEndpoint,
+        {
+          ...invite,
+          activationRoleNames: ['citizen'],
+          invitationType: 'APPOINT',
         },
         {
           headers: {
