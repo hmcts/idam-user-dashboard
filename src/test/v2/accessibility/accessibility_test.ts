@@ -41,7 +41,7 @@ Scenario('I as an admin can generate a report', async ({ I }) => {
 });
 
 
-Scenario('I as an admin should be able to register private beta citizen', async ({ I, setupDAO }) => {
+Scenario('I as an admin should be able to register private beta citizen', async ({ I }) => {
   const privateBetaRole = await I.haveRole();
   const privateBetaService = await I.haveService({onboardingRoleNames: [privateBetaRole.name]});
   const privateBetaAdminRole = await I.haveRole({assignableRoleNames: ['citizen', privateBetaRole.name]});
@@ -68,7 +68,7 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   runAccessibilityCheck(I);
 });
 
-Scenario('I as an admin should be able to register support user', async ({ I, setupDAO }) => {
+Scenario('I as an admin should be able to register support user', async ({ I }) => {
 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
