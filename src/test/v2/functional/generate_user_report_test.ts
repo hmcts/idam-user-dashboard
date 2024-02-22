@@ -11,28 +11,24 @@ Scenario('I as an admin can see errors for invalid report values', async ({ I })
 
   const testRole = await I.haveRole();
 
-  I.navigateToGenerateReport();
+  await I.navigateToGenerateReport();
   I.fillField('search', 'citizen');
-  I.click('Generate report');
-  I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
+  await I.clickToExpectProblem('Generate report');
   I.see('For security reasons, it is not possible to get a report on all citizen users', '#search-error');
 
-  I.navigateToGenerateReport();
+  await I.navigateToGenerateReport();
   I.fillField('#search', ' ');
-  I.click('Generate report');
-  I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
+  await I.clickToExpectProblem('Generate report');
   I.see('You must enter a role or a list of roles (comma seperated)', '#search-error');
 
-  I.navigateToGenerateReport();
+  await I.navigateToGenerateReport();
   I.fillField('#search', 'idam-never-exists');
-  I.click('Generate report');
-  I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
+  await I.clickToExpectProblem('Generate report');
   I.see('There are no users with the entered role(s).');
 
-  I.navigateToGenerateReport();
+  await I.navigateToGenerateReport();
   I.fillField('#search', testRole.name);
-  I.click('Generate report');
-  I.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
+  await I.clickToExpectProblem('Generate report');
   I.see('There are no users with the entered role(s).');
 
 });
@@ -43,7 +39,7 @@ Scenario('I as an admin can generate a report', async ({ I }) => {
   const activeUser = await I.haveUser({roleNames: [testRole.name]});
   const archivedUser = await I.haveUser({roleNames: [testRole.name], recordType: 'ARCHIVED'});
 
-  I.navigateToGenerateReport();
+  await I.navigateToGenerateReport();
   I.fillField('search', testRole.name);
   I.click('Generate report');
   I.wait(5);

@@ -15,7 +15,7 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
     ssoProvider: 'azure'
   });
 
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
@@ -24,11 +24,9 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
   I.click('Remove SSO');
   I.seeAfterClick('Are you sure you want to remove single sign-on', 'h1');
   I.checkOption('#confirmRadio');
-  I.click('Continue');
-  I.seeAfterClick('Single sign-on removed successfully', 'h1');
+  await I.clickToNavigate('Continue', '/user/sso', 'Single sign-on removed successfully');
 
-  I.click('Return to user details');
-  I.seeAfterClick('User Details', 'h1');
+  await I.clickToNavigate('Return to user details', '/details', 'User Details');
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -40,7 +38,7 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
     ssoProvider: 'azure'
   });
 
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
@@ -49,8 +47,7 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
   I.click('Remove SSO');
   I.seeAfterClick('Are you sure you want to remove single sign-on', 'h1');
   I.checkOption('#confirmRadio-2');
-  I.click('Continue');
-  I.seeAfterClick('User Details', 'h1');
+  await I.clickToNavigate('Continue', '/details', 'User Details');
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));

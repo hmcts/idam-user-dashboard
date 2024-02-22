@@ -11,41 +11,50 @@ export = function() {
       this.click('Sign in');  
       this.seeAfterClick('What do you want to do?');
     },
-    navigateToManageUser(searchValue : string) {
-      this.navigateToSearchUser();
+    async navigateToManageUser(searchValue : string) {
+      await this.navigateToSearchUser();
       this.fillField('search', searchValue);
-      this.click('Search');
-      this.seeInCurrentUrl('/details');
-      this.seeAfterClick('User Details', 'h1');
+      await this.clickToNavigate('Search', '/details', 'User Details');
     },
-    navigateToSearchUser() {
+    async navigateToSearchUser() {
       this.amOnPage('/');
       this.checkOption('Manage an existing user');
-      this.click('Continue');
-      this.seeInCurrentUrl('/user/manage');
-      this.seeAfterClick('Search for an existing user', 'h1');
+      await this.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
     },
-    navigateToEditUser(searchValue : string) {
-      this.navigateToManageUser(searchValue);
-      this.click('Edit user');
-      this.seeInCurrentUrl('/user/edit');
-      this.seeAfterClick('Edit User', 'h1');
+    async navigateToEditUser(searchValue : string) {
+      await this.navigateToManageUser(searchValue);
+      await this.clickToNavigate('Edit user', '/user/edit', 'Edit User');
     },
-    navigateToGenerateReport() {
+    async navigateToGenerateReport() {
       this.amOnPage('/');
       this.checkOption('Generate a user report');
-      this.click('Continue');
-      this.seeAfterClick('Generate report', 'h1');
+      await this.clickToNavigate('Continue', '/reports', 'Generate report');
     },
-    navigateToRegisterUser() {
+    async navigateToRegisterUser() {
       this.amOnPage('/');
       this.checkOption('Add a new user');
-      this.click('Continue');
-      this.seeInCurrentUrl('/user/add');
-      this.seeAfterClick('Add new user email', 'h1');
+      await this.clickToNavigate('Continue', '/user/add', 'Add new user email');
     },
     seeAfterClick(seeValue : string, location) {
       this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
+    },
+    async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
+      const originalHeading : String = await this.grabTextFrom('h1');
+      this.click(clickText);
+      this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
+      this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
+      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      if (expectedHeading) {
+        this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+      }
+    },
+    async clickToExpectProblem(clickText : String) {
+      this.click(clickText);
+      this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
+    },
+    async clickToExpectSuccess(clickText : String) {
+      this.click(clickText);
+      this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
     },
     lockTestUser(email : string) {
       for (let i=0; i<5; i++) {

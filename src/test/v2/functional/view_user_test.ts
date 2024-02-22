@@ -9,15 +9,15 @@ Before(async ({ setupDAO, login }) => {
 
 });
 
-Scenario('view admin user details',  ({ I }) => {
+Scenario('view admin user details', async ({ I }) => {
   const adminEmail = codeceptjs.container.support('adminIdentity').email;
-  I.navigateToManageUser(adminEmail);
+  await I.navigateToManageUser(adminEmail);
   I.see(adminEmail, I.locateDataForTitle('Email'));
 });
 
 Scenario('view test user details',  async ({ I }) => {
   const testUser = await I.haveUser();
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -29,7 +29,7 @@ Scenario('view test user with sso details',  async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'idam-sso'
   });
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('idam-sso', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('IdP User ID'));
@@ -41,7 +41,7 @@ Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
@@ -51,7 +51,7 @@ Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
 
 Scenario('view suspended user details',  async ({ I }) => {
   const testUser = await I.haveUser({accountStatus: 'SUSPENDED'});
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -61,7 +61,7 @@ Scenario('view suspended user details',  async ({ I }) => {
 Scenario('view locked user details',  async ({ I }) => {
   const testUser = await I.haveUser();
   I.lockTestUser(testUser.email);
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -71,7 +71,7 @@ Scenario('view locked user details',  async ({ I }) => {
 
 Scenario('view archived user details',  async ({ I }) => {
   const testUser = await I.haveUser({recordType: 'ARCHIVED'});
-  I.navigateToManageUser(testUser.email);
+  await I.navigateToManageUser(testUser.email);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
