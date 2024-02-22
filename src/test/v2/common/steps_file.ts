@@ -39,7 +39,7 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
     },
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
-      let originalHeading : String = await this.grabTextFrom('h1');
+      const originalHeading : String = await this.grabTextFrom('h1');
       this.click(clickText);
       this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
       this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
