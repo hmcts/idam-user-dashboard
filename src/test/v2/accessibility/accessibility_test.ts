@@ -12,7 +12,7 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
   const title = await I.grabTitle();
 
-  console.log("Title is.....999999...."+title)
+  console.log('Title is.....999999....'+title);
 
   I.runA11yCheck();
   I.checkA11y();
