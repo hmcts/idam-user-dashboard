@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 Feature('v2_accessibility_tests');
 
 Before(async ({ setupDAO, login }) => {
@@ -11,10 +13,15 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
 
   const title = await I.grabTitle();
-
   console.log('Title is.....999999....'+title);
 
-  I.runA11yCheck();
+  const accessibilityReport = await I.runA11yCheck('html');
+  const customReportName = 'custom-a11y-report11111.json';
+
+  fs.writeFileSync(customReportName, JSON.stringify(accessibilityReport, null, 2));
+
+
+  //I.runA11yCheck();
   I.checkA11y();
 });
 
