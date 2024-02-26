@@ -31,7 +31,7 @@ shared_config.helpers = {
       },
     },
     outputDir: 'functional-output/accessibility',
-    reportFileName: 'a11y-audit.html',
+    //reportFileName: 'a11y-audit.html',
     // detailedReportOptions: {
     //   verbosity: 'medium', 
     //   errorLevels: {
