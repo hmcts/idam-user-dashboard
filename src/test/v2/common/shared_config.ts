@@ -29,14 +29,19 @@ shared_config.helpers = {
           'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
         ],
       },
-      // rules: {
-      //   'color-contrast': { enabled: true }, 
-      //   'label': { enabled: true },
-      // },
     },
     outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html',
-    customSummary: 'ABCDE',
+    customSummary: [
+      {
+        label: 'Custom Metric 1',
+        value: '10'
+      },
+      {
+        label: 'Custom Metric 2',
+        value: '20'
+      }
+    ],
     detailedReport: true,
     detailedReportOptions: { html: true },
     skipFailures: true,
