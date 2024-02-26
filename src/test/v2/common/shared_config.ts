@@ -36,7 +36,7 @@ shared_config.helpers = {
       },
     },
     outputDir: 'functional-output/accessibility',
-    reportFileName: 'a11y-audit.html'
+    //reportFileName: 'a11y-audit.html'
   },  
   REST: {
     endpoint: envConfig.get('services.idam.url.testingSupportApi'),
