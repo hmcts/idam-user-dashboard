@@ -9,7 +9,13 @@ Scenario('I am on manage user page',  async ({ I }) => {
   const testUser = await I.haveUser();
   await I.navigateToManageUser(testUser.email);
 
-  I.runA11yCheck();
+  I.runA11yCheck('html', {
+    axeOptions: {
+      rules: {
+        'page-title': { enabled: true },
+      },
+    },
+  });
   I.checkA11y();
 });
 
