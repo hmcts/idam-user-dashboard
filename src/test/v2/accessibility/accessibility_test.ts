@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 Feature('v2_accessibility_tests');
 
 Before(async ({ setupDAO, login }) => {
