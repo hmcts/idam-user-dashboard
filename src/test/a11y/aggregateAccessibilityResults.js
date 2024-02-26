@@ -11,6 +11,9 @@ function aggregateAccessibilityResults() {
             console.error('Error reading from accessibility results directory - ', err);
             return;
         }
+
+        const filteredFiles = files.filter(file => file.endsWith('_a11y-audit.html'));
+
         let htmlContent = '';
         files.forEach(file => {
             const filePath = path.join(htmlFilesDir, file);
