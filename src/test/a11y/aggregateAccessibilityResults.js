@@ -15,7 +15,7 @@ function aggregateAccessibilityResults() {
         const filteredFiles = files.filter(file => file.endsWith('_a11y-audit.html'));
 
         let htmlContent = '';
-        files.forEach(file => {
+        filteredFiles.forEach(file => {
             const filePath = path.join(htmlFilesDir, file);
             const content = fs.readFileSync(filePath, 'utf8');
             htmlContent += content;
