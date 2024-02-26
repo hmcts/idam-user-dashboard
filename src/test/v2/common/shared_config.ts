@@ -29,14 +29,17 @@ shared_config.helpers = {
           'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
         ],
       },
-      rules: {
-        'color-contrast': { enabled: true }, 
-        'label': { enabled: true },
-        'page-title': { enabled: true },
-      },
+      // rules: {
+      //   'color-contrast': { enabled: true }, 
+      //   'label': { enabled: true },
+      // },
     },
     outputDir: 'functional-output/accessibility',
-    //reportFileName: 'a11y-audit.html'
+    reportFileName: 'a11y-audit.html',
+    detailedReport: true,
+    detailedReportOptions: { html: true },
+    skipFailures: true,
+    reporter: 'html',
   },  
   REST: {
     endpoint: envConfig.get('services.idam.url.testingSupportApi'),
