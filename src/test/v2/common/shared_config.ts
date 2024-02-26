@@ -32,6 +32,7 @@ shared_config.helpers = {
       rules: {
         'color-contrast': { enabled: true }, 
         'label': { enabled: true },
+        'page-title': { enabled: true },
       },
     },
     outputDir: 'functional-output/accessibility',
