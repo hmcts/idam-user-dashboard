@@ -13,7 +13,11 @@ Scenario('I am on manage user page',  async ({ I }) => {
   const title = await I.grabTitle();
   console.log('Title is.....999999....'+title);
 
-  I.runA11yCheck({  detailedReportOptions: { html: true, projectKey: '12389' } });
+  //I.runA11yCheck({  detailedReportOptions: { html: true, projectKey: '12389' } });
+
+
+
+  I.runA11yCheck({ reportFileName: 'chand123.html' });
 
 
   //I.runA11yCheck();
