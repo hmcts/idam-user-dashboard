@@ -36,6 +36,7 @@ shared_config.helpers = {
     },
     outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html',
+    customSummary: 'ABCDE',
     detailedReport: true,
     detailedReportOptions: { html: true },
     skipFailures: true,
