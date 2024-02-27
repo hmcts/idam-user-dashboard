@@ -20,12 +20,15 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
 
   I.runA11yCheck({ reportFileName: 'manage-user.html' });
-  I.checkA11y();
 
   const regexPattern = /manage-user\.html$/;
 
 
   findAndModifyHTML(regexPattern, 'New Heading Test');
+  
+  I.checkA11y();
+
+
 
 
 });
