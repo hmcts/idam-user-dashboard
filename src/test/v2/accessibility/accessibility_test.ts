@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 Feature('v2_accessibility_tests');
 
 Before(async ({ setupDAO, login }) => {
@@ -18,6 +21,11 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
   I.runA11yCheck({ reportFileName: 'manage-user.html' });
   I.checkA11y();
+
+  const regexPattern = /manage-user\.html$/;
+
+
+  findAndModifyHTML(regexPattern, 'New Heading Test');
 
 
 });
@@ -50,3 +58,39 @@ Scenario('I am on manage user page',  async ({ I }) => {
 //   I.runA11yCheck();
 //   I.checkA11y();
 // });
+
+
+function findAndModifyHTML(regexPattern, newHeading) {
+  const directory = '../../../../functional-output/accessibility';
+
+  fs.readdir(directory, (err, files) => {
+    if (err) {
+      console.error('Error reading directory:', err);
+      return;
+    }
+
+    const filenamePattern = new RegExp(regexPattern);
+
+    files.forEach(filename => {
+      if (filenamePattern.test(filename)) {
+        const filePath = path.join(directory, filename);
+        fs.readFile(filePath, 'utf8', (err, data) => {
+          if (err) {
+            console.error(`Error reading file ${filename}:`, err);
+            return;
+          }
+
+          const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h1>${newHeading}</h1>`);
+
+          fs.writeFile(filePath, modifiedContent, 'utf8', err => {
+            if (err) {
+              console.error(`Error writing to file ${filename}:`, err);
+              return;
+            }
+            console.log(`Modified heading in ${filename}`);
+          });
+        });
+      }
+    });
+  });
+}
