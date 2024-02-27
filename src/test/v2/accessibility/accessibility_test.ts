@@ -61,7 +61,7 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
 
 function findAndModifyHTML(regexPattern, newHeading) {
-  const directory = '../../../../functional-output/accessibility';
+  const directory = 'functional-output/accessibility';
 
   fs.readdir(directory, (err, files) => {
     if (err) {
