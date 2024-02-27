@@ -74,7 +74,7 @@ function findAndModifyHTML(regexPattern, newHeading) {
     files.forEach(filename => {
       if (filenamePattern.test(filename)) {
 
-        console.log(`I am here 1111111.........`);
+        console.log('I am here 1111111.........');
         const filePath = path.join(directory, filename);
         fs.readFile(filePath, 'utf8', (err, data) => {
           if (err) {
@@ -82,15 +82,15 @@ function findAndModifyHTML(regexPattern, newHeading) {
             return;
           }
 
-          console.log(`I am here 222222222.........`);
+          console.log('I am here 222222222.........');
 
           const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${newHeading}</h3>`);
 
-          console.log(`I am here 3333333333.........`);
+          console.log('I am here 3333333333.........');
 
           fs.writeFile(filePath, modifiedContent, 'utf8', err => {
 
-            console.log(`I am here 444444444.........`);
+            console.log('I am here 444444444.........');
             if (err) {
               console.error(`Error writing to file ${filename}:`, err);
               return;
