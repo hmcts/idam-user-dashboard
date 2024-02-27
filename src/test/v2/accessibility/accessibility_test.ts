@@ -65,7 +65,7 @@ function findAndModifyHTML(regexPattern, newHeading) {
 
   fs.readdir(directory, (err, files) => {
     if (err) {
-      console.error('Error reading directory:', err);
+      console.error('Error reading directory amend heading:', err);
       return;
     }
 
@@ -76,7 +76,7 @@ function findAndModifyHTML(regexPattern, newHeading) {
         const filePath = path.join(directory, filename);
         fs.readFile(filePath, 'utf8', (err, data) => {
           if (err) {
-            console.error(`Error reading file ${filename}:`, err);
+            console.error(`Error reading file change heading ${filename}:`, err);
             return;
           }
 
