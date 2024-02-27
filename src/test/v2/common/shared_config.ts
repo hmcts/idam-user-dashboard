@@ -29,6 +29,8 @@ shared_config.helpers = {
           'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
         ],
       },
+    },
+    options: {
       projectKey: '12345',
       customSummary: 'TEST',
     },
