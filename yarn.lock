@@ -4102,7 +4102,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-html-reporter@npm:2.2.3, axe-html-reporter@npm:^2.2.3":
+"axe-html-reporter@npm:2.2.3":
   version: 2.2.3
   resolution: "axe-html-reporter@npm:2.2.3"
   dependencies:
@@ -8055,7 +8055,6 @@ __metadata:
     applicationinsights: ^2.9.2
     autobind-decorator: ^2.4.0
     awilix: ^10.0.0
-    axe-html-reporter: ^2.2.3
     axe-playwright: ^2.0.1
     axios: ^1.6.7
     babel-loader: ^9.1.3

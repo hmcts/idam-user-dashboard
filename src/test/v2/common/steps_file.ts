@@ -116,8 +116,23 @@ export = function() {
     },
     checkA11y: function () {
       this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
+
+        // reportFileName?: string;
+        // outputDir?: string;
+        // projectKey?: string;
+        // customSummary?: string;
+        // outputDirPath?: string;
+        // doNotCreateReportFile?: boolean;
+
+        const options = {
+          reportFileName: 'a11y-audit.html',
+          outputDir: 'functional-output/accessibility',
+          projectKey: 'Chand8888',
+
+        };
+        
         await injectAxe(page);
-        await checkA11y(page);
+        await checkA11y(page, options);
       });
     },    
   });

@@ -62,7 +62,6 @@
     "applicationinsights": "^2.9.2",
     "autobind-decorator": "^2.4.0",
     "awilix": "^10.0.0",
-    "axe-html-reporter": "^2.2.3",
     "axe-playwright": "^2.0.1",
     "axios": "^1.6.7",
     "codeceptjs-a11y-helper": "^1.5.3",

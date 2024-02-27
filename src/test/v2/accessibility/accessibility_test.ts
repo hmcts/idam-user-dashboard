@@ -1,5 +1,3 @@
-
-const axeHtmlReporter = require('axe-html-reporter');
 Feature('v2_accessibility_tests');
 
 Before(async ({ setupDAO, login }) => {
@@ -12,30 +10,14 @@ Scenario('I am on manage user page',  async ({ I }) => {
   await I.navigateToManageUser(testUser.email);
 
 
-  //  const title = await I.grabTitle();
-  //  console.log('Title is.....999999....'+title);
+
 
   // I.runA11yCheck({  detailedReportOptions: { html: true, projectKey: '12389' } });
-
-
-
   // I.runA11yCheck({ reportFileName: 'chand123.html' });
 
 
-  // I.runA11yCheck();
-  // I.checkA11y();
-
-
-  const { violations } = await I.checkAccessibility();
-
-  await axeHtmlReporter.processViolations(violations, { projectKey: 'ChandKanuri' });
-
-
-
-
-
-
-
+  //I.runA11yCheck();
+  I.checkA11y();
 
 
 });
