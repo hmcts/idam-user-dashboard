@@ -16,7 +16,7 @@ Scenario('I am on manage user page',  async ({ I }) => {
   // I.runA11yCheck({ reportFileName: 'chand123.html' });
 
 
-  I.runA11yCheck();
+  I.runA11yCheck({ reportFileName: 'manage-user.html' });
   I.checkA11y();
 
 
