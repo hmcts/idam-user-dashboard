@@ -9,5 +9,14 @@ export const config: CodeceptJS.MainConfig = {
     setupDAO: '../common/dao/SetupDao.ts'
   },
   helpers: sharedConfig.helpers,
-  plugins: sharedConfig.plugins
+  plugins: sharedConfig.plugins,
+  axe: {
+    inject: true, // Inject Axe-core script into every page
+    options: { // Custom Axe options
+      runOnly: {
+        type: 'tag',
+        values: ['wcag2a', 'wcag2aa'], // Include only these rules
+      },
+    },
+  },
 };
