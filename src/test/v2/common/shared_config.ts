@@ -30,10 +30,8 @@ shared_config.helpers = {
         ],
       },
     },
-    options: {
-      projectKey: '12345',
-      customSummary: 'TEST',
-    },
+    projectKey: '12345',
+    customSummary: 'TEST',
     outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html',
   },
