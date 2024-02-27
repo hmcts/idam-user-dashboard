@@ -25,7 +25,7 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
 
   findAndModifyHTML(regexPattern, 'New Heading Test');
-  
+
   I.checkA11y();
 
 
@@ -65,6 +65,8 @@ Scenario('I am on manage user page',  async ({ I }) => {
 
 function findAndModifyHTML(regexPattern, newHeading) {
   const directory = 'functional-output/accessibility';
+
+  console.log('I am here 000000000.........');
 
   fs.readdir(directory, (err, files) => {
     if (err) {
