@@ -124,15 +124,15 @@ export = function() {
         // outputDirPath?: string;
         // doNotCreateReportFile?: boolean;
 
-        const options = {
-          reportFileName: 'a11y-audit.html',
-          outputDir: 'functional-output/accessibility',
-          projectKey: 'Chand8888',
+        // const options = {
+        //   reportFileName: 'a11y-audit.html',
+        //   outputDir: 'functional-output/accessibility',
+        //   projectKey: 'Chand8888',
 
-        };
+        // };
         
         await injectAxe(page);
-        await checkA11y(page, options);
+        await checkA11y(page);
       });
     },    
   });

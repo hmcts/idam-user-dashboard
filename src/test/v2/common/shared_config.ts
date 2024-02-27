@@ -29,6 +29,8 @@ shared_config.helpers = {
           'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
         ],
       },
+      projectKey: '12345',
+      customSummary: 'TEST',
     },
     outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html',
