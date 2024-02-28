@@ -28,29 +28,29 @@ function aggregateAccessibilityResults() {
 
 
 
-    fs.readdir(htmlFilesDir, (err, files) => {
-        if (err) {
-            console.error('Error reading from accessibility results directory - ', err);
-            return;
-        }
+    // fs.readdir(htmlFilesDir, (err, files) => {
+    //     if (err) {
+    //         console.error('Error reading from accessibility results directory - ', err);
+    //         return;
+    //     }
 
-        const filteredFiles = files.filter(file => file.endsWith('_a11y-audit.html'));
+    //     const filteredFiles = files.filter(file => file.endsWith('_a11y-audit.html'));
 
-        let htmlContent = '';
-        filteredFiles.forEach(file => {
-            const filePath = path.join(htmlFilesDir, file);
-            const content = fs.readFileSync(filePath, 'utf8');
-            htmlContent += content;
-        });
+    //     let htmlContent = '';
+    //     filteredFiles.forEach(file => {
+    //         const filePath = path.join(htmlFilesDir, file);
+    //         const content = fs.readFileSync(filePath, 'utf8');
+    //         htmlContent += content;
+    //     });
 
-        fs.writeFile(outputFile, htmlContent, (err) => {
-            if (err) {
-                console.error('Error writing output file - ', err);
-                return;
-            }
-            console.log('Accessibility results aggregated successfully');
-        });
-    });
+    //     fs.writeFile(outputFile, htmlContent, (err) => {
+    //         if (err) {
+    //             console.error('Error writing output file - ', err);
+    //             return;
+    //         }
+    //         console.log('Accessibility results aggregated successfully');
+    //     });
+    // });
 }
 
 
@@ -68,6 +68,7 @@ function findAndModifyHTML(regexPattern, newHeading) {
       const filenamePattern = new RegExp(regexPattern);
   
       files.forEach(filename => {
+        console.log('I am here XXXXXX.........'+filename);
         if (filenamePattern.test(filename)) {
   
           console.log('I am here 1111111.........');
