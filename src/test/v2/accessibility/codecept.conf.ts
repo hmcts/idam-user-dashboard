@@ -9,5 +9,5 @@ export const config: CodeceptJS.MainConfig = {
     setupDAO: '../common/dao/SetupDao.ts'
   },
   helpers: sharedConfig.helpers,
-  plugins: sharedConfig.plugins
+  plugins: sharedConfig.plugins,
 };

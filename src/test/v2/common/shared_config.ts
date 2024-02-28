@@ -31,8 +31,8 @@ shared_config.helpers = {
       },
     },
     outputDir: 'functional-output/accessibility',
-    reportFileName: 'a11y-audit.html'
-  },  
+    reportFileName: 'a11y-audit.html',
+  },
   REST: {
     endpoint: envConfig.get('services.idam.url.testingSupportApi'),
     timeout: 30000
@@ -51,7 +51,7 @@ shared_config.helpers = {
     onRequest: async (request) => {
       const testToken = await codeceptjs.container.support('testingToken');
       request.headers = { 'Authorization': 'bearer ' + testToken };
-    }, 
+    },
     factories: {
       user: {
         factory: '../common/factories/users.ts',

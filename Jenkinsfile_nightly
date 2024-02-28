@@ -83,7 +83,7 @@ try {
         reportDir            : "functional-output/accessibility",
         reportFiles          : "all_results.html",
         reportName           : "Accessibility Test Report"
-      ]      
+      ]
 
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/functional/reports/**/*'
     }
