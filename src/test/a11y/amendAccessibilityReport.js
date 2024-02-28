@@ -6,11 +6,16 @@ const htmlFilesDir = 'functional-output/accessibility';
 function amendAccessibilityReport() {
 
 
-    findAndModifyHTML(/manage-user-a11y-audit\.html$/, 'AXE Accessibility Results - Manage User');
-    findAndModifyHTML(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User');
-    findAndModifyHTML(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User');
-    findAndModifyHTML(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report');
-    findAndModifyHTML(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User');
+    const regexPattern = /manage-user-a11y-audit\.html$/;
+
+
+    findAndModifyHTML(regexPattern, 'AXE Accessibility Results - Manage User');
+
+    //findAndModifyHTML(/manage-user-a11y-audit\.html$/, 'AXE Accessibility Results - Manage User');
+    // findAndModifyHTML(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User');
+    // findAndModifyHTML(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User');
+    // findAndModifyHTML(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report');
+    // findAndModifyHTML(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User');
 
 
 

@@ -18,7 +18,7 @@ function aggregateAccessibilityResults() {
             return;
         }
 
-        const filteredFiles = files.filter(file => file.endsWith('_a11y-audit.html'));
+        const filteredFiles = files.filter(file => file.endsWith('-a11y-audit.html'));
 
         let htmlContent = '';
         filteredFiles.forEach(file => {
