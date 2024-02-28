@@ -1,16 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-const htmlFilesDir = 'functional-output/accessibility';
 
 
 function amendAccessibilityReport() {
 
 
-    findAndModifyHTML(/manage-user-a11y-audit\.html$/, 'AXE Accessibility Results - Manage User');
-    findAndModifyHTML(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User');
-    findAndModifyHTML(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User');
-    findAndModifyHTML(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report');
-    findAndModifyHTML(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User');
+    const regexPattern = /manage-user-a11y-audit\.html$/;
+
+
+    findAndModifyHTML(regexPattern, 'AXE Accessibility Results - Manage User');
+    // findAndModifyHTML(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User');
+    // findAndModifyHTML(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User');
+    // findAndModifyHTML(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report');
+    // findAndModifyHTML(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User');
 
 
 
@@ -32,10 +34,11 @@ function amendAccessibilityReport() {
 
 
 function findAndModifyHTML(regexPattern, newHeading) {
+    const directory = 'functional-output/accessibility';
   
     console.log('I am here 000000000.........');
   
-    fs.readdir(htmlFilesDir, (err, files) => {
+    fs.readdir(directory, (err, files) => {
       if (err) {
         console.error('Error reading directory amend heading:', err);
         return;
@@ -44,11 +47,10 @@ function findAndModifyHTML(regexPattern, newHeading) {
       const filenamePattern = new RegExp(regexPattern);
   
       files.forEach(filename => {
-        console.log('I am here XXXXXX.........'+filename);
         if (filenamePattern.test(filename)) {
   
           console.log('I am here 1111111.........');
-          const filePath = path.join(htmlFilesDir, filename);
+          const filePath = path.join(directory, filename);
           fs.readFile(filePath, 'utf8', (err, data) => {
             if (err) {
               console.error(`Error reading file change heading ${filename}:`, err);
