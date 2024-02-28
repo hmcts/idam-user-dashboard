@@ -44,21 +44,21 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 try {
   withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
-//    if (params.ENVIRONMENT == 'aat' && !params.skipSecurityScanTests) {
-//      enableSecurityScan(
-//        urlExclusions: urlExclusions,
-//        scanType: "frontend"
-//      )
-//    }
-//    if (!params.skipFortifyScan) {
-//      enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
-//    }
+    if (params.ENVIRONMENT == 'aat' && !params.skipSecurityScanTests) {
+      enableSecurityScan(
+        urlExclusions: urlExclusions,
+        scanType: "frontend"
+      )
+    }
+    if (!params.skipFortifyScan) {
+      enableFortifyScan('idam-idam-' + params.ENVIRONMENT)
+    }
     if (!params.skipFullFunctionalTests) {
       enableFullFunctionalTest()
     }
-//    if (!params.skipCrossBrowserTest) {
-//      enableCrossBrowserTest()
-//    }
+    if (!params.skipCrossBrowserTest) {
+      enableCrossBrowserTest()
+    }
 
 
     afterAlways('fortify-scan') {
