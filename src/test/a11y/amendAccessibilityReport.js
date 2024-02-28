@@ -5,14 +5,11 @@ const path = require('path');
 function amendAccessibilityReport() {
 
 
-   //const regexPattern = /manage-user-a11y-audit\.html$/;
-
-
     findAndModifyHTML( /manage-user-a11y-audit\.html$/, 'AXE Accessibility Results - Manage User');
-    // findAndModifyHTML(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User');
-    // findAndModifyHTML(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User');
-    // findAndModifyHTML(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report');
-    // findAndModifyHTML(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User');
+    findAndModifyHTML(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User');
+    findAndModifyHTML(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User');
+    findAndModifyHTML(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report');
+    findAndModifyHTML(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User');
 
 
 
