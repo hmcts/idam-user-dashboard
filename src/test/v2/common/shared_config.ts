@@ -25,11 +25,17 @@ shared_config.helpers = {
     axeOptions: {
       runOnly: {
         values: [
-          'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'
+          'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa',
+          'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
         ],
       },
+      // projectKey: '12345',
+      // customSummary: 'TEST',
     },
+    // projectKey: '12345',
+    // customSummary: 'TEST',
     outputDir: 'functional-output/accessibility',
+    reportFileName: 'a11y-audit.html',
   },
   REST: {
     endpoint: envConfig.get('services.idam.url.testingSupportApi'),
