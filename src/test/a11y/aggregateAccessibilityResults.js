@@ -8,7 +8,7 @@ function aggregateAccessibilityResults() {
 
 
 
-    const regexPattern = /manage-user\.html$/;
+    const regexPattern = /manage-user-a11y-audit\.html$/;
 
 
     findAndModifyHTML(regexPattern, 'AXE Accessibility Results - Manage User');
