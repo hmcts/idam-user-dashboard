@@ -11,7 +11,7 @@ function aggregateAccessibilityResults() {
     const regexPattern = /manage-user\.html$/;
 
 
-    findAndModifyHTML(regexPattern, 'New Heading Test');
+    findAndModifyHTML(regexPattern, 'AXE Accessibility Results - Manage User');
 
 
 
@@ -34,7 +34,7 @@ function aggregateAccessibilityResults() {
             return;
         }
 
-        const filteredFiles = files.filter(file => file.endsWith('_a11y-audit.html'));
+        const filteredFiles = files.filter(file => file.endsWith('-a11y-audit.html'));
 
         let htmlContent = '';
         filteredFiles.forEach(file => {
