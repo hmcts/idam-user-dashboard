@@ -5,26 +5,6 @@ const outputFile = 'functional-output/accessibility/all_results.html';
 
 
 function aggregateAccessibilityResults() {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     fs.readdir(htmlFilesDir, (err, files) => {
         if (err) {
             console.error('Error reading from accessibility results directory - ', err);
@@ -49,8 +29,5 @@ function aggregateAccessibilityResults() {
         });
     });
 }
-
-
-
 
 aggregateAccessibilityResults();
