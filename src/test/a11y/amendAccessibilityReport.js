@@ -3,11 +3,11 @@ const path = require('path');
 
 
 function amendAccessibilityReport() {
-    amendHeading( /manage-user-a11y-audit\.html$/, 'AXE Accessibility Results - Manage User Page');
-    amendHeading(/search-user-a11y-audit\.html$/, 'AXE Accessibility Results - Search User Page');
-    amendHeading(/edit-user-a11y-audit\.html$/, 'AXE Accessibility Results - Edit User Page');
-    amendHeading(/generate-user-report-a11y-audit\.html$/, 'AXE Accessibility Results - Generate User Report Page');
-    amendHeading(/add-new-user-a11y-audit\.html$/, 'AXE Accessibility Results - Add New User Page');
+    amendHeading(/.*manage-user-a11y-audit(?=\.)/, 'Manage User Page - Accessibility Results');
+    amendHeading(/.*search-user-a11y-audit(?=\.)/, 'Search User Page - Accessibility Results');
+    amendHeading(/.*edit-user-a11y-audit(?=\.)/, 'Edit User Page - Accessibility Results');
+    amendHeading(/.*generate-user-report-a11y-audit(?=\.)/, 'Generate User Report Page - Accessibility Results');
+    amendHeading(/.*add-new-user-a11y-audit(?=\.)/, 'Add New User Page - Accessibility Results');
 }
 
 
