@@ -114,8 +114,9 @@ export = function() {
       }
       return rsp;
     },
-    checkA11y: function () {
-      this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
+    checkA11y: function (fileName: string) {
+      this.usePlaywrightTo('Run accessibility tests', async ({ page, I }) => {
+        I.runA11yCheck({ reportFileName: fileName });
         await injectAxe(page);
         await checkA11y(page);
       });
