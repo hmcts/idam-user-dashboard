@@ -1,5 +1,5 @@
 // in this file you can append custom step methods to 'I' object
-import { injectAxe, checkA11y } from 'axe-playwright';
+import { injectAxe } from 'axe-playwright';
 
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
 
