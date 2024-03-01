@@ -39,8 +39,8 @@ function amendHeading(regexPattern) {
               return;
             }
 
-            const regex = /^.*?_(.*?)-a11y-audit.html$/;
-            const match = regex.exec(filename);
+            //const regex = /^.*?_(.*?)-a11y-audit.html$/;
+            const match = regexPattern.exec(filename);
             const extractedString = match[1];
             const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${extractedString} Page - Accessibility Results</h3>`);
   
