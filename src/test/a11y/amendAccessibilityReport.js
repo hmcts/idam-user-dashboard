@@ -26,7 +26,9 @@ function amendAccessibilityReport() {
           const filenameRegex = /^.*?_(.*?)-a11y-audit.html$/;
           const match = filenameRegex.exec(filename);
           const extractedString = match[1];
-          const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${extractedString} Page - Accessibility Results</h3>`);
+          const convertedString = extractedString.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+          const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${convertedString} Page - Accessibility Results</h3>`);
 
           fs.writeFile(filePath, modifiedContent, 'utf8', err => {
             if (err) {
