@@ -36,8 +36,13 @@ function amendHeading(regexPattern) {
               console.error(`Error reading accessibility results file ${filename} - `, err);
               return;
             }
+
+            const regex = /(\d+)_([a-zA-Z-]+)-a11y-audit\.html/;
+            const match = fileName.match(regex);
+            const extractedName = match[2];
+
   
-            const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${filename} Page - Accessibility Results</h3>`);
+            const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${extractedName} Page - Accessibility Results</h3>`);
   
             fs.writeFile(filePath, modifiedContent, 'utf8', err => {
               if (err) {
