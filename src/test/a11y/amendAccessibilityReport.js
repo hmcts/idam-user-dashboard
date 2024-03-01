@@ -9,11 +9,13 @@ function amendAccessibilityReport() {
     // amendHeading(/.*generate-user-report-a11y-audit(?=\.)/, 'Generate User Report Page - Accessibility Results');
     // amendHeading(/.*add-new-user-a11y-audit(?=\.)/, 'Add New User Page - Accessibility Results');
 
-    amendHeading(/.*manage-user-a11y-audit(?=\.)/);
-    amendHeading(/.*search-user-a11y-audit(?=\.)/);
-    amendHeading(/.*edit-user-a11y-audit(?=\.)/);
-    amendHeading(/.*generate-user-report-a11y-audit(?=\.)/);
-    amendHeading(/.*add-new-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*manage-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*search-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*edit-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*generate-user-report-a11y-audit(?=\.)/);
+    // amendHeading(/.*add-new-user-a11y-audit(?=\.)/);
+
+    amendHeading(/.*a11y-audit(?=\.)/);
 }
 
 
@@ -36,13 +38,8 @@ function amendHeading(regexPattern) {
               console.error(`Error reading accessibility results file ${filename} - `, err);
               return;
             }
-
-            const regex = /(\d+)_([a-zA-Z-]+)-a11y-audit\.html/;
-            const match = fileName.match(regex);
-            const extractedName = match[2];
-
   
-            const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${extractedName} Page - Accessibility Results</h3>`);
+            const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${filename} Page - Accessibility Results</h3>`);
   
             fs.writeFile(filePath, modifiedContent, 'utf8', err => {
               if (err) {
