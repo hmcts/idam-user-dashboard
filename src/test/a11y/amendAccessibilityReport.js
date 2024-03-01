@@ -3,15 +3,21 @@ const path = require('path');
 
 
 function amendAccessibilityReport() {
-    amendHeading(/.*manage-user-a11y-audit(?=\.)/, 'Manage User Page - Accessibility Results');
-    amendHeading(/.*search-user-a11y-audit(?=\.)/, 'Search User Page - Accessibility Results');
-    amendHeading(/.*edit-user-a11y-audit(?=\.)/, 'Edit User Page - Accessibility Results');
-    amendHeading(/.*generate-user-report-a11y-audit(?=\.)/, 'Generate User Report Page - Accessibility Results');
-    amendHeading(/.*add-new-user-a11y-audit(?=\.)/, 'Add New User Page - Accessibility Results');
+    // amendHeading(/.*manage-user-a11y-audit(?=\.)/, 'Manage User Page - Accessibility Results');
+    // amendHeading(/.*search-user-a11y-audit(?=\.)/, 'Search User Page - Accessibility Results');
+    // amendHeading(/.*edit-user-a11y-audit(?=\.)/, 'Edit User Page - Accessibility Results');
+    // amendHeading(/.*generate-user-report-a11y-audit(?=\.)/, 'Generate User Report Page - Accessibility Results');
+    // amendHeading(/.*add-new-user-a11y-audit(?=\.)/, 'Add New User Page - Accessibility Results');
+
+    amendHeading(/.*manage-user-a11y-audit(?=\.)/);
+    amendHeading(/.*search-user-a11y-audit(?=\.)/);
+    amendHeading(/.*edit-user-a11y-audit(?=\.)/);
+    amendHeading(/.*generate-user-report-a11y-audit(?=\.)/);
+    amendHeading(/.*add-new-user-a11y-audit(?=\.)/);
 }
 
 
-function amendHeading(regexPattern, newHeading) {
+function amendHeading(regexPattern) {
     const directory = 'functional-output/accessibility';
   
     fs.readdir(directory, (err, files) => {
@@ -31,7 +37,7 @@ function amendHeading(regexPattern, newHeading) {
               return;
             }
   
-            const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${newHeading}</h3>`);
+            const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${filename} Page - Accessibility Results</h3>`);
   
             fs.writeFile(filePath, modifiedContent, 'utf8', err => {
               if (err) {
