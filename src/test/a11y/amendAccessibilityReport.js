@@ -15,7 +15,9 @@ function amendAccessibilityReport() {
     // amendHeading(/.*generate-user-report-a11y-audit(?=\.)/);
     // amendHeading(/.*add-new-user-a11y-audit(?=\.)/);
 
-    amendHeading(/.*-a11y-audit(?=\.)/);
+    //amendHeading(/.*-a11y-audit(?=\.)/);
+
+    amendHeading(/^.*?_(.*?)-a11y-audit.html$/);
 }
 
 
