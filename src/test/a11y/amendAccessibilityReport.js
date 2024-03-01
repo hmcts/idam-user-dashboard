@@ -9,13 +9,13 @@ function amendAccessibilityReport() {
     // amendHeading(/.*generate-user-report-a11y-audit(?=\.)/, 'Generate User Report Page - Accessibility Results');
     // amendHeading(/.*add-new-user-a11y-audit(?=\.)/, 'Add New User Page - Accessibility Results');
 
-    amendHeading(/.*manage-user-a11y-audit(?=\.)/);
-    amendHeading(/.*search-user-a11y-audit(?=\.)/);
-    amendHeading(/.*edit-user-a11y-audit(?=\.)/);
-    amendHeading(/.*generate-user-report-a11y-audit(?=\.)/);
-    amendHeading(/.*add-new-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*manage-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*search-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*edit-user-a11y-audit(?=\.)/);
+    // amendHeading(/.*generate-user-report-a11y-audit(?=\.)/);
+    // amendHeading(/.*add-new-user-a11y-audit(?=\.)/);
 
-    //amendHeading(/.*a11y-audit(?=\.)/);
+    amendHeading(/.*-a11y-audit(?=\.)/);
 }
 
 
