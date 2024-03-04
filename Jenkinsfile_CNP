@@ -100,8 +100,8 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/accessibility",
-      reportFiles          : "test-report.html",
+      reportDir            : "functional-output/accessibility",
+      reportFiles          : "all_results.html",
       reportName           : "Accessibility Test Report"
     ]
   }
@@ -120,8 +120,8 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/accessibility",
-      reportFiles          : "test-report.html",
+      reportDir            : "functional-output/accessibility",
+      reportFiles          : "all_results.html",
       reportName           : "Accessibility Test Report"
     ]
   }

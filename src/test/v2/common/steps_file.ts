@@ -1,4 +1,5 @@
 // in this file you can append custom step methods to 'I' object
+import { injectAxe } from 'axe-playwright';
 
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
 
@@ -112,6 +113,12 @@ export = function() {
         this.assertEqual(rsp.status, 201);
       }
       return rsp;
+    },
+    checkA11y(fileName: string) {
+      this.runA11yCheck({ reportFileName: fileName });
+      this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
+        await injectAxe(page);
+      });
     },
   });
 }
