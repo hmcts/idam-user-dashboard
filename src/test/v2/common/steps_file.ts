@@ -41,7 +41,7 @@ export = function() {
     },
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
-      this.click(clickText);
+      this.retry(AFTER_CLICK_RETRY).click(clickText);
       this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
       this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
