@@ -9052,7 +9052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:>=2.0.7":
+"jose@npm:>=4.15.5":
   version: 5.2.3
   resolution: "jose@npm:5.2.3"
   checksum: 7c41025d3e449f654a4cbf0e18e3a4a3bcb74b242d716e2e665a20be5c93b3f68421032a4531fd984d4bad6aa225c7c517da18da6e0cf778b104cd7e30bde5de
