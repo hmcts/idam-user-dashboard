@@ -143,6 +143,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
+    "jose": "^2.0.7",
     "axios": "^1.6.7",
     "async": "^3.2.2",
     "cookiejar": ">=2.1.4",
