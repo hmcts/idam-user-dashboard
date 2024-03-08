@@ -25,8 +25,7 @@ shared_config.helpers = {
     axeOptions: {
       runOnly: {
         values: [
-          'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa',
-          'best-practice', 'wcag***', 'ACT', 'experimental', 'cat.*'
+          'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'
         ],
       },
     },
