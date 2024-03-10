@@ -19,12 +19,14 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukPhaseBanner({
-    tag: {
-      text: "beta"
-    },
-    html: 'This is a new service – your <a class="govuk-link" href="https://github.com/hmcts/idam-user-dashboard/issues">feedback</a> will help us to improve it.'
-  }) }}
+  <header role="banner">
+    {{ govukPhaseBanner({
+      tag: {
+        text: "beta"
+      },
+      html: 'This is a new service – your <a class="govuk-link" href="https://github.com/hmcts/idam-user-dashboard/issues">feedback</a> will help us to improve it.'
+    }) }}
+  </header>
 {% endblock %}
 
 {% block footer %}
