@@ -1,5 +1,5 @@
 // in this file you can append custom step methods to 'I' object
-import { injectAxe } from 'axe-playwright';
+import { injectAxe, checkA11y } from 'axe-playwright';
 
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
 
@@ -9,7 +9,7 @@ export = function() {
       this.amOnPage('/');
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
-      this.click('Sign in');  
+      this.click('Sign in');
       this.seeAfterClick('What do you want to do?');
     },
     async navigateToManageUser(searchValue : string) {
@@ -59,7 +59,7 @@ export = function() {
     },
     lockTestUser(email : string) {
       for (let i=0; i<5; i++) {
-        this.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', { 
+        this.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', {
           'grant_type':'password',
           'client_id':'idam-functional-test-service',
           'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
@@ -118,6 +118,7 @@ export = function() {
       this.runA11yCheck({ reportFileName: fileName });
       this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
         await injectAxe(page);
+        await checkA11y(page);
       });
     },
   });
