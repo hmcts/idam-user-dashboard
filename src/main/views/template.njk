@@ -19,7 +19,7 @@
 {% endblock %}
 
 {% block beforeContent %}
-  <div>
+  <div role="region" aria-labelledby="phaseBannerHeading">
     {{ govukPhaseBanner({
       tag: {
         text: "beta"
