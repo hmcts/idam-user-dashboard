@@ -143,6 +143,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
+    "follow-redirects": "^1.15.6",
     "puppeteer": "22.4.1",
     "jose": "^2.0.7",
     "axios": "^1.6.7",
