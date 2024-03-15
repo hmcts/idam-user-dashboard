@@ -143,12 +143,12 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
+    "puppeteer": "22.4.1",
     "jose": "^2.0.7",
     "axios": "^1.6.7",
     "async": "^3.2.2",
     "cookiejar": ">=2.1.4",
     "ip": ">=1.1.9",
-    "jose": "^2.0.7",
     "qs": ">=6.9.7"
   },
   "packageManager": "yarn@4.1.1"
