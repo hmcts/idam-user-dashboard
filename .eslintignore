@@ -6,6 +6,7 @@ coverage/*
 **/*.d.ts
 # 3rd party libs
 /src/main/public/
+/src/main/views/govuk/
 # custom definition files
 /src/main/types/
 jest.*config.js

@@ -1,5 +1,6 @@
 export enum InvitationTypes {
   INVITE = 'INVITE',
+  APPOINT = 'APPOINT',
   SELF_REGISTER = 'SELF_REGISTER',
   REACTIVATE = 'REACTIVATE',
 }

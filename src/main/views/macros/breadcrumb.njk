@@ -1,4 +1,4 @@
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "dist/govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% macro breadcrumb(crumbs) %}
   {% set items = [] %}
@@ -8,5 +8,7 @@
     {% set items = (items.push({ text: crumb[0], href: crumb[1] }),items) %}
   {% endfor %}
 
-  {{ govukBreadcrumbs({ collapseOnMobile: true, items: items}) }}
+  <nav aria-label="Breadcrumb">
+    {{ govukBreadcrumbs({ collapseOnMobile: true, items: items}) }}
+  </nav>
 {% endmacro %}

@@ -15,6 +15,7 @@ services:
     callbackURL: OAUTH_CLIENT_REDIRECT
     scope: 'openid profile roles manage-user search-user'
     responseType: 'code'
+    appointmentMap: APPOINTMENT_MAP
 session:
   redis:
     host: REDIS_HOST

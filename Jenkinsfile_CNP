@@ -64,7 +64,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('smoketest:idam-preview') {
+  afterAlways('smoketest:preview') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -75,7 +75,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('smoketest:idam-aat') {
+  afterAlways('smoketest:aat') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -86,7 +86,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  afterAlways('functionalTest:idam-preview') {
+  afterAlways('functionalTest:preview') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -100,13 +100,13 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/accessibility",
-      reportFiles          : "test-report.html",
+      reportDir            : "functional-output/accessibility",
+      reportFiles          : "all_results.html",
       reportName           : "Accessibility Test Report"
     ]
   }
 
-  afterAlways('functionalTest:idam-aat') {
+  afterAlways('functionalTest:aat') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -120,8 +120,8 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "test-output/accessibility",
-      reportFiles          : "test-report.html",
+      reportDir            : "functional-output/accessibility",
+      reportFiles          : "all_results.html",
       reportName           : "Accessibility Test Report"
     ]
   }

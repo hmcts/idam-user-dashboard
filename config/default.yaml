@@ -27,6 +27,7 @@ services:
     scope: 'openid profile roles manage-user search-user create-user'
     backendServiceScope: 'create-invitation view-service-provider delete-user'
     responseType: 'code'
+    appointmentMap: '{ "@eJudiciary.net" : "APPOINT" }'
 session:
   secret: 'LONG_RANDOM_STRING'
   cookie:
