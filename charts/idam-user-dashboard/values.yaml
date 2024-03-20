@@ -1,9 +1,9 @@
 nodejs:
   applicationPort: 3100
-  cpuLimits: 500m
-  cpuRequests: 100m
+  cpuLimits: 150m
+  cpuRequests: 50m
   memoryLimits: 1024Mi
-  memoryRequests: 256Mi
+  memoryRequests: 512Mi
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
