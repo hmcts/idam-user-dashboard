@@ -1,4 +1,6 @@
 nodejs:
+  ingressAnnotations:
+    external-dns.alpha.kubernetes.io/exclude: "true"
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
@@ -6,6 +8,6 @@ nodejs:
   environment:
     DASHBOARD_URL: https://${SERVICE_FQDN}/
     OAUTH_CLIENT_REDIRECT: https://${SERVICE_FQDN}/oauth2/callback
-    
+
 idam-pr:
   enabled: false
