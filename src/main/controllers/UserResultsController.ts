@@ -1,18 +1,19 @@
-import { AuthedRequest } from '../interfaces/AuthedRequest';
-import { ProviderIdentity } from '../interfaces/Provider';
-import { Response } from 'express';
+import {AuthedRequest} from '../interfaces/AuthedRequest';
+import {ProviderIdentity} from '../interfaces/Provider';
+import {Response} from 'express';
 import {
   computeTimeDifferenceInMinutes,
   convertISODateTimeToUTCFormat,
   isEmpty,
   sortRoles
 } from '../utils/utils';
-import { RootController } from './RootController';
+import {RootController} from './RootController';
 import autobind from 'autobind-decorator';
-import { User } from '../interfaces/User';
+import {User} from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import { processMfaRole } from '../utils/roleUtils';
+import {processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
+import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 
 @autobind
 export class UserResultsController extends RootController {
@@ -32,7 +33,7 @@ export class UserResultsController extends RootController {
 
     let user;
     try {
-      user = await req.scope.cradle.api.getUserById(userUUID);
+      user = await req.scope.cradle.api.getUserV2ById(userUUID);
     } catch (e) {
       return req.next();
     }
@@ -53,13 +54,15 @@ export class UserResultsController extends RootController {
         lockedMessage: this.composeLockedMessage(user),
         notificationBannerMessage: notificationBannerMessage,
         providerName: providerName,
-        providerIdField: providerIdField
+        providerIdField: providerIdField,
+        userIsActive: (user.accountStatus == AccountStatus.ACTIVE),
+        userIsArchived: (user.recordType == RecordType.ARCHIVED)
       }
     });
 
   }
 
-  private computeProviderIdentity(user: User, providerMap: Map<string, ProviderIdentity>): ProviderIdentity {
+  private computeProviderIdentity(user: V2User, providerMap: Map<string, ProviderIdentity>): ProviderIdentity {
     let providerName;
     let providerIdField;
     if (user.ssoProvider) {
@@ -76,12 +79,12 @@ export class UserResultsController extends RootController {
     return { providerName, providerIdField };
   }
 
-  private getBannerIfRequired(user: User): string {
+  private getBannerIfRequired(user: V2User): string {
     let notificationBannerMessage;
     if (user.ssoProvider?.toLowerCase().includes(config.get('providers.azure.internalName'))) {
       notificationBannerMessage = 'Please check with the eJudiciary support team to see if there are related accounts.';
     }
-    if (user.stale) {
+    if (user.recordType == RecordType.ARCHIVED) {
       if (notificationBannerMessage) {
         notificationBannerMessage = notificationBannerMessage?.trim() !== '' ? notificationBannerMessage + '\n' : notificationBannerMessage;
       }
@@ -90,16 +93,19 @@ export class UserResultsController extends RootController {
     return notificationBannerMessage;
   }
 
-  private preprocessSearchResults(user: User): void {
-    sortRoles(user.roles);
+  private preprocessSearchResults(user: V2User): void {
+    sortRoles(user.roleNames);
     user.createDate = convertISODateTimeToUTCFormat(user.createDate);
     user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
-    processMfaRole(user);
+    if (user.lastLoginDate) {
+      user.lastLoginDate = convertISODateTimeToUTCFormat(user.lastLoginDate, true);
+    }
+    processMfaRoleV2(user);
   }
 
-  private composeLockedMessage(user: User): string {
-    if (user.locked) {
-      const remainingTime = isEmpty(user.pwdAccountLockedTime) ? 0 : this.computeRemainingLockedTime(user.pwdAccountLockedTime);
+  private composeLockedMessage(user: V2User): string {
+    if (user.accountStatus == AccountStatus.LOCKED) {
+      const remainingTime = isEmpty(user.accessLockedDate) ? 0 : this.computeRemainingLockedTime(user.accessLockedDate);
       if (remainingTime > 0) {
         const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
         return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
@@ -112,7 +118,7 @@ export class UserResultsController extends RootController {
     return 60 - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
   }
 
-  private canManageUser(userA: User | Partial<User>, userB: User | Partial<User>): boolean {
-    return userB.roles.every(role => userA.assignableRoles.includes(role));
+  private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
+    return userB.roleNames.every(role => userA.assignableRoles.includes(role));
   }
 }
