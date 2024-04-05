@@ -5,7 +5,7 @@ import { when } from 'jest-when';
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
-import {AccountStatus, RecordType} from "../../../../main/interfaces/V2User";
+import {AccountStatus, RecordType} from '../../../../main/interfaces/V2User';
 jest.mock('config');
 
 describe('User results controller', () => {
