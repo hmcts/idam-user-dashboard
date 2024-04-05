@@ -56,6 +56,7 @@ export class UserResultsController extends RootController {
         providerName: providerName,
         providerIdField: providerIdField,
         userIsActive: (user.accountStatus == AccountStatus.ACTIVE),
+        userIsLocked: (user.accountStatus == AccountStatus.LOCKED),
         userIsArchived: (user.recordType == RecordType.ARCHIVED)
       }
     });

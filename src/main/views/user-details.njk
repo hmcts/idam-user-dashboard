@@ -75,6 +75,14 @@
       } if (not content.userIsArchived and not content.userIsActive),
       {
         key: {
+          text: "Account state"
+        },
+        value: {
+          html: '<strong class="govuk-tag govuk-tag--red">Locked</strong>'
+        }
+      } if (content.userIsLocked and not content.userIsArchived),
+      {
+        key: {
           text: "IDAM User ID"
         },
         value: {
