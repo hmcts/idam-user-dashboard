@@ -229,6 +229,10 @@ describe('utils', () => {
       expect(convertISODateTimeToUTCFormat('2022-01-17T16:58:28.762Z')).toBe('Mon, 17 Jan 2022 16:58:28 GMT');
     });
 
+    test('Should return valid date time without seconds', async () => {
+      expect(convertISODateTimeToUTCFormat('2022-01-17T16:58:28.762Z', true)).toBe('Mon, 17 Jan 2022 ');
+    });
+
     test('Should not return date time with invalid input', async () => {
       expect(convertISODateTimeToUTCFormat('20220117')).toBe('');
     });

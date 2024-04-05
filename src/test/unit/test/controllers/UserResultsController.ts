@@ -38,12 +38,12 @@ describe('User results controller', () => {
         email: email,
         accountStatus: AccountStatus.ACTIVE,
         recordType: RecordType.LIVE,
-        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoId: ssoId,
         ssoProvider: 'azure',
         createDate: '',
-        lastModified: ''
+        lastModified: '',
+        lastLoginDate: '1577846400'
       }
     ];
 
@@ -56,7 +56,7 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: results[0],
-        canManage: false,
+        canManage: true,
         providerIdField: 'eJudiciary User ID',
         providerName: 'eJudiciary.net',
         notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.',
