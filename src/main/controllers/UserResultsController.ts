@@ -1,12 +1,7 @@
 import {AuthedRequest} from '../interfaces/AuthedRequest';
 import {ProviderIdentity} from '../interfaces/Provider';
 import {Response} from 'express';
-import {
-  computeTimeDifferenceInMinutes,
-  convertISODateTimeToUTCFormat,
-  isEmpty,
-  sortRoles
-} from '../utils/utils';
+import {computeTimeDifferenceInMinutes, convertISODateTimeToUTCFormat, isEmpty, sortRoles} from '../utils/utils';
 import {RootController} from './RootController';
 import autobind from 'autobind-decorator';
 import {User} from '../interfaces/User';
@@ -57,6 +52,7 @@ export class UserResultsController extends RootController {
         providerIdField: providerIdField,
         userIsActive: (user.accountStatus == AccountStatus.ACTIVE),
         userIsLocked: (user.accountStatus == AccountStatus.LOCKED),
+        userIsSuspended: (user.accountStatus == AccountStatus.SUSPENDED),
         userIsArchived: (user.recordType == RecordType.ARCHIVED)
       }
     });
@@ -95,6 +91,9 @@ export class UserResultsController extends RootController {
   }
 
   private preprocessSearchResults(user: V2User): void {
+    if (!user.roleNames) {
+      user.roleNames = [];
+    }
     sortRoles(user.roleNames);
     user.createDate = convertISODateTimeToUTCFormat(user.createDate);
     user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);

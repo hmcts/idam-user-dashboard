@@ -64,7 +64,7 @@
         value: {
           html: '<strong class="govuk-tag govuk-tag--green">Archived</strong>'
         }
-      } if (content.userIsArchived and not content.userIsActive),
+      } if (content.userIsArchived),
       {
         key: {
           text: "Account state"
@@ -72,7 +72,7 @@
         value: {
           html: '<strong class="govuk-tag govuk-tag--red">Suspended</strong>'
         }
-      } if (not content.userIsArchived and not content.userIsActive),
+      } if (content.userIsSuspended),
       {
         key: {
           text: "Account state"

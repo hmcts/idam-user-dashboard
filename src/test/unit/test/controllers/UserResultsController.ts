@@ -63,6 +63,7 @@ describe('User results controller', () => {
         lockedMessage: '',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -105,6 +106,7 @@ describe('User results controller', () => {
         lockedMessage: '',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: true
       }
     });
@@ -141,6 +143,7 @@ describe('User results controller', () => {
         providerName: 'IDAM',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -180,6 +183,7 @@ describe('User results controller', () => {
         providerIdField: 'eJudiciary User ID',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -218,6 +222,7 @@ describe('User results controller', () => {
         providerIdField: 'IdP User ID',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -253,6 +258,7 @@ describe('User results controller', () => {
         providerName: 'IDAM',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -289,6 +295,7 @@ describe('User results controller', () => {
         providerName: 'IDAM',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -326,6 +333,7 @@ describe('User results controller', () => {
         providerName: 'IDAM',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -376,6 +384,7 @@ describe('User results controller', () => {
         providerName: 'IDAM',
         userIsActive: true,
         userIsLocked: false,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -416,6 +425,7 @@ describe('User results controller', () => {
         lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes',
         userIsActive: false,
         userIsLocked: true,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -456,6 +466,7 @@ describe('User results controller', () => {
         lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute',
         userIsActive: false,
         userIsLocked: true,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
@@ -497,6 +508,7 @@ describe('User results controller', () => {
         providerName: 'IDAM',
         userIsActive: false,
         userIsLocked: true,
+        userIsSuspended: false,
         userIsArchived: false
       }
     });
