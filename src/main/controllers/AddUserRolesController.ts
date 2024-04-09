@@ -1,15 +1,16 @@
 import autobind from 'autobind-decorator';
-import { RootController } from './RootController';
-import { AuthedRequest } from '../interfaces/AuthedRequest';
-import { Response } from 'express';
+import {RootController} from './RootController';
+import {AuthedRequest} from '../interfaces/AuthedRequest';
+import {Response} from 'express';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import { convertToArray, hasProperty } from '../utils/utils';
-import { MISSING_ROLE_ASSIGNMENT_ERROR } from '../utils/error';
-import { constructAllRoleAssignments } from '../utils/roleUtils';
-import { InviteService } from '../app/invite-service/InviteService';
-import { ServiceProviderService } from '../app/service-provider-service/ServiceProviderService';
+import {convertToArray, hasProperty} from '../utils/utils';
+import {MISSING_ROLE_ASSIGNMENT_ERROR} from '../utils/error';
+import {constructAllRoleAssignments} from '../utils/roleUtils';
+import {InviteService} from '../app/invite-service/InviteService';
+import {ServiceProviderService} from '../app/service-provider-service/ServiceProviderService';
 import config from 'config';
-import { UserType } from '../utils/UserType';
+import {UserType} from '../utils/UserType';
+import {InvitationTypes} from '../app/invite-service/Invite';
 
 @autobind
 export class AddUserRolesController extends RootController {
@@ -65,7 +66,9 @@ export class AddUserRolesController extends RootController {
       });
     }
 
-
-    return super.post(req, res, 'add-user-completion');
+    const isAppointInvitationType =
+      this.inviteService.tryMatchAppointmentTypeByEmail(fields._email) === InvitationTypes.APPOINT;
+    return super.post(req, res, 'add-user-completion',
+      { content: { isAppointInvitationType: isAppointInvitationType }});
   }
 }

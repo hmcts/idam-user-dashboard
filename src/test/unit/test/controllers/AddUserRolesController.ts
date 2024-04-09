@@ -1,18 +1,20 @@
 import {when} from 'jest-when';
-import { mockResponse } from '../../utils/mockResponse';
-import { AddUserRolesController } from '../../../../main/controllers/AddUserRolesController';
-import { mockRequest } from '../../utils/mockRequest';
+import {mockResponse} from '../../utils/mockResponse';
+import {AddUserRolesController} from '../../../../main/controllers/AddUserRolesController';
+import {mockRequest} from '../../utils/mockRequest';
 import {MISSING_ROLE_ASSIGNMENT_ERROR} from '../../../../main/utils/error';
 import {mockApi} from '../../utils/mockApi';
-import { mockRootController } from '../../utils/mockRootController';
-import { mockInviteService } from '../../utils/mockInviteService';
-import { mockServiceProviderService } from '../../utils/mockServiceProviderService';
-import { UserType } from '../../../../main/utils/UserType';
+import {mockRootController} from '../../utils/mockRootController';
+import {mockInviteService} from '../../utils/mockInviteService';
+import {mockServiceProviderService} from '../../utils/mockServiceProviderService';
+import {UserType} from '../../../../main/utils/UserType';
+import {InvitationTypes} from '../../../../main/app/invite-service/Invite';
 
 describe('Add user roles controller', () => {
   let req: any;
   const res = mockResponse();
   const inviteService = mockInviteService();
+  inviteService.tryMatchAppointmentTypeByEmail = jest.fn();
   const serviceProviderService = mockServiceProviderService();
   const controller = new AddUserRolesController(inviteService, serviceProviderService);
   mockRootController();
@@ -37,6 +39,8 @@ describe('Add user roles controller', () => {
   test('Should render the add user completion page when assigning the user with a single role', async () => {
     when(inviteService.inviteUser).mockResolvedValue({} as any);
     when(serviceProviderService.getService).mockResolvedValue(service);
+    when(inviteService.tryMatchAppointmentTypeByEmail)
+      .calledWith(email).mockReturnValue(InvitationTypes.APPOINT);
 
     req.body._email = email;
     req.body._forename = forename;
@@ -50,12 +54,15 @@ describe('Add user roles controller', () => {
     };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-completion');
+    expect(res.render).toBeCalledWith('add-user-completion',
+      { content: { isAppointInvitationType: true }});
   });
 
   test('Should render the add user completion page when assigning the user with multiple roles', async () => {
     when(inviteService.inviteUser).mockResolvedValue({} as any);
     when(serviceProviderService.getService).mockResolvedValue(service);
+    when(inviteService.tryMatchAppointmentTypeByEmail)
+      .calledWith(email).mockReturnValue(InvitationTypes.INVITE);
 
     req.body._email = email;
     req.body._forename = forename;
@@ -68,7 +75,8 @@ describe('Add user roles controller', () => {
     };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-completion');
+    expect(res.render).toBeCalledWith('add-user-completion',
+      { content: { isAppointInvitationType: false }});
   });
 
   test('Should invite user with support role redirecting to user-dashboard', async () => {

@@ -1,9 +1,9 @@
-import { constants as http } from 'http2';
-import { AuthorizedAxios } from '../authorized-axios/AuthorizedAxios';
-import { InvitationTypes, Invite } from './Invite';
+import {constants as http} from 'http2';
+import {AuthorizedAxios} from '../authorized-axios/AuthorizedAxios';
+import {InvitationTypes, Invite} from './Invite';
 import config from 'config';
-import { HTTPError } from '../errors/HttpError';
-import { Logger } from '../../interfaces/Logger';
+import {HTTPError} from '../errors/HttpError';
+import {Logger} from '../../interfaces/Logger';
 
 export class InviteService {
   private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoint.invite');
@@ -41,14 +41,17 @@ export class InviteService {
   };
 
   public inviteUser = (invite: Invite, language = 'en') => {
-    const APPOINTMENT_MAP = JSON.parse(this.appointmentMapString);
-    const matchedInvitationType: InvitationTypes =
-      this.getEmailAppointmentMapEntryAsInvitationType(invite.email, APPOINTMENT_MAP);
+    const matchedInvitationType = this.tryMatchAppointmentTypeByEmail(invite.email);
     if (matchedInvitationType) {
       return this.sendInvite(matchedInvitationType, invite, language);
     }
     return this.sendInvite(InvitationTypes.INVITE, invite, language);
   };
+
+  public tryMatchAppointmentTypeByEmail(email: string): InvitationTypes | undefined {
+    const APPOINTMENT_MAP = JSON.parse(this.appointmentMapString);
+    return this.getEmailAppointmentMapEntryAsInvitationType(email, APPOINTMENT_MAP);
+  }
 
   getEmailAppointmentMapEntryAsInvitationType(email: string, map: { [key: string]: string } ): InvitationTypes | undefined {
     let matchedValue: string;
