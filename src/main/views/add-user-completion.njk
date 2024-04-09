@@ -25,10 +25,17 @@
       {{ govukPanel({
         titleText: "User registered"
       }) }}
-      <div class="govuk-!-margin-top-5 govuk-!-margin-bottom-5">
-        <p class="govuk-body-m govuk-!-margin-bottom-3">The user has been registered and should now receive an email.</p>
-        <p class="govuk-body-m">They will need to activate their account using the link in this email before they can sign in.</p>
-      </div>
+      {% if content.isAppointInvitationType %}
+        <div class="govuk-!-margin-top-5 govuk-!-margin-bottom-5">
+          <p class="govuk-body-m govuk-!-margin-bottom-3">The user has been registered and can now login via Single Sign-On.</p>
+          <p class="govuk-body-m">They will not receive an activation email.</p>
+        </div>
+      {% else %}
+        <div class="govuk-!-margin-top-5 govuk-!-margin-bottom-5">
+          <p class="govuk-body-m govuk-!-margin-bottom-3">The user has been registered and should now receive an email.</p>
+          <p class="govuk-body-m">They will need to activate their account using the link in this email before they can sign in.</p>
+        </div>
+      {% endif %}
     </div>
   </div>
 
