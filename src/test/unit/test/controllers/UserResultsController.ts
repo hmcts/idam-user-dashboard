@@ -5,6 +5,7 @@ import { when } from 'jest-when';
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
+import {AccountStatus, RecordType} from '../../../../main/interfaces/V2User';
 jest.mock('config');
 
 describe('User results controller', () => {
@@ -35,17 +36,18 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
         multiFactorAuthentication: true,
         ssoId: ssoId,
         ssoProvider: 'azure',
         createDate: '',
-        lastModified: ''
+        lastModified: '',
+        lastLoginDate: '1577846400'
       }
     ];
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -54,11 +56,15 @@ describe('User results controller', () => {
     expect(res.render).toBeCalledWith('user-details', {
       content: {
         user: results[0],
-        canManage: false,
+        canManage: true,
         providerIdField: 'eJudiciary User ID',
         providerName: 'eJudiciary.net',
         notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.',
-        lockedMessage: ''
+        lockedMessage: '',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -70,11 +76,11 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.ARCHIVED,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoId: ssoId,
-        stale: true,
         ssoProvider: 'azure',
         createDate: '',
         lastModified: ''
@@ -82,7 +88,7 @@ describe('User results controller', () => {
     ];
 
     when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
     req.body.search = email;
@@ -97,7 +103,11 @@ describe('User results controller', () => {
         providerName: 'eJudiciary.net',
         notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.' + '\n'
         + 'Archived accounts are read only.',
-        lockedMessage: ''
+        lockedMessage: '',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: true
       }
     });
   });
@@ -109,8 +119,9 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoId: ssoId,
         createDate: '',
@@ -118,7 +129,7 @@ describe('User results controller', () => {
       }
     ];
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -129,7 +140,11 @@ describe('User results controller', () => {
         user: results[0],
         canManage: false,
         lockedMessage: '',
-        providerName: 'IDAM'
+        providerName: 'IDAM',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -141,8 +156,9 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoProvider: 'azure',
         ssoId: ssoId,
@@ -151,7 +167,7 @@ describe('User results controller', () => {
       }
     ];
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -164,7 +180,11 @@ describe('User results controller', () => {
         lockedMessage: '',
         providerName: 'eJudiciary.net',
         notificationBannerMessage: 'Please check with the eJudiciary support team to see if there are related accounts.',
-        providerIdField: 'eJudiciary User ID'
+        providerIdField: 'eJudiciary User ID',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -176,8 +196,9 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoProvider: 'unknown',
         ssoId: ssoId,
@@ -186,7 +207,7 @@ describe('User results controller', () => {
       }
     ];
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -198,7 +219,11 @@ describe('User results controller', () => {
         canManage: false,
         lockedMessage: '',
         providerName: 'unknown',
-        providerIdField: 'IdP User ID'
+        providerIdField: 'IdP User ID',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -210,15 +235,16 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         createDate: '',
         lastModified: ''
       }
     ];
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -229,7 +255,11 @@ describe('User results controller', () => {
         user: results[0],
         canManage: false,
         lockedMessage: '',
-        providerName: 'IDAM'
+        providerName: 'IDAM',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -241,8 +271,9 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoId: ssoId,
         createDate: '',
@@ -250,7 +281,7 @@ describe('User results controller', () => {
       }
     ];
 
-    when(mockApi.getUserById).calledWith(userId).mockReturnValue(results[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockReturnValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -261,7 +292,11 @@ describe('User results controller', () => {
         user: results[0],
         canManage: false,
         lockedMessage: '',
-        providerName: 'IDAM'
+        providerName: 'IDAM',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -273,8 +308,9 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: true,
         ssoId: ssoId,
         createDate: '',
@@ -283,6 +319,7 @@ describe('User results controller', () => {
     ];
 
     when(mockApi.getUserById).calledWith(ssoId).mockReturnValue([]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockReturnValue(results[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -293,7 +330,11 @@ describe('User results controller', () => {
         user: results[0],
         canManage: false,
         lockedMessage: '',
-        providerName: 'IDAM'
+        providerName: 'IDAM',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -305,8 +346,9 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER', 'idam-mfa-disabled'],
         ssoId: ssoId,
         createDate: '',
         lastModified: ''
@@ -319,15 +361,16 @@ describe('User results controller', () => {
         forename: 'John',
         surname: 'Smith',
         email: email,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
+        accountStatus: AccountStatus.ACTIVE,
+        recordType: RecordType.LIVE,
+        roleNames: ['IDAM_SUPER_USER'],
         multiFactorAuthentication: false,
         ssoId: ssoId,
         createDate: '',
         lastModified: ''
       }
     ];
-    when(mockApi.getUserById).calledWith(userId).mockReturnValue(users[0]);
+    when(mockApi.getUserV2ById).calledWith(userId).mockReturnValue(users[0]);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -338,7 +381,11 @@ describe('User results controller', () => {
         user: expectedResults[0],
         canManage: false,
         lockedMessage: '',
-        providerName: 'IDAM'
+        providerName: 'IDAM',
+        userIsActive: true,
+        userIsLocked: false,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -354,17 +401,17 @@ describe('User results controller', () => {
       forename: 'John',
       surname: 'Smith',
       email: email,
-      active: true,
-      locked: true,
-      pwdAccountLockedTime: pwdAccountLockedTime,
-      roles: ['IDAM_SUPER_USER'],
+      accountStatus: AccountStatus.LOCKED,
+      recordType: RecordType.LIVE,
+      accessLockedDate: pwdAccountLockedTime,
+      roleNames: ['IDAM_SUPER_USER'],
       multiFactorAuthentication: true,
       ssoId: ssoId,
       createDate: '',
       lastModified: ''
     };
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -375,7 +422,11 @@ describe('User results controller', () => {
         user: getUserByIdResult,
         canManage: false,
         providerName: 'IDAM',
-        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes'
+        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 58 minutes',
+        userIsActive: false,
+        userIsLocked: true,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -391,17 +442,17 @@ describe('User results controller', () => {
       forename: 'John',
       surname: 'Smith',
       email: email,
-      active: true,
-      locked: true,
-      pwdAccountLockedTime: pwdAccountLockedTime,
-      roles: ['IDAM_SUPER_USER'],
+      accountStatus: AccountStatus.LOCKED,
+      recordType: RecordType.LIVE,
+      accessLockedDate: pwdAccountLockedTime,
+      roleNames: ['IDAM_SUPER_USER'],
       multiFactorAuthentication: true,
       ssoId: ssoId,
       createDate: '',
       lastModified: ''
     };
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -412,7 +463,11 @@ describe('User results controller', () => {
         user: getUserByIdResult,
         canManage: false,
         providerName: 'IDAM',
-        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute'
+        lockedMessage: 'This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in 1 minute',
+        userIsActive: false,
+        userIsLocked: true,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });
@@ -429,17 +484,17 @@ describe('User results controller', () => {
       forename: 'John',
       surname: 'Smith',
       email: email,
-      active: true,
-      locked: true,
-      pwdAccountLockedTime: pwdAccountLockedTime,
-      roles: ['IDAM_SUPER_USER'],
+      accountStatus: AccountStatus.LOCKED,
+      recordType: RecordType.LIVE,
+      accessLockedDate: pwdAccountLockedTime,
+      roleNames: ['IDAM_SUPER_USER'],
       multiFactorAuthentication: true,
       ssoId: ssoId,
       createDate: '',
       lastModified: ''
     };
 
-    when(mockApi.getUserById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
     req.scope.cradle.api = mockApi;
@@ -450,7 +505,11 @@ describe('User results controller', () => {
         user: getUserByIdResult,
         canManage: false,
         lockedMessage: '',
-        providerName: 'IDAM'
+        providerName: 'IDAM',
+        userIsActive: false,
+        userIsLocked: true,
+        userIsSuspended: false,
+        userIsArchived: false
       }
     });
   });

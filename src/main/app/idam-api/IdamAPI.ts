@@ -10,11 +10,13 @@ import { Service } from '../../interfaces/Service';
 import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
 import { ROLE_PERMISSION_ERROR } from '../../utils/error';
+import { V2User } from '../../interfaces/V2User';
 
 export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
     private readonly systemAxios: AxiosInstance,
+    private readonly clientAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
     private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
@@ -43,6 +45,18 @@ export class IdamAPI {
   public getUserById(id: string): Promise<User> {
     return this.userAxios
       .get('/api/v1/users/' + id)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving user by ID from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage});
+        this.logger.error(`${error.stack || error}`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public getUserV2ById(id: string): Promise<V2User> {
+    return this.clientAxios
+      .get('/api/v2/users/' + id)
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error retrieving user by ID from IDAM API';

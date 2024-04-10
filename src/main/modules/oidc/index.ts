@@ -33,6 +33,7 @@ export class OidcMiddleware {
 
   public enableFor(app: Application): void {
     this.cacheSystemAccount(app);
+    this.cacheClientCredentialsToken(app);
 
     app.use(auth({
       issuerBaseURL: this.idamBaseUrl + '/o',
@@ -61,7 +62,7 @@ export class OidcMiddleware {
           let tokenUser;
           try {
             tokenUser = jwtDecode(session.id_token) as {
-              uid: string, 
+              uid: string,
               email: string,
               roles:string[]};
           } catch (error) {
@@ -144,6 +145,22 @@ export class OidcMiddleware {
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
   };
 
+  private cacheClientCredentialsToken = (app: Application): void => {
+    let delay = 10 * 60;
+
+    this.getClientCredentialsAccessToken()
+      .then(tokenSet => {
+        app.locals.container.register({
+          clientAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token))
+        });
+
+        delay = tokenSet.expires_in/2;
+        this.logger.info('Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
+      })
+      .catch((err) => this.logger.info('Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
+      .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
+  };
+
   private createAuthedAxiosInstance(accessToken: string): AxiosInstance {
     return axios.create({
       baseURL: config.get('services.idam.url.api'),
@@ -162,6 +179,22 @@ export class OidcMiddleware {
         'username': this.systemAccountUsername,
         'password': this.systemAccountPassword,
         'scope': this.clientScope,
+      });
+  }
+
+  private async getClientCredentialsAccessToken(): Promise<TokenSet> {
+    const usableScopes = this.clientScope
+      .replace('openid', '')
+      .replace('profile', '')
+      .replace('roles', '').trim();
+    return new (await Issuer.discover(this.idamBaseUrl + '/o'))
+      .Client({
+        'client_id': this.clientId,
+        'client_secret': this.clientSecret,
+        'token_endpoint_auth_method': 'client_secret_post'
+      }).grant({
+        'grant_type': 'client_credentials',
+        'scope': usableScopes
       });
   }
 }

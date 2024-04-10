@@ -48,9 +48,14 @@ export const sortRoles = (roles: string[]): void => {
   }
 };
 
-export const convertISODateTimeToUTCFormat = (date: string): string => {
+export const convertISODateTimeToUTCFormat = (date: string, trimSeconds?: boolean): string => {
   const result = new Date(date).toUTCString();
-  return result === 'Invalid Date' ? '' : result;
+  if (result === 'Invalid Date') {
+    return '';
+  } else if (trimSeconds) {
+    return result.substring(0, result.length-12);
+  }
+  return result;
 };
 
 export const computeTimeDifferenceInMinutes = (date1: Date, date2: Date): number => {

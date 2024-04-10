@@ -42,7 +42,7 @@
   {% endif %}
 
   {% set processedRoles %}
-    {% for role in content.user.roles %}
+    {% for role in content.user.roleNames %}
       {{ role }}<br>
     {% endfor %}
   {% endset %}
@@ -56,7 +56,7 @@
         value: {
           html: '<strong class="govuk-tag">Active</strong>'
         }
-      } if (content.user.active and not content.user.stale),
+      } if (content.userIsActive and not content.userIsArchived),
       {
         key: {
           text: "Account state"
@@ -64,7 +64,7 @@
         value: {
           html: '<strong class="govuk-tag govuk-tag--green">Archived</strong>'
         }
-      } if (content.user.stale and not content.user.active),
+      } if (content.userIsArchived),
       {
         key: {
           text: "Account state"
@@ -72,7 +72,15 @@
         value: {
           html: '<strong class="govuk-tag govuk-tag--red">Suspended</strong>'
         }
-      } if (not content.user.stale and not content.user.active),
+      } if (content.userIsSuspended),
+      {
+        key: {
+          text: "Account state"
+        },
+        value: {
+          html: '<strong class="govuk-tag govuk-tag--red">Locked</strong>'
+        }
+      } if (content.userIsLocked and not content.userIsArchived),
       {
         key: {
           text: "IDAM User ID"
@@ -160,6 +168,14 @@
         value: {
           text: content.user.lastModified
         }
+      },
+       {
+        key: {
+          text: "Last login date"
+        },
+        value: {
+          text: content.user.lastLoginDate
+        }
       }
     ]
   }) }}
@@ -178,14 +194,14 @@
     {{ csrfProtection(csrfToken) }}
     <input type="hidden" name="_userId" value="{{ content.user.id }}">
     <div class="govuk-button-group">
-      {% if not content.user.stale %}
+      {% if not content.userIsArchived %}
         {% if featureFlags.values[featureFlags.flags.BETA_EDIT] %}
           {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
         {% endif %}
 
         {% if featureFlags.values[featureFlags.flags.BETA_SUSPEND] %}
-          {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.user.active }}
-          {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.user.active }}
+          {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.userIsActive }}
+          {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.userIsActive }}
         {% endif %}
 
         {% if featureFlags.values[featureFlags.flags.BETA_REMOVE_SSO] and (content.user.ssoProvider or content.user.ssoId) %}
