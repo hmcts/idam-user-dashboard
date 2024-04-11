@@ -1,3 +1,5 @@
+import {format} from 'date-fns';
+
 export const hasProperty = (container: {}, property: string): boolean => {
   return container !== undefined && property in container;
 };
@@ -53,7 +55,7 @@ export const convertISODateTimeToUTCFormat = (date: string, trimSeconds?: boolea
   if (result === 'Invalid Date') {
     return '';
   } else if (trimSeconds) {
-    return result.substring(0, result.length-12);
+    return format(new Date(date), 'EEE, dd MMM yyyy HH:mm') + ' GMT';
   }
   return result;
 };
