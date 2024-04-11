@@ -1,7 +1,13 @@
 import {AuthedRequest} from '../interfaces/AuthedRequest';
 import {ProviderIdentity} from '../interfaces/Provider';
 import {Response} from 'express';
-import {computeTimeDifferenceInMinutes, convertISODateTimeToUTCFormat, isEmpty, sortRoles} from '../utils/utils';
+import {
+  computeTimeDifferenceInMinutes,
+  convertISODateTimeToUTCFormat,
+  convertISODateTimeToUTCFormatTrimSeconds,
+  isEmpty,
+  sortRoles
+} from '../utils/utils';
 import {RootController} from './RootController';
 import autobind from 'autobind-decorator';
 import {User} from '../interfaces/User';
@@ -98,7 +104,7 @@ export class UserResultsController extends RootController {
     user.createDate = convertISODateTimeToUTCFormat(user.createDate);
     user.lastModified = convertISODateTimeToUTCFormat(user.lastModified);
     if (user.lastLoginDate) {
-      user.lastLoginDate = convertISODateTimeToUTCFormat(user.lastLoginDate, true);
+      user.lastLoginDate = convertISODateTimeToUTCFormatTrimSeconds(user.lastLoginDate);
     }
     processMfaRoleV2(user);
   }

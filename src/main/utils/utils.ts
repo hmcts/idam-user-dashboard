@@ -1,3 +1,5 @@
+import {format} from 'date-fns';
+
 export const hasProperty = (container: {}, property: string): boolean => {
   return container !== undefined && property in container;
 };
@@ -48,14 +50,15 @@ export const sortRoles = (roles: string[]): void => {
   }
 };
 
-export const convertISODateTimeToUTCFormat = (date: string, trimSeconds?: boolean): string => {
+export const convertISODateTimeToUTCFormat = (date: string): string => {
   const result = new Date(date).toUTCString();
-  if (result === 'Invalid Date') {
-    return '';
-  } else if (trimSeconds) {
-    return result.substring(0, result.length-12);
-  }
-  return result;
+  return result === 'Invalid Date' ? '' : result;
+};
+
+export const convertISODateTimeToUTCFormatTrimSeconds = (date: string): string => {
+  const result = new Date(date).toUTCString();
+  return result === 'Invalid Date' ? ''
+    : format(new Date(date), 'EEE, dd MMM yyyy HH:mm') + ' GMT';
 };
 
 export const computeTimeDifferenceInMinutes = (date1: Date, date2: Date): number => {
