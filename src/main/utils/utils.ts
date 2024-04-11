@@ -50,14 +50,15 @@ export const sortRoles = (roles: string[]): void => {
   }
 };
 
-export const convertISODateTimeToUTCFormat = (date: string, trimSeconds?: boolean): string => {
+export const convertISODateTimeToUTCFormat = (date: string): string => {
   const result = new Date(date).toUTCString();
-  if (result === 'Invalid Date') {
-    return '';
-  } else if (trimSeconds) {
-    return format(new Date(date), 'EEE, dd MMM yyyy HH:mm') + ' GMT';
-  }
-  return result;
+  return result === 'Invalid Date' ? '' : result;
+};
+
+export const convertISODateTimeToUTCFormatTrimSeconds = (date: string): string => {
+  const result = new Date(date).toUTCString();
+  return result === 'Invalid Date' ? ''
+    : format(new Date(date), 'EEE, dd MMM yyyy HH:mm') + ' GMT';
 };
 
 export const computeTimeDifferenceInMinutes = (date1: Date, date2: Date): number => {
