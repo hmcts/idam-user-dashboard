@@ -129,6 +129,7 @@ Scenario('I as an admin can filter roles', async ({ I }) => {
   const testUser = await I.haveUser({roleNames: [testRole.name]});
   await I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
+  I.uncheckOption('#show-hidden')
 
   I.fillField('#roles__search-box', 'iud-filter-role-');
 
