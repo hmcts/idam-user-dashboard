@@ -47,6 +47,10 @@
     {% endfor %}
   {% endset %}
 
+  {% set openInNewTab %}
+    <a id="openInNewTab" href="#" target="_blank" class="govuk-link" rel="noopener noreferrer">Open this in a new tab</a>
+  {% endset %}
+
   {{ govukSummaryList({
     rows: [
       {
@@ -169,18 +173,21 @@
           text: content.user.lastModified
         }
       },
-       {
+      {
         key: {
           text: "Last login date"
         },
         value: {
           text: content.user.lastLoginDate
         }
+      },
+      {
+        key: {
+          html: openInNewTab
+        }
       }
     ]
   }) }}
-
-  <a id="openInNewTab" href="#" target="_blank" class="govuk-link" rel="noopener noreferrer">Open this in a new tab</a>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -215,8 +222,11 @@
     </div>
   </form>
 
-  {{ govukBackLink({
-    text: "Return to search",
-    href: urls.MANAGER_USER_URL
-  }) }}
+  {% if content.previousNav %}
+    {{ govukBackLink({
+      text: "Return to search",
+      href: urls.MANAGER_USER_URL
+    }) }}
+  {% endif %}
+
 {% endblock %}

@@ -46,6 +46,7 @@ export class UserResultsController extends RootController {
 
     const notificationBannerMessage = this.getBannerIfRequired(user);
     const {providerName, providerIdField} = this.computeProviderIdentity(user, providerMap);
+    const previousNav = req.header('Referer');
 
     this.preprocessSearchResults(user);
     return super.post(req, res, 'user-details', {
@@ -59,7 +60,8 @@ export class UserResultsController extends RootController {
         userIsActive: (user.accountStatus == AccountStatus.ACTIVE),
         userIsLocked: (user.accountStatus == AccountStatus.LOCKED),
         userIsSuspended: (user.accountStatus == AccountStatus.SUSPENDED),
-        userIsArchived: (user.recordType == RecordType.ARCHIVED)
+        userIsArchived: (user.recordType == RecordType.ARCHIVED),
+        previousNav: previousNav
       }
     });
 

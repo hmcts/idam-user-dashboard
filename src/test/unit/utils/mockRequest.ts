@@ -8,5 +8,6 @@ export const mockRequest = () => {
     query: {}
   };
   req.body = jest.fn().mockReturnValue(req);
+  req.header = jest.fn().mockReturnValue(undefined);
   return req;
 };
