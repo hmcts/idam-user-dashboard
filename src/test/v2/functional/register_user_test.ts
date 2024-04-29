@@ -128,6 +128,7 @@ Scenario('I as an admin can search for roles to add', async ({ I }) => {
   I.fillField('#surname', faker.person.lastName());
   I.click('Support');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
+  I.uncheckOption('#show-hidden');
 
   I.fillField('#roles__search-box', 'iud-filter-role-');
 
