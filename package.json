@@ -145,7 +145,7 @@
   },
   "resolutions": {
     "follow-redirects": "^1.15.6",
-    "puppeteer": "22.6.3",
+    "puppeteer": "22.8.2",
     "jose": "^2.0.7",
     "axios": "^1.6.7",
     "async": "^3.2.2",
