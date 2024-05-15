@@ -38,7 +38,7 @@
   "dependencies": {
     "@axe-core/playwright": "^4.8.1",
     "@hmcts/info-provider": "^1.1.0",
-    "@hmcts/nodejs-healthcheck": "^1.8.3",
+    "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/properties-volume": "^1.1.0",
     "@playwright/test": "^1.41.2",
