@@ -17,8 +17,7 @@ export class HealthCheck {
       info: {},
     }));
 
-    const healthOptions = () => {
-      return {
+    const healthOptions = {
         callback: (err: Error, res: Request): Promise<void> => {
           if (err) {
             console.log('Health check failed!');
@@ -27,7 +26,6 @@ export class HealthCheck {
         },
         timeout: config.get('health.timeout'),
         deadline: config.get('health.deadline'),
-      };
     };
 
     const healthCheckConfig = {
