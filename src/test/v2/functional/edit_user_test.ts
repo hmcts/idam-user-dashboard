@@ -132,6 +132,7 @@ Scenario('I as an admin can filter roles', async ({ I }) => {
   I.uncheckOption('#show-hidden');
 
   I.fillField('#roles__search-box', 'iud-filter-role-');
+  I.wait(2);
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
   roleCheckboxes.forEach(function () {
