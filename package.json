@@ -143,7 +143,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
-    "braces": "^3.0.3",
+    "braces": ">=3.0.3",
     "follow-redirects": "^1.15.6",
     "puppeteer": "22.8.2",
     "jose": "^2.0.7",
@@ -153,8 +153,7 @@
     "tar": "6.2.1",
     "qs": ">=6.9.7",
     "express": "4.19.2",
-    "formidable": ">=3.2.4",
-    "braces": ">=3.0.3"
+    "formidable": ">=3.2.4"
   },
   "packageManager": "yarn@4.1.1"
 }
