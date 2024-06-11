@@ -19,7 +19,7 @@ services:
       invite: '/api/v2/invitations'
       services: '/api/v2/services'
     systemUser:
-      username: 'idam-user-dashboard-system-user@user.idam'
+      username:
       password:
     clientID: 'idam_user_dashboard'
     clientSecret: 'idam_user_dashboard_secret'

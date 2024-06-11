@@ -31,6 +31,7 @@ export class PropertiesVolume {
       this.setLocalSecret('AppInsightsConnectionString', 'appInsights.connectionString');
       this.setLocalSecret('launchdarkly-sdk-key', 'featureFlags.launchdarkly.sdkKey');
       this.setLocalSecret('idam-user-dashboard-client-secret', 'services.idam.clientSecret');
+      this.setLocalSecret('idam-user-dashboard-systemUser-username', 'services.idam.systemUser.username');
       this.setLocalSecret('idam-user-dashboard-systemUser-password', 'services.idam.systemUser.password');
     }
   }
