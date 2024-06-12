@@ -153,7 +153,9 @@
     "tar": "6.2.1",
     "qs": ">=6.9.7",
     "express": "4.19.2",
-    "formidable": ">=3.2.4"
+    "formidable": ">=3.2.4",
+    "@azure/msal-node": ">=2.9.2",
+    "@azure/identity": ">=4.2.1"
   },
   "packageManager": "yarn@4.1.1"
 }
