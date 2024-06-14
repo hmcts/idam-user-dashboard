@@ -1,4 +1,5 @@
 const appInsights = require('applicationinsights');
+const opentelemetry = require('@opentelemetry/api');
 import autobind from 'autobind-decorator';
 import { Response } from 'express';
 import { RootController } from './RootController';
@@ -51,6 +52,16 @@ export class UserEditController extends RootController {
       } else {
         console.log('no correlation context');
       }
+    }
+    if (opentelemetry && opentelemetry.trace) {
+      const activeSpan = opentelemetry.trace.getActiveSpan();
+      if (activeSpan) {
+        activeSpan.setAttribute('james.value', '' + req.body._userId);
+      } else {
+        console.log("no active span");
+      }
+    } else {
+      console.log('no open telemetry');
     }
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
