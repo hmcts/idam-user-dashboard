@@ -41,8 +41,12 @@ export class UserEditController extends RootController {
     if (appInsights) {
       const client = appInsights.defaultClient;
       if (client) {
-        client.trackEvent({name: 'EditUser', properties: {editUserId: '' + req.body._userId}});
+        client.trackTrace({
+          message: 'Post UserEditController', 
+          severity: appInsights.Contracts.SeverityLevel.Info, 
+          properties: {editUserId: '' + req.body._userId}});
       }
+      appInsights.getCorrelationContext().myContext = {editedUserId: '' + req.body._userId};
     }
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
