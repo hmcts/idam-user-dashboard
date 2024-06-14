@@ -46,7 +46,11 @@ export class UserEditController extends RootController {
           severity: appInsights.Contracts.SeverityLevel.Info, 
           properties: {editUserId: '' + req.body._userId}});
       }
-      appInsights.getCorrelationContext().myContext = {editedUserId: '' + req.body._userId};
+      if (appInsights.getCorrelationContext()) {
+        appInsights.getCorrelationContext().myContext = {editedUserId: '' + req.body._userId};
+      } else {
+        console.log("no correlation context");
+      }
     }
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
