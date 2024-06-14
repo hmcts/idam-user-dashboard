@@ -39,20 +39,6 @@ export class UserEditController extends RootController {
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    if (appInsights) {
-      const client = appInsights.defaultClient;
-      if (client) {
-        client.trackTrace({
-          message: 'Post UserEditController', 
-          severity: appInsights.Contracts.SeverityLevel.Info, 
-          properties: {editUserId: '' + req.body._userId}});
-      }
-      if (appInsights.getCorrelationContext()) {
-        appInsights.getCorrelationContext().myContext = {editedUserId: '' + req.body._userId};
-      } else {
-        console.log('no correlation context');
-      }
-    }
     if (opentelemetry && opentelemetry.trace) {
       const activeSpan = opentelemetry.trace.getActiveSpan();
       if (activeSpan) {
