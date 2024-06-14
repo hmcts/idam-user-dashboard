@@ -49,7 +49,7 @@ export class UserEditController extends RootController {
       if (appInsights.getCorrelationContext()) {
         appInsights.getCorrelationContext().myContext = {editedUserId: '' + req.body._userId};
       } else {
-        console.log("no correlation context");
+        console.log('no correlation context');
       }
     }
     return req.scope.cradle.api.getUserById(req.body._userId)
