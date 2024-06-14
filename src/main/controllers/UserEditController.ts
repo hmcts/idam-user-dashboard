@@ -58,7 +58,7 @@ export class UserEditController extends RootController {
       if (activeSpan) {
         activeSpan.setAttribute('james.value', '' + req.body._userId);
       } else {
-        console.log("no active span");
+        console.log('no active span');
       }
     } else {
       console.log('no open telemetry');
