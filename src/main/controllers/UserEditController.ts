@@ -1,4 +1,3 @@
-const appInsights = require('applicationinsights');
 const opentelemetry = require('@opentelemetry/api');
 import autobind from 'autobind-decorator';
 import { Response } from 'express';

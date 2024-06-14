@@ -2,6 +2,7 @@ import * as appInsights from 'applicationinsights';
 import config from 'config';
 import { Contracts } from 'applicationinsights';
 import { obfuscateEmail } from '../../utils/utils';
+const { useAzureMonitor } = require("@azure/monitor-opentelemetry");
 
 export class AppInsights {
 
@@ -33,6 +34,7 @@ export class AppInsights {
     }
 
     if (config.get('appInsights.connectionString')) {
+      useAzureMonitor();
       appInsights.setup(config.get('appInsights.connectionString'))
         .setSendLiveMetrics(true)
         .setAutoCollectConsole(true, true)
