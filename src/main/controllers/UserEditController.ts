@@ -1,3 +1,4 @@
+let appInsights = require("applicationinsights");
 import autobind from 'autobind-decorator';
 import { Response } from 'express';
 import { RootController } from './RootController';
@@ -37,6 +38,8 @@ export class UserEditController extends RootController {
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
+    let client = appInsights.defaultClient;
+    client.trackEvent({name: "EditUser", properties: {editUserId: req.body._userId}});
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
