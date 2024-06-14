@@ -2,7 +2,7 @@ import * as appInsights from 'applicationinsights';
 import config from 'config';
 import { Contracts } from 'applicationinsights';
 import { obfuscateEmail } from '../../utils/utils';
-const { useAzureMonitor } = require("@azure/monitor-opentelemetry");
+const { useAzureMonitor } = require('@azure/monitor-opentelemetry');
 
 export class AppInsights {
 
