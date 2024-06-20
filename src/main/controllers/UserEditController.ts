@@ -1,3 +1,4 @@
+const opentelemetry = require('@opentelemetry/api');
 import autobind from 'autobind-decorator';
 import { Response } from 'express';
 import { RootController } from './RootController';
@@ -37,6 +38,16 @@ export class UserEditController extends RootController {
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
+    if (opentelemetry && opentelemetry.trace) {
+      const activeSpan = opentelemetry.trace.getActiveSpan();
+      if (activeSpan) {
+        activeSpan.setAttribute('james.value', '' + req.body._userId);
+      } else {
+        console.log('no active span');
+      }
+    } else {
+      console.log('no open telemetry');
+    }
     return req.scope.cradle.api.getUserById(req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
