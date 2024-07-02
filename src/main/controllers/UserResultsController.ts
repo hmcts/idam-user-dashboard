@@ -19,7 +19,7 @@ import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 @autobind
 export class UserResultsController extends RootController {
 
-  lockDurationMinutes : number = config.get('accounts.status.lock.durationMinutes');
+  private readonly lockDurationMinutes : number = config.get('accounts.status.lock.durationMinutes');
 
   @asyncError
   public async get(req: AuthedRequest, res: Response) {
@@ -59,10 +59,10 @@ export class UserResultsController extends RootController {
         notificationBannerMessage: notificationBannerMessage,
         providerName: providerName,
         providerIdField: providerIdField,
-        userIsActive: (user.accountStatus == AccountStatus.ACTIVE),
-        userIsLocked: (user.accountStatus == AccountStatus.LOCKED),
-        userIsSuspended: (user.accountStatus == AccountStatus.SUSPENDED),
-        userIsArchived: (user.recordType == RecordType.ARCHIVED),
+        userIsActive: (user.accountStatus === AccountStatus.ACTIVE),
+        userIsLocked: (user.accountStatus === AccountStatus.LOCKED),
+        userIsSuspended: (user.accountStatus === AccountStatus.SUSPENDED),
+        userIsArchived: (user.recordType === RecordType.ARCHIVED),
         previousNav: previousNav
       }
     });
@@ -114,8 +114,8 @@ export class UserResultsController extends RootController {
   }
 
   private composeLockedMessage(user: V2User): string {
-    if (user.accountStatus == AccountStatus.LOCKED) {
-      console.log('account lock time is ' + user.accessLockedDate + ', lock duration is ' + this.lockDurationMinutes);
+    if (user.accountStatus === AccountStatus.LOCKED) {
+      console.log('user id ' + user.id + ', account lock time is ' + user.accessLockedDate + ', lock duration is ' + this.lockDurationMinutes);
       if (!isEmpty(user.accessLockedDate)) {
         const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
         if (remainingTime > 0) {
