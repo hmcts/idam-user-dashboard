@@ -19,6 +19,8 @@ import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 @autobind
 export class UserResultsController extends RootController {
 
+  lockDurationMinutes : number = config.get('accounts.status.lock.durationMinutes');
+
   @asyncError
   public async get(req: AuthedRequest, res: Response) {
     return this.getUserResults(req, res);
@@ -113,17 +115,21 @@ export class UserResultsController extends RootController {
 
   private composeLockedMessage(user: V2User): string {
     if (user.accountStatus == AccountStatus.LOCKED) {
-      const remainingTime = isEmpty(user.accessLockedDate) ? 0 : this.computeRemainingLockedTime(user.accessLockedDate);
-      if (remainingTime > 0) {
-        const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
-        return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
+      if (!isEmpty(user.accessLockedDate)) {
+        const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
+        if (remainingTime > 0) {
+          const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
+          return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
+        } else {
+          return 'Account locked at ' + convertISODateTimeToUTCFormat(user.accessLockedDate) + ' due to multiple failed login attempts, but lock has now expired';
+        }
       }
     }
     return '';
   }
 
   private computeRemainingLockedTime(accountLockedTime: string): number {
-    return 60 - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
+    return this.lockDurationMinutes - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
   }
 
   private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
