@@ -34,7 +34,7 @@
   {% endif %}
 
   <h1 class="govuk-heading-l">User Details</h1>
-  {% if featureFlags.values[featureFlags.flags.BETA_SHOW_LOCKED_STATUS] and content.lockedMessage %}
+  {% if content.lockedMessage %}
     {{ govukWarningText({
       text: content.lockedMessage,
       iconFallbackText: "Warning"
