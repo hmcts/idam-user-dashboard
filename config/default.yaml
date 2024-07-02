@@ -55,3 +55,7 @@ providers:
     internalName: 'moj'
     externalName: 'MOJ/Justice.gov.uk'
     idFieldName: 'MOJ User ID'
+accounts:
+  status:
+    lock:
+      durationMinutes: 60

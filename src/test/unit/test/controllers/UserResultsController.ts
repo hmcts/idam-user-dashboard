@@ -19,6 +19,7 @@ describe('User results controller', () => {
   when(config.get).calledWith('providers.moj.internalName').mockReturnValue('moj');
   when(config.get).calledWith('providers.moj.externalName').mockReturnValue('MOJ/Justice.gov.uk');
   when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
+  when(config.get).calledWith('accounts.status.lock.durationMinutes').mockReturnValue(60);
 
   const controller = new UserResultsController();
   const email = 'john.smith@test.com';
@@ -487,6 +488,41 @@ describe('User results controller', () => {
       accountStatus: AccountStatus.LOCKED,
       recordType: RecordType.LIVE,
       accessLockedDate: pwdAccountLockedTime,
+      roleNames: ['IDAM_SUPER_USER'],
+      multiFactorAuthentication: true,
+      ssoId: ssoId,
+      createDate: '',
+      lastModified: ''
+    };
+
+    when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
+
+    req.params = { userUUID: userId };
+    req.scope.cradle.api = mockApi;
+    req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
+    await controller.post(req, res);
+    expect(res.render).toBeCalledWith('user-details', {
+      content: {
+        user: getUserByIdResult,
+        canManage: false,
+        lockedMessage: 'Account locked at ' + new Date(pwdAccountLockedTime).toUTCString() + ' due to multiple failed login attempts, but lock has now expired',
+        providerName: 'IDAM',
+        userIsActive: false,
+        userIsLocked: true,
+        userIsSuspended: false,
+        userIsArchived: false
+      }
+    });
+  });
+  test('Should render the user details page when searching for a locked user with no lock time', async () => {
+
+    const getUserByIdResult = {
+      id: userId,
+      forename: 'John',
+      surname: 'Smith',
+      email: email,
+      accountStatus: AccountStatus.LOCKED,
+      recordType: RecordType.LIVE,
       roleNames: ['IDAM_SUPER_USER'],
       multiFactorAuthentication: true,
       ssoId: ssoId,
