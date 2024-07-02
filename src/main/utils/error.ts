@@ -19,6 +19,7 @@ export const MISSING_ROLE_INPUT_ERROR = 'You must enter a role or a list of role
 export const GENERATING_REPORT_ERROR = 'An error occurred generating the report.';
 export const GENERATING_REPORT_FILE_ERROR = 'An error occurred generating the report file';
 export const GENERATING_REPORT_NO_USERS_MATCHED = 'There are no users with the entered role(s).';
+export const GENERATING_REPORT_END_OF_RESULTS = 'There are no results for the query at the current page number.';
 export const GENERATING_FILE_FAILED_TRY_AGAIN = 'There was an error compiling the report file. Please try again.';
 export const GENERATING_REPORT_CITIZEN_ERROR = 'For security reasons, it is not possible to get a report on all citizen users';
 export const ROLE_PERMISSION_ERROR = 'You do not have permission to create the user roles';
