@@ -126,13 +126,15 @@
         rows: users
       }) }}
 
+      {% set isEmptyReport = content.reportData.length == 0 %}
+
       {{ govukPagination({
         previous: {
           href: "#"
         },
         next: {
           href: "#"
-        },
+        } if not isEmptyReport,
         items: [ ]
       }) }}
 
