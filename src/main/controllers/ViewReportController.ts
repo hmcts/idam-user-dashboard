@@ -5,6 +5,7 @@ import {Response} from 'express';
 import {ReportsHandler} from '../app/reports/ReportsHandler';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import {
+  GENERATING_REPORT_END_OF_RESULTS,
   GENERATING_REPORT_ERROR,
   GENERATING_REPORT_FILE_ERROR,
   GENERATING_REPORT_NO_USERS_MATCHED
@@ -48,15 +49,26 @@ export class ViewReportController extends RootController {
         });
       }
 
-      if (reportData.length < 1 && pageNo == 0) {
-        return super.post(req, res, 'view-report', {
-          content: {
-            reportData, query: roles
-          },
-          error: {
-            'body': {message: GENERATING_REPORT_NO_USERS_MATCHED}
-          }
-        });
+      if (reportData.length < 1) {
+        if (pageNo == 0) {
+          return super.post(req, res, 'view-report', {
+            content: {
+              reportData, query: roles
+            },
+            error: {
+              'body': {message: GENERATING_REPORT_NO_USERS_MATCHED}
+            }
+          });
+        } else {
+          return super.post(req, res, 'view-report', {
+            content: {
+              reportData, query: roles
+            },
+            error: {
+              'body': {message: GENERATING_REPORT_END_OF_RESULTS}
+            }
+          });
+        }
       }
 
       return super.post(req, res, 'view-report', {
