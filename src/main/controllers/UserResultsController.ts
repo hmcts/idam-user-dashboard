@@ -115,6 +115,7 @@ export class UserResultsController extends RootController {
 
   private composeLockedMessage(user: V2User): string {
     if (user.accountStatus == AccountStatus.LOCKED) {
+      console.log('account lock time is ' + user.accessLockedDate + ', lock duration is ' + this.lockDurationMinutes)
       if (!isEmpty(user.accessLockedDate)) {
         const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
         if (remainingTime > 0) {
