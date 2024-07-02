@@ -1,5 +1,7 @@
 #Functional test notes
 
+Sanity Check!
+
 ##Things to avoid
 
 Any of the “wait…” codecept commands seem to struggle when validating that dashboard pages have loaded. Alternatives have been created in the steps file which are explained in the Navigation section.
