@@ -395,7 +395,7 @@ describe('User results controller', () => {
 
     const currentTime = new Date();
     const pwdAccountLockedTime = new Date(currentTime);
-    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 2);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 3);
 
     const getUserByIdResult = {
       id: userId,
@@ -436,7 +436,7 @@ describe('User results controller', () => {
 
     const currentTime = new Date();
     const pwdAccountLockedTime = new Date(currentTime);
-    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 59);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 60);
 
     const getUserByIdResult = {
       id: userId,
@@ -477,7 +477,7 @@ describe('User results controller', () => {
 
     const currentTime = new Date();
     const pwdAccountLockedTime = new Date(currentTime);
-    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 59);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 60);
     pwdAccountLockedTime.setSeconds(pwdAccountLockedTime.getSeconds() - 50);
 
     const getUserByIdResult = {
