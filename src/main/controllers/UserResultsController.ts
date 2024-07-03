@@ -112,11 +112,16 @@ export class UserResultsController extends RootController {
   }
 
   private composeLockedMessage(user: V2User): string {
-    if (user.accountStatus == AccountStatus.LOCKED) {
-      const remainingTime = isEmpty(user.accessLockedDate) ? 0 : this.computeRemainingLockedTime(user.accessLockedDate);
-      if (remainingTime > 0) {
-        const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
-        return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
+    if (user.accountStatus === AccountStatus.LOCKED) {
+      console.log('user id ' + user.id + ', account lock time is ' + user.accessLockedDate + ', lock duration is ' + this.lockDurationMinutes);
+      if (!isEmpty(user.accessLockedDate)) {
+        const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
+        if (remainingTime > 0) {
+          const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
+          return remainingTime == 1 ? lockedMessage + 'minute' : lockedMessage + 'minutes';
+        } else {
+          return 'Account locked at ' + convertISODateTimeToUTCFormat(user.accessLockedDate) + ' due to multiple failed login attempts, but lock has now expired';
+        }
       }
     }
     return '';
