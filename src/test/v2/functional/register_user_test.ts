@@ -131,8 +131,6 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
   I.uncheckOption('#show-hidden');
 
-  I.wait(2);
-
   I.fillField('#roles__search-box', setupDAO.getAdminRole().name);
   I.retry({ retries: 9, minTimeout: 250 }).see(adminRole.name), '.label';
 
