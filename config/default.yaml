@@ -58,4 +58,4 @@ providers:
 accounts:
   status:
     lock:
-      durationMinutes: 59
+      durationMinutes: 60
