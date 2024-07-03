@@ -19,6 +19,7 @@ describe('User results controller', () => {
   when(config.get).calledWith('providers.moj.internalName').mockReturnValue('moj');
   when(config.get).calledWith('providers.moj.externalName').mockReturnValue('MOJ/Justice.gov.uk');
   when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
+  when(config.get).calledWith('accounts.status.lock.durationMinutes').mockReturnValue(61);
 
   const controller = new UserResultsController();
   const email = 'john.smith@test.com';

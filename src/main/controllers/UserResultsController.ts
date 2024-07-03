@@ -19,6 +19,8 @@ import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 @autobind
 export class UserResultsController extends RootController {
 
+  private readonly lockDurationMinutes : number = config.get('accounts.status.lock.durationMinutes');
+
   @asyncError
   public async get(req: AuthedRequest, res: Response) {
     return this.getUserResults(req, res);
@@ -113,7 +115,7 @@ export class UserResultsController extends RootController {
 
   private composeLockedMessage(user: V2User): string {
     if (user.accountStatus === AccountStatus.LOCKED) {
-      console.log('user id ' + user.id + ', account lock time is ' + user.accessLockedDate + ', lock duration is 60');
+      console.log('user id ' + user.id + ', account lock time is ' + user.accessLockedDate + ', lock duration is ' + this.lockDurationMinutes);
       if (!isEmpty(user.accessLockedDate)) {
         const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
         if (remainingTime > 0) {
@@ -128,7 +130,7 @@ export class UserResultsController extends RootController {
   }
 
   private computeRemainingLockedTime(accountLockedTime: string): number {
-    return 60 - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
+    return this.lockDurationMinutes - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
   }
 
   private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
