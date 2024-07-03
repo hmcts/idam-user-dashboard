@@ -124,15 +124,23 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
   I.assertTrue(emailDisabled);
 });
 
-Scenario('I as an admin can filter roles', async ({ I }) => {
+Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-filter-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const testUser = await I.haveUser({roleNames: [testRole.name]});
   await I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
   I.uncheckOption('#show-hidden');
 
+  I.wait(2);
+  I.fillField('#roles__search-box', setupDAO.getWorkerRole().name);
+
+  pause();
+  I.retry({ retries: 9, minTimeout: 250 }).see(setupDAO.getWorkerRole().name), '.label';
+
   I.fillField('#roles__search-box', 'iud-filter-role-');
   I.wait(2);
+
+  I.retry({ retries: 9, minTimeout: 250 }).dontSee(setupDAO.getWorkerRole().name), '.label';
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
   roleCheckboxes.forEach(function () {
