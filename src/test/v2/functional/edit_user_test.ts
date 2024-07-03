@@ -132,14 +132,11 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   I.uncheckOption('#show-hidden');
 
   I.wait(2);
+  
   I.fillField('#roles__search-box', setupDAO.getWorkerRole().name);
-
-  pause();
   I.retry({ retries: 9, minTimeout: 250 }).see(setupDAO.getWorkerRole().name), '.label';
 
   I.fillField('#roles__search-box', 'iud-filter-role-');
-  I.wait(2);
-
   I.retry({ retries: 9, minTimeout: 250 }).dontSee(setupDAO.getWorkerRole().name), '.label';
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
