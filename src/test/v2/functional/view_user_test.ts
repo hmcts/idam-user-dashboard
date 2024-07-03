@@ -65,7 +65,7 @@ Scenario('view locked user details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
-  I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
+  I.seeIgnoreCase('locked', I.locateStrongDataForTitle('Account state'));
   I.see('This account has been temporarily locked', locate('div.govuk-warning-text'));
 });
 
