@@ -19,6 +19,7 @@ describe('User results controller', () => {
   when(config.get).calledWith('providers.moj.internalName').mockReturnValue('moj');
   when(config.get).calledWith('providers.moj.externalName').mockReturnValue('MOJ/Justice.gov.uk');
   when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
+  when(config.get).calledWith('accounts.status.lock.durationMinutes').mockReturnValue(61);
 
   const controller = new UserResultsController();
   const email = 'john.smith@test.com';
@@ -394,7 +395,7 @@ describe('User results controller', () => {
 
     const currentTime = new Date();
     const pwdAccountLockedTime = new Date(currentTime);
-    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 2);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 3);
 
     const getUserByIdResult = {
       id: userId,
@@ -435,7 +436,7 @@ describe('User results controller', () => {
 
     const currentTime = new Date();
     const pwdAccountLockedTime = new Date(currentTime);
-    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 59);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 60);
 
     const getUserByIdResult = {
       id: userId,
@@ -476,7 +477,7 @@ describe('User results controller', () => {
 
     const currentTime = new Date();
     const pwdAccountLockedTime = new Date(currentTime);
-    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 59);
+    pwdAccountLockedTime.setMinutes(pwdAccountLockedTime.getMinutes() - 60);
     pwdAccountLockedTime.setSeconds(pwdAccountLockedTime.getSeconds() - 50);
 
     const getUserByIdResult = {
