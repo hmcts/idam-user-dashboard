@@ -1,6 +1,5 @@
 import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
-const { Logger } = require('@hmcts/nodejs-logging');
 import { TelemetryClient } from 'applicationinsights';
 import { Role } from '../../interfaces/Role';
 import { HTTPError } from '../errors/HttpError';
@@ -18,7 +17,7 @@ export class IdamAPI {
     private readonly systemAxios: AxiosInstance,
     private readonly clientAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
-    private readonly logger: Logger,
+    private readonly logger: any,
     private readonly telemetryClient: TelemetryClient
   ) { }
 
