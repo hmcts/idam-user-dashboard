@@ -1,6 +1,5 @@
 import config from 'config';
 import { AuthorizedAxios } from '../authorized-axios/AuthorizedAxios';
-import { Logger } from '../../interfaces/Logger';
 import { ServiceProvider } from './ServiceProvider';
 import { HTTPError } from '../errors/HttpError';
 
@@ -9,7 +8,7 @@ export class ServiceProviderService {
 
   constructor(
     private readonly idamApiAxios: AuthorizedAxios,
-    private readonly logger: Logger,
+    private readonly logger: any,
   ) {}
 
   public getService = (clientId: string): Promise<ServiceProvider> => {

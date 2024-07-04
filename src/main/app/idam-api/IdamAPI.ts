@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
-import { Logger } from '../../interfaces/Logger';
+const { Logger } = require('@hmcts/nodejs-logging');
 import { TelemetryClient } from 'applicationinsights';
 import { Role } from '../../interfaces/Role';
 import { HTTPError } from '../errors/HttpError';
