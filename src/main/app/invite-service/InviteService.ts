@@ -12,7 +12,7 @@ export class InviteService {
 
   constructor(
     private readonly idamApiAxios: AuthorizedAxios,
-    private readonly logger: Logger
+    private readonly logger: any
   ) {}
 
   private sendInvite = (
