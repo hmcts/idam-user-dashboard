@@ -23,6 +23,7 @@ const { setupDev } = require('./development');
 const env = process.env.NODE_ENV || 'development';
 const developmentMode = env === 'development';
 const logger = Logger.getLogger('app');
+logger.info('Started logger');
 
 export const app = express();
 app.locals.ENV = env;
