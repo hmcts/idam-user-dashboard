@@ -1,4 +1,4 @@
-import { Logger } from '../../../main/interfaces/Logger';
+import { Logger } from '@hmcts/nodejs-logging';
 
 export const mockLogger = (): Logger => {
   const logger: Partial<Logger> = {
