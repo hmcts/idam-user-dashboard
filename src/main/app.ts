@@ -1,5 +1,8 @@
 import { glob } from 'glob';
 
+import { AppInsights } from './modules/appinsights';
+new AppInsights().enable();
+
 const { Logger } = require('@hmcts/nodejs-logging');
 
 import * as bodyParser from 'body-parser';
@@ -10,7 +13,7 @@ import * as path from 'path';
 import favicon from 'serve-favicon';
 import { Nunjucks } from './modules/nunjucks';
 import { PropertiesVolume } from './modules/properties-volume';
-import { AppInsights } from './modules/appinsights';
+
 import { OidcMiddleware } from './modules/oidc';
 import { Container } from './modules/awilix';
 import { ErrorHandler } from './modules/error-handler';
@@ -43,7 +46,6 @@ app.use((req, res, next) => {
 });
 
 new PropertiesVolume().enableFor(app);
-new AppInsights().enable();
 new Container().enableFor(app);
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
