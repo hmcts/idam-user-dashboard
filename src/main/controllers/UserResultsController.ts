@@ -15,6 +15,8 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import {processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
 import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
+const { Logger } = require('@hmcts/nodejs-logging');
+const logger = Logger.getLogger('server');
 
 @autobind
 export class UserResultsController extends RootController {
@@ -113,6 +115,7 @@ export class UserResultsController extends RootController {
 
   private composeLockedMessage(user: V2User): string {
     if (user.accountStatus === AccountStatus.LOCKED) {
+      logger.info('server logger: composing locked message for user id' + user.id);
       if (!isEmpty(user.accessLockedDate)) {
         const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
         if (remainingTime > 0) {

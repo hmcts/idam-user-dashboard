@@ -69,6 +69,7 @@ export class Container {
       viewReportController: asClass(ViewReportController),
       generateReportController: asClass(GenerateReportController),
       downloadReportController: asClass(DownloadReportController)
+      logger.info("Injection completed with server logger");
     });
   }
 }
