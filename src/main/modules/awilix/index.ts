@@ -33,6 +33,7 @@ import { ViewReportController } from '../../controllers/ViewReportController';
 export class Container {
 
   public enableFor(app: Application): void {
+    logger.info('injection started with server logger');
     app.locals.container = createContainer({ injectionMode: InjectionMode.CLASSIC }).register({
       logger: asValue(logger),
       telemetryClient: asValue(defaultClient),
@@ -69,7 +70,6 @@ export class Container {
       viewReportController: asClass(ViewReportController),
       generateReportController: asClass(GenerateReportController),
       downloadReportController: asClass(DownloadReportController)
-      logger.info("Injection completed with server logger");
     });
   }
 }
