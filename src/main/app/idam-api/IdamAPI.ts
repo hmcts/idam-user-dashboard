@@ -26,9 +26,9 @@ export class IdamAPI {
       .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = `Error retrieving user by ${type} from IDAM API`;
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        const errorMessage = `Error retrieving user by ${type} from IDAM API for query ${query}`;
+        this.telemetryClient.trackTrace({message: errorMessage + ' trackTrace'});
+        this.logger.error(`${error.stack || error} logger.error`);
         return Promise.reject(errorMessage);
       });
   }
