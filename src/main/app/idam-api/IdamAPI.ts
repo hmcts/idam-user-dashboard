@@ -10,6 +10,7 @@ import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
 import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 import { V2User } from '../../interfaces/V2User';
+import Logger from '@hmcts/nodejs-logging';
 
 export class IdamAPI {
   constructor(
@@ -17,7 +18,7 @@ export class IdamAPI {
     private readonly systemAxios: AxiosInstance,
     private readonly clientAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
-    private readonly logger: any,
+    private readonly logger: Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
 

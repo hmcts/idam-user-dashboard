@@ -26,6 +26,7 @@ export class AppInsights {
     }
 
     function preprocessAppInsightData(envelope: Contracts.EnvelopeTelemetry, contextObjects: any): boolean {
+      console.log('preprocessAppInsightData');
       if (envelope.data.baseType === 'RequestData') {
         preprocessRequestData(envelope, contextObjects);
       }

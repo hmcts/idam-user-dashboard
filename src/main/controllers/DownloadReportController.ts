@@ -5,11 +5,12 @@ import { Response } from 'express';
 import { parse } from 'json2csv';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
+import Logger from '@hmcts/nodejs-logging';
 
 @autobind
 export class DownloadReportController extends RootController {
   constructor(
-    private readonly logger: any,
+    private readonly logger: Logger,
     private readonly reportGenerator: ReportsHandler
   ) {
     super();

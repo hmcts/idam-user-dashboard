@@ -15,6 +15,7 @@ import { createClient } from 'redis';
 import { User } from '../../interfaces/User';
 import { Issuer, TokenSet } from 'openid-client';
 import { auth } from 'express-openid-connect';
+import Logger from '@hmcts/nodejs-logging';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -28,7 +29,7 @@ export class OidcMiddleware {
   private readonly systemAccountPassword: string = config.get('services.idam.systemUser.password');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
-  constructor(private readonly logger: any) {}
+  constructor(private readonly logger: Logger) {}
 
   public enableFor(app: Application): void {
     this.cacheSystemAccount(app);
