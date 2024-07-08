@@ -1,8 +1,6 @@
 import { glob } from 'glob';
 
 import { AppInsights } from './modules/appinsights';
-new AppInsights().enable();
-console.log('AppInights enabled');
 
 const { Logger } = require('@hmcts/nodejs-logging');
 
@@ -26,6 +24,8 @@ import cookieParser from 'cookie-parser';
 const { setupDev } = require('./development');
 const env = process.env.NODE_ENV || 'development';
 const developmentMode = env === 'development';
+new AppInsights().enable();
+console.log('AppInights enabled');
 const logger = Logger.getLogger('app');
 logger.info('Started logger');
 console.log('app logger is ' + logger);

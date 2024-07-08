@@ -12,7 +12,7 @@ import { UserSuspendController } from '../../controllers/UserSuspendController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
 const { Logger } = require('@hmcts/nodejs-logging');
-const logger = Logger.getLogger('server');
+const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
