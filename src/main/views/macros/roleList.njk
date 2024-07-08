@@ -29,66 +29,16 @@
       }) }}
 
       {{ govukCheckboxes({
-        name: "show-hidden",
+        name: "hide-disabled",
         classes: "govuk-checkboxes--small",
         items: [
           {
-            value: "showHidden",
+            value: "hideDisabled",
             text: "Hide roles I cannot assign",
             checked: true
           }
         ]
       }) }}
-
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const hideCheckbox = document.getElementById('show-hidden');
-          const roleList = document.getElementById('role-count');
-          let previousContent = roleList.textContent;
-
-          const disabledElements = document.querySelectorAll('input[type="checkbox"]:disabled');
-          for (let i = 0; i < disabledElements.length; i++) {
-              disabledElements[i].parentElement.style.display = 'none';
-          }
-
-          const checkTextChanges = () => {
-            const currentContent = roleList.textContent;
-
-            if (previousContent !== currentContent) {
-              if (previousContent.includes('filtered') && !currentContent.includes('filtered')) {
-                hideCheckbox.disabled = false;
-                if (hideCheckbox.checked) {
-                  const disabledElements = document.querySelectorAll('input[type="checkbox"]:disabled');
-                  for (let i = 0; i < disabledElements.length; i++) {
-                    disabledElements[i].parentElement.style.display = 'none';
-                  }
-                }
-              } else if (!previousContent.includes('filtered') && currentContent.includes('filtered')) {
-                hideCheckbox.disabled = true;
-              }
-              previousContent = currentContent;
-            }
-          };
-
-          const observer = new MutationObserver(checkTextChanges);
-          const config = { childList: true, characterData: true, subtree: true };
-          observer.observe(roleList, config);
-
-          hideCheckbox.addEventListener('change', function () {
-            const disabledElements = document.querySelectorAll('input[type="checkbox"]:disabled');
-
-            if (hideCheckbox.checked) {
-              for (let i = 0; i < disabledElements.length; i++) {
-                  disabledElements[i].parentElement.style.display = 'none';
-              }
-            } else {
-              for (let i = 0; i < disabledElements.length; i++) {
-                  disabledElements[i].parentElement.style.display = '';
-              }
-            }
-          });
-        });
-      </script>
 
       <p id='role-count' class='role-list__number-of-roles govuk-hint'></p>
     {% endif %}
