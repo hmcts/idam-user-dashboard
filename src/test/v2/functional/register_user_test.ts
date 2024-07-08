@@ -62,17 +62,17 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.fillField('email', 'email..@test.com');
   await I.clickToExpectProblem('Continue');
   I.see('The email address is not in the correct format');
-  
+
   await I.navigateToRegisterUser();
   I.fillField('email', '@email@');
   await I.clickToExpectProblem('Continue');
   I.see('The email address is not in the correct format');
-  
+
   await I.navigateToRegisterUser();
   I.fillField('email', 'email@com..');
   await I.clickToExpectProblem('Continue');
   I.see('The email address is not in the correct format');
-  
+
   await I.navigateToRegisterUser();
   I.fillField('email', '');
   await I.clickToExpectProblem('Continue');
@@ -96,7 +96,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   await I.clickToExpectProblem('Continue');
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
-  
+
   await I.navigateToRegisterUser();
   I.fillField('email', faker.internet.email());
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
@@ -105,7 +105,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   await I.clickToExpectProblem('Continue');
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
-  
+
   await I.navigateToRegisterUser();
   I.fillField('email', faker.internet.email());
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
@@ -129,7 +129,7 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   I.fillField('#surname', faker.person.lastName());
   I.click('Support');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.uncheckOption('#show-hidden');
+  I.uncheckOption('#hide-disabled');
 
   I.fillField('#roles__search-box', setupDAO.getAdminRole().name);
   I.retry({ retries: 9, minTimeout: 250 }).see(adminRole.name), '.label';
