@@ -130,7 +130,7 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   const testUser = await I.haveUser({roleNames: [testRole.name, adminRole.name]});
   await I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
-  I.uncheckOption('#show-hidden');
+  I.uncheckOption('#hide-disabled');
 
   I.fillField('#roles__search-box', adminRole.name);
   I.retry({ retries: 9, minTimeout: 250 }).see(adminRole.name), '.label';
