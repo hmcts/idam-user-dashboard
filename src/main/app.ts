@@ -1,5 +1,5 @@
 import { glob } from 'glob';
-
+import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
 
 const { Logger } = require('@hmcts/nodejs-logging');
@@ -11,7 +11,6 @@ import { Helmet } from './modules/helmet';
 import * as path from 'path';
 import favicon from 'serve-favicon';
 import { Nunjucks } from './modules/nunjucks';
-import { PropertiesVolume } from './modules/properties-volume';
 
 import { OidcMiddleware } from './modules/oidc';
 import { Container } from './modules/awilix';
