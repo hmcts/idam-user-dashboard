@@ -11,7 +11,7 @@ function RolesList($element) {
   this.$checkboxContainer = this.$roleListContainer.querySelector(`.${this.roleDivClass}`)
     .querySelector(`[data-module="govuk-checkboxes"]`);
   this.$checkboxContainerParent = this.$checkboxContainer.parentNode;
-    this.$roleListCheckboxes = this.$roleListContainer.querySelectorAll(`[data-${this.roleDataAttribute}]`);
+  this.$roleListCheckboxes = this.$roleListContainer.querySelectorAll(`[data-${this.roleDataAttribute}]`);
   this.$searchBox = this.$roleListContainer.querySelector(`.${this.searchBoxClass}`);
   this.$hideCheckbox = this.$roleListContainer.querySelector(`#hide-disabled`);
 }
