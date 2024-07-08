@@ -2,6 +2,7 @@ import { glob } from 'glob';
 
 import { AppInsights } from './modules/appinsights';
 new AppInsights().enable();
+console.log('AppInights enabled');
 
 const { Logger } = require('@hmcts/nodejs-logging');
 
