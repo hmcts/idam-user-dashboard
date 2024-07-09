@@ -26,7 +26,6 @@ export class AppInsights {
     }
 
     function preprocessAppInsightData(envelope: Contracts.EnvelopeTelemetry, contextObjects: any): boolean {
-      console.log('preprocessAppInsightData');
       if (envelope.data.baseType === 'RequestData') {
         preprocessRequestData(envelope, contextObjects);
       }
@@ -34,6 +33,7 @@ export class AppInsights {
     }
 
     if (config.get('appInsights.connectionString')) {
+      console.log('setup appInsights');
       appInsights.setup(config.get('appInsights.connectionString'))
         .setSendLiveMetrics(true)
         .setAutoCollectConsole(true, true)
@@ -42,6 +42,7 @@ export class AppInsights {
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
       appInsights.defaultClient.addTelemetryProcessor(preprocessAppInsightData);
       appInsights.defaultClient.config.samplingPercentage = 100; // 100% of all telemetry will be sent to Application Insights
+      console.log('appInsights configured');
     }
   }
 }

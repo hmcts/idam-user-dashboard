@@ -4,6 +4,7 @@ import { app } from './app';
 
 const logger = Logger.getLogger('server');
 console.log('server logger is ' + logger);
+logger.warn('server.ts: log level is' + logger.level);
 
 const port: number = parseInt(process.env.PORT, 10) || 3100;
 app.listen(port, () => {
