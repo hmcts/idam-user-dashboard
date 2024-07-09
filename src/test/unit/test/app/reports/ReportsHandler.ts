@@ -4,6 +4,7 @@ import * as uuid from 'uuid';
 import config from 'config';
 import { when } from 'jest-when';
 import * as redis from 'redis';
+import { Logger } from '@hmcts/nodejs-logging';
 
 jest.mock('memfs');
 jest.mock('uuid');
@@ -20,7 +21,7 @@ describe('Report handler', () => {
   jest.spyOn(uuid, 'v4');
   jest.spyOn(redis, 'createClient');
 
-  const mockLogger = { error: jest.fn(), info: jest.fn() } as any;
+  const mockLogger = { error: jest.fn(), info: jest.fn() } as Logger;
   const mockTelemetryClient = { trackTrace: jest.fn() } as any;
   const singleRole = [ 'IDAM_SUPER_USER' ];
   const multipleRoles = [ 'IDAM_SUPER_USER', 'IDAM_ADMIN_USER' ];

@@ -5,11 +5,13 @@ import { mockLogger } from '../../../utils/mockLogger';
 import { ServiceProviderService } from '../../../../../main/app/service-provider-service/ServiceProviderService';
 import { constants as http } from 'http2';
 import { HTTPError } from '../../../../../main/app/errors/HttpError';
+import { Logger } from '@hmcts/nodejs-logging';
+
 jest.mock('config');
 
 describe('ServiceProviderService', () => {
   const mockedAxios = mockAxios();
-  const mockedLogger = mockLogger();
+  const mockedLogger : Logger = mockLogger();
   const mockEndpoint = '/services';
   when(config.get).mockReturnValue(mockEndpoint);
   const serviceProviderService = new ServiceProviderService(mockedAxios, mockedLogger);
