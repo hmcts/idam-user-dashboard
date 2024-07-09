@@ -2,7 +2,7 @@ import { glob } from 'glob';
 import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
 
-const { Logger } = require('@hmcts/nodejs-logging');
+import { Logger } from '@hmcts/nodejs-logging';
 
 import * as bodyParser from 'body-parser';
 import config = require('config');
