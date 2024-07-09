@@ -5,7 +5,7 @@ import { User } from '../../interfaces/User';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { TelemetryClient } from 'applicationinsights';
-import Logger from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 
 type Store = {
   set: (reportUUID: string, data: Object[]) => Promise<void>;

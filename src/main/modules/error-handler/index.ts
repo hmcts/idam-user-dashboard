@@ -2,7 +2,7 @@ import express, {Application, NextFunction} from 'express';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { v4 as uuid } from 'uuid';
-import Logger from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 
 const NOT_FOUND = {
   title: 'Page not found',

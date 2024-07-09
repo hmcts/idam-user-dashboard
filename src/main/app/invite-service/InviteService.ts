@@ -3,7 +3,7 @@ import {AuthorizedAxios} from '../authorized-axios/AuthorizedAxios';
 import {InvitationTypes, Invite} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
-import Logger from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 
 export class InviteService {
   private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoint.invite');

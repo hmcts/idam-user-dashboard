@@ -15,7 +15,7 @@ import { createClient } from 'redis';
 import { User } from '../../interfaces/User';
 import { Issuer, TokenSet } from 'openid-client';
 import { auth } from 'express-openid-connect';
-import Logger from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');

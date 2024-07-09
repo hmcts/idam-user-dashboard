@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { parse } from 'json2csv';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
-import Logger from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 
 @autobind
 export class DownloadReportController extends RootController {

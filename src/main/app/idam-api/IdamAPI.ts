@@ -10,7 +10,7 @@ import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
 import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 import { V2User } from '../../interfaces/V2User';
-import Logger from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 
 export class IdamAPI {
   constructor(
