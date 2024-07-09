@@ -1,14 +1,15 @@
 import { glob } from 'glob';
+import * as path from 'path';
+import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
 
 import { Logger } from '@hmcts/nodejs-logging';
 
 import * as bodyParser from 'body-parser';
-import config = require('config');
 import express from 'express';
 import { Helmet } from './modules/helmet';
-import * as path from 'path';
+
 import favicon from 'serve-favicon';
 import { Nunjucks } from './modules/nunjucks';
 
@@ -23,14 +24,17 @@ import cookieParser from 'cookie-parser';
 const { setupDev } = require('./development');
 const env = process.env.NODE_ENV || 'development';
 const developmentMode = env === 'development';
+
+
+export const app = express();
+app.locals.ENV = env;
+
+new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 console.log('AppInights enabled');
 const logger = Logger.getLogger('app');
 logger.info('Started logger');
 console.log('app logger is ' + logger);
-
-export const app = express();
-app.locals.ENV = env;
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
@@ -45,7 +49,7 @@ app.use((req, res, next) => {
   next();
 });
 
-new PropertiesVolume().enableFor(app);
+
 new Container().enableFor(app);
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
