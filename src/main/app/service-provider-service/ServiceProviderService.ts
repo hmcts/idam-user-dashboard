@@ -2,14 +2,14 @@ import config from 'config';
 import { AuthorizedAxios } from '../authorized-axios/AuthorizedAxios';
 import { ServiceProvider } from './ServiceProvider';
 import { HTTPError } from '../errors/HttpError';
-import {Logger} from '@hmcts/nodejs-logging';
+const {Logger} = require('@hmcts/nodejs-logging');
 
 export class ServiceProviderService {
   private readonly SERVICES_ENDPOINT: string = config.get('services.idam.endpoint.services');
 
   constructor(
     private readonly idamApiAxios: AuthorizedAxios,
-    private readonly logger: Logger,
+    private readonly logger: typeof Logger,
   ) {}
 
   public getService = (clientId: string): Promise<ServiceProvider> => {

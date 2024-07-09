@@ -5,14 +5,14 @@ import { DownloadReportController } from '../../../../main/controllers/DownloadR
 import { User } from '../../../../main/interfaces/User';
 import { when } from 'jest-when';
 import * as json2csv from 'json2csv';
-import { Logger } from '@hmcts/nodejs-logging';
+const {Logger} = require('@hmcts/nodejs-logging');
 
 jest.mock('json2csv');
 
 describe('Download report controller', () => {
   let req: any;
   let res: any;
-  const mockLogger = { info: jest.fn() } as Logger;
+  const mockLogger = { info: jest.fn() } as typeof Logger;
   const mockReportGenerator: any = {
     saveReportQueryRoles: jest.fn(),
     getReportQueryRoles: jest.fn(),

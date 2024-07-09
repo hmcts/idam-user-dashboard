@@ -2,7 +2,6 @@ import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
 import {SearchType} from '../../../../../main/utils/SearchType';
 import { Role } from '../../../../../main/interfaces/Role';
 import { when } from 'jest-when';
-import { Logger } from '@hmcts/nodejs-logging';
 
 describe('IdamAPI', () => {
   const testEmail = 'test@test.com';
@@ -30,7 +29,7 @@ describe('IdamAPI', () => {
           }]
         };
         const mockAxios = {get: async () => results} as any;
-        const mockLogger = {} as Logger;
+        const mockLogger = {};
         const mockTelemetryClient = {} as any;
         const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 

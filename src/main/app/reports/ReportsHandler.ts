@@ -5,7 +5,7 @@ import { User } from '../../interfaces/User';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { TelemetryClient } from 'applicationinsights';
-import {Logger} from '@hmcts/nodejs-logging';
+const {Logger} = require('@hmcts/nodejs-logging');
 
 type Store = {
   set: (reportUUID: string, data: Object[]) => Promise<void>;
@@ -17,7 +17,7 @@ export class ReportsHandler {
   private readonly reportTimeout = 30 * 60;
 
   public constructor(
-    private readonly logger: Logger,
+    private readonly logger: typeof Logger,
     private readonly telemetryClient: TelemetryClient
   ) {
     this.store = this.getStore();
