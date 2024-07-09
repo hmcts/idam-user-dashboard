@@ -2,7 +2,7 @@ import express, {Application, NextFunction} from 'express';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { v4 as uuid } from 'uuid';
-import {Logger} from '@hmcts/nodejs-logging';
+const {Logger} = require('@hmcts/nodejs-logging');
 
 const NOT_FOUND = {
   title: 'Page not found',
@@ -31,7 +31,7 @@ const SERVER_ERROR = {
 };
 
 export class ErrorHandler {
-  constructor(public logger: Logger) {
+  constructor(public logger: typeof Logger) {
     this.logger = logger;
   }
 
