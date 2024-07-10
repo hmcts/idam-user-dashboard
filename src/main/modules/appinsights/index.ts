@@ -1,5 +1,5 @@
 import config from 'config';
-let appInsights = require('applicationinsights');
+const appInsights = require('applicationinsights');
 import { Contracts } from 'applicationinsights';
 import { obfuscateEmail } from '../../utils/utils';
 
