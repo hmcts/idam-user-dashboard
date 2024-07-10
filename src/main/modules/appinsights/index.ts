@@ -33,17 +33,16 @@ export class AppInsights {
     }
 
     if (config.get('appInsights.connectionString')) {
-      console.log('setup appInsights');
+      console.log('(console) setup appInsights');
       appInsights.setup(config.get('appInsights.connectionString'))
         .setSendLiveMetrics(true)
         .setAutoCollectConsole(true, true)
-        .setInternalLogging(true, true)
         .start();
 
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
       appInsights.defaultClient.addTelemetryProcessor(preprocessAppInsightData);
       appInsights.defaultClient.config.samplingPercentage = 100; // 100% of all telemetry will be sent to Application Insights
-      console.log('appInsights configured');
+      console.log('(console) appInsights configured');
     }
   }
 }
