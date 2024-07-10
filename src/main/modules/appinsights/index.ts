@@ -1,5 +1,5 @@
-import * as appInsights from 'applicationinsights';
 import config from 'config';
+let appInsights = require('applicationinsights');
 import { Contracts } from 'applicationinsights';
 import { obfuscateEmail } from '../../utils/utils';
 
@@ -37,6 +37,7 @@ export class AppInsights {
       appInsights.setup(config.get('appInsights.connectionString'))
         .setSendLiveMetrics(true)
         .setAutoCollectConsole(true, true)
+        .setInternalLogging(true, true)
         .start();
 
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
