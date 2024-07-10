@@ -3,9 +3,9 @@ const appInsights = require('applicationinsights');
 import { Contracts } from 'applicationinsights';
 import { obfuscateEmail } from '../../utils/utils';
 const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights');
-import { LoggerInstance } from 'winston'
-import { Logger } from '@hmcts/nodejs-logging'
-const logger: LoggerInstance = Logger.getLogger('app')
+import { LoggerInstance } from 'winston';
+import { Logger } from '@hmcts/nodejs-logging';
+const logger: LoggerInstance = Logger.getLogger('app');
 
 export class AppInsights {
 
