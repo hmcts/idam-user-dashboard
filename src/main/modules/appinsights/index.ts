@@ -2,6 +2,10 @@ import config from 'config';
 const appInsights = require('applicationinsights');
 import { Contracts } from 'applicationinsights';
 import { obfuscateEmail } from '../../utils/utils';
+const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights');
+import { LoggerInstance } from 'winston'
+import { Logger } from '@hmcts/nodejs-logging'
+const logger: LoggerInstance = Logger.getLogger('app')
 
 export class AppInsights {
 
@@ -42,6 +46,11 @@ export class AppInsights {
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
       appInsights.defaultClient.addTelemetryProcessor(preprocessAppInsightData);
       appInsights.defaultClient.config.samplingPercentage = 100; // 100% of all telemetry will be sent to Application Insights
+
+      logger.add(new AzureApplicationInsightsLogger({
+        insights: appInsights
+      }));
+
       console.log('(console) appInsights configured');
     }
   }
