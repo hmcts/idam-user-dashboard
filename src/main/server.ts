@@ -10,4 +10,7 @@ const port: number = parseInt(process.env.PORT, 10) || 3100;
 app.listen(port, () => {
   logger.info(`(logger) Application started: http://localhost:${port}`);
   console.log('(console) Application started!');
+  logger.info({
+    message: '(logger:json) Application Started'
+  })
 });
