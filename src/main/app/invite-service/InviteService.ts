@@ -35,7 +35,7 @@ export class InviteService {
         }
       )
       .catch(err => {
-        this.logger.error('Failed to send invite');
+        this.logger.error('(logger) Failed to send invite');
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, err);
       });
   };

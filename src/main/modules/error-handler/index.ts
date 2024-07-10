@@ -61,8 +61,8 @@ export class ErrorHandler {
         default:
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
-          this.logger.error(`logger errorUUID: ${errorUUID} \n ${error.stack || error}`);
-          console.log('console errorUUID: ' + errorUUID + ', ' + (error.stack || error));
+          this.logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
+          console.log('(console) errorUUID: ' + errorUUID + ', ' + (error.stack || error));
       }
 
       res.status(status);

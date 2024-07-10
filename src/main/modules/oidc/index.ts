@@ -66,11 +66,11 @@ export class OidcMiddleware {
               email: string,
               roles:string[]};
           } catch (error) {
-            console.log('afterCallback: token decode error', error);
+            console.log('(console) afterCallback: token decode error', error);
             throw error;
           }
           if (!tokenUser.roles.includes(this.accessRole)) {
-            console.log('afterCallback: missing access role for user id %s', tokenUser.uid);
+            console.log('(console) afterCallback: missing access role for user id %s', tokenUser.uid);
             throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
           }
           const user = {
@@ -78,10 +78,10 @@ export class OidcMiddleware {
             email: tokenUser.email,
             roles: tokenUser.roles
           } as User;
-          console.log('afterCallback: complete for user id %s', tokenUser.uid);
+          console.log('(console) afterCallback: complete for user id %s', tokenUser.uid);
           return { ...session, user };
         } else {
-          console.log('afterCallback: failed with response code %s', res.statusCode);
+          console.log('(console) afterCallback: failed with response code %s', res.statusCode);
           throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
         }
       }
@@ -139,9 +139,9 @@ export class OidcMiddleware {
         });
 
         delay = tokenSet.expires_in/2;
-        this.logger.info('Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
+        this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch(() => this.logger.info('Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
+      .catch(() => this.logger.info('(logger) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
   };
 
@@ -155,9 +155,9 @@ export class OidcMiddleware {
         });
 
         delay = tokenSet.expires_in/2;
-        this.logger.info('Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
+        this.logger.info('(logger) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch((err) => this.logger.info('Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
+      .catch((err) => this.logger.info('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
       .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
   };
 

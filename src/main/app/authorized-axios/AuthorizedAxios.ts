@@ -1,5 +1,7 @@
 import axios, {Axios, AxiosRequestConfig, AxiosRequestHeaders} from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
+const {Logger} = require('@hmcts/nodejs-logging');
+const logger = Logger.getLogger('app');
 
 type Token = {
   raw: string;
@@ -86,15 +88,18 @@ export class AuthorizedAxios extends Axios {
     const intervalFunc = () => {
       this.refreshToken()
         .then(() => {
-          console.log('Authenticated');
+          console.log('(console) Authenticated');
+          logger.info('(logger) Authenticated');
           intervalRate = this.oauth.token?.decoded.expires_in / 2;
         })
         .catch(e => {
-          console.log('Failed to authenticate - ' + e);
+          console.log('(console) Failed to authenticate - ' + e);
+          logger.info('(logger) Failed to authenticate - ' + e);
           intervalRate = errorIntervalRate;
         })
         .finally(() => {
-          console.log('Authenticating again in: ' + intervalRate + ' seconds.');
+          console.log('(console) Authenticating again in: ' + intervalRate + ' seconds.');
+          logger.info('(logger) Authenticating again in: ' + intervalRate + ' seconds.');
           this.timeoutFunc = setTimeout(intervalFunc, intervalRate * 1000);
         });
     };
