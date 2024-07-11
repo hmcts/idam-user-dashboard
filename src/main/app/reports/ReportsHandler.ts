@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { TelemetryClient } from 'applicationinsights';
 import { Logger } from '../../interfaces/Logger';
-import { Redis } from "ioredis";
+import { Redis } from 'ioredis';
 
 type Store = {
   set: (reportUUID: string, data: Object[]) => Promise<void>;
