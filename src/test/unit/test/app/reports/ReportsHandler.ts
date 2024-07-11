@@ -13,13 +13,12 @@ const redisClientMock = {
   set: jest.fn((a, b, c, d, callback) => callback(null, true)),
   get: jest.fn((a, callback) => callback(null, true))
 };
-jest.mock('redis', () => ({
-  createClient: jest.fn(() => redisClientMock)
+jest.mock('ioredis', () => ({
+  Redis: jest.fn(() => redisClientMock)
 }));
 
 describe('Report handler', () => {
   jest.spyOn(uuid, 'v4');
-  jest.spyOn(redis, 'createClient');
 
   const mockLogger = { error: jest.fn(), info: jest.fn() } as typeof Logger;
   const mockTelemetryClient = { trackTrace: jest.fn() } as any;

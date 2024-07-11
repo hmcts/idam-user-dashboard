@@ -8,10 +8,10 @@ import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { Session } from 'express-openid-connect';
-import ConnectRedis from 'connect-redis';
+import RedisStore from 'connect-redis';
 import session from 'express-session';
 import FileStoreFactory from 'session-file-store';
-import { createClient } from 'redis';
+import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
 import { Issuer, TokenSet } from 'openid-client';
 import { auth } from 'express-openid-connect';
@@ -107,7 +107,6 @@ export class OidcMiddleware {
   }
 
   private getSessionStore(app: Application): any {
-    const redisStore = ConnectRedis(session);
     const fileStore = FileStoreFactory(session);
 
     const redisHost: string = config.get('session.redis.host');
@@ -115,15 +114,13 @@ export class OidcMiddleware {
     const redisPass: string = config.get('session.redis.key');
 
     if (redisHost && redisPass) {
-      const client = createClient({
-        host: redisHost,
-        password: redisPass,
-        port: redisPort ?? 6380,
-        tls: true
-      });
+      const client = new Redis({ port: redisPort, host: redisHost, password: redisPass, tls: {} });
 
       app.locals.redisClient = client;
-      return new redisStore({ client });
+      return new RedisStore({
+        client: client,
+        prefix: 'idam_hmcts_access:',
+      });
     }
 
     return new fileStore({ path: '/tmp' });

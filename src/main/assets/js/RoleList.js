@@ -8,18 +8,23 @@ function RolesList($element) {
 
   this.$roleListContainer = $element;
   this.$roleListCheckboxes = this.$roleListContainer.querySelectorAll(`[data-${this.roleDataAttribute}]`);
+  this.$searchBox = this.$roleListContainer.querySelector(`.${this.searchBoxClass}`);
+  this.$hideCheckbox = this.$roleListContainer.querySelector(`#hide-disabled`);
 }
 
 // Initialize component
 RolesList.prototype.init = function () {
   this.initSearchBox();
   this.initRoleCount();
+  this.hideDisabled();
 };
 
 RolesList.prototype.initSearchBox = function () {
-  const $searchBoxEl = this.$roleListContainer.querySelector(`.${this.searchBoxClass}`);
-  $searchBoxEl.addEventListener('input', (event) => {
+  this.$searchBox.addEventListener('input', (event) => {
     this.filterList(event.target.value);
+  });
+  this.$hideCheckbox.addEventListener('input', () => {
+    this.hideDisabled();
   });
 };
 
@@ -38,20 +43,24 @@ RolesList.prototype.setHidden = function(roleElement, state) {
   roleElement.hidden = state;
 };
 
-RolesList.prototype.filterList = function(filterBy = '') {
-  filterBy = filterBy.toLowerCase();
-  this.filteredRoleCount = 0;
+RolesList.prototype.isHidden = function(roleElement) {
+  roleElement = roleElement.parentNode;
+  return roleElement.style.display === 'none';
+};
+
+RolesList.prototype.hideDisabled = function() {
+  const hideDisabled = this.$hideCheckbox.checked;
+  const currentFilter = this.$searchBox.value;
 
   [...this.$roleListCheckboxes].forEach(checkbox => {
-    if(!checkbox.dataset[this.roleDataAttribute].includes(filterBy)) {
-      this.setHidden(checkbox, true);
-      this.filteredRoleCount++;
-    } else {
-      this.setHidden(checkbox, false);
+    if (checkbox.dataset[this.roleDataAttribute].includes(currentFilter) && checkbox.disabled) {
+      if (hideDisabled) {
+        this.setHidden(checkbox, true);
+      } else {
+        this.setHidden(checkbox, false);
+      }
     }
   });
-
-  this.updateRoleCount();
 };
 
 RolesList.prototype.updateRoleCount = function () {
@@ -63,6 +72,27 @@ RolesList.prototype.updateRoleCount = function () {
   }
 
   $roleCountEl.textContent = textContent;
+};
+
+RolesList.prototype.filterList = function(filterBy = '') {
+  const hideDisabled = this.$hideCheckbox.checked;
+  filterBy = filterBy.toLowerCase();
+  this.filteredRoleCount = 0;
+
+  [...this.$roleListCheckboxes].forEach(checkbox => {
+    if(!checkbox.dataset[this.roleDataAttribute].includes(filterBy)) {
+      this.setHidden(checkbox, true);
+      this.filteredRoleCount++;
+    } else {
+      if (hideDisabled && checkbox.disabled) {
+        this.setHidden(checkbox, true);
+      } else {
+        this.setHidden(checkbox, false);
+      }
+    }
+  });
+
+  this.updateRoleCount();
 };
 
 export default RolesList;
