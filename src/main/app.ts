@@ -37,7 +37,7 @@ logger.info('(logger) Started logger');
 console.log('(console) app logger ' + logger.name + ' is at level ' + logger.level);
 logger.info({
   message: '(logger:json) started logger'
-})
+});
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
