@@ -3,7 +3,6 @@ import { fs } from 'memfs';
 import * as uuid from 'uuid';
 import config from 'config';
 import { when } from 'jest-when';
-import * as redis from 'redis';
 
 jest.mock('memfs');
 jest.mock('uuid');
@@ -12,13 +11,12 @@ const redisClientMock = {
   set: jest.fn((a, b, c, d, callback) => callback(null, true)),
   get: jest.fn((a, callback) => callback(null, true))
 };
-jest.mock('redis', () => ({
-  createClient: jest.fn(() => redisClientMock)
+jest.mock('ioredis', () => ({
+  Redis: jest.fn(() => redisClientMock)
 }));
 
 describe('Report handler', () => {
   jest.spyOn(uuid, 'v4');
-  jest.spyOn(redis, 'createClient');
 
   const mockLogger = { error: jest.fn(), info: jest.fn() } as any;
   const mockTelemetryClient = { trackTrace: jest.fn() } as any;

@@ -1,11 +1,11 @@
 import { fs } from 'memfs';
 import config from 'config';
-import { createClient } from 'redis';
 import { User } from '../../interfaces/User';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { TelemetryClient } from 'applicationinsights';
 import { Logger } from '../../interfaces/Logger';
+import { Redis } from 'ioredis';
 
 type Store = {
   set: (reportUUID: string, data: Object[]) => Promise<void>;
@@ -60,12 +60,7 @@ export class ReportsHandler {
   }
 
   private getRedisStore(redisHost: string, redisPort: number, redisPass: string): Store {
-    const client = createClient({
-      host: redisHost,
-      password: redisPass,
-      port: redisPort ?? 6380,
-      tls: true
-    });
+    const client = new Redis({ port: redisPort ?? 6380, host: redisHost, password: redisPass, tls: {} });
 
     const setAsync = promisify(client.set).bind(client);
     const getAsync = promisify(client.get).bind(client);
