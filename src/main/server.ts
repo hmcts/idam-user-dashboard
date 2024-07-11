@@ -12,5 +12,5 @@ app.listen(port, () => {
   console.log('(console) Application started!');
   logger.info({
     message: '(logger:json) Application Started'
-  })
+  });
 });
