@@ -25,19 +25,13 @@ const { setupDev } = require('./development');
 const env = process.env.NODE_ENV || 'development';
 const developmentMode = env === 'development';
 
-
 export const app = express();
 app.locals.ENV = env;
 
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
-console.log('(console) AppInights enabled');
 const logger = Logger.getLogger('app');
-logger.info('(logger) Started logger');
-console.log('(console) app logger ' + logger.name + ' is at level ' + logger.level);
-logger.info({
-  message: '(logger:json) started logger'
-});
+console.log('(console) app logger is at level ' + logger.level);
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());

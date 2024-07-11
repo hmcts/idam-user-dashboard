@@ -115,8 +115,8 @@ export class UserResultsController extends RootController {
 
   private composeLockedMessage(user: V2User): string {
     if (user.accountStatus === AccountStatus.LOCKED) {
-      logger.error('server logger: composing locked message for user id' + user.id);
       if (!isEmpty(user.accessLockedDate)) {
+        console.log('server logger: composing locked message for user id' + user.id + ', locked at ' + convertISODateTimeToUTCFormat(user.accessLockedDate));
         const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
         if (remainingTime > 0) {
           const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;

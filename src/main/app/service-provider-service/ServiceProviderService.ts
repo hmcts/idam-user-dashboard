@@ -17,6 +17,7 @@ export class ServiceProviderService {
       .then(response => response.data)
       .catch(error => {
         const errorMessage = 'Error getting service info from IDAM API';
+        console.log('(console) failed to get service ' + clientId + ': ' + (error.stack || error))
         this.logger.error(`${error.stack || error}`);
         throw new HTTPError(error.response.status, errorMessage);
       });
