@@ -159,10 +159,19 @@ export class OidcMiddleware {
   };
 
   private createAuthedAxiosInstance(accessToken: string): AxiosInstance {
-    return axios.create({
+    const createdAxios = axios.create({
       baseURL: config.get('services.idam.url.api'),
       headers: {Authorization: 'Bearer ' + accessToken}
     });
+    createdAxios.interceptors.response.use(
+      response => response,
+      error => {
+        if (error?.response) {
+          console.log('Axios call failed with response code' + error.response.status + ', data: ' + error.response.data);
+        }
+      }
+    )
+    return createdAxios;
   }
 
   private async getSystemUserAccessToken(): Promise<TokenSet> {
