@@ -7,6 +7,7 @@ import { execSync } from 'child_process';
 export class PropertiesVolume {
 
   enableFor(app: Application): void {
+    console.log('env is ' + app.locals.ENV);
     if (app.locals.ENV !== 'development') {
       propertiesVolume.addTo(config);
       this.setSecret('secrets.idam-idam.AppInsightsConnectionString', 'appInsights.connectionString');

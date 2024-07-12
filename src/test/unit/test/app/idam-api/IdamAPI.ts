@@ -29,7 +29,7 @@ describe('IdamAPI', () => {
           }]
         };
         const mockAxios = {get: async () => results} as any;
-        const mockLogger = {} as any;
+        const mockLogger = {};
         const mockTelemetryClient = {} as any;
         const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 

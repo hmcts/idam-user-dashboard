@@ -3,14 +3,14 @@ import { ReportsHandler } from '../app/reports/ReportsHandler';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
 import { parse } from 'json2csv';
-import { Logger } from '../interfaces/Logger';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
+const {Logger} = require('@hmcts/nodejs-logging');
 
 @autobind
 export class DownloadReportController extends RootController {
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: typeof Logger,
     private readonly reportGenerator: ReportsHandler
   ) {
     super();

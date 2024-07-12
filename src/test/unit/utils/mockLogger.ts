@@ -1,11 +1,11 @@
-import { Logger } from '../../../main/interfaces/Logger';
+const {Logger} = require('@hmcts/nodejs-logging');
 
-export const mockLogger = (): Logger => {
-  const logger: Partial<Logger> = {
+export const mockLogger = () => {
+  const logger = {
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
   };
 
-  return logger as Logger;
+  return logger as typeof Logger;
 };

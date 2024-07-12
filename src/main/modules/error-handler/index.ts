@@ -1,8 +1,8 @@
 import express, {Application, NextFunction} from 'express';
 import { HTTPError } from '../../app/errors/HttpError';
-import { Logger } from '../../interfaces/Logger';
 import { constants as http } from 'http2';
 import { v4 as uuid } from 'uuid';
+const {Logger} = require('@hmcts/nodejs-logging');
 
 const NOT_FOUND = {
   title: 'Page not found',
@@ -31,7 +31,7 @@ const SERVER_ERROR = {
 };
 
 export class ErrorHandler {
-  constructor(public logger: Logger) {
+  constructor(public logger: typeof Logger) {
     this.logger = logger;
   }
 
@@ -61,8 +61,8 @@ export class ErrorHandler {
         default:
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
-          this.logger.error(`errorUUID: ${errorUUID} \n ${error.stack || error}`);
-          console.log('errorUUID: ' + errorUUID);
+          this.logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
+          console.log('(console) errorUUID: ' + errorUUID + ', ' + (error.stack || error));
       }
 
       res.status(status);

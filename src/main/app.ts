@@ -1,16 +1,18 @@
 import { glob } from 'glob';
-
-const { Logger } = require('@hmcts/nodejs-logging');
-
-import * as bodyParser from 'body-parser';
-import config = require('config');
-import express from 'express';
-import { Helmet } from './modules/helmet';
 import * as path from 'path';
-import favicon from 'serve-favicon';
-import { Nunjucks } from './modules/nunjucks';
+import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
+
+import { Logger } from '@hmcts/nodejs-logging';
+
+import * as bodyParser from 'body-parser';
+import express from 'express';
+import { Helmet } from './modules/helmet';
+
+import favicon from 'serve-favicon';
+import { Nunjucks } from './modules/nunjucks';
+
 import { OidcMiddleware } from './modules/oidc';
 import { Container } from './modules/awilix';
 import { ErrorHandler } from './modules/error-handler';
@@ -22,10 +24,14 @@ import cookieParser from 'cookie-parser';
 const { setupDev } = require('./development');
 const env = process.env.NODE_ENV || 'development';
 const developmentMode = env === 'development';
-const logger = Logger.getLogger('app');
 
 export const app = express();
 app.locals.ENV = env;
+
+new PropertiesVolume().enableFor(app);
+new AppInsights().enable();
+const logger = Logger.getLogger('app');
+console.log('(console) app logger is at level ' + logger.level);
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
@@ -40,8 +46,7 @@ app.use((req, res, next) => {
   next();
 });
 
-new PropertiesVolume().enableFor(app);
-new AppInsights().enable();
+
 new Container().enableFor(app);
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);

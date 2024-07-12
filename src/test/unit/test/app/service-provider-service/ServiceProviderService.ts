@@ -5,6 +5,7 @@ import { mockLogger } from '../../../utils/mockLogger';
 import { ServiceProviderService } from '../../../../../main/app/service-provider-service/ServiceProviderService';
 import { constants as http } from 'http2';
 import { HTTPError } from '../../../../../main/app/errors/HttpError';
+
 jest.mock('config');
 
 describe('ServiceProviderService', () => {

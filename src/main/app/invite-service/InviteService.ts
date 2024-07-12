@@ -3,7 +3,8 @@ import {AuthorizedAxios} from '../authorized-axios/AuthorizedAxios';
 import {InvitationTypes, Invite} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
-import {Logger} from '../../interfaces/Logger';
+const {Logger} = require('@hmcts/nodejs-logging');
+const obfuscate = require('obfuscate-email');
 
 export class InviteService {
   private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoint.invite');
@@ -12,7 +13,7 @@ export class InviteService {
 
   constructor(
     private readonly idamApiAxios: AuthorizedAxios,
-    private readonly logger: Logger
+    private readonly logger: typeof Logger
   ) {}
 
   private sendInvite = (
@@ -35,7 +36,8 @@ export class InviteService {
         }
       )
       .catch(err => {
-        this.logger.error('Failed to send invite');
+        console.log('(console) failed to send ' + invitationType + ' invite  for email ' + obfuscate(invite.email));
+        this.logger.error('(logger) Failed to send invite');
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, err);
       });
   };

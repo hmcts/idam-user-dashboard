@@ -86,15 +86,14 @@ export class AuthorizedAxios extends Axios {
     const intervalFunc = () => {
       this.refreshToken()
         .then(() => {
-          console.log('Authenticated');
           intervalRate = this.oauth.token?.decoded.expires_in / 2;
         })
         .catch(e => {
-          console.log('Failed to authenticate - ' + e);
+          console.log('(console) Failed to authenticate - ' + e);
           intervalRate = errorIntervalRate;
         })
         .finally(() => {
-          console.log('Authenticating again in: ' + intervalRate + ' seconds.');
+          console.log('(console) Authenticated ' + this.oauth.clientId + ' will authenticate again in: ' + intervalRate + ' seconds.');
           this.timeoutFunc = setTimeout(intervalFunc, intervalRate * 1000);
         });
     };
