@@ -49,7 +49,7 @@ export class Container {
             tokenEndpoint: config.get('services.idam.endpoint.token'),
             autoRefresh: true,
           }},
-          defaultClient
+        defaultClient
         )
       ),
       inviteService: asClass(InviteService),
