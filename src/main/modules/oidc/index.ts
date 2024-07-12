@@ -163,14 +163,14 @@ export class OidcMiddleware {
       baseURL: config.get('services.idam.url.api'),
       headers: {Authorization: 'Bearer ' + accessToken}
     });
-    createdAxios.interceptors.response.use(
-      response => response,
-      error => {
-        if (error?.response) {
-          console.log('Axios call failed with response code' + error.response.status + ', data: ' + error.response.data);
-        }
+    createdAxios.interceptors.response.use(function (response) {
+      return response;
+    }, function (error) {
+      if (error?.response) {
+        console.log('Axios call failed with response code' + error.response.status + ', data: ' + error.response.data);
       }
-    );
+      return Promise.reject(error);
+    });
     return createdAxios;
   }
 
