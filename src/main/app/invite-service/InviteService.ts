@@ -4,7 +4,7 @@ import {InvitationTypes, Invite} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
 const {Logger} = require('@hmcts/nodejs-logging');
-const obfuscate = require('obfuscate-mail');
+const obfuscate = require('obfuscate-email');
 
 export class InviteService {
   private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoint.invite');
@@ -36,7 +36,7 @@ export class InviteService {
         }
       )
       .catch(err => {
-        console.error('(console) failed to send ' + invitationType + ' invite  for email ' + obfuscate(invite.email));
+        console.log('(console) failed to send ' + invitationType + ' invite  for email ' + obfuscate(invite.email));
         this.logger.error('(logger) Failed to send invite');
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, err);
       });
