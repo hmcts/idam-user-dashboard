@@ -9534,6 +9534,7 @@ __metadata:
     npm-run-all2: "npm:^6.0.0"
     nunjucks: "npm:^3.2.4"
     obfuscate-email: "npm:^0.0.1"
+    obfuscate-mail: "npm:^1.5.1"
     openid-client: "npm:^5.6.5"
     pa11y: "npm:^8.0.0"
     playwright: "npm:^1.43.0"
@@ -12822,6 +12823,13 @@ __metadata:
   dependencies:
     tape: "npm:^3.0.3"
   checksum: 10/c77fcfaf2dc7c39ed89c3837bf4d8f1f3196eb0c8e1de3640ce445d7918eae3d391e47cd266f71fd629034b91bcd609af7e4adf12ecc2a30e7186de379548db6
+  languageName: node
+  linkType: hard
+
+"obfuscate-mail@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "obfuscate-mail@npm:1.5.1"
+  checksum: 10/53fbaf8c17438fdd44258394717d9a34c8554b69fde81dc8cd45c368575319a396daea797b302e4a60ec8d93c7c1b252113636874f40796df3f70139da94accf
   languageName: node
   linkType: hard
 
