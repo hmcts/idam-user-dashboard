@@ -1,5 +1,6 @@
 import axios, {Axios, AxiosRequestConfig, AxiosRequestHeaders} from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { TelemetryClient } from 'applicationinsights';
 
 type Token = {
   raw: string;
@@ -30,7 +31,7 @@ export class AuthorizedAxios extends Axios {
   private oauth: OAuthConfig & { token?: Token };
   private timeoutFunc: NodeJS.Timeout;
 
-  constructor(config: AuthorizedAxiosParams) {
+  constructor(config: AuthorizedAxiosParams, private readonly telemetryClient: TelemetryClient) {
     super({
       ...(axios.defaults as unknown as AxiosRequestConfig),
       ...config,
@@ -118,7 +119,7 @@ export class AuthorizedAxios extends Axios {
         if (error?.response?.status === 401) {
           return this.refreshToken().then(() => this.request(error.config));
         }
-
+        this.telemetryClient.trackException(error);
         return Promise.reject(error);
       }
     );
