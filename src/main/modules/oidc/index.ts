@@ -170,7 +170,7 @@ export class OidcMiddleware {
           console.log('Axios call failed with response code' + error.response.status + ', data: ' + error.response.data);
         }
       }
-    )
+    );
     return createdAxios;
   }
 
