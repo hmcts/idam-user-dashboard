@@ -121,10 +121,7 @@ export class AuthorizedAxios extends Axios {
         }
         if (error?.response) {
           console.log('axios failed, response code ' + error.response.status + ', ' + JSON.stringify(error.response.data));
-          this.telemetryClient.trackException({exception: {
-            name: error.class,
-            message: error.message
-          }});
+          this.telemetryClient.trackException({exception: error});
         }
         return Promise.reject(error);
       }
