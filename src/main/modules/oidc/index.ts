@@ -16,6 +16,7 @@ import { User } from '../../interfaces/User';
 import { Issuer, TokenSet } from 'openid-client';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
+import { TelemetryClient } from 'applicationinsights';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -29,7 +30,7 @@ export class OidcMiddleware {
   private readonly systemAccountPassword: string = config.get('services.idam.systemUser.password');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
-  constructor(private readonly logger: typeof Logger) {}
+  constructor(private readonly logger: typeof Logger, private readonly telemetryClient: TelemetryClient) {}
 
   public enableFor(app: Application): void {
     this.cacheSystemAccount(app);
@@ -89,7 +90,7 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       req.scope = req.app.locals.container.createScope().register({
-        userAxios: asValue(this.createAuthedAxiosInstance(req.idam_user_dashboard_session.access_token)),
+        userAxios: asValue(this.createAuthedAxiosInstance(req.idam_user_dashboard_session.access_token, this.telemetryClient)),
         api: asClass(IdamAPI)
       });
 
@@ -132,13 +133,14 @@ export class OidcMiddleware {
     this.getSystemUserAccessToken()
       .then(tokenSet => {
         app.locals.container.register({
-          systemAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token))
+          systemAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token, this.telemetryClient))
         });
 
         delay = tokenSet.expires_in/2;
+        console.log('(console) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
         this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch(() => this.logger.info('(logger) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
+      .catch(() => console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
   };
 
@@ -148,21 +150,31 @@ export class OidcMiddleware {
     this.getClientCredentialsAccessToken()
       .then(tokenSet => {
         app.locals.container.register({
-          clientAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token))
+          clientAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token, this.telemetryClient))
         });
 
         delay = tokenSet.expires_in/2;
-        this.logger.info('(logger) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
+        console.log('(console) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch((err) => this.logger.info('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
+      .catch((err) => console.log('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
       .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
   };
 
-  private createAuthedAxiosInstance(accessToken: string): AxiosInstance {
-    return axios.create({
+  private createAuthedAxiosInstance(accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
+    const createdAxios = axios.create({
       baseURL: config.get('services.idam.url.api'),
       headers: {Authorization: 'Bearer ' + accessToken}
     });
+    createdAxios.interceptors.response.use(function (response) {
+      return response;
+    }, function (error) {
+      if (error?.response) {
+        console.log('Axios call failed with response code ' + error.response.status + ', data: ' + JSON.stringify(error.response.data));
+        telemetryClient.trackException({exception: error});
+      }
+      return Promise.reject(error);
+    });
+    return createdAxios;
   }
 
   private async getSystemUserAccessToken(): Promise<TokenSet> {

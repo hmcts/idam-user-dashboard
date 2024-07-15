@@ -48,8 +48,9 @@ export class Container {
             clientScope: config.get('services.idam.backendServiceScope'),
             tokenEndpoint: config.get('services.idam.endpoint.token'),
             autoRefresh: true,
-          },
-        })
+          }},
+        defaultClient
+        )
       ),
       inviteService: asClass(InviteService),
       serviceProviderService: asClass(ServiceProviderService),

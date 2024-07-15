@@ -12,6 +12,7 @@ import {
 } from '../utils/error';
 import { USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
+const obfuscate = require('obfuscate-email');
 
 @autobind
 export class ManageUserController extends RootController {
@@ -32,9 +33,13 @@ export class ManageUserController extends RootController {
 
     if (users) {
       if (users.length === 1) {
+        console.log('ManageUserController.post, found uuid: ' + users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
       }
+      console.log('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
+    } else {
+      console.log('ManageUserController.post, found no results for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
     }
   }
 
