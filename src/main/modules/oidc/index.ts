@@ -133,7 +133,7 @@ export class OidcMiddleware {
     this.getSystemUserAccessToken()
       .then(tokenSet => {
         app.locals.container.register({
-          systemAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token))
+          systemAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token, this.telemetryClient))
         });
 
         delay = tokenSet.expires_in/2;
@@ -149,7 +149,7 @@ export class OidcMiddleware {
     this.getClientCredentialsAccessToken()
       .then(tokenSet => {
         app.locals.container.register({
-          clientAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token))
+          clientAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token, this.telemetryClient))
         });
 
         delay = tokenSet.expires_in/2;
@@ -159,7 +159,7 @@ export class OidcMiddleware {
       .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
   };
 
-  private createAuthedAxiosInstance(accessToken: string): AxiosInstance {
+  private createAuthedAxiosInstance(accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
     const createdAxios = axios.create({
       baseURL: config.get('services.idam.url.api'),
       headers: {Authorization: 'Bearer ' + accessToken}
@@ -168,8 +168,8 @@ export class OidcMiddleware {
       return response;
     }, function (error) {
       if (error?.response) {
-        console.log('Axios call failed with response code' + error.response.status + ', data: ' + JSON.stringify(error.response.data));
-        this.telemetryClient.trackException({exception: {
+        console.log('Axios call failed with response code ' + error.response.status + ', data: ' + JSON.stringify(error.response.data));
+        telemetryClient.trackException({exception: {
           name: error.class,
           message: error.message
         }});
