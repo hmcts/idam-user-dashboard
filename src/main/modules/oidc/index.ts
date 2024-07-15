@@ -137,9 +137,9 @@ export class OidcMiddleware {
         });
 
         delay = tokenSet.expires_in/2;
-        this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
+        console.log('(console) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch(() => this.logger.info('(logger) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
+      .catch(() => console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
   };
 
@@ -153,9 +153,9 @@ export class OidcMiddleware {
         });
 
         delay = tokenSet.expires_in/2;
-        this.logger.info('(logger) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
+        console.log('(console) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch((err) => this.logger.info('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
+      .catch((err) => console.log('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
       .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
   };
 
