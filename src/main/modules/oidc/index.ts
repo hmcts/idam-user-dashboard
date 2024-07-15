@@ -90,7 +90,7 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       req.scope = req.app.locals.container.createScope().register({
-        userAxios: asValue(this.createAuthedAxiosInstance(req.idam_user_dashboard_session.access_token)),
+        userAxios: asValue(this.createAuthedAxiosInstance(req.idam_user_dashboard_session.access_token, this.telemetryClient)),
         api: asClass(IdamAPI)
       });
 
