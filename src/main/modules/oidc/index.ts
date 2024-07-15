@@ -138,7 +138,7 @@ export class OidcMiddleware {
 
         delay = tokenSet.expires_in/2;
         console.log('(console) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
-        this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins')
+        this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
       .catch(() => console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
