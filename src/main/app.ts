@@ -46,13 +46,14 @@ app.use((req, res, next) => {
   next();
 });
 
+import { defaultClient } from 'applicationinsights';
 
 new Container().enableFor(app);
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 new HealthCheck().enableFor(app);
 new Csrf().enableFor(app);
-new OidcMiddleware(logger).enableFor(app);
+new OidcMiddleware(logger, defaultClient).enableFor(app);
 
 glob.sync(__dirname + '/routes/**/*.+(ts|js)')
   .map(filename => require(filename))
