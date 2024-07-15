@@ -169,10 +169,7 @@ export class OidcMiddleware {
     }, function (error) {
       if (error?.response) {
         console.log('Axios call failed with response code ' + error.response.status + ', data: ' + JSON.stringify(error.response.data));
-        telemetryClient.trackException({exception: {
-          name: error.class,
-          message: error.message
-        }});
+        telemetryClient.trackException({exception: error});
       }
       return Promise.reject(error);
     });
