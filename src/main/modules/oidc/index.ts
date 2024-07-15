@@ -16,6 +16,7 @@ import { User } from '../../interfaces/User';
 import { Issuer, TokenSet } from 'openid-client';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
+import { TelemetryClient } from 'applicationinsights';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -29,7 +30,7 @@ export class OidcMiddleware {
   private readonly systemAccountPassword: string = config.get('services.idam.systemUser.password');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
-  constructor(private readonly logger: typeof Logger) {}
+  constructor(private readonly logger: typeof Logger, private readonly telemetryClient: TelemetryClient) {}
 
   public enableFor(app: Application): void {
     this.cacheSystemAccount(app);
@@ -167,7 +168,11 @@ export class OidcMiddleware {
       return response;
     }, function (error) {
       if (error?.response) {
-        console.log('Axios call failed with response code' + error.response.status + ', data: ' + error.response.data);
+        console.log('Axios call failed with response code' + error.response.status + ', data: ' + JSON.stringify(error.response.data));
+        this.telemetryClient.trackException({exception: {
+          name: error.class,
+          message: error.message
+        }});
       }
       return Promise.reject(error);
     });
