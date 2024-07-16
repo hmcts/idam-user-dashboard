@@ -25,7 +25,7 @@ export class HealthCheck {
         } else {
           console.log('hc response: ' + JSON.stringify(res.body));
         }
-        return res.body.status == 'good' ? healthcheck.up() : healthcheck.down();
+        return res.body.status == 'UP' ? healthcheck.up() : healthcheck.down();
       }
     };
 
