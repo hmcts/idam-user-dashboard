@@ -19,6 +19,12 @@ export class HealthCheck {
     const healthOptions = {
       timeout: config.get('health.timeout'),
       deadline: config.get('health.deadline'),
+      callback: (err : any, res : any) => {
+        if (err) {
+          console.log('hc response: ' + JSON.stringify(res.body) + '; error: ', JSON.stringify(err));
+        }
+        return res.body.status == "good" ? healthcheck.up() : healthcheck.down()
+      }
     };
 
     const healthCheckConfig = {
