@@ -22,8 +22,10 @@ export class HealthCheck {
       callback: (err : any, res : any) => {
         if (err) {
           console.log('hc response: ' + JSON.stringify(res.body) + '; error: ', JSON.stringify(err));
+        } else {
+          console.log('hc response: ' + JSON.stringify(res.body));
         }
-        return res.body.status == "good" ? healthcheck.up() : healthcheck.down()
+        return res.body.status == "good" ? healthcheck.up() : healthcheck.down();
       }
     };
 
