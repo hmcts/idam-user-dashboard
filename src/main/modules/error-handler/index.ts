@@ -39,7 +39,7 @@ export class ErrorHandler {
     // returning "not found" page for requests with paths not resolved by the router
     app.use((req, res) => {
       const status = http.HTTP_STATUS_NOT_FOUND;
-      console.log('error-handler, not found for: ' + JSON.stringify(req));
+      console.log('error-handler, returning not found for: ' +(req.url));
       res.status(status);
       res.render('error.njk', {...NOT_FOUND, status});
     });
