@@ -100,7 +100,10 @@ export class OidcMiddleware {
             req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
-          .catch(err => next(err));
+          .catch(err => {
+            console.log('Failed to get assignable roles with error: ' + JSON.stringify(err));
+            next(err);
+          });
       }
 
       return next();
