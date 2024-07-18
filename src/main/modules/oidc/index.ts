@@ -101,7 +101,7 @@ export class OidcMiddleware {
             next();
           })
           .catch(err => {
-            console.log('Failed to get assignable roles with error: ' + JSON.stringify(err));
+            console.log('Failed to get assignable roles', err);
             next(err);
           });
       }
@@ -143,7 +143,10 @@ export class OidcMiddleware {
         console.log('(console) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
         this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch(() => console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
+      .catch((err) => {
+        console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins', err);
+        this.telemetryClient.trackException({exception: err});
+      })
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
   };
 
@@ -159,7 +162,10 @@ export class OidcMiddleware {
         delay = tokenSet.expires_in/2;
         console.log('(console) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch((err) => console.log('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
+      .catch((err) => {
+        console.log('(console) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins', err);
+        this.telemetryClient.trackException({exception: err});
+      })
       .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
   };
 
