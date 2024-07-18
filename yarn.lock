@@ -2623,10 +2623,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-web-snippet@npm:^1.0.1":
-  version: 1.2.1
-  resolution: "@microsoft/applicationinsights-web-snippet@npm:1.2.1"
-  checksum: 10/9380a6cd202053868458229665ee108a0ecd8ce242ce23b0af6cedf3659455cf1b5b49e41172dc70eab32616bc1387ac9684ce081294e05f1b8cdee97908bfcc
+"@microsoft/applicationinsights-web-snippet@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@microsoft/applicationinsights-web-snippet@npm:1.0.1"
+  checksum: 10/1f7709ed4e063efc4001264d4cea37fd86bb399dff42a1ad931c96c58ab42a93e2ded66e6b42ebe9459946d19c55fd0841d14f755b1003645a1e625a74d2ca6f
   languageName: node
   linkType: hard
 
@@ -4687,15 +4687,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:^2.9.2":
-  version: 2.9.2
-  resolution: "applicationinsights@npm:2.9.2"
+"applicationinsights@npm:^2.9.5":
+  version: 2.9.5
+  resolution: "applicationinsights@npm:2.9.5"
   dependencies:
     "@azure/core-auth": "npm:^1.5.0"
     "@azure/core-rest-pipeline": "npm:1.10.1"
     "@azure/core-util": "npm:1.2.0"
     "@azure/opentelemetry-instrumentation-azure-sdk": "npm:^1.0.0-beta.5"
-    "@microsoft/applicationinsights-web-snippet": "npm:^1.0.1"
+    "@microsoft/applicationinsights-web-snippet": "npm:1.0.1"
     "@opentelemetry/api": "npm:^1.7.0"
     "@opentelemetry/core": "npm:^1.19.0"
     "@opentelemetry/sdk-trace-base": "npm:^1.19.0"
@@ -4709,7 +4709,7 @@ __metadata:
   peerDependenciesMeta:
     applicationinsights-native-metrics:
       optional: true
-  checksum: 10/5e7b66dbd25fd3ee09c6fa87d1b02660359b03177132fb6608107fbf9653959ea2ffe4e0db13be00bea7388852f4609f63817290ccdab12812bf414ab6cda3dd
+  checksum: 10/ea2ed4acd05886eb7a9c71bc47a8f27a0d1165ab700c682e03f63573f9eaeb31d2c843defe08a1efa343ccd08fab6381127a785cd2a1ea7b57f8478a4dab2a00
   languageName: node
   linkType: hard
 
@@ -9346,7 +9346,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin-tslint": "npm:^7.0.0"
     "@typescript-eslint/parser": "npm:^7.0.0"
     allure-commandline: "npm:^2.27.0"
-    applicationinsights: "npm:^2.9.2"
+    applicationinsights: "npm:^2.9.5"
     autobind-decorator: "npm:^2.4.0"
     awilix: "npm:^10.0.0"
     axe-playwright: "npm:^2.0.1"
@@ -9631,11 +9631,11 @@ __metadata:
   linkType: hard
 
 "is-core-module@npm:^2.13.0, is-core-module@npm:^2.5.0":
-  version: 2.14.0
-  resolution: "is-core-module@npm:2.14.0"
+  version: 2.15.0
+  resolution: "is-core-module@npm:2.15.0"
   dependencies:
     hasown: "npm:^2.0.2"
-  checksum: 10/1e0d1a16cb3a94746f6a28db09ccab4562860c94c74bacedb3a6729736d61cfb97001d2052f9622637aa7ea8e0643a3f0f4f16965c70ba6ce30a8ccfe8074af8
+  checksum: 10/70e962543e5d3a97c07cb29144a86792d545a21f28e67da5401d85878a0193d46fbab8d97bc3ca680e2778705dca66e7b6ca840c493497a27ca0e8c5f3ac3d1d
   languageName: node
   linkType: hard
 
