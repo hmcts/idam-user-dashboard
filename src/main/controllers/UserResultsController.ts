@@ -36,7 +36,7 @@ export class UserResultsController extends RootController {
     try {
       user = await req.scope.cradle.api.getUserV2ById(userUUID);
     } catch (e) {
-      console.log('Failed getUserV2ById call for id: ' + userUUID + ', with error: ', JSON.stringify(e));
+      console.log('Failed getUserV2ById call for id: ' + userUUID, e);
       return req.next();
     }
 

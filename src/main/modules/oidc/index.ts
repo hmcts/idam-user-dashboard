@@ -13,7 +13,7 @@ import session from 'express-session';
 import FileStoreFactory from 'session-file-store';
 import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
-import { Issuer, TokenSet } from 'openid-client';
+import { Issuer, TokenSet, custom } from 'openid-client';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
 import { TelemetryClient } from 'applicationinsights';
@@ -101,7 +101,7 @@ export class OidcMiddleware {
             next();
           })
           .catch(err => {
-            console.log('Failed to get assignable roles with error: ' + JSON.stringify(err));
+            console.log('Failed to get assignable roles', err);
             next(err);
           });
       }
@@ -143,7 +143,10 @@ export class OidcMiddleware {
         console.log('(console) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
         this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch(() => console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins'))
+      .catch((err) => {
+        console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins', err);
+        this.telemetryClient.trackException({exception: err});
+      })
       .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
   };
 
@@ -159,7 +162,10 @@ export class OidcMiddleware {
         delay = tokenSet.expires_in/2;
         console.log('(console) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
       })
-      .catch((err) => console.log('(logger) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins' + err))
+      .catch((err) => {
+        console.log('(console) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins', err);
+        this.telemetryClient.trackException({exception: err});
+      })
       .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
   };
 
@@ -181,6 +187,9 @@ export class OidcMiddleware {
   }
 
   private async getSystemUserAccessToken(): Promise<TokenSet> {
+    custom.setHttpOptionsDefaults({
+      timeout: 25000,
+    });
     return new (await Issuer.discover(this.idamBaseUrl + '/o'))
       .Client({
         'client_id': this.clientId,
@@ -195,6 +204,9 @@ export class OidcMiddleware {
   }
 
   private async getClientCredentialsAccessToken(): Promise<TokenSet> {
+    custom.setHttpOptionsDefaults({
+      timeout: 25000,
+    });
     const usableScopes = this.clientScope
       .replace('openid', '')
       .replace('profile', '')
