@@ -22,14 +22,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@axe-core/playwright@npm:^4.8.1":
-  version: 4.9.0
-  resolution: "@axe-core/playwright@npm:4.9.0"
+"@axe-core/playwright@npm:^4.9.1":
+  version: 4.9.1
+  resolution: "@axe-core/playwright@npm:4.9.1"
   dependencies:
-    axe-core: "npm:~4.9.0"
+    axe-core: "npm:~4.9.1"
   peerDependencies:
     playwright-core: ">= 1.0.0"
-  checksum: 10/0cf53fe7e56c51504d4ccc47e373d23e522654a04a826df4f9a1dcfbfac4dd5ffabcf0b9e208c29b84c6a41d50b86a7f121de17e6713d2693e2328576cc7b99a
+  checksum: 10/fcb9fd3199a0fc266e32282a4fd9552e46ef33180bc414a13c080bf063539d0653a273e7a468168731d103b277865ffb9c970036742b74fd2a6264227f3437de
   languageName: node
   linkType: hard
 
@@ -4910,7 +4910,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:~4.9.0":
+"axe-core@npm:~4.9.1":
   version: 4.9.1
   resolution: "axe-core@npm:4.9.1"
   checksum: 10/9d4944f6d3289428e1c6b41a80516f6558a960889f59c3c00f0fb88b955eda81edf9ca377c2cbc2a775f4003596d2aeaa35acca5aad3e1fc6b3d1e26e82b02cc
@@ -9309,7 +9309,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "idam-user-dashboard@workspace:."
   dependencies:
-    "@axe-core/playwright": "npm:^4.8.1"
+    "@axe-core/playwright": "npm:^4.9.1"
     "@babel/core": "npm:7.24.7"
     "@babel/eslint-parser": "npm:^7.23.3"
     "@babel/preset-env": "npm:^7.23.8"
@@ -9631,11 +9631,11 @@ __metadata:
   linkType: hard
 
 "is-core-module@npm:^2.13.0, is-core-module@npm:^2.5.0":
-  version: 2.14.0
-  resolution: "is-core-module@npm:2.14.0"
+  version: 2.15.0
+  resolution: "is-core-module@npm:2.15.0"
   dependencies:
     hasown: "npm:^2.0.2"
-  checksum: 10/1e0d1a16cb3a94746f6a28db09ccab4562860c94c74bacedb3a6729736d61cfb97001d2052f9622637aa7ea8e0643a3f0f4f16965c70ba6ce30a8ccfe8074af8
+  checksum: 10/70e962543e5d3a97c07cb29144a86792d545a21f28e67da5401d85878a0193d46fbab8d97bc3ca680e2778705dca66e7b6ca840c493497a27ca0e8c5f3ac3d1d
   languageName: node
   linkType: hard
 
