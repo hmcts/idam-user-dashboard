@@ -13,7 +13,7 @@ import session from 'express-session';
 import FileStoreFactory from 'session-file-store';
 import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
-import { Issuer, TokenSet } from 'openid-client';
+import { Issuer, TokenSet, custom } from 'openid-client';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
 import { TelemetryClient } from 'applicationinsights';
@@ -187,6 +187,9 @@ export class OidcMiddleware {
   }
 
   private async getSystemUserAccessToken(): Promise<TokenSet> {
+    custom.setHttpOptionsDefaults({
+      timeout: 25000,
+    });
     return new (await Issuer.discover(this.idamBaseUrl + '/o'))
       .Client({
         'client_id': this.clientId,
@@ -201,6 +204,9 @@ export class OidcMiddleware {
   }
 
   private async getClientCredentialsAccessToken(): Promise<TokenSet> {
+    custom.setHttpOptionsDefaults({
+      timeout: 25000,
+    });
     const usableScopes = this.clientScope
       .replace('openid', '')
       .replace('profile', '')
