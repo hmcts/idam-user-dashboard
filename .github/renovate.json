@@ -4,5 +4,8 @@
     "local>hmcts/.github:renovate-config",
     "local>hmcts/.github//renovate/automerge-all"
   ],
+  "lockFileMaintenance": {
+    "enabled": false
+  },
   "schedule": "after 4pm and before 7pm every weekday"
 }
