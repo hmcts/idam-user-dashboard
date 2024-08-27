@@ -156,7 +156,8 @@
     "express": "4.19.2",
     "formidable": ">=3.2.4",
     "@azure/msal-node": ">=2.9.2",
-    "@azure/identity": ">=4.2.1"
+    "@azure/identity": ">=4.2.1",
+    "micromatch": ">=4.0.8"
   },
   "packageManager": "yarn@4.3.1"
 }
