@@ -16,7 +16,7 @@ import { PageError } from '../interfaces/PageData';
 import { constructAllRoleAssignments } from '../utils/roleUtils';
 import { UserType } from '../utils/UserType';
 import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
-import { Role } from '../interfaces/Role';
+import { V2Role } from '../interfaces/V2Role';
 
 export const ROLE_HINT_WITH_PRIVATE_BETA = 'Private Beta Citizen is a citizen who is trialling a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 export const ROLE_HINT_WITHOUT_PRIVATE_BETA = 'Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
@@ -87,7 +87,7 @@ export class AddUserDetailsController extends RootController {
         selectedService: ''
       }});
     } else {
-      const allRoles = await req.scope.cradle.api.getAllRoles();
+      const allRoles = await req.scope.cradle.api.getAllV2Roles();
       const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
       return super.post(req, res, 'add-user-roles', { content: { user: user, roles: roleAssignment } });
     }
@@ -121,8 +121,8 @@ export class AddUserDetailsController extends RootController {
     return hasProperty(fields, 'userType') ? fields.userType : '';
   }
 
-  private async getRolesMap(req: AuthedRequest): Promise<Map<string, Role>> {
-    const allRoles = await req.scope.cradle.api.getAllRoles();
+  private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
+    const allRoles = await req.scope.cradle.api.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])

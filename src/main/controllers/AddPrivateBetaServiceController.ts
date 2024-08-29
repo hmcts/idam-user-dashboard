@@ -8,7 +8,7 @@ import { MISSING_PRIVATE_BETA_SERVICE_ERROR } from '../utils/error';
 import { getServicesForSelect } from '../utils/serviceUtils';
 import { UserType } from '../utils/UserType';
 import { Service } from '../interfaces/Service';
-import { Role } from '../interfaces/Role';
+import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
 
 @autobind
@@ -72,8 +72,8 @@ export class AddPrivateBetaServiceController extends RootController {
     return rolesToAdd;
   }
 
-  private async getRolesMap(req: AuthedRequest): Promise<Map<string, Role>> {
-    const allRoles = await req.scope.cradle.api.getAllRoles();
+  private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
+    const allRoles = await req.scope.cradle.api.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])

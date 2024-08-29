@@ -151,7 +151,7 @@ describe('Add user roles controller', () => {
       }
     ];
 
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
 
     req.body._email = email;
     req.body._forename = forename;

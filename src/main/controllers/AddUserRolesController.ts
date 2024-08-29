@@ -26,7 +26,7 @@ export class AddUserRolesController extends RootController {
     const fields = req.body;
 
     if (!hasProperty(req.body, 'roles')) {
-      const allRoles = await req.scope.cradle.api.getAllRoles();
+      const allRoles = await req.scope.cradle.api.getAllV2Roles();
       const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
 
       const user = {

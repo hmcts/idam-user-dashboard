@@ -3,7 +3,7 @@ import {
   constructUserRoleAssignments,
   processMfaRole, rolesExist
 } from '../../../../main/utils/roleUtils';
-import { Role } from '../../../../main/interfaces/Role';
+import { V2Role } from '../../../../main/interfaces/V2Role';
 import { User } from '../../../../main/interfaces/User';
 
 describe('roleUtils', () => {
@@ -12,29 +12,26 @@ describe('roleUtils', () => {
     const role2 = 'role2';
     const role3 = 'role3';
 
-    const allRoles: Role[] = [
+    const allRoles: V2Role[] = [
       {
         id: '1',
         name: role1,
         description: role1,
-        assignableRoles: [role2],
-        conflictingRoles: [],
+        assignableRoleNames: [role2],
         assigned: true
       },
       {
         id: '2',
         name: role2,
         description: role2,
-        assignableRoles: [role3],
-        conflictingRoles: [],
+        assignableRoleNames: [role3],
         assigned: true
       },
       {
         id: '3',
         name: role3,
         description: role3,
-        assignableRoles: [],
-        conflictingRoles: [],
+        assignableRoleNames: [],
         assigned: true
       }
     ];
@@ -166,10 +163,10 @@ describe('roleUtils', () => {
     const role4 = 'role4';
     const role5 = 'role5';
 
-    const rolesMap = new Map<string, Role>([
-      [role1, { id: role1, name: role1, description: role1, assignableRoles: [], conflictingRoles: [], assigned: false }],
-      [role2, { id: role2, name: role2, description: role2, assignableRoles: [], conflictingRoles: [], assigned: false }],
-      [role3, { id: role3, name: role3, description: role3, assignableRoles: [], conflictingRoles: [], assigned: false }]
+    const rolesMap = new Map<string, V2Role>([
+      [role1, { id: role1, name: role1, description: role1, assignableRoleNames: [], assigned: false }],
+      [role2, { id: role2, name: role2, description: role2, assignableRoleNames: [], assigned: false }],
+      [role3, { id: role3, name: role3, description: role3, assignableRoleNames: [], assigned: false }]
     ]);
 
     test('Should return true if all role IDs exist in the roles map', async () => {

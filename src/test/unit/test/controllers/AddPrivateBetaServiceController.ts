@@ -64,7 +64,7 @@ describe('Add private beta service controller', () => {
 
   test('Should render the add user completion page when a service is selected', async () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(services);
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
     when(inviteService.inviteUser).mockResolvedValue({} as any);
 
     req.body = {
@@ -85,7 +85,7 @@ describe('Add private beta service controller', () => {
 
   test('Should render the add private beta service page with error when problem occurring during user registration', async () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(services);
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
     when(inviteService.inviteUser).mockRejectedValue(error);
 
     req.body = {

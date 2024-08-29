@@ -1,4 +1,4 @@
-import { Role } from '../interfaces/Role';
+import { V2Role } from '../interfaces/V2Role';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import { V2User } from '../interfaces/V2User';
 import { User } from '../interfaces/User';
@@ -22,30 +22,30 @@ const sortRolesByAssignableAndName = (a: UserRoleAssignment, b: UserRoleAssignme
   return sortRolesByName(a.name.toLowerCase(), b.name.toLowerCase());
 };
 
-export const constructAllRoleAssignments = (allRoles: Role[], assignableRoles: string[]): UserRoleAssignment[] => {
+export const constructAllRoleAssignments = (allRoles: V2Role[], assignedRoleNames: string[]): UserRoleAssignment[] => {
   const userRoleAssignments: UserRoleAssignment[] = [];
   allRoles
     .map(roles => roles.name)
     .forEach(r => {
       const obj = {} as UserRoleAssignment;
       obj.name = r;
-      obj.assignable = assignableRoles.includes(r);
+      obj.assignable = assignedRoleNames.includes(r);
       userRoleAssignments.push(obj);
     });
   userRoleAssignments.sort((a, b) => sortRolesByAssignableAndName(a, b));
   return userRoleAssignments;
 };
 
-export const constructUserRoleAssignments = (assignableRoles: string[], assignedRoles: string[]): UserRoleAssignment[] => {
+export const constructUserRoleAssignments = (assignableRoleNames: string[], assignedRoleNames: string[]): UserRoleAssignment[] => {
   const userRoleAssignments: UserRoleAssignment[] = [];
   const combinedRoles = [];
-  combinedRoles.push(...assignableRoles, ...assignedRoles);
+  combinedRoles.push(...assignableRoleNames, ...assignedRoleNames);
 
   combinedRoles.forEach(r => {
     const obj = {} as UserRoleAssignment;
     obj.name = r;
-    obj.assignable = assignableRoles.includes(r);
-    obj.assigned = assignedRoles.includes(r);
+    obj.assignable = assignableRoleNames.includes(r);
+    obj.assigned = assignedRoleNames.includes(r);
     userRoleAssignments.push(obj);
   });
 
@@ -74,6 +74,6 @@ export const processMfaRole = (user: User) => {
   }
 };
 
-export const rolesExist = (roleIds: string[], rolesMap: Map<string, Role>): boolean => {
+export const rolesExist = (roleIds: string[], rolesMap: Map<string, V2Role>): boolean => {
   return roleIds.every(r => rolesMap.has(r));
 };
