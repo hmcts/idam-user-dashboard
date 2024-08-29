@@ -16,7 +16,6 @@ export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
     private readonly systemAxios: AxiosInstance,
-    private readonly clientAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
     private readonly logger : typeof Logger,
     private readonly telemetryClient: TelemetryClient
@@ -55,7 +54,7 @@ export class IdamAPI {
   }
 
   public getUserV2ById(id: string): Promise<V2User> {
-    return this.clientAxios
+    return this.idamApiAxios
       .get('/api/v2/users/' + id)
       .then(results => results.data)
       .catch(error => {
