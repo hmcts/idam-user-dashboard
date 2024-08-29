@@ -1,7 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { TelemetryClient } from 'applicationinsights';
-import { Role } from '../../interfaces/Role';
 import { V2Role } from '../../interfaces/V2Role';
 import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
@@ -16,7 +15,6 @@ const {Logger} = require('@hmcts/nodejs-logging');
 export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
-    private readonly systemAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
     private readonly logger : typeof Logger,
     private readonly telemetryClient: TelemetryClient
@@ -121,18 +119,6 @@ export class IdamAPI {
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
-      });
-  }
-
-  public getAllRoles(): Promise<Role[]> {
-    return this.systemAxios
-      .get('/roles/')
-      .then(results => results.data)
-      .catch(error => {
-        const errorMessage = 'Error retrieving all roles from IDAM API';
-        this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
-        throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
   }
 
