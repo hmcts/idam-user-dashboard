@@ -1,6 +1,7 @@
 import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
 import {SearchType} from '../../../../../main/utils/SearchType';
 import { Role } from '../../../../../main/interfaces/Role';
+import { V2Role } from '../../../../../main/interfaces/V2Role';
 import { when } from 'jest-when';
 
 describe('IdamAPI', () => {
@@ -163,11 +164,11 @@ describe('IdamAPI', () => {
 
   describe('getAssignableRoles', () => {
     test('Should return all the assignable roles for a role', () => {
-      const getAllRolesMockResponse: Partial<Role>[] = [
-        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
-        { id: '2', name: 'test-role-2', assignableRoles: ['2'] },
-        { id: '3', name: 'test-role-3', assignableRoles: ['3', '1'] },
-        { id: '4', name: 'test-role-4', assignableRoles: ['4', '1'] }
+      const getAllRolesMockResponse: Partial<V2Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoleNames: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoleNames: ['2'] },
+        { id: '3', name: 'test-role-3', assignableRoleNames: ['3', '1'] },
+        { id: '4', name: 'test-role-4', assignableRoleNames: ['4', '1'] }
       ];
       const results = ['test-role-3', 'test-role-1'];
 
@@ -175,24 +176,24 @@ describe('IdamAPI', () => {
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
-      api.getAllRoles = jest.fn();
+      api.getAllV2Roles = jest.fn();
 
-      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-3'])).resolves.toEqual(results);
-      expect(api.getAllRoles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles).toBeCalledTimes(1);
     });
 
     test('Should return all the assignable roles for a set of roles', () => {
-      const getAllRolesMockResponse: Partial<Role>[] = [
-        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
-        { id: '2', name: 'test-role-2', assignableRoles: ['2'] },
-        { id: '3', name: 'test-role-3', assignableRoles: ['3', '1'] },
-        { id: '4', name: 'test-role-4', assignableRoles: ['4', '1'] },
-        { id: '5', name: 'test-role-5', assignableRoles: ['5'] },
-        { id: '6', name: 'test-role-6', assignableRoles: ['6', '2', '5'] },
-        { id: '7', name: 'test-role-7', assignableRoles: ['7'] },
-        { id: '8', name: 'test-role-8', assignableRoles: ['9'] },
-        { id: '9', name: 'test-role-9', assignableRoles: [] }
+      const getAllRolesMockResponse: Partial<V2Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoleNames: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoleNames: ['2'] },
+        { id: '3', name: 'test-role-3', assignableRoleNames: ['3', '1'] },
+        { id: '4', name: 'test-role-4', assignableRoleNames: ['4', '1'] },
+        { id: '5', name: 'test-role-5', assignableRoleNames: ['5'] },
+        { id: '6', name: 'test-role-6', assignableRoleNames: ['6', '2', '5'] },
+        { id: '7', name: 'test-role-7', assignableRoleNames: ['7'] },
+        { id: '8', name: 'test-role-8', assignableRoleNames: ['9'] },
+        { id: '9', name: 'test-role-9', assignableRoleNames: [] }
       ];
       const results = ['test-role-3', 'test-role-1', 'test-role-6', 'test-role-2', 'test-role-5', 'test-role-9'];
 
@@ -200,17 +201,17 @@ describe('IdamAPI', () => {
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
-      api.getAllRoles = jest.fn();
+      api.getAllV2Roles = jest.fn();
 
-      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-3', 'test-role-6', 'test-role-8'])).resolves.toEqual(results);
-      expect(api.getAllRoles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles).toBeCalledTimes(1);
     });
 
     test('Should return only itself as assignable role if no other assignable roles', () => {
-      const getAllRolesMockResponse: Partial<Role>[] = [
-        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
-        { id: '2', name: 'test-role-2', assignableRoles: ['2'] },
+      const getAllRolesMockResponse: Partial<V2Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoleNames: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoleNames: ['2'] },
       ];
       const results = ['test-role-2'];
 
@@ -218,17 +219,17 @@ describe('IdamAPI', () => {
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
-      api.getAllRoles = jest.fn();
+      api.getAllV2Roles = jest.fn();
 
-      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-2'])).resolves.toEqual(results);
-      expect(api.getAllRoles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles).toBeCalledTimes(1);
     });
 
     test('Should return empty if no assignable roles or role undefined', () => {
-      const getAllRolesMockResponse: Partial<Role>[] = [
-        { id: '1', name: 'test-role-1', assignableRoles: ['1', '2'] },
-        { id: '2', name: 'test-role-2', assignableRoles: [] },
+      const getAllRolesMockResponse: Partial<V2Role>[] = [
+        { id: '1', name: 'test-role-1', assignableRoleNames: ['1', '2'] },
+        { id: '2', name: 'test-role-2', assignableRoleNames: [] },
         { id: '3', name: 'test-role-3' },
         undefined as unknown as Role
       ];
@@ -237,11 +238,11 @@ describe('IdamAPI', () => {
       const mockLogger = {} as any;
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockAxios, mockLogger, mockTelemetryClient);
-      api.getAllRoles = jest.fn();
+      api.getAllV2Roles = jest.fn();
 
-      when(api.getAllRoles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as Role[]));
+      when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-2', 'test-role-3'])).resolves.toEqual([]);
-      expect(api.getAllRoles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles).toBeCalledTimes(1);
     });
   });
 
