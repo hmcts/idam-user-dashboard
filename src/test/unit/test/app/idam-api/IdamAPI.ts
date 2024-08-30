@@ -1,6 +1,5 @@
 import { IdamAPI } from '../../../../../main/app/idam-api/IdamAPI';
 import {SearchType} from '../../../../../main/utils/SearchType';
-import { Role } from '../../../../../main/interfaces/Role';
 import { V2Role } from '../../../../../main/interfaces/V2Role';
 import { when } from 'jest-when';
 
@@ -231,7 +230,7 @@ describe('IdamAPI', () => {
         { id: '1', name: 'test-role-1', assignableRoleNames: ['1', '2'] },
         { id: '2', name: 'test-role-2', assignableRoleNames: [] },
         { id: '3', name: 'test-role-3' },
-        undefined as unknown as Role
+        undefined as unknown as V2Role
       ];
 
       const mockAxios = {get: async () => jest.fn()} as any;
