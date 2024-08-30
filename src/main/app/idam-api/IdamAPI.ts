@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { User } from '../../interfaces/User';
 import { TelemetryClient } from 'applicationinsights';
-import { Role } from '../../interfaces/Role';
+import { V2Role } from '../../interfaces/V2Role';
 import { HTTPError } from '../errors/HttpError';
 import { constants as http } from 'http2';
 import { UserRegistrationDetails } from '../../interfaces/UserRegistrationDetails';
@@ -15,8 +15,6 @@ const {Logger} = require('@hmcts/nodejs-logging');
 export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
-    private readonly systemAxios: AxiosInstance,
-    private readonly clientAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
     private readonly logger : typeof Logger,
     private readonly telemetryClient: TelemetryClient
@@ -55,7 +53,7 @@ export class IdamAPI {
   }
 
   public getUserV2ById(id: string): Promise<V2User> {
-    return this.clientAxios
+    return this.idamApiAxios
       .get('/api/v2/users/' + id)
       .then(results => results.data)
       .catch(error => {
@@ -124,12 +122,12 @@ export class IdamAPI {
       });
   }
 
-  public getAllRoles(): Promise<Role[]> {
-    return this.systemAxios
-      .get('/roles/')
+  public getAllV2Roles(): Promise<V2Role[]> {
+    return this.idamApiAxios
+      .get('/api/v2/roles')
       .then(results => results.data)
       .catch(error => {
-        const errorMessage = 'Error retrieving all roles from IDAM API';
+        const errorMessage = 'Error retrieving all v2 roles from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
         this.logger.error(`${error.stack || error}`);
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR);
@@ -137,7 +135,7 @@ export class IdamAPI {
   }
 
   public async getAssignableRoles(roleNames: string[]) {
-    const allRoles = await this.getAllRoles();
+    const allRoles = await this.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])
@@ -146,8 +144,8 @@ export class IdamAPI {
     const collection: Set<string> = new Set();
     Array.from(rolesMap.values())
       .filter(role => roleNames.includes(role.name))
-      .filter(role => Array.isArray(role.assignableRoles))
-      .forEach(role => role.assignableRoles
+      .filter(role => Array.isArray(role.assignableRoleNames))
+      .forEach(role => role.assignableRoleNames
         .filter(r => rolesMap.has(r))
         .forEach(r => collection.add(rolesMap.get(r).name))
       );

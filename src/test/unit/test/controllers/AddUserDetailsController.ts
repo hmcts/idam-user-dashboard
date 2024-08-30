@@ -83,7 +83,7 @@ describe('Add user details controller', () => {
   test('Should render the add user details page when adding a non-existing user\'s email when there is no service with private beta', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
 
     req.body.email = email;
     req.idam_user_dashboard_session = { user: { assignableRoles: [UserType.Citizen] } };
@@ -97,7 +97,7 @@ describe('Add user details controller', () => {
   test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta and the citizen role is assignable', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
 
     req.body.email = email;
     req.idam_user_dashboard_session = { user: { assignableRoles: [UserType.Citizen] } };
@@ -111,7 +111,7 @@ describe('Add user details controller', () => {
   test('Should render the add user details page when adding a non-existing user\'s email when there is a service with private beta but the citizen role is not assignable', async () => {
     when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
 
     req.body.email = email;
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
@@ -294,7 +294,7 @@ describe('Add user details controller', () => {
   });
 
   test('Should render the add user completion page when all fields populated', async () => {
-    when(mockApi.getAllRoles).calledWith().mockReturnValue(allRoles);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
 
     req.body._email = email;
     req.body.forename = name;

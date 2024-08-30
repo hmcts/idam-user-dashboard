@@ -3,7 +3,7 @@ import {
   getServicesForSelect,
   hasPrivateBetaServices
 } from '../../../../main/utils/serviceUtils';
-import { Role } from '../../../../main/interfaces/Role';
+import { V2Role } from '../../../../main/interfaces/V2Role';
 
 describe('serviceUtils', () => {
   const service1 = 'Service1';
@@ -14,9 +14,9 @@ describe('serviceUtils', () => {
   const role1 = 'other1';
   const role2 = 'other2';
   const nonExistingRole = 'nonExisting';
-  const rolesMap = new Map<string, Role>([
-    [role1, { id: role1, name: role1, description: role1, assignableRoles: [], conflictingRoles: [], assigned: false }],
-    [role2, { id: role2, name: role2, description: role2, assignableRoles: [], conflictingRoles: [], assigned: false }]
+  const rolesMap = new Map<string, V2Role>([
+    [role1, { id: role1, name: role1, description: role1, assignableRoleNames: [], assigned: false }],
+    [role2, { id: role2, name: role2, description: role2, assignableRoleNames: [], assigned: false }]
   ]);
 
   describe('hasPrivateBetaServices', () => {

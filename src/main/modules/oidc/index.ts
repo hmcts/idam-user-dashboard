@@ -13,7 +13,6 @@ import session from 'express-session';
 import FileStoreFactory from 'session-file-store';
 import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
-import { Issuer, TokenSet, custom } from 'openid-client';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
 import { TelemetryClient } from 'applicationinsights';
@@ -26,15 +25,11 @@ export class OidcMiddleware {
   private readonly idamBaseUrl: string = config.get('services.idam.url.public');
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly accessRole: string = config.get('RBAC.access');
-  private readonly systemAccountUsername: string = config.get('services.idam.systemUser.username');
-  private readonly systemAccountPassword: string = config.get('services.idam.systemUser.password');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
   constructor(private readonly logger: typeof Logger, private readonly telemetryClient: TelemetryClient) {}
 
   public enableFor(app: Application): void {
-    this.cacheSystemAccount(app);
-    this.cacheClientCredentialsToken(app);
 
     app.use(auth({
       issuerBaseURL: this.idamBaseUrl + '/o',
@@ -68,6 +63,7 @@ export class OidcMiddleware {
               roles:string[]};
           } catch (error) {
             console.log('(console) afterCallback: token decode error', error);
+            this.logger.error('afterCallback: token decode error', error);
             throw error;
           }
           if (!tokenUser.roles.includes(this.accessRole)) {
@@ -130,45 +126,6 @@ export class OidcMiddleware {
     return new fileStore({ path: '/tmp' });
   }
 
-  private cacheSystemAccount = (app: Application): void => {
-    let delay = 10 * 60;
-
-    this.getSystemUserAccessToken()
-      .then(tokenSet => {
-        app.locals.container.register({
-          systemAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token, this.telemetryClient))
-        });
-
-        delay = tokenSet.expires_in/2;
-        console.log('(console) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
-        this.logger.info('(logger) Refreshed system user token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
-      })
-      .catch((err) => {
-        console.log('(console) Failed to refresh system user token. Refreshing again in: ' + delay/60 + 'mins', err);
-        this.telemetryClient.trackException({exception: err});
-      })
-      .finally(() => setTimeout(this.cacheSystemAccount, delay * 1000, app));
-  };
-
-  private cacheClientCredentialsToken = (app: Application): void => {
-    let delay = 10 * 60;
-
-    this.getClientCredentialsAccessToken()
-      .then(tokenSet => {
-        app.locals.container.register({
-          clientAxios: asValue(this.createAuthedAxiosInstance(tokenSet.access_token, this.telemetryClient))
-        });
-
-        delay = tokenSet.expires_in/2;
-        console.log('(console) Refreshed client credentials token. Refreshing again in: ' + Math.floor(delay/60) + 'mins');
-      })
-      .catch((err) => {
-        console.log('(console) Failed to refresh client credentials token. Refreshing again in: ' + delay/60 + 'mins', err);
-        this.telemetryClient.trackException({exception: err});
-      })
-      .finally(() => setTimeout(this.cacheClientCredentialsToken, delay * 1000, app));
-  };
-
   private createAuthedAxiosInstance(accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
     const createdAxios = axios.create({
       baseURL: config.get('services.idam.url.api'),
@@ -186,39 +143,4 @@ export class OidcMiddleware {
     return createdAxios;
   }
 
-  private async getSystemUserAccessToken(): Promise<TokenSet> {
-    custom.setHttpOptionsDefaults({
-      timeout: 25000,
-    });
-    return new (await Issuer.discover(this.idamBaseUrl + '/o'))
-      .Client({
-        'client_id': this.clientId,
-        'client_secret': this.clientSecret,
-        'token_endpoint_auth_method': 'client_secret_post'
-      }).grant({
-        'grant_type': 'password',
-        'username': this.systemAccountUsername,
-        'password': this.systemAccountPassword,
-        'scope': this.clientScope,
-      });
-  }
-
-  private async getClientCredentialsAccessToken(): Promise<TokenSet> {
-    custom.setHttpOptionsDefaults({
-      timeout: 25000,
-    });
-    const usableScopes = this.clientScope
-      .replace('openid', '')
-      .replace('profile', '')
-      .replace('roles', '').trim();
-    return new (await Issuer.discover(this.idamBaseUrl + '/o'))
-      .Client({
-        'client_id': this.clientId,
-        'client_secret': this.clientSecret,
-        'token_endpoint_auth_method': 'client_secret_post'
-      }).grant({
-        'grant_type': 'client_credentials',
-        'scope': usableScopes
-      });
-  }
 }
