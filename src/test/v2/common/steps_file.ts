@@ -7,6 +7,7 @@ export = function() {
   return actor({
     loginAs(email : string, password : string) {
       this.amOnPage('/');
+      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
