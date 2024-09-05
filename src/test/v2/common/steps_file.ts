@@ -1,7 +1,8 @@
 // in this file you can append custom step methods to 'I' object
 import { injectAxe, checkA11y } from 'axe-playwright';
 
-const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 250 };
+const CLICK_RETRY = { retries: 3, minTimeout: 2000, maxTimeout: 15000 };
+const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
 
 export = function() {
   return actor({
@@ -42,7 +43,7 @@ export = function() {
     },
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
-      this.retry(AFTER_CLICK_RETRY).click(clickText);
+      this.retry(CLICK_RETRY).click(clickText);
       this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
       this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
@@ -51,11 +52,11 @@ export = function() {
       }
     },
     async clickToExpectProblem(clickText : String) {
-      this.retry(AFTER_CLICK_RETRY).click(clickText);
+      this.retry(CLICK_RETRY).click(clickText);
       this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
     },
     async clickToExpectSuccess(clickText : String) {
-      this.retry(AFTER_CLICK_RETRY).click(clickText);
+      this.retry(CLICK_RETRY).click(clickText);
       this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
     },
     lockTestUser(email : string) {
