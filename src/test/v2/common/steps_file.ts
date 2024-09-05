@@ -9,8 +9,7 @@ export = function() {
       this.amOnPage('/');
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
-      this.click('Sign in');
-      this.seeAfterClick('What do you want to do?');
+      this.clickToNavigate('Sign in', '/', 'What do you want to do?');
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
@@ -50,11 +49,11 @@ export = function() {
       }
     },
     async clickToExpectProblem(clickText : String) {
-      this.click(clickText);
+      this.retry(AFTER_CLICK_RETRY).click(clickText);
       this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
     },
     async clickToExpectSuccess(clickText : String) {
-      this.click(clickText);
+      this.retry(AFTER_CLICK_RETRY).click(clickText);
       this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
     },
     lockTestUser(email : string) {
