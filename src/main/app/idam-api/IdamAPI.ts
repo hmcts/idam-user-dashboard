@@ -16,6 +16,7 @@ export class IdamAPI {
   constructor(
     private readonly userAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
+    private readonly simpleAxios: AxiosInstance,
     private readonly logger : typeof Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
@@ -43,6 +44,18 @@ export class IdamAPI {
   public getUserById(id: string): Promise<User> {
     return this.userAxios
       .get('/api/v1/users/' + id)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error retrieving user by ID from IDAM API';
+        this.telemetryClient.trackTrace({message: errorMessage + ' for id ' + id + ' (trackTrace)'});
+        this.logger.error(`${error.stack || error} for ${id} (logger.error)`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  public getUserByIdWithToken(token: string, id: string): Promise<User> {
+    return this.simpleAxios
+      .get('/api/v1/users/' + id, {headers: {Authorization: 'Bearer ' + token}})
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error retrieving user by ID from IDAM API';

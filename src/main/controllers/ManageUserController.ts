@@ -59,7 +59,7 @@ export class ManageUserController extends RootController {
     }
 
     // only search for SSO ID if searching with the user ID does not return any result
-    return await req.scope.cradle.api.getUserById(input)
+    return await req.scope.cradle.api.getUserByIdWithToken(req.idam_user_dashboard_session.access_token, input)
       .then(user => {
         return [user];
       })

@@ -6,6 +6,7 @@ export const mockApi: Mocked<IdamAPI> = {
   searchUsersByEmail: jest.fn(),
   searchUsersBySsoId: jest.fn(),
   getUserById: jest.fn(),
+  getUserByIdWithToken: jest.fn(),
   getUserV2ById: jest.fn(),
   editUserById: jest.fn(),
   deleteUserById: jest.fn(),
