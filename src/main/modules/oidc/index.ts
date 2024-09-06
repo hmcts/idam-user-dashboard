@@ -126,7 +126,8 @@ export class OidcMiddleware {
     return new fileStore({ path: '/tmp' });
   }
 
-  private createAuthedAxiosInstance(accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
+  private createAuthedAxiosInstance(req: AuthedRequest, accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
+    console.log('Setting up user axios, oidc is %j', req.oidc);
     const createdAxios = axios.create({
       baseURL: config.get('services.idam.url.api'),
       headers: {Authorization: 'Bearer ' + accessToken}
