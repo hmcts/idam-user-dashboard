@@ -6,7 +6,7 @@ import { IdamAPI } from '../../app/idam-api/IdamAPI';
 import axios, { AxiosInstance } from 'axios';
 import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
-import { constants as http } from 'http2';
+import { constants as httpconstants } from 'http2';
 import { Session } from 'express-openid-connect';
 import RedisStore from 'connect-redis';
 import session from 'express-session';
@@ -16,6 +16,69 @@ import { User } from '../../interfaces/User';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
 import { TelemetryClient } from 'applicationinsights';
+import * as http from 'http';
+import * as https from 'https';
+
+const retryRequest = async (options: http.RequestOptions, retries: number): Promise<http.IncomingMessage> => {
+  return new Promise((resolve, reject) => {
+    const request = options.protocol === 'https:' ? https.request : http.request;
+
+    const attempt = (retryCount: number) => {
+      const req = request(options, (res) => {
+        if (res.statusCode && res.statusCode >= 500 && retryCount > 0) {
+          console.log(`Retrying request... (${retries - retryCount + 1})`);
+          return attempt(retryCount - 1);
+        }
+        resolve(res);
+      });
+
+      req.on('error', (err) => {
+        if (retryCount > 0) {
+          console.log(`Retrying request due to error... (${retries - retryCount + 1})`);
+          return attempt(retryCount - 1);
+        }
+        reject(err);
+      });
+
+      req.end();
+    };
+
+    attempt(retries);
+  });
+};
+
+class CustomHttpAgent extends http.Agent {
+  constructor(options?: http.AgentOptions) {
+    super(options);
+  }
+
+  addRequest(req: http.ClientRequest, options: http.RequestOptions) {
+    retryRequest(options, 3).then((res) => {
+      req.emit('response', res);
+    }).catch((err) => {
+      console.log("CustomHttpsAgent error ", err);
+      req.emit('error', err);
+    });
+  }
+}
+
+class CustomHttpsAgent extends https.Agent {
+  constructor(options?: https.AgentOptions) {
+    super(options);
+  }
+
+  addRequest(req: http.ClientRequest, options: http.RequestOptions) {
+    retryRequest(options, 3).then((res) => {
+      req.emit('response', res);
+    }).catch((err) => {
+      console.log("CustomHttpsAgent error ", err);
+      req.emit('error', err);
+    });
+  }
+}
+
+const customHttpAgent = new CustomHttpAgent();
+const customHttpsAgent = new CustomHttpsAgent();
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -44,6 +107,10 @@ export class OidcMiddleware {
         'response_type': 'code',
         scope: this.clientScope
       },
+      httpAgent: {
+        http: customHttpAgent,
+        https: customHttpsAgent
+      },
       session: {
         name: this.sessionCookieName,
         rollingDuration: 20 * 60,
@@ -54,7 +121,7 @@ export class OidcMiddleware {
         store: this.getSessionStore(app)
       },
       afterCallback: (req: Request, res: Response, session: Session) => {
-        if (res.statusCode == http.HTTP_STATUS_OK && session.id_token) {
+        if (res.statusCode == httpconstants.HTTP_STATUS_OK && session.id_token) {
           let tokenUser;
           try {
             tokenUser = jwtDecode(session.id_token) as {
@@ -68,7 +135,7 @@ export class OidcMiddleware {
           }
           if (!tokenUser.roles.includes(this.accessRole)) {
             console.log('(console) afterCallback: missing access role for user id %s', tokenUser.uid);
-            throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+            throw new HTTPError(httpconstants.HTTP_STATUS_FORBIDDEN);
           }
           const user = {
             id: tokenUser.uid,
@@ -79,7 +146,7 @@ export class OidcMiddleware {
           return { ...session, user };
         } else {
           console.log('(console) afterCallback: failed with response code %s', res.statusCode);
-          throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+          throw new HTTPError(httpconstants.HTTP_STATUS_FORBIDDEN);
         }
       }
     }));
