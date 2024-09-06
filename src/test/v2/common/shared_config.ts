@@ -86,6 +86,7 @@ shared_config.plugins = {
         login: (I) => {
           const adminIdentity = codeceptjs.container.support('adminIdentity');
           I.loginAs(adminIdentity.email, adminIdentity.secret);
+          I.say('Completed autologin');
         },
         // if we see manage users page,  we are logged in
         check: (I) => {
@@ -93,6 +94,7 @@ shared_config.plugins = {
           I.say('performing login check');
           I.retry({ retries: 9, minTimeout: 500 }).seeElement('h1');
           I.see('What do you want to do?', 'h1');
+          I.say('completed login check');
         }
       }
     }
