@@ -20,7 +20,7 @@ describe('Manage user controller', () => {
   const userId = '123';
   const userId2 = '234';
   const ssoId = '456';
-  const token = "test-token";
+  const token = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
