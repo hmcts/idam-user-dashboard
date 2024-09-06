@@ -56,7 +56,7 @@ class CustomHttpAgent extends http.Agent {
     retryRequest(options, 3).then((res) => {
       req.emit('response', res);
     }).catch((err) => {
-      console.log("CustomHttpsAgent error ", err);
+      console.log('CustomHttpAgent error ', err);
       req.emit('error', err);
     });
   }
@@ -71,7 +71,7 @@ class CustomHttpsAgent extends https.Agent {
     retryRequest(options, 3).then((res) => {
       req.emit('response', res);
     }).catch((err) => {
-      console.log("CustomHttpsAgent error ", err);
+      console.log('CustomHttpsAgent error ', err);
       req.emit('error', err);
     });
   }
