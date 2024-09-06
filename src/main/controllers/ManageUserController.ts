@@ -44,6 +44,7 @@ export class ManageUserController extends RootController {
   }
 
   private async searchForUser(req: AuthedRequest, res: Response, input: string): Promise<User[]> {
+    console.log('searchForUser, req oidc is %j', req.oidc)
     if (possiblyEmail(input)) {
       if (!isValidEmailFormat(input)) {
         this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
