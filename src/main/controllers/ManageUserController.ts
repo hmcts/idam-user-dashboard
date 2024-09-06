@@ -18,11 +18,17 @@ const obfuscate = require('obfuscate-email');
 export class ManageUserController extends RootController {
 
   public get(req: AuthedRequest, res: Response) {
+    if (req.idam_user_dashboard_session && req.idam_user_dashboard_session.access_token) {
+      console.log('ManageUserController.get dashboard access token is set');
+    }
     return super.get(req, res, 'manage-user');
   }
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
+    if (req.idam_user_dashboard_session && req.idam_user_dashboard_session.access_token) {
+      console.log('ManageUserController.post dashboard access token is set');
+    }
     const input: string = req.body.search || req.body._userId || '';
 
     if (isEmpty(input.trim())) {

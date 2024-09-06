@@ -15,6 +15,9 @@ export class RootController {
   }
 
   public get(req: AuthedRequest, res: Response, view: string, data?: PageData): Promise<void> | void {
+    if (req.idam_user_dashboard_session && req.idam_user_dashboard_session.access_token) {
+      console.log('RootController dashboard access token is set');
+    }
     return this.render(req, res, req.next, view, data);
   }
 

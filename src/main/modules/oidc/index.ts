@@ -127,6 +127,7 @@ export class OidcMiddleware {
   }
 
   private createAuthedAxiosInstance(accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
+    console.log('Creating user axios for access token ' + accessToken);
     const createdAxios = axios.create({
       baseURL: config.get('services.idam.url.api'),
       headers: {Authorization: 'Bearer ' + accessToken}
