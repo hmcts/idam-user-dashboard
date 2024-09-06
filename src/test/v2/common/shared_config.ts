@@ -90,8 +90,9 @@ shared_config.plugins = {
         // if we see manage users page,  we are logged in
         check: (I) => {
           I.amOnPage('/');
+          I.say("performing login check");
           I.retry({ retries: 9, minTimeout: 500 }).seeElement('h1');
-          I.see('What do you want to do?');
+          I.see('What do you want to do?', 'h1');
         }
       }
     }
