@@ -12,7 +12,10 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
-      this.clickToNavigate('Sign in', '/', 'What do you want to do?');
+      this.retry(CLICK_RETRY).click('Sign in');
+      this.retry(AFTER_CLICK_RETRY).dontSee('Sign in', 'h1');
+      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
