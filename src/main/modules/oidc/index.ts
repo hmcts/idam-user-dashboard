@@ -1,4 +1,4 @@
-import { Application, NextFunction, Request, Response } from 'express';
+import { Application, Request, Response } from 'express';
 import config from 'config';
 import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';

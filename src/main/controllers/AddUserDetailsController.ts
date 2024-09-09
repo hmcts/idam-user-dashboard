@@ -141,7 +141,7 @@ export class AddUserDetailsController extends RootController {
       console.log('will get assignable roles for ' + req.idam_user_dashboard_session.user.roles);
       this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then((assignableRoles: string[]) => {
         req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-      })
+      });
     }
     return req.idam_user_dashboard_session.user.assignableRoles;
   }
