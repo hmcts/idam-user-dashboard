@@ -44,22 +44,24 @@ export class UserEditController extends RootController {
   @asyncError
   public post(req: AuthedRequest, res: Response) {
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
-      .then(async user => {
-        const roleAssignments = constructUserRoleAssignments(await this.getAssignableRoles(req), user.roles);
-        processMfaRole(user);
-
-        if(req.body._action === 'save') {
-          return this.saveUser(req, res, user, roleAssignments);
-        }
-
-        return super.post(req, res, 'edit-user', {
-          content: {
-            user,
-            roles: roleAssignments,
-            showMfa: this.canShowMfa(await this.getAssignableRoles(req)),
-            ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
+      .then(user => {
+        this.getAssignableRoles(req).then(assignableRoles => {
+          const roleAssignments = constructUserRoleAssignments(assignableRoles, user.roles);
+          processMfaRole(user);
+  
+          if(req.body._action === 'save') {
+            return this.saveUser(req, res, user, roleAssignments);
           }
-        });
+  
+          return super.post(req, res, 'edit-user', {
+            content: {
+              user,
+              roles: roleAssignments,
+              showMfa: this.canShowMfa(assignableRoles),
+              ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
+            }
+          });
+        })
       });
   }
 
@@ -238,16 +240,6 @@ export class UserEditController extends RootController {
   private canShowMfa(assignableRoles: string[]) {
     return assignableRoles.includes(IDAM_MFA_DISABLED);
   }
-  /*
-  private getAssignableRoles(req: AuthedRequest): string[] {
-    if (!req.idam_user_dashboard_session.user.assignableRoles) { 
-      this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then((assignableRoles: string[]) => {
-        req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-      });
-    }
-    return req.idam_user_dashboard_session.user.assignableRoles;
-  }
-    */
 
   private async getAssignableRoles(req: AuthedRequest): Promise<string[]> {
     if (req.idam_user_dashboard_session.user.assignableRoles) {
