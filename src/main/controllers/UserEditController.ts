@@ -238,7 +238,7 @@ export class UserEditController extends RootController {
   private canShowMfa(assignableRoles: string[]) {
     return assignableRoles.includes(IDAM_MFA_DISABLED);
   }
-/*
+  /*
   private getAssignableRoles(req: AuthedRequest): string[] {
     if (!req.idam_user_dashboard_session.user.assignableRoles) { 
       this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then((assignableRoles: string[]) => {

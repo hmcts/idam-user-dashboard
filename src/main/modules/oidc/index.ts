@@ -90,19 +90,19 @@ export class OidcMiddleware {
           oidcIdamApiInstance: asClass(IdamAPI)
         });
 
-        const localIdamWrapper = req.scope.cradle.oidcIdamApiInstance
+        const localIdamWrapper = req.scope.cradle.oidcIdamApiInstance;
         if (localIdamWrapper) {
           console.log('OIDCMiddleware; local wrapper available');
 
           return localIdamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-          .then((assignableRoles: string[]) => {
-            req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-            next();
-          })
-          .catch((err: any) => {
-            console.log('OIDCMiddleware; Failed to get assignable roles', err);
-            next(err);
-          });
+            .then((assignableRoles: string[]) => {
+              req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
+              next();
+            })
+            .catch((err: any) => {
+              console.log('OIDCMiddleware; Failed to get assignable roles', err);
+              next(err);
+            });
 
         } else {
           console.log('OIDCMiddleware; No idam api wrapper available in middleware');
