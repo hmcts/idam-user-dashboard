@@ -11,12 +11,14 @@ import {ServiceProviderService} from '../app/service-provider-service/ServicePro
 import config from 'config';
 import {UserType} from '../utils/UserType';
 import {InvitationTypes} from '../app/invite-service/Invite';
+import { IdamAPI } from 'app/idam-api/IdamAPI';
 
 @autobind
 export class AddUserRolesController extends RootController {
   constructor(
     private readonly inviteService: InviteService,
-    private readonly serviceProviderService: ServiceProviderService
+    private readonly serviceProviderService: ServiceProviderService,
+    private readonly idamWrapper: IdamAPI
   ) {
     super();
   }
@@ -26,7 +28,7 @@ export class AddUserRolesController extends RootController {
     const fields = req.body;
 
     if (!hasProperty(req.body, 'roles')) {
-      const allRoles = await req.scope.cradle.api.getAllV2Roles();
+      const allRoles = await this.idamWrapper.getAllV2Roles();
       const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
 
       const user = {

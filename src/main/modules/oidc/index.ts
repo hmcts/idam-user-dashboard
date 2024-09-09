@@ -1,8 +1,6 @@
 import { Application, NextFunction, Request, Response } from 'express';
 import config from 'config';
 import { AuthedRequest } from '../../interfaces/AuthedRequest';
-import { asClass } from 'awilix';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
 import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
@@ -14,6 +12,7 @@ import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
+const {IdamAPI} = require('../../app/idam-api/IdamAPI');
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -25,7 +24,7 @@ export class OidcMiddleware {
   private readonly accessRole: string = config.get('RBAC.access');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
-  constructor(private readonly logger: typeof Logger) {}
+  constructor(private readonly idamApi: typeof IdamAPI, private readonly logger: typeof Logger) {}
 
   public enableFor(app: Application): void {
 
@@ -83,17 +82,13 @@ export class OidcMiddleware {
     }));
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      req.scope = req.app.locals.container.createScope().register({
-        api: asClass(IdamAPI)
-      });
-
       if (!req.idam_user_dashboard_session.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-          .then(assignableRoles => {
+        return this.idamApi.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+          .then((assignableRoles: string[]) => {
             req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
-          .catch(err => {
+          .catch((err: any) => {
             console.log('Failed to get assignable roles', err);
             next(err);
           });

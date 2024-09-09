@@ -6,17 +6,17 @@ import { when } from 'jest-when';
 import { MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR } from '../../../../main/utils/error';
 import { USER_DETAILS_URL } from '../../../../main/utils/urls';
 import { mockApi } from '../../utils/mockApi';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('User delete controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new UserDeleteController();
+  const controller = new UserDeleteController(mockApi as unknown as IdamAPI);
   const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
     req.idam_user_dashboard_session = {access_token: testToken};
   });
 

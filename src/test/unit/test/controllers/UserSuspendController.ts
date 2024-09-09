@@ -6,17 +6,18 @@ import { MISSING_OPTION_ERROR, USER_UPDATE_FAILED_ERROR } from '../../../../main
 import { USER_DETAILS_URL } from '../../../../main/utils/urls';
 import { UserSuspendController } from '../../../../main/controllers/UserSuspendController';
 import { mockApi } from '../../utils/mockApi';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('User suspend controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new UserSuspendController();
+  const controller = new UserSuspendController(mockApi as unknown as IdamAPI);
   const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = {access_token: testToken};
   });
 

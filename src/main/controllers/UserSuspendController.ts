@@ -8,14 +8,20 @@ import { PageError } from '../interfaces/PageData';
 import { isEmpty } from '../utils/utils';
 import { MISSING_OPTION_ERROR, USER_UPDATE_FAILED_ERROR } from '../utils/error';
 import { User } from '../interfaces/User';
+import { IdamAPI } from 'app/idam-api/IdamAPI';
 
 
 @autobind
 export class UserSuspendController extends RootController{
+  constructor(
+    private readonly idamWrapper: IdamAPI
+  ) {
+    super();
+  }
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
+    return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         switch(req.body.confirmSuspendRadio) {
           case 'true':
@@ -51,7 +57,7 @@ export class UserSuspendController extends RootController{
   }
 
   private suspendUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.editUserById(req.idam_user_dashboard_session.access_token, user.id, { active: false })
+    return this.idamWrapper.editUserById(req.idam_user_dashboard_session.access_token, user.id, { active: false })
       .then(() => {
         return super.post(req, res, 'suspend-user-successful', { content: { user } } );
       })
@@ -62,7 +68,7 @@ export class UserSuspendController extends RootController{
   }
 
   private unSuspendUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.editUserById(req.idam_user_dashboard_session.access_token, user.id, { active: true })
+    return this.idamWrapper.editUserById(req.idam_user_dashboard_session.access_token, user.id, { active: true })
       .then(() => {
         return super.post(req, res, 'unsuspend-user-successful', { content: { user } } );
       })

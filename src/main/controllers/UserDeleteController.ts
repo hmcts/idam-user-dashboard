@@ -8,14 +8,20 @@ import {PageError} from '../interfaces/PageData';
 import {isEmpty} from '../utils/utils';
 import {MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR} from '../utils/error';
 import {User} from '../interfaces/User';
+import { IdamAPI } from 'app/idam-api/IdamAPI';
 
 
 @autobind
 export class UserDeleteController extends RootController {
+  constructor(
+    private readonly idamWrapper: IdamAPI
+  ) {
+    super();
+  }
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
+    return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         switch (req.body.confirmDelete) {
           case 'true':
@@ -36,7 +42,7 @@ export class UserDeleteController extends RootController {
   }
 
   private deleteUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.deleteUserById(req.body._userId)
+    return this.idamWrapper.deleteUserById(req.body._userId)
       .then(() => {
         return super.post(req, res, 'delete-user-successful', {content: {user}});
       })

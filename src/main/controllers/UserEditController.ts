@@ -31,13 +31,19 @@ import {
 import { RoleDefinition } from '../interfaces/RoleDefinition';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import config from 'config';
+import { IdamAPI } from 'app/idam-api/IdamAPI';
 
 @autobind
 export class UserEditController extends RootController {
+  constructor(
+    private readonly idamWrapper: IdamAPI
+  ) {
+    super()
+  }
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
+    return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
         processMfaRole(user);
@@ -99,7 +105,7 @@ export class UserEditController extends RootController {
       if (!isObjectEmpty(changedFields)) {
         updatedUser = {
           ...updatedUser,
-          ...await req.scope.cradle.api.editUserById(req.idam_user_dashboard_session.access_token, user.id, changedFields)
+          ...await this.idamWrapper.editUserById(req.idam_user_dashboard_session.access_token, user.id, changedFields)
         };
       }
 
@@ -193,19 +199,19 @@ export class UserEditController extends RootController {
 
   private async updateUserRoles(req: AuthedRequest, user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean) {
     if (rolesAdded.length > 0) {
-      await req.scope.cradle.api.grantRolesToUser(req.idam_user_dashboard_session.access_token,user.id, this.convertRolesToDefinitions(rolesAdded));
+      await this.idamWrapper.grantRolesToUser(req.idam_user_dashboard_session.access_token,user.id, this.convertRolesToDefinitions(rolesAdded));
     }
 
     for (const r of rolesRemoved) {
-      await req.scope.cradle.api.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, r);
+      await this.idamWrapper.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, r);
     }
 
     if (!user.multiFactorAuthentication && mfaAdded) {
-      await req.scope.cradle.api.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, IDAM_MFA_DISABLED);
+      await this.idamWrapper.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, IDAM_MFA_DISABLED);
     }
 
     if (user.multiFactorAuthentication && mfaRemoved) {
-      await req.scope.cradle.api.grantRolesToUser(req.idam_user_dashboard_session.access_token, user.id, this.convertRolesToDefinitions(convertToArray(IDAM_MFA_DISABLED)));
+      await this.idamWrapper.grantRolesToUser(req.idam_user_dashboard_session.access_token, user.id, this.convertRolesToDefinitions(convertToArray(IDAM_MFA_DISABLED)));
     }
   }
 
@@ -213,7 +219,7 @@ export class UserEditController extends RootController {
     // if the users are editing their owned roles, we need to get the users' new assignable roles again as these might have changed
     // after their roles are updated
     if (req.idam_user_dashboard_session.user.id === userId) {
-      const newAssignableRoles = await req.scope.cradle.api.getAssignableRoles(newRoles);
+      const newAssignableRoles = await this.idamWrapper.getAssignableRoles(newRoles);
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
     return constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, newRoles);
