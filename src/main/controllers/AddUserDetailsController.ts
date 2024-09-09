@@ -54,7 +54,7 @@ export class AddUserDetailsController extends RootController {
     const users = await this.idamWrapper.searchUsersByEmail(req.idam_user_dashboard_session.access_token, email);
     if (users.length == 0) {
       const allServices = await this.idamWrapper.getAllServices();
-      const rolesMap = await this.getRolesMap(req);
+      const rolesMap = await this.getRolesMap();
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
       const enablePrivateBeta = req.idam_user_dashboard_session.user.assignableRoles.includes(UserType.Citizen);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;

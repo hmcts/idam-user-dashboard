@@ -66,7 +66,7 @@ export class AddPrivateBetaServiceController extends RootController {
   private async getRolesToRegisterUser(req: AuthedRequest, allServices: Service[], serviceField: string): Promise<string[]> {
     const selectedService = allServices.find(service => service.label === serviceField);
     const rolesToAdd: string[] = [UserType.Citizen];
-    const rolesMap = await this.getRolesMap(req);
+    const rolesMap = await this.getRolesMap();
 
     selectedService.onboardingRoles
       .filter(r => rolesMap.has(r))
