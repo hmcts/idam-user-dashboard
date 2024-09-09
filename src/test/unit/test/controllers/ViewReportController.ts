@@ -19,7 +19,7 @@ describe('Generate report controller', () => {
     getReportQueryRoles: jest.fn(),
   };
   const controller = new ViewReportController(mockReportGenerator);
-  const testToken = "test-token";
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();

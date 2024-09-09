@@ -12,7 +12,7 @@ describe('User remove SSO controller', () => {
   let req: any;
   const res = mockResponse();
   const controller = new UserRemoveSsoController();
-  const testToken = "test-token";
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();

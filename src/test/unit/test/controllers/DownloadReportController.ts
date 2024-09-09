@@ -37,7 +37,7 @@ describe('Download report controller', () => {
     },
   ] as User[];
   const controller = new DownloadReportController(mockLogger, mockReportGenerator);
-  const testToken = "test-token";
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();

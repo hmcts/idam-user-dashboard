@@ -23,7 +23,7 @@ describe('Add user details controller', () => {
   let req: any;
   const res = mockResponse();
   const controller = new AddUserDetailsController();
-  const testToken = "test-token";
+  const testToken = 'test-token';
   const email = 'test@test.com';
   const name = 'test';
   const service1 = 'service1';
@@ -79,7 +79,7 @@ describe('Add user details controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
-    req.idam_user_dashboard_session = { access_token: testToken }
+    req.idam_user_dashboard_session = { access_token: testToken };
   });
 
   test('Should render the add user details page when adding a non-existing user\'s email when there is no service with private beta', async () => {

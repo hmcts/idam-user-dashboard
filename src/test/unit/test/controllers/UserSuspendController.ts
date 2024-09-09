@@ -12,7 +12,7 @@ describe('User suspend controller', () => {
   let req: any;
   const res = mockResponse();
   const controller = new UserSuspendController();
-  const testToken = "test-token";
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();

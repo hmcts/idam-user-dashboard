@@ -1,7 +1,7 @@
 import { Application, NextFunction, Request, Response } from 'express';
 import config from 'config';
 import { AuthedRequest } from '../../interfaces/AuthedRequest';
-import { asClass, asValue } from 'awilix';
+import { asClass } from 'awilix';
 import { IdamAPI } from '../../app/idam-api/IdamAPI';
 import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';

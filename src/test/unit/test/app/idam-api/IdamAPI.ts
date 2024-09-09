@@ -7,7 +7,7 @@ describe('IdamAPI', () => {
   const testEmail = 'test@test.com';
   const testUserId = '12345';
   const testSsoId = '23456';
-  const testToken = "test-token";
+  const testToken = 'test-token';
 
   const parameters = [
     { input: testEmail, searchType: SearchType.Email },
