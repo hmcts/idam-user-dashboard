@@ -20,10 +20,11 @@ describe('Manage user controller', () => {
   const userId = '123';
   const userId2 = '234';
   const ssoId = '456';
-  const token = 'test-token';
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
+    req.idam_user_dashboard_session = {access_token: testToken};
   });
 
   test('Should render the manage user page', async () => {
@@ -32,22 +33,20 @@ describe('Manage user controller', () => {
   });
 
   test('Should render the manage user page when searching with a non-existent email', async () => {
-    when(mockApi.searchUsersByEmail).calledWith(email).mockReturnValue([]);
+    when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockReturnValue([]);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = {access_token: token};
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
   });
 
   test('Should render the manage user page when searching with a non-existent ID', async () => {
-    when(mockApi.getUserByIdWithToken).calledWith(token, userId).mockRejectedValue('');
-    when(mockApi.searchUsersBySsoId).calledWith(userId).mockResolvedValue([]);
+    when(mockApi.getUserById).calledWith(testToken, userId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
 
     req.body.search = userId;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = {access_token: token};
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
@@ -73,7 +72,7 @@ describe('Manage user controller', () => {
         ssoId: userId
       }
     ];
-    when(mockApi.searchUsersByEmail).calledWith(email).mockResolvedValue(results);
+    when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue(results);
 
     req.body.search = email;
     req.scope.cradle.api = mockApi;
@@ -102,12 +101,11 @@ describe('Manage user controller', () => {
         ssoId: ssoId
       }
     ];
-    when(mockApi.getUserByIdWithToken).calledWith(token, ssoId).mockRejectedValue('');
-    when(mockApi.searchUsersBySsoId).calledWith(ssoId).mockResolvedValue(results);
+    when(mockApi.getUserById).calledWith(testToken, ssoId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(testToken, ssoId).mockResolvedValue(results);
 
     req.body.search = ssoId;
     req.scope.cradle.api = mockApi;
-    req.idam_user_dashboard_session = {access_token: token};
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
   });

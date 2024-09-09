@@ -12,10 +12,12 @@ describe('User suspend controller', () => {
   let req: any;
   const res = mockResponse();
   const controller = new UserSuspendController();
+  const testToken = "test-token";
 
   beforeEach(() => {
     req = mockRequest();
     req.scope.cradle.api = mockApi;
+    req.idam_user_dashboard_session = {access_token: testToken};
   });
 
   test('Should render the user suspend page', async () => {
@@ -29,7 +31,7 @@ describe('User suspend controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'suspend' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData } });
@@ -46,8 +48,8 @@ describe('User suspend controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'true' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.editUserById).calledWith(userData.id, { active: false }).mockReturnValue(Promise.resolve());
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(testToken, userData.id, { active: false }).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('suspend-user-successful', { content: { user: userData } });
@@ -64,7 +66,7 @@ describe('User suspend controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'false' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
@@ -82,11 +84,11 @@ describe('User suspend controller', () => {
 
     const error = { confirmSuspendRadio: { message: MISSING_OPTION_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
     req.body = { _userId: userData.id, _action: 'confirm-suspend' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
   });
 
@@ -102,13 +104,13 @@ describe('User suspend controller', () => {
 
     const error = { userSuspendForm: { message: USER_UPDATE_FAILED_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.editUserById).calledWith(userData.id, { active: false }).mockReturnValue(Promise.reject('Failed'));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(testToken, userData.id, { active: false }).mockReturnValue(Promise.reject('Failed'));
 
     req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
   });
 
@@ -123,7 +125,7 @@ describe('User suspend controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'unsuspend' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('unsuspend-user', { content: { user: userData } });
@@ -140,8 +142,8 @@ describe('User suspend controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-unsuspend', confirmUnSuspendRadio: 'true' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.editUserById).calledWith(userData.id, { active: true }).mockReturnValue(Promise.resolve());
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(testToken, userData.id, { active: true }).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('unsuspend-user-successful', { content: { user: userData } });
@@ -158,7 +160,7 @@ describe('User suspend controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'un-confirm-suspend', confirmSuspendRadio: 'false' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
@@ -176,11 +178,11 @@ describe('User suspend controller', () => {
 
     const error = { confirmUnSuspendRadio: { message: MISSING_OPTION_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
     req.body = { _userId: userData.id, _action: 'confirm-unsuspend' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('unsuspend-user', { content: { user: userData }, error });
   });
 
@@ -196,13 +198,13 @@ describe('User suspend controller', () => {
 
     const error = { userSuspendForm: { message: USER_UPDATE_FAILED_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.editUserById).calledWith(userData.id, { active: true }).mockReturnValue(Promise.reject('Failed'));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.editUserById).calledWith(testToken, userData.id, { active: true }).mockReturnValue(Promise.reject('Failed'));
 
     req.body = { _userId: userData.id, _action: 'confirm-unsuspend', confirmUnSuspendRadio: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('unsuspend-user', { content: { user: userData }, error });
   });
 });

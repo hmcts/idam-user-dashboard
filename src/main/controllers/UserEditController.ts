@@ -37,7 +37,7 @@ export class UserEditController extends RootController {
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.body._userId)
+    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
         processMfaRole(user);
@@ -99,7 +99,7 @@ export class UserEditController extends RootController {
       if (!isObjectEmpty(changedFields)) {
         updatedUser = {
           ...updatedUser,
-          ...await req.scope.cradle.api.editUserById(user.id, changedFields)
+          ...await req.scope.cradle.api.editUserById(req.idam_user_dashboard_session.access_token, user.id, changedFields)
         };
       }
 
@@ -193,19 +193,19 @@ export class UserEditController extends RootController {
 
   private async updateUserRoles(req: AuthedRequest, user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean) {
     if (rolesAdded.length > 0) {
-      await req.scope.cradle.api.grantRolesToUser(user.id, this.convertRolesToDefinitions(rolesAdded));
+      await req.scope.cradle.api.grantRolesToUser(req.idam_user_dashboard_session.access_token,user.id, this.convertRolesToDefinitions(rolesAdded));
     }
 
     for (const r of rolesRemoved) {
-      await req.scope.cradle.api.removeRoleFromUser(user.id, r);
+      await req.scope.cradle.api.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, r);
     }
 
     if (!user.multiFactorAuthentication && mfaAdded) {
-      await req.scope.cradle.api.removeRoleFromUser(user.id, IDAM_MFA_DISABLED);
+      await req.scope.cradle.api.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, IDAM_MFA_DISABLED);
     }
 
     if (user.multiFactorAuthentication && mfaRemoved) {
-      await req.scope.cradle.api.grantRolesToUser(user.id, this.convertRolesToDefinitions(convertToArray(IDAM_MFA_DISABLED)));
+      await req.scope.cradle.api.grantRolesToUser(req.idam_user_dashboard_session.access_token, user.id, this.convertRolesToDefinitions(convertToArray(IDAM_MFA_DISABLED)));
     }
   }
 

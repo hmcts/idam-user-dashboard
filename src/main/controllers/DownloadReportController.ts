@@ -41,7 +41,7 @@ export class DownloadReportController extends RootController {
     const roles = (await this.reportGenerator.getReportQueryRoles(reportUUID));
     this.logger.info(`Fetching data for report ${reportUUID} for roles ${roles}.`);
     do {
-      reportData = (await req.scope.cradle.api.getUsersWithRoles(roles, 2000, pageNo))
+      reportData = (await req.scope.cradle.api.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
       if (reportData && reportData.length > 0) {
         reportCsv += parse(reportData);

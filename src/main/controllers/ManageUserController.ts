@@ -49,16 +49,16 @@ export class ManageUserController extends RootController {
         this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
         return;
       }
-      return await req.scope.cradle.api.searchUsersByEmail(input);
+      return await req.scope.cradle.api.searchUsersByEmail(req.idam_user_dashboard_session.access_token, input);
     }
 
     // only search for SSO ID if searching with the user ID does not return any result
-    return await req.scope.cradle.api.getUserByIdWithToken(req.idam_user_dashboard_session.access_token, input)
+    return await req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, input)
       .then(user => {
         return [user];
       })
       .catch(() => {
-        return req.scope.cradle.api.searchUsersBySsoId(input);
+        return req.scope.cradle.api.searchUsersBySsoId(req.idam_user_dashboard_session.access_token, input);
       });
   }
 

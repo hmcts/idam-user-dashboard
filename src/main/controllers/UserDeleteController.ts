@@ -15,7 +15,7 @@ export class UserDeleteController extends RootController {
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.body._userId)
+    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         switch (req.body.confirmDelete) {
           case 'true':

@@ -45,7 +45,7 @@ export class AddUserDetailsController extends RootController {
     }
 
     // check if the user with the same email already exists
-    const users = await req.scope.cradle.api.searchUsersByEmail(email);
+    const users = await req.scope.cradle.api.searchUsersByEmail(req.idam_user_dashboard_session.access_token, email);
     if (users.length == 0) {
       const allServices = await req.scope.cradle.api.getAllServices();
       const rolesMap = await this.getRolesMap(req);
