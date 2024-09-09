@@ -61,7 +61,7 @@ export class UserEditController extends RootController {
               ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
             }
           });
-        })
+        });
       });
   }
 
