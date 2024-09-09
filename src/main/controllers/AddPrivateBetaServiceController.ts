@@ -16,14 +16,14 @@ import { IdamAPI } from 'app/idam-api/IdamAPI';
 export class AddPrivateBetaServiceController extends RootController {
   constructor(
     private readonly inviteService: InviteService,
-    private readonly idamApi: IdamAPI
+    private readonly idamWrapper: IdamAPI
   ) {
     super();
   }
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    const allServices = await this.idamApi.getAllServices();
+    const allServices = await this.idamWrapper.getAllServices();
     const fields = req.body;
     const rolesMap = await this.getRolesMap();
     const privateBetaServices = getServicesForSelect(allServices, rolesMap);
@@ -75,7 +75,7 @@ export class AddPrivateBetaServiceController extends RootController {
   }
 
   private async getRolesMap(): Promise<Map<string, V2Role>> {
-    const allRoles = await this.idamApi.getAllV2Roles();
+    const allRoles = await this.idamWrapper.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])
