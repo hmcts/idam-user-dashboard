@@ -29,7 +29,8 @@ export class AddUserRolesController extends RootController {
 
     if (!hasProperty(req.body, 'roles')) {
       const allRoles = await this.idamWrapper.getAllV2Roles();
-      const roleAssignment = constructAllRoleAssignments(allRoles, this.getAssignableRoles(req));
+      const assignableRoles : string[] = await this.getAssignableRoles(req);
+      const roleAssignment = constructAllRoleAssignments(allRoles, assignableRoles);
 
       const user = {
         email: fields._email,
@@ -73,12 +74,11 @@ export class AddUserRolesController extends RootController {
     return super.post(req, res, 'add-user-completion',
       { content: { isAppointInvitationType: isAppointInvitationType }});
   }
-  private getAssignableRoles(req: AuthedRequest): string[] {
-    if (!req.idam_user_dashboard_session.user.assignableRoles) { 
-      this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then((assignableRoles: string[]) => {
-        req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-      });
+
+  private async getAssignableRoles(req: AuthedRequest): Promise<string[]> {
+    if (req.idam_user_dashboard_session.user.assignableRoles) {
+      return req.idam_user_dashboard_session.user.assignableRoles;
     }
-    return req.idam_user_dashboard_session.user.assignableRoles;
+    return this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles);
   }
 }

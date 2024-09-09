@@ -44,8 +44,8 @@ export class UserEditController extends RootController {
   @asyncError
   public post(req: AuthedRequest, res: Response) {
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
-      .then(user => {
-        const roleAssignments = constructUserRoleAssignments(this.getAssignableRoles(req), user.roles);
+      .then(async user => {
+        const roleAssignments = constructUserRoleAssignments(await this.getAssignableRoles(req), user.roles);
         processMfaRole(user);
 
         if(req.body._action === 'save') {
@@ -56,7 +56,7 @@ export class UserEditController extends RootController {
           content: {
             user,
             roles: roleAssignments,
-            showMfa: this.canShowMfa(this.getAssignableRoles(req)),
+            showMfa: this.canShowMfa(await this.getAssignableRoles(req)),
             ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
           }
         });
@@ -69,13 +69,14 @@ export class UserEditController extends RootController {
 
     const {roles: originalRoles, multiFactorAuthentication: originalMfa, ...originalFields} = user;
     const {roles: editedRoles, multiFactorAuthentication: editedMfa, ...editedFields} = editedUser as Partial<User>;
+    const assignableRoles : string[] = await this.getAssignableRoles(req);
 
     const originalRolesWithMfaRemoved = originalRoles.filter(r => r !== IDAM_MFA_DISABLED);
-    const newRoleList = this.getUserRolesAfterUpdate(req, originalRolesWithMfaRemoved, editedRoles);
+    const newRoleList = this.getUserRolesAfterUpdate(assignableRoles, originalRolesWithMfaRemoved, editedRoles);
     const rolesAdded = findDifferentElements(newRoleList, originalRolesWithMfaRemoved);
     const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
-    const mfaAssignable = this.canShowMfa(this.getAssignableRoles(req));
+    const mfaAssignable = this.canShowMfa(assignableRoles);
     const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
 
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved;
@@ -182,8 +183,8 @@ export class UserEditController extends RootController {
     return errors;
   }
 
-  private getUserRolesAfterUpdate(req: AuthedRequest, originalRoles: string[], editedRoles: string[]): string[] {
-    const nonAssignableRoles = determineUserNonAssignableRoles(this.getAssignableRoles(req), originalRoles);
+  private getUserRolesAfterUpdate(assignableRoles: string[], originalRoles: string[], editedRoles: string[]): string[] {
+    const nonAssignableRoles = determineUserNonAssignableRoles(assignableRoles, originalRoles);
     const rolesToAssign = editedRoles ? convertToArray(editedRoles) : [];
 
     const newRoleList = [];
@@ -222,7 +223,8 @@ export class UserEditController extends RootController {
       const newAssignableRoles = await this.idamWrapper.getAssignableRoles(newRoles);
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
-    return constructUserRoleAssignments(this.getAssignableRoles(req), newRoles);
+    const assignableRoles : string[] = await this.getAssignableRoles(req);
+    return constructUserRoleAssignments(assignableRoles, newRoles);
   }
 
   private generateMFAMessage(ssoProvider: string): string {
@@ -236,7 +238,7 @@ export class UserEditController extends RootController {
   private canShowMfa(assignableRoles: string[]) {
     return assignableRoles.includes(IDAM_MFA_DISABLED);
   }
-
+/*
   private getAssignableRoles(req: AuthedRequest): string[] {
     if (!req.idam_user_dashboard_session.user.assignableRoles) { 
       this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then((assignableRoles: string[]) => {
@@ -244,6 +246,14 @@ export class UserEditController extends RootController {
       });
     }
     return req.idam_user_dashboard_session.user.assignableRoles;
+  }
+    */
+
+  private async getAssignableRoles(req: AuthedRequest): Promise<string[]> {
+    if (req.idam_user_dashboard_session.user.assignableRoles) {
+      return req.idam_user_dashboard_session.user.assignableRoles;
+    }
+    return this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles);
   }
 
 }

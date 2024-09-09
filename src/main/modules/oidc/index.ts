@@ -1,4 +1,4 @@
-import { Application, Request, Response } from 'express';
+import { Application, NextFunction, Request, Response } from 'express';
 import config from 'config';
 import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
@@ -10,6 +10,9 @@ import FileStoreFactory from 'session-file-store';
 import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
 import { auth } from 'express-openid-connect';
+import { AuthedRequest } from 'interfaces/AuthedRequest';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
+import { asClass } from 'awilix';
 const {Logger} = require('@hmcts/nodejs-logging');
 
 export class OidcMiddleware {
@@ -78,6 +81,35 @@ export class OidcMiddleware {
         }
       }
     }));
+
+    app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
+      if (req.idam_user_dashboard_session.user && !req.idam_user_dashboard_session.user.assignableRoles) {
+
+        // Must be a better way to get hold of this.
+        req.scope = req.app.locals.container.createScope().register({
+          oidcIdamApiInstance: asClass(IdamAPI)
+        });
+
+        const localIdamWrapper = req.scope.cradle.oidcIdamApiInstance
+        if (localIdamWrapper) {
+          console.log('OIDCMiddleware; local wrapper available');
+
+          return localIdamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+          .then((assignableRoles: string[]) => {
+            req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
+            next();
+          })
+          .catch((err: any) => {
+            console.log('OIDCMiddleware; Failed to get assignable roles', err);
+            next(err);
+          });
+
+        } else {
+          console.log('OIDCMiddleware; No idam api wrapper available in middleware');
+        }
+      }
+      next();
+    });
 
   }
 

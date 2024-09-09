@@ -56,7 +56,8 @@ export class AddUserDetailsController extends RootController {
       const allServices = await this.idamWrapper.getAllServices();
       const rolesMap = await this.getRolesMap();
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
-      const enablePrivateBeta = this.getAssignableRoles(req).includes(UserType.Citizen);
+      const assignableRoles : string[] = await this.getAssignableRoles(req);
+      const enablePrivateBeta = assignableRoles.includes(UserType.Citizen);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
 
       return super.post(req, res, 'add-user-details', {
@@ -78,7 +79,8 @@ export class AddUserDetailsController extends RootController {
     if (!isObjectEmpty(error)) {
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
-      const enablePrivateBeta = this.getAssignableRoles(req).includes(UserType.Citizen);
+      const assignableRoles : string[] = await this.getAssignableRoles(req);
+      const enablePrivateBeta = assignableRoles.includes(UserType.Citizen);
 
       return super.post(req, res, 'add-user-details', {
         content: { user: user, showPrivateBeta: hasPrivateBeta, enablePrivateBeta: enablePrivateBeta, roleHint: roleHint },
@@ -94,7 +96,8 @@ export class AddUserDetailsController extends RootController {
       }});
     } else {
       const allRoles = await this.idamWrapper.getAllV2Roles();
-      const roleAssignment = constructAllRoleAssignments(allRoles, this.getAssignableRoles(req));
+      const assignableRoles : string[] = await this.getAssignableRoles(req);
+      const roleAssignment = constructAllRoleAssignments(allRoles, assignableRoles);
       return super.post(req, res, 'add-user-roles', { content: { user: user, roles: roleAssignment } });
     }
   }
@@ -136,13 +139,10 @@ export class AddUserDetailsController extends RootController {
     return rolesMap;
   }
 
-  private getAssignableRoles(req: AuthedRequest): string[] {
-    if (!req.idam_user_dashboard_session.user.assignableRoles && req.idam_user_dashboard_session.user.roles) { 
-      console.log('will get assignable roles for ' + req.idam_user_dashboard_session.user.roles);
-      this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then((assignableRoles: string[]) => {
-        req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-      });
+  private async getAssignableRoles(req: AuthedRequest): Promise<string[]> {
+    if (req.idam_user_dashboard_session.user.assignableRoles) {
+      return req.idam_user_dashboard_session.user.assignableRoles;
     }
-    return req.idam_user_dashboard_session.user.assignableRoles;
+    return this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles);
   }
 }
