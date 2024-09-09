@@ -10,7 +10,6 @@ import {
 } from '../utils/utils';
 import {RootController} from './RootController';
 import autobind from 'autobind-decorator';
-import {User} from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import {processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
@@ -56,10 +55,11 @@ export class UserResultsController extends RootController {
     const previousNav = req.header('Referer');
 
     this.preprocessSearchResults(user);
+    const assignableRoles : string[] = await this.getAssignableRoles(req);
     return super.post(req, res, 'user-details', {
       content: {
         user,
-        canManage: this.canManageUser(req.idam_user_dashboard_session.user, user),
+        canManage: this.canManageUser(assignableRoles, user),
         lockedMessage: this.composeLockedMessage(user),
         notificationBannerMessage: notificationBannerMessage,
         providerName: providerName,
@@ -139,7 +139,18 @@ export class UserResultsController extends RootController {
     return lockDurationMinutes - computeTimeDifferenceInMinutes(new Date(), new Date(accountLockedTime));
   }
 
-  private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
-    return userB.roleNames.every(role => userA.assignableRoles.includes(role));
+  private canManageUser(principalAssignableRoles: string[], userB: V2User | Partial<V2User>): boolean {
+    if (principalAssignableRoles) {
+      return userB.roleNames.every(role => principalAssignableRoles.includes(role));
+    } else {
+      return false;
+    }
+  }
+
+  private async getAssignableRoles(req: AuthedRequest): Promise<string[]> {
+    if (req.idam_user_dashboard_session.user.assignableRoles) {
+      return req.idam_user_dashboard_session.user.assignableRoles;
+    }
+    return this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles);
   }
 }
