@@ -38,7 +38,7 @@ export class UserEditController extends RootController {
   constructor(
     private readonly idamWrapper: IdamAPI
   ) {
-    super()
+    super();
   }
 
   @asyncError

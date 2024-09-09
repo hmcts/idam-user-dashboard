@@ -22,7 +22,7 @@ export class UserResultsController extends RootController {
   constructor(
     private readonly idamWrapper: IdamAPI
   ) {
-    super()
+    super();
   }
 
   @asyncError

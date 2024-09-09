@@ -25,7 +25,7 @@ export class AddPrivateBetaServiceController extends RootController {
   public async post(req: AuthedRequest, res: Response) {
     const allServices = await this.idamApi.getAllServices();
     const fields = req.body;
-    const rolesMap = await this.getRolesMap(req);
+    const rolesMap = await this.getRolesMap();
     const privateBetaServices = getServicesForSelect(allServices, rolesMap);
     const user = {
       email: fields._email,
@@ -74,7 +74,7 @@ export class AddPrivateBetaServiceController extends RootController {
     return rolesToAdd;
   }
 
-  private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
+  private async getRolesMap(): Promise<Map<string, V2Role>> {
     const allRoles = await this.idamApi.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)

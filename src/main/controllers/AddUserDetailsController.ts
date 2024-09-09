@@ -73,7 +73,7 @@ export class AddUserDetailsController extends RootController {
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
     const allServices = await this.idamWrapper.getAllServices();
-    const rolesMap = await this.getRolesMap(req);
+    const rolesMap = await this.getRolesMap();
 
     if (!isObjectEmpty(error)) {
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
@@ -127,7 +127,7 @@ export class AddUserDetailsController extends RootController {
     return hasProperty(fields, 'userType') ? fields.userType : '';
   }
 
-  private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
+  private async getRolesMap(): Promise<Map<string, V2Role>> {
     const allRoles = await this.idamWrapper.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
