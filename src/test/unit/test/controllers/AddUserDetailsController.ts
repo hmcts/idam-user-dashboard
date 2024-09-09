@@ -268,7 +268,6 @@ describe('Add user details controller', () => {
     req.body.surname = name;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
     
-
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
 
     await controller.post(req, res);
