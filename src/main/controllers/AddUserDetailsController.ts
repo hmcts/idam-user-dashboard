@@ -17,7 +17,7 @@ import { constructAllRoleAssignments } from '../utils/roleUtils';
 import { UserType } from '../utils/UserType';
 import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
 import { V2Role } from '../interfaces/V2Role';
-import { IdamAPI } from 'app/idam-api/IdamAPI';
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 
 export const ROLE_HINT_WITH_PRIVATE_BETA = 'Private Beta Citizen is a citizen who is trialling a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 export const ROLE_HINT_WITHOUT_PRIVATE_BETA = 'Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';

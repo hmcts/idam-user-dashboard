@@ -10,7 +10,7 @@ import { UserType } from '../utils/UserType';
 import { Service } from '../interfaces/Service';
 import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
-import { IdamAPI } from 'app/idam-api/IdamAPI';
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 
 @autobind
 export class AddPrivateBetaServiceController extends RootController {

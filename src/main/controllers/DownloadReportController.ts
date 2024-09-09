@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { parse } from 'json2csv';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
-import { IdamAPI } from 'app/idam-api/IdamAPI';
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 const {Logger} = require('@hmcts/nodejs-logging');
 
 @autobind
