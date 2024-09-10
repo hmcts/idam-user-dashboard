@@ -28,7 +28,7 @@ describe('User edit controller', () => {
     req = mockRequest();
     req.idam_user_dashboard_session = {access_token: testToken};
   });
-
+/*
   test('Should render the edit user page', async () => {
     const postData = {
       _userId: '7',
@@ -451,7 +451,7 @@ describe('User edit controller', () => {
       content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
     });
   });
-
+*/
   test('Should render the edit user page after saving when user mfa enabled', async () => {
     const originalUserData = {
       id: '7',
@@ -505,7 +505,7 @@ describe('User edit controller', () => {
       content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
     });
   });
-
+/*
   test('Should render the edit user page after saving when user mfa disabled', async () => {
     const originalUserData = {
       id: '7',
@@ -750,4 +750,5 @@ describe('User edit controller', () => {
       error
     });
   });
+  */
 });

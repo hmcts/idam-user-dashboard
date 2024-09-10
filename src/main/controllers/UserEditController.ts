@@ -45,40 +45,38 @@ export class UserEditController extends RootController {
   public post(req: AuthedRequest, res: Response) {
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
-        this.getAssignableRoles(req).then(assignableRoles => {
-          const roleAssignments = constructUserRoleAssignments(assignableRoles, user.roles);
-          processMfaRole(user);
-  
-          if(req.body._action === 'save') {
-            return this.saveUser(req, res, user, roleAssignments);
+        const assignableRoleNames = this.getAssignableRoles(req);
+        const roleAssignments = constructUserRoleAssignments(assignableRoleNames, user.roles);
+        processMfaRole(user);
+
+        if(req.body._action === 'save') {
+          return this.saveUser(req, res, user, roleAssignments, assignableRoleNames);
+        }
+
+        return super.post(req, res, 'edit-user', {
+          content: {
+            user,
+            roles: roleAssignments,
+            showMfa: this.canShowMfa(assignableRoleNames),
+            ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
           }
-  
-          return super.post(req, res, 'edit-user', {
-            content: {
-              user,
-              roles: roleAssignments,
-              showMfa: this.canShowMfa(assignableRoles),
-              ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
-            }
-          });
         });
       });
   }
 
-  private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
+  private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[], assignableRoleNames: string[]) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {_action, _csrf, _userId, ...editedUser} = req.body;
 
     const {roles: originalRoles, multiFactorAuthentication: originalMfa, ...originalFields} = user;
     const {roles: editedRoles, multiFactorAuthentication: editedMfa, ...editedFields} = editedUser as Partial<User>;
-    const assignableRoles : string[] = await this.getAssignableRoles(req);
 
     const originalRolesWithMfaRemoved = originalRoles.filter(r => r !== IDAM_MFA_DISABLED);
-    const newRoleList = this.getUserRolesAfterUpdate(assignableRoles, originalRolesWithMfaRemoved, editedRoles);
+    const newRoleList = this.getUserRolesAfterUpdate(assignableRoleNames, originalRolesWithMfaRemoved, editedRoles);
     const rolesAdded = findDifferentElements(newRoleList, originalRolesWithMfaRemoved);
     const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
 
-    const mfaAssignable = this.canShowMfa(assignableRoles);
+    const mfaAssignable = this.canShowMfa(assignableRoleNames);
     const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
 
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved;
@@ -241,11 +239,13 @@ export class UserEditController extends RootController {
     return assignableRoles.includes(IDAM_MFA_DISABLED);
   }
 
-  private async getAssignableRoles(req: AuthedRequest): Promise<string[]> {
+  private getAssignableRoles(req: AuthedRequest): string[] {
     if (req.idam_user_dashboard_session.user.assignableRoles) {
       return req.idam_user_dashboard_session.user.assignableRoles;
     }
-    return this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles);
+    this.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles).then(assignableRoleNames => {
+      return assignableRoleNames;
+    });
   }
 
 }
