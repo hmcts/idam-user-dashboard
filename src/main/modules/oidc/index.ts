@@ -85,6 +85,8 @@ export class OidcMiddleware {
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       if (req.idam_user_dashboard_session.user && !req.idam_user_dashboard_session.user.assignableRoles) {
 
+        console.log(('In OIDCMiddleware condition'));
+        this.logger.info('In OIDCMiddleware condition');
         // Must be a better way to get hold of this.
         req.scope = req.app.locals.container.createScope().register({
           oidcIdamApiInstance: asClass(IdamAPI)
@@ -93,6 +95,7 @@ export class OidcMiddleware {
         const localIdamWrapper = req.scope.cradle.oidcIdamApiInstance;
         if (localIdamWrapper) {
           console.log('OIDCMiddleware; local wrapper available');
+          this.logger.info('OIDCMiddleware; local wrapper available');
 
           return localIdamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
             .then((assignableRoles: string[]) => {
@@ -101,11 +104,13 @@ export class OidcMiddleware {
             })
             .catch((err: any) => {
               console.log('OIDCMiddleware; Failed to get assignable roles', err);
+              this.logger.info('OIDCMiddleware; Failed to get assignable roles', err);
               next(err);
             });
 
         } else {
           console.log('OIDCMiddleware; No idam api wrapper available in middleware');
+          this.logger.info('OIDCMiddleware; No idam api wrapper available in middleware');
         }
       }
       next();

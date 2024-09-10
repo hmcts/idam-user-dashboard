@@ -47,6 +47,8 @@ app.use((req, res, next) => {
 });
 
 new Container().enableFor(app);
+console.log('Container created');
+logger.info('Container created');
 new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 new HealthCheck().enableFor(app);
