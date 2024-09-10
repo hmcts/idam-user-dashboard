@@ -28,7 +28,7 @@ describe('User edit controller', () => {
     req = mockRequest();
     req.idam_user_dashboard_session = {access_token: testToken};
   });
-/*
+  /*
   test('Should render the edit user page', async () => {
     const postData = {
       _userId: '7',
