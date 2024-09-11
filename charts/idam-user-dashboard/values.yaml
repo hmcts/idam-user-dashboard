@@ -24,6 +24,7 @@ nodejs:
     DASHBOARD_URL: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net'
     OAUTH_CLIENT_REDIRECT: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net/oauth2/callback'
     TESTING_SUPPORT_URL: 'https://idam-testing-support-api.{{ .Values.global.environment }}.platform.hmcts.net'
+    NODE_OPTIONS: "--max-old-space-size=1024"
   autoscaling:
     enabled: true
     maxReplicas: 4
