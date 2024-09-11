@@ -155,9 +155,10 @@
     "@azure/msal-node": ">=2.9.2",
     "@azure/identity": ">=4.2.1",
     "micromatch": ">=4.0.8",
-    "path-to-regexp": ">=7.2.0",
-    "body-parser": ">=1.20.3",
-    "send": ">=0.19.0"
+    "path-to-regexp": "^3.3.0",
+    "body-parser": "^1.20.3",
+    "send": "^0.19.0",
+    "serve-static": "^2.1.0"
   },
   "packageManager": "yarn@4.3.1"
 }
