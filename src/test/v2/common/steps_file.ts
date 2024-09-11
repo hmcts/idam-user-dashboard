@@ -63,7 +63,7 @@ export = function() {
         this.say('Oh no, there is a bad gateway. Let me try again');
         this.wait(1);
         this.refreshPage();
-      })
+      });
       this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
       this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
