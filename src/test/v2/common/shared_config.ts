@@ -98,5 +98,8 @@ shared_config.plugins = {
         }
       }
     }
+  },
+  tryTo: {
+    enabled: true
   }
 };
