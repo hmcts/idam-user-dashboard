@@ -90,18 +90,6 @@ export class OidcMiddleware {
         api: asClass(IdamAPI)
       });
 
-      if (!req.idam_user_dashboard_session.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-          .then(assignableRoles => {
-            req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-            next();
-          })
-          .catch(err => {
-            console.log('Failed to get assignable roles', err);
-            next(err);
-          });
-      }
-
       return next();
     });
   }
