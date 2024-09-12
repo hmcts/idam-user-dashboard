@@ -1,9 +1,9 @@
 nodejs:
   applicationPort: 3100
-  cpuLimits: 150m
-  cpuRequests: 50m
-  memoryLimits: 1024Mi
-  memoryRequests: 512Mi
+  cpuLimits: 2500m
+  cpuRequests: 2500m
+  memoryLimits: 2048Mi
+  memoryRequests: 1024Mi
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
@@ -24,7 +24,7 @@ nodejs:
     DASHBOARD_URL: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net'
     OAUTH_CLIENT_REDIRECT: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net/oauth2/callback'
     TESTING_SUPPORT_URL: 'https://idam-testing-support-api.{{ .Values.global.environment }}.platform.hmcts.net'
-    NODE_OPTIONS: '--max-old-space-size=1024'
+    NODE_OPTIONS: '--max-old-space-size=2048'
   autoscaling:
     enabled: true
     maxReplicas: 4
