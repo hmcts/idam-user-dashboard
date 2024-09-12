@@ -32,6 +32,7 @@ new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 const logger = Logger.getLogger('app');
 console.log('(console) app logger is at level ' + logger.level);
+logger.info('app logger is at level ' + logger.level);
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
