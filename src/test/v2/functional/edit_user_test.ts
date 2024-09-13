@@ -43,6 +43,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   await I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
 
+  I.uncheckOption('#hide-disabled');
   I.scrollPageToBottom();
 
   I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
