@@ -42,6 +42,9 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   const testUser = await I.haveUser({roleNames: [testRole.name]});
   await I.navigateToEditUser(testUser.email);
   I.seeInField('email', testUser.email);
+
+  I.scrollPageToBottom();
+
   I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
   const testRoleDisabled = await I.grabDisabledElementStatus(I.locateInput('roles', testRole.name));
   I.assertTrue(testRoleDisabled);
