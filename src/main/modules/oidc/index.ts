@@ -4,7 +4,7 @@ import { AuthedRequest } from '../../interfaces/AuthedRequest';
 import { asClass, asValue } from 'awilix';
 import { IdamAPI } from '../../app/idam-api/IdamAPI';
 import axios, { AxiosInstance } from 'axios';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { Session } from 'express-openid-connect';
