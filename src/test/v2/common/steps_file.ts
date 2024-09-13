@@ -17,13 +17,24 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
+    async goToPage(expectedUrl: String, expectedHeading? : String) {
+      this.amOnPage(expectedUrl);
+      await tryTo(() => {
+        this.see('Bad Gateway');
+        this.say('Oh no, there is a bad gateway. Let me try again');
+        this.wait(1);
+        this.amOnPage(expectedUrl);
+      });
+      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+    },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
       this.fillField('search', searchValue);
       await this.clickToNavigate('Search', '/details', 'User Details');
     },
     async navigateToSearchUser() {
-      this.amOnPage('/');
+      await this.goToPage('/', 'What do you want to do?');
       this.checkOption('Manage an existing user');
       await this.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
     },
@@ -32,12 +43,12 @@ export = function() {
       await this.clickToNavigate('Edit user', '/user/edit', 'Edit User');
     },
     async navigateToGenerateReport() {
-      this.amOnPage('/');
+      await this.goToPage('/', 'What do you want to do?');
       this.checkOption('Generate a user report');
       await this.clickToNavigate('Continue', '/reports', 'Generate report');
     },
     async navigateToRegisterUser() {
-      this.amOnPage('/');
+      await this.goToPage('/', 'What do you want to do?');
       this.checkOption('Add a new user');
       await this.clickToNavigate('Continue', '/user/add', 'Add new user email');
     },
@@ -47,6 +58,12 @@ export = function() {
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
       this.retry(CLICK_RETRY).click(clickText);
+      await tryTo(() => {
+        this.see('Bad Gateway');
+        this.say('Oh no, there is a bad gateway. Let me try again');
+        this.wait(1);
+        this.refreshPage();
+      });
       this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
       this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
