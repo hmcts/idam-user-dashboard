@@ -4,6 +4,10 @@ nodejs:
   cpuRequests: 2500m
   memoryLimits: 2048Mi
   memoryRequests: 1024Mi
+  devmemoryRequests: 512Mi
+  devcpuRequests: 50m
+  devmemoryLimits: 1024Mi
+  devcpuLimits: 150m
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
