@@ -83,20 +83,25 @@ export class OidcMiddleware {
     }));
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      req.scope = req.app.locals.container.createScope().register({
-        api: asClass(IdamAPI)
-      });
-
       if (!req.idam_user_dashboard_session.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-          .then(assignableRoles => {
+        if (req.app.locals.container) {
+          console.log('I have a container');
+          if (req.app.locals.container.cradle.idamWrapper) {
+            console.log('there is an idam wrapper');
+          }
+        }
+        return req.app.locals.container.cradle.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+          .then((assignableRoles: string[]) => {
+            console.log('got assignable roles %j', assignableRoles);
             req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
-          .catch(err => {
+          .catch((err: any) => {
             console.log('Failed to get assignable roles', err);
             next(err);
           });
+      } else {
+        console.log('already got assignable roles %j', req.idam_user_dashboard_session.user.assignableRoles);
       }
 
       return next();

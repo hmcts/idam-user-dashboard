@@ -138,6 +138,10 @@ export class UserResultsController extends RootController {
   }
 
   private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
-    return userB.roleNames.every(role => userA.assignableRoles.includes(role));
+    console.log('userA assignable roles %j', userA.assignableRoles);
+    console.log('userB role names %j', userB.roleNames);
+    const result = userB.roleNames.every(role => userA.assignableRoles.includes(role));
+    console.log('canManage is %j', result);
+    return result;
   }
 }
