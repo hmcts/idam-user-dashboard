@@ -9,12 +9,13 @@ import { isEmpty } from '../utils/utils';
 import { MISSING_OPTION_ERROR, USER_REMOVE_SSO_ERROR } from '../utils/error';
 import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 
 @autobind
 export class UserRemoveSsoController extends RootController{
 
-  constructor(private readonly idamWrapper: IdamAPI) {
-    super();
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
   }
 
   @asyncError

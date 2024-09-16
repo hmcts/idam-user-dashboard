@@ -11,13 +11,15 @@ import {
   GENERATING_REPORT_NO_USERS_MATCHED
 } from '../utils/error';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class ViewReportController extends RootController {
   constructor(
     private readonly reportGenerator: ReportsHandler,
-    private readonly idamWrapper: IdamAPI
+    private readonly idamWrapper: IdamAPI,
+    protected featureFlags?: FeatureFlags
   ) {
-    super();
+    super(featureFlags);
   }
 
   @asyncError

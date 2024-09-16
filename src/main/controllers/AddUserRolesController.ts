@@ -12,14 +12,16 @@ import config from 'config';
 import {UserType} from '../utils/UserType';
 import {InvitationTypes} from '../app/invite-service/Invite';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class AddUserRolesController extends RootController {
   constructor(
     private readonly inviteService: InviteService,
     private readonly serviceProviderService: ServiceProviderService,
-    private readonly idamWrapper: IdamAPI
+    private readonly idamWrapper: IdamAPI,
+    protected featureFlags?: FeatureFlags
   ) {
-    super();
+    super(featureFlags);
   }
 
   @asyncError

@@ -32,11 +32,12 @@ import { RoleDefinition } from '../interfaces/RoleDefinition';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import config from 'config';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class UserEditController extends RootController {
 
-  constructor(private readonly idamWrapper: IdamAPI) {
-    super();
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
   }
 
   @asyncError

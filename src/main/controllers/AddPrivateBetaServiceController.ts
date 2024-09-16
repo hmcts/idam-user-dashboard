@@ -11,13 +11,15 @@ import { Service } from '../interfaces/Service';
 import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
   constructor(
     private readonly inviteService: InviteService,
-    private readonly idamWrapper: IdamAPI
+    private readonly idamWrapper: IdamAPI,
+    protected featureFlags?: FeatureFlags
   ) {
-    super();
+    super(featureFlags);
   }
 
   @asyncError

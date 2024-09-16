@@ -16,11 +16,12 @@ import {processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
 import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class UserResultsController extends RootController {
 
-  constructor(private readonly idamWrapper: IdamAPI) {
-    super();
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
   }
 
   @asyncError

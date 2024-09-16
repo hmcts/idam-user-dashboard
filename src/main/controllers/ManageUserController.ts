@@ -12,13 +12,15 @@ import {
 } from '../utils/error';
 import { USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
-import { IdamAPI } from '../app/idam-api/IdamAPI';const obfuscate = require('obfuscate-email');
+import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+const obfuscate = require('obfuscate-email');
 
 @autobind
 export class ManageUserController extends RootController {
 
-  constructor(private readonly idamWrapper: IdamAPI) {
-    super();
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
   }
 
   public get(req: AuthedRequest, res: Response) {

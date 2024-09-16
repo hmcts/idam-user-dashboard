@@ -18,14 +18,15 @@ import { UserType } from '../utils/UserType';
 import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
 import { V2Role } from '../interfaces/V2Role';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 export const ROLE_HINT_WITH_PRIVATE_BETA = 'Private Beta Citizen is a citizen who is trialling a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 export const ROLE_HINT_WITHOUT_PRIVATE_BETA = 'Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 
 @autobind
 export class AddUserDetailsController extends RootController {
 
-  constructor(private readonly idamWrapper: IdamAPI) {
-    super();
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
   }
 
   public get(req: AuthedRequest, res: Response) {
