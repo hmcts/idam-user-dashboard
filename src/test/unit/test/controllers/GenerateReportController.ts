@@ -1,7 +1,6 @@
 import { mockRootController } from '../../utils/mockRootController';
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
-import { mockApi } from '../../utils/mockApi';
 import { GenerateReportController } from '../../../../main/controllers/GenerateReportController';
 import {
   GENERATING_REPORT_CITIZEN_ERROR,
