@@ -37,6 +37,7 @@ describe('Download report controller', () => {
     },
   ] as User[];
   const controller = new DownloadReportController(mockLogger, mockReportGenerator);
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
@@ -47,6 +48,7 @@ describe('Download report controller', () => {
   test('Should send report that exists', async () => {
     const fileData = 'someFileData';
     req.params = { reportUUID: 'someUUID' };
+    req.idam_user_dashboard_session = {access_token: testToken};
 
     mockReportGenerator.getReportQueryRoles.mockResolvedValue(query);
     mockApi.getUsersWithRoles.mockReturnValueOnce(users).mockReturnValue([]);

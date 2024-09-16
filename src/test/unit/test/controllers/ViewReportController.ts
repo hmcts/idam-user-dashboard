@@ -19,10 +19,12 @@ describe('Generate report controller', () => {
     getReportQueryRoles: jest.fn(),
   };
   const controller = new ViewReportController(mockReportGenerator);
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
     req.scope.cradle.api = mockApi;
+    req.idam_user_dashboard_session = {access_token: testToken};
   });
 
   test('Should render the view report page', async () => {

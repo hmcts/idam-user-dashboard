@@ -15,7 +15,7 @@ export class UserRemoveSsoController extends RootController{
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.body._userId)
+    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         switch(req.body.confirmSso) {
           case 'true':
@@ -36,7 +36,7 @@ export class UserRemoveSsoController extends RootController{
   }
 
   private removeSso(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.removeSsoById(req.body._userId)
+    return req.scope.cradle.api.removeSsoById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(() => {
         return super.post(req, res, 'remove-sso-user-successful', { content: { user } } );
       })

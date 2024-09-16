@@ -12,10 +12,12 @@ describe('User delete controller', () => {
   let req: any;
   const res = mockResponse();
   const controller = new UserDeleteController();
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
     req.scope.cradle.api = mockApi;
+    req.idam_user_dashboard_session = {access_token: testToken};
   });
 
   test('Should render the user delete page', async () => {
@@ -29,7 +31,7 @@ describe('User delete controller', () => {
     };
 
     req.body = { _userId: userData.id };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('delete-user', { content: { user: userData } });
@@ -46,7 +48,7 @@ describe('User delete controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-delete', confirmDelete: 'true' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
     when(mockApi.deleteUserById).calledWith(userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
@@ -64,7 +66,7 @@ describe('User delete controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-delete', confirmDelete: 'false' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
@@ -82,11 +84,11 @@ describe('User delete controller', () => {
 
     const error = { confirmRadio: { message: MISSING_OPTION_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
     req.body = { _userId: userData.id, _action: 'confirm-delete' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('delete-user', { content: { user: userData }, error });
   });
 
@@ -102,13 +104,13 @@ describe('User delete controller', () => {
 
     const error = { userDeleteForm: { message: USER_DELETE_FAILED_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
     when(mockApi.deleteUserById).calledWith(userData.id).mockReturnValue(Promise.reject('Failed'));
 
     req.body = { _userId: userData.id, _action: 'confirm-delete', confirmDelete: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('delete-user', { content: { user: userData }, error });
   });
 });

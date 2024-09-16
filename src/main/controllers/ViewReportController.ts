@@ -39,7 +39,7 @@ export class ViewReportController extends RootController {
       let reportData;
 
       try {
-        reportData = (await req.scope.cradle.api.getUsersWithRoles(roles, 50, pageNo))
+        reportData = (await req.scope.cradle.api.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 50, pageNo))
           .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
       } catch (e) {
         return super.post(req, res, 'generate-report', {

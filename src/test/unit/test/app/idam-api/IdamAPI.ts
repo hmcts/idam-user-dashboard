@@ -7,6 +7,7 @@ describe('IdamAPI', () => {
   const testEmail = 'test@test.com';
   const testUserId = '12345';
   const testSsoId = '23456';
+  const testToken = 'test-token';
 
   const parameters = [
     { input: testEmail, searchType: SearchType.Email },
@@ -33,7 +34,7 @@ describe('IdamAPI', () => {
         const mockTelemetryClient = {} as any;
         const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-        await expect(api.searchUsersByEmail(parameter.input)).resolves.toEqual(results.data);
+        await expect(api.searchUsersByEmail(testToken, parameter.input)).resolves.toEqual(results.data);
       });
     });
 
@@ -43,7 +44,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = { trackTrace: jest.fn() } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.searchUsersByEmail('')).rejects.toEqual('Error retrieving user by email from IDAM API');
+      expect(api.searchUsersByEmail(testToken, '')).rejects.toEqual('Error retrieving user by email from IDAM API');
     });
   });
 
@@ -65,7 +66,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.searchUsersBySsoId(testSsoId)).resolves.toEqual(results.data);
+      expect(api.searchUsersBySsoId(testToken, testSsoId)).resolves.toEqual(results.data);
     });
 
     test('Should not return user details when using invalid SSO ID', () => {
@@ -80,7 +81,7 @@ describe('IdamAPI', () => {
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.searchUsersBySsoId('')).rejects.toEqual('Error retrieving user by ssoId from IDAM API');
+      expect(api.searchUsersBySsoId(testToken, '')).rejects.toEqual('Error retrieving user by ssoId from IDAM API');
     });
   });
 
@@ -102,7 +103,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.getUserById(testUserId)).resolves.toEqual(results.data);
+      expect(api.getUserById(testToken, testUserId)).resolves.toEqual(results.data);
     });
 
     test('Should not return user details when using invalid ID', () => {
@@ -117,7 +118,7 @@ describe('IdamAPI', () => {
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.getUserById('')).rejects.toEqual('Error retrieving user by ID from IDAM API');
+      expect(api.getUserById(testToken, '')).rejects.toEqual('Error retrieving user by ID from IDAM API');
     });
   });
 
@@ -266,7 +267,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.editUserById(testUserId, fields)).resolves.toEqual(results.data);
+      expect(api.editUserById(testToken, testUserId, fields)).resolves.toEqual(results.data);
     });
 
     test('Should not return updated user details when error', () => {
@@ -285,7 +286,7 @@ describe('IdamAPI', () => {
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.editUserById(testUserId, fields)).rejects.toEqual('Error patching user details in IDAM API');
+      expect(api.editUserById(testToken, testUserId, fields)).rejects.toEqual('Error patching user details in IDAM API');
     });
   });
 
@@ -328,7 +329,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.registerUser(input)).resolves.toEqual(testValue);
+      expect(api.registerUser(testToken, input)).resolves.toEqual(testValue);
     });
 
     test('Should not register a user when error', () => {
@@ -341,7 +342,7 @@ describe('IdamAPI', () => {
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.registerUser(input)).rejects.toEqual('Error register new user in IDAM API');
+      expect(api.registerUser(testToken, input)).rejects.toEqual('Error register new user in IDAM API');
     });
   });
 
@@ -402,7 +403,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.grantRolesToUser(testUserId, roleDefinitions)).resolves.toEqual(testValue);
+      expect(api.grantRolesToUser(testToken, testUserId, roleDefinitions)).resolves.toEqual(testValue);
     });
 
     test('Should not grant roles to user when error', () => {
@@ -417,7 +418,7 @@ describe('IdamAPI', () => {
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.grantRolesToUser(testUserId, roleDefinitions)).rejects.toEqual('Error granting user roles in IDAM API');
+      expect(api.grantRolesToUser(testToken, testUserId, roleDefinitions)).rejects.toEqual('Error granting user roles in IDAM API');
     });
   });
 
@@ -430,7 +431,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.removeRoleFromUser(testUserId, 'role1')).resolves.toEqual(testValue);
+      expect(api.removeRoleFromUser(testToken, testUserId, 'role1')).resolves.toEqual(testValue);
     });
 
     test('Should not remove roles from user when error', () => {
@@ -445,7 +446,7 @@ describe('IdamAPI', () => {
       } as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.removeRoleFromUser(testUserId, 'role1')).rejects.toEqual('Error deleting user role in IDAM API');
+      expect(api.removeRoleFromUser(testToken, testUserId, 'role1')).rejects.toEqual('Error deleting user role in IDAM API');
     });
   });
 
@@ -477,8 +478,12 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
+      expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual(results.data);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {
+        'headers': {
+          Authorization: 'Bearer test-token'
+        },
+        'timeout': 20000});
     });
 
     test('Should return users details when querying by multiple roles', () => {
@@ -508,8 +513,12 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      expect(api.getUsersWithRoles(roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {'timeout': 20000});
+      expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual(results.data);
+      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {
+        'headers': {
+          Authorization: 'Bearer test-token'
+        },
+        'timeout': 20000});
     });
 
     test('Should return error if API issue', async () => {
@@ -520,7 +529,7 @@ describe('IdamAPI', () => {
       const mockTelemetryClient = {trackTrace: jest.fn()} as any;
       const api = new IdamAPI(mockAxios, mockAxios, mockLogger, mockTelemetryClient);
 
-      await expect(api.getUsersWithRoles(roles)).rejects.toThrowError();
+      await expect(api.getUsersWithRoles(testToken, roles)).rejects.toThrowError();
       expect(mockLogger.error).toBeCalled();
     });
   });

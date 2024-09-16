@@ -15,7 +15,7 @@ export class UserSuspendController extends RootController{
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
-    return req.scope.cradle.api.getUserById(req.body._userId)
+    return req.scope.cradle.api.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         switch(req.body.confirmSuspendRadio) {
           case 'true':
@@ -51,7 +51,7 @@ export class UserSuspendController extends RootController{
   }
 
   private suspendUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.editUserById(user.id, { active: false })
+    return req.scope.cradle.api.editUserById(req.idam_user_dashboard_session.access_token, user.id, { active: false })
       .then(() => {
         return super.post(req, res, 'suspend-user-successful', { content: { user } } );
       })
@@ -62,7 +62,7 @@ export class UserSuspendController extends RootController{
   }
 
   private unSuspendUser(req: AuthedRequest, res: Response, user: User) {
-    return req.scope.cradle.api.editUserById(user.id, { active: true })
+    return req.scope.cradle.api.editUserById(req.idam_user_dashboard_session.access_token, user.id, { active: true })
       .then(() => {
         return super.post(req, res, 'unsuspend-user-successful', { content: { user } } );
       })

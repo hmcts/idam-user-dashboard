@@ -26,6 +26,7 @@ import { AuthorizedAxios } from '../../app/authorized-axios/AuthorizedAxios';
 import { InviteService } from '../../app/invite-service/InviteService';
 import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
 import { ViewReportController } from '../../controllers/ViewReportController';
+import axios from 'axios';
 
 /**
  * Sets up the dependency injection container
@@ -51,6 +52,11 @@ export class Container {
           }},
         defaultClient
         )
+      ),
+      simpleAxios: asValue(
+        axios.create({
+          baseURL: config.get('services.idam.url.api'),
+        })
       ),
       inviteService: asClass(InviteService),
       serviceProviderService: asClass(ServiceProviderService),
