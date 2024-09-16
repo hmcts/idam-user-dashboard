@@ -126,6 +126,21 @@ export = function() {
     locateInput(locateName: string, locateValue: string) {
       return locate('input').withAttr({name: locateName, value: locateValue});
     },
+    locateRoleContainer(locateValue: string) {
+      return locate('div').withChild(this.locateInput('roles', locateValue));
+    },
+    async seeIsHidden(location) {
+      const styleValue = await this.grabAttributeFrom(location, 'style');
+      this.assertEqual(styleValue, 'display: none;');
+    },
+    async seeIsNotHidden(location) {
+      const styleValue = await this.grabAttributeFrom(location, 'style');
+      if (styleValue) {
+        this.assertNotEqual(styleValue, 'display: none;');
+      } else {
+        this.assertEmpty(styleValue);
+      }
+    },
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
       this.assertEqualIgnoreCase(actualValue, expectedValue);
