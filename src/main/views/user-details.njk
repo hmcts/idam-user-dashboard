@@ -202,23 +202,26 @@
     <input type="hidden" name="_userId" value="{{ content.user.id }}">
     <div class="govuk-button-group">
       {% if not content.userIsArchived %}
+
         {% if featureFlags.values[featureFlags.flags.BETA_EDIT] %}
-          {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
+          <p>Beta Edit TRUE</p>
+        {% endif %}
+        {% if not featureFlags.values[featureFlags.flags.BETA_EDIT] %}
+          <p>Beta Edit FALSE</p>
         {% endif %}
 
-        {% if featureFlags.values[featureFlags.flags.BETA_SUSPEND] %}
-          {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.userIsActive }}
-          {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.userIsActive }}
-        {% endif %}
+        {{ govukButton({ text: "Edit user", name: "_action", value: "edit", classes: "govuk-button" }) }}
 
-        {% if featureFlags.values[featureFlags.flags.BETA_REMOVE_SSO] and (content.user.ssoProvider or content.user.ssoId) %}
+        {{ govukButton({ text: "Suspend user", name: "_action", value: "suspend", classes: "govuk-button--secondary" }) if content.userIsActive }}
+        {{ govukButton({ text: "Unsuspend user", name: "_action", value: "unsuspend", classes: "govuk-button--secondary" }) if not content.userIsActive }}
+
+        {% if (content.user.ssoProvider or content.user.ssoId) %}
           {{ govukButton({ text: "Remove SSO", name: "_action", value: "remove-sso", classes: "govuk-button--secondary" })}}
         {% endif %}
       {% endif %}
 
-      {% if featureFlags.values[featureFlags.flags.BETA_DELETE] %}
-        {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.canManage }}
-      {% endif %}
+      {{ govukButton({ text: "Delete user", name: "_action", value: "delete", classes: "govuk-button--warning govuk-button--align-right" }) if content.canManage }}
+
     </div>
   </form>
 

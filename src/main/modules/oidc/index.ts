@@ -98,8 +98,6 @@ export class OidcMiddleware {
             console.log('Failed to get assignable roles', err);
             next(err);
           });
-      } else {
-        console.log('already got assignable roles %j', req.idam_user_dashboard_session.user.assignableRoles);
       }
 
       return next();

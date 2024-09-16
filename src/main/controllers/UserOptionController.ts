@@ -39,13 +39,14 @@ export class UserOptionController extends RootController {
     const items = [{value: UserOption.MANAGE_USER, text: 'Manage an existing user'}];
 
     if (this.featureFlags) {
-      const featureFlags = await this.featureFlags.getAllFlagValues();
+      const featureFlagValues = await this.featureFlags.getAllFlagValues();
+      console.log('Feature flag values: %j', featureFlagValues);
 
-      if (featureFlags[BETA_ADD]) {
+      if (featureFlagValues[BETA_ADD]) {
         items.push({value: UserOption.ADD_USER, text: 'Add a new user'});
       }
 
-      if (featureFlags[GAMMA_GENERATE_REPORT]) {
+      if (featureFlagValues[GAMMA_GENERATE_REPORT]) {
         items.push({value: UserOption.GENERATE_REPORT, text: 'Generate a user report'});
       }
     }
