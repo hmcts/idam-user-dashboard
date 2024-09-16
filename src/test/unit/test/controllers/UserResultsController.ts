@@ -6,6 +6,7 @@ import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
 import {AccountStatus, RecordType} from '../../../../main/interfaces/V2User';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 jest.mock('config');
 
 describe('User results controller', () => {
@@ -21,7 +22,7 @@ describe('User results controller', () => {
   when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
   when(config.get).calledWith('accounts.status.lock.durationMinutes').mockReturnValue(61);
 
-  const controller = new UserResultsController();
+  const controller = new UserResultsController(mockApi as unknown as IdamAPI);
   const email = 'john.smith@test.com';
   const userId = '123';
   const ssoId = '456';

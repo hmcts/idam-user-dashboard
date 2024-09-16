@@ -17,12 +17,13 @@ import { when } from 'jest-when';
 import { UserType } from '../../../../main/utils/UserType';
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('Add user details controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new AddUserDetailsController();
+  const controller = new AddUserDetailsController(mockApi as unknown as IdamAPI);
   const testToken = 'test-token';
   const email = 'test@test.com';
   const name = 'test';

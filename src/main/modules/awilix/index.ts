@@ -27,6 +27,7 @@ import { InviteService } from '../../app/invite-service/InviteService';
 import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
 import { ViewReportController } from '../../controllers/ViewReportController';
 import axios from 'axios';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
 
 /**
  * Sets up the dependency injection container
@@ -58,6 +59,7 @@ export class Container {
           baseURL: config.get('services.idam.url.api'),
         })
       ),
+      idamWrapper: asClass(IdamAPI),
       inviteService: asClass(InviteService),
       serviceProviderService: asClass(ServiceProviderService),
       userOptionController: asClass(UserOptionController),

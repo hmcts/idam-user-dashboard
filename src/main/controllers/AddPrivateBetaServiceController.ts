@@ -10,18 +10,20 @@ import { UserType } from '../utils/UserType';
 import { Service } from '../interfaces/Service';
 import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
 
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
   constructor(
     private readonly inviteService: InviteService,
+    private readonly idamWrapper: IdamAPI
   ) {
     super();
   }
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    const allServices = await req.scope.cradle.api.getAllServices();
+    const allServices = await this.idamWrapper.getAllServices();
     const fields = req.body;
     const rolesMap = await this.getRolesMap(req);
     const privateBetaServices = getServicesForSelect(allServices, rolesMap);
@@ -73,7 +75,7 @@ export class AddPrivateBetaServiceController extends RootController {
   }
 
   private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
-    const allRoles = await req.scope.cradle.api.getAllV2Roles();
+    const allRoles = await this.idamWrapper.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])

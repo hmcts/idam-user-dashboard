@@ -10,11 +10,13 @@ import {
   GENERATING_REPORT_FILE_ERROR,
   GENERATING_REPORT_NO_USERS_MATCHED
 } from '../utils/error';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
 
 @autobind
 export class ViewReportController extends RootController {
   constructor(
-    private readonly reportGenerator: ReportsHandler
+    private readonly reportGenerator: ReportsHandler,
+    private readonly idamWrapper: IdamAPI
   ) {
     super();
   }
@@ -39,7 +41,7 @@ export class ViewReportController extends RootController {
       let reportData;
 
       try {
-        reportData = (await req.scope.cradle.api.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 50, pageNo))
+        reportData = (await this.idamWrapper.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 50, pageNo))
           .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
       } catch (e) {
         return super.post(req, res, 'generate-report', {

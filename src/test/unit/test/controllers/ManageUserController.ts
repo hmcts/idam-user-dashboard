@@ -10,12 +10,13 @@ import {
   NO_USER_MATCHES_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('Manage user controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new ManageUserController();
+  const controller = new ManageUserController(mockApi as unknown as IdamAPI);
   const email = 'john.smith@test.com';
   const userId = '123';
   const userId2 = '234';

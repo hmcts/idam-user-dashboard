@@ -15,9 +15,14 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import {processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
 import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
+import { IdamAPI } from '../../app/idam-api/IdamAPI';
 
 @autobind
 export class UserResultsController extends RootController {
+
+  constructor(private readonly idamWrapper: IdamAPI) {
+    super();
+  }
 
   @asyncError
   public async get(req: AuthedRequest, res: Response) {
@@ -34,7 +39,7 @@ export class UserResultsController extends RootController {
 
     let user;
     try {
-      user = await req.scope.cradle.api.getUserV2ById(userUUID);
+      user = await this.idamWrapper.getUserV2ById(userUUID);
     } catch (e) {
       console.log('Failed getUserV2ById call for id: ' + userUUID, e);
       return req.next();
