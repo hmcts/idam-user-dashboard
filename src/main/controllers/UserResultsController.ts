@@ -139,6 +139,6 @@ export class UserResultsController extends RootController {
   }
 
   private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
-    return userB.roleNames.every(role => userA.assignableRoles.includes(role));;
+    return userB.roleNames.every(role => userA.assignableRoles.includes(role));
   }
 }
