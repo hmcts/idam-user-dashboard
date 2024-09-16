@@ -27,7 +27,7 @@ export class RootController {
     const constructedData: PageData = {...data, urls};
 
     if(this.featureFlags) {
-      console.log('this.featureFlags exists')
+      console.log('this.featureFlags exists');
       const featureFlags = await this.featureFlags?.getAllFlagValues();
       console.log('feature flag values exit as %j', featureFlags);
       if(!isObjectEmpty(featureFlags)) {
