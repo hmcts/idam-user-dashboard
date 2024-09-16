@@ -10,8 +10,7 @@ import {
   GENERATING_REPORT_FILE_ERROR,
   GENERATING_REPORT_NO_USERS_MATCHED
 } from '../utils/error';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 @autobind
 export class ViewReportController extends RootController {
   constructor(

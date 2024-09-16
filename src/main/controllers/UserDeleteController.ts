@@ -8,8 +8,7 @@ import {PageError} from '../interfaces/PageData';
 import {isEmpty} from '../utils/utils';
 import {MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR} from '../utils/error';
 import {User} from '../interfaces/User';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 
 @autobind
 export class UserDeleteController extends RootController {

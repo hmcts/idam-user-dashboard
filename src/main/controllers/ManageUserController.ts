@@ -12,8 +12,7 @@ import {
 } from '../utils/error';
 import { USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-const obfuscate = require('obfuscate-email');
+import { IdamAPI } from '../app/idam-api/IdamAPI';const obfuscate = require('obfuscate-email');
 
 @autobind
 export class ManageUserController extends RootController {

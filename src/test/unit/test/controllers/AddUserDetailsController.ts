@@ -90,7 +90,7 @@ describe('Add user details controller', () => {
 
     req.body.email = email;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
-    req.scope.cradle.api = mockApi;
+    
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: false, enablePrivateBeta: true, roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA },
@@ -104,7 +104,7 @@ describe('Add user details controller', () => {
 
     req.body.email = email;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
-    req.scope.cradle.api = mockApi;
+    
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: true, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
@@ -118,7 +118,7 @@ describe('Add user details controller', () => {
 
     req.body.email = email;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [] } };
-    req.scope.cradle.api = mockApi;
+    
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: false, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
@@ -139,7 +139,7 @@ describe('Add user details controller', () => {
     when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockReturnValue(users);
 
     req.body.email = email;
-    req.scope.cradle.api = mockApi;
+    
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('add-user', {
@@ -188,7 +188,7 @@ describe('Add user details controller', () => {
     req.body.surname = name;
     req.body.userType = UserType.Support;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
-    req.scope.cradle.api = mockApi;
+    
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
 
@@ -217,7 +217,7 @@ describe('Add user details controller', () => {
     req.body.surname = '';
     req.body.userType = UserType.Support;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
-    req.scope.cradle.api = mockApi;
+    
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
 
@@ -246,7 +246,7 @@ describe('Add user details controller', () => {
     req.body.surname = '  ';
     req.body.userType = UserType.Support;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
-    req.scope.cradle.api = mockApi;
+    
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
 
@@ -273,7 +273,7 @@ describe('Add user details controller', () => {
     req.body.forename = name;
     req.body.surname = name;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
-    req.scope.cradle.api = mockApi;
+    
 
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
 
@@ -304,7 +304,7 @@ describe('Add user details controller', () => {
     req.body.surname = name;
     req.body.userType = UserType.Professional;
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [] } };
-    req.scope.cradle.api = mockApi;
+    
 
     const expectedContent = {
       roles: [

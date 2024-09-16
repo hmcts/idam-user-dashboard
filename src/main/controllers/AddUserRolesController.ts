@@ -11,8 +11,7 @@ import {ServiceProviderService} from '../app/service-provider-service/ServicePro
 import config from 'config';
 import {UserType} from '../utils/UserType';
 import {InvitationTypes} from '../app/invite-service/Invite';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 @autobind
 export class AddUserRolesController extends RootController {
   constructor(

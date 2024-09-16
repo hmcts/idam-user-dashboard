@@ -23,7 +23,6 @@ describe('Generate report controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
   });
 
   test('Should render the generate report page', async () => {

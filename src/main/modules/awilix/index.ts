@@ -27,8 +27,7 @@ import { InviteService } from '../../app/invite-service/InviteService';
 import { ServiceProviderService } from '../../app/service-provider-service/ServiceProviderService';
 import { ViewReportController } from '../../controllers/ViewReportController';
 import axios from 'axios';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 /**
  * Sets up the dependency injection container
  */

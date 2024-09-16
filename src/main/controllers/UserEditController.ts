@@ -31,8 +31,7 @@ import {
 import { RoleDefinition } from '../interfaces/RoleDefinition';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import config from 'config';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
 @autobind
 export class UserEditController extends RootController {
 

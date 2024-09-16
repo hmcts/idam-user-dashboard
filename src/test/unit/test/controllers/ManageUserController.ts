@@ -37,7 +37,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockReturnValue([]);
 
     req.body.search = email;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
   });
@@ -47,7 +46,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
 
     req.body.search = userId;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
@@ -76,7 +74,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue(results);
 
     req.body.search = email;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + email } } });
   });
@@ -106,7 +103,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersBySsoId).calledWith(testToken, ssoId).mockResolvedValue(results);
 
     req.body.search = ssoId;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
   });
