@@ -82,15 +82,8 @@ export class OidcMiddleware {
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
       if (!req.idam_user_dashboard_session.user.assignableRoles) {
-        if (req.app.locals.container) {
-          console.log('I have a container');
-          if (req.app.locals.container.cradle.idamWrapper) {
-            console.log('there is an idam wrapper');
-          }
-        }
         return req.app.locals.container.cradle.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
           .then((assignableRoles: string[]) => {
-            console.log('got assignable roles %j', assignableRoles);
             req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
