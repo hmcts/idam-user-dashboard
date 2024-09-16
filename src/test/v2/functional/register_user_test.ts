@@ -131,7 +131,13 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
   I.uncheckOption('#hide-disabled');
 
-  I.fillField('#roles__search-box', setupDAO.getAdminRole().name);
+  I.fillField('#roles__search-box', adminRole.name);
+  tryTo(() => {
+    I.dontSee(adminRole.name, '.label');
+    I.say('Admin role not visible yet');
+    I.fillField('#roles__search-box', adminRole.name);
+    I.wait(1);
+  });
   I.retry({ retries: 9, minTimeout: 250 }).see(adminRole.name, '.label');
 
   I.fillField('#roles__search-box', 'iud-filter-role-');

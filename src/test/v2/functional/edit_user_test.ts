@@ -137,6 +137,12 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   I.uncheckOption('#hide-disabled');
 
   I.fillField('#roles__search-box', adminRole.name);
+  tryTo(() => {
+    I.dontSee(adminRole.name, '.label');
+    I.say('Admin role not visible yet');
+    I.fillField('#roles__search-box', adminRole.name);
+    I.wait(1);
+  });
   I.retry({ retries: 9, minTimeout: 250 }).see(adminRole.name, '.label');
 
   I.fillField('#roles__search-box', 'iud-filter-role-');
