@@ -8,7 +8,7 @@ Before(async ({ setupDAO, login }) => {
   login('admin');
 
 });
-/*
+
 Scenario('I as an admin should edit user details successfully',  async ({ I, setupDAO }) => {
   const testUser = await I.haveUser();
   await I.navigateToEditUser(testUser.email);
@@ -127,7 +127,7 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
   const emailDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name:'email'}));
   I.assertTrue(emailDisabled);
 });
-*/
+
 Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-filter-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const adminRole = setupDAO.getAdminRole();
@@ -142,8 +142,12 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   I.fillField('#roles__search-box', 'iud-filter-role-');
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsHidden(I.locateRoleContainer(adminRole.name));
 
+  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(testRole.name));
+  I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
+
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
-  roleCheckboxes.forEach(function () {
-    I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
+  roleCheckboxes.forEach(function (checkbox) {
+    I.assertStartsWith(checkbox, 'iud-filter-role-');
   });
+
 });
