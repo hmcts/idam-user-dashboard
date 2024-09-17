@@ -130,10 +130,14 @@ export = function() {
       return locate('div').withChild(this.locateInput('roles', locateValue));
     },
     async seeIsHidden(location) {
+      const numVisible = await this.grabNumberOfVisibleElements(location);
+      this.say('num visible elements: ' + numVisible);
       const styleValue = await this.grabAttributeFrom(location, 'style');
       this.assertEqual(styleValue, 'display: none;');
     },
     async seeIsNotHidden(location) {
+      const numVisible = await this.grabNumberOfVisibleElements(location);
+      this.say('num visible elements: ' + numVisible);
       const styleValue = await this.grabAttributeFrom(location, 'style');
       if (styleValue) {
         this.assertNotEqual(styleValue, 'display: none;');
