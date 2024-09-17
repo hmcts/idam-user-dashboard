@@ -1,8 +1,6 @@
 import { Application, NextFunction, Request, Response } from 'express';
 import config from 'config';
 import { AuthedRequest } from '../../interfaces/AuthedRequest';
-import { asClass } from 'awilix';
-import { IdamAPI } from '../../app/idam-api/IdamAPI';
 import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
@@ -83,17 +81,13 @@ export class OidcMiddleware {
     }));
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      req.scope = req.app.locals.container.createScope().register({
-        api: asClass(IdamAPI)
-      });
-
       if (!req.idam_user_dashboard_session.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-          .then(assignableRoles => {
+        return req.app.locals.container.cradle.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+          .then((assignableRoles: string[]) => {
             req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
-          .catch(err => {
+          .catch((err: any) => {
             console.log('Failed to get assignable roles', err);
             next(err);
           });

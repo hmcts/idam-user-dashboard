@@ -5,6 +5,7 @@ import { UserEditController } from '../../../../main/controllers/UserEditControl
 import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 jest.mock('config');
 
 describe('User edit controller', () => {
@@ -21,11 +22,10 @@ describe('User edit controller', () => {
   when(config.get).calledWith('providers.moj.externalName').mockReturnValue('MOJ/Justice.gov.uk');
   when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
 
-  const controller = new UserEditController();
+  const controller = new UserEditController(mockApi as unknown as IdamAPI);
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
     req.idam_user_dashboard_session = {access_token: testToken};
   });
 

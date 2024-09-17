@@ -9,6 +9,7 @@ import {mockInviteService} from '../../utils/mockInviteService';
 import {mockServiceProviderService} from '../../utils/mockServiceProviderService';
 import {UserType} from '../../../../main/utils/UserType';
 import {InvitationTypes} from '../../../../main/app/invite-service/Invite';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('Add user roles controller', () => {
   let req: any;
@@ -16,7 +17,7 @@ describe('Add user roles controller', () => {
   const inviteService = mockInviteService();
   inviteService.tryMatchAppointmentTypeByEmail = jest.fn();
   const serviceProviderService = mockServiceProviderService();
-  const controller = new AddUserRolesController(inviteService, serviceProviderService);
+  const controller = new AddUserRolesController(inviteService, serviceProviderService, mockApi as unknown as IdamAPI);
   mockRootController();
 
   const email = 'test@test.com';
@@ -33,7 +34,6 @@ describe('Add user roles controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
   });
 
   test('Should render the add user completion page when assigning the user with a single role', async () => {

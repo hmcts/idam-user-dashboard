@@ -5,13 +5,14 @@ import { Response } from 'express';
 import { parse } from 'json2csv';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
-const {Logger} = require('@hmcts/nodejs-logging');
+import { IdamAPI } from '../app/idam-api/IdamAPI';const {Logger} = require('@hmcts/nodejs-logging');
 
 @autobind
 export class DownloadReportController extends RootController {
   constructor(
     private readonly logger: typeof Logger,
-    private readonly reportGenerator: ReportsHandler
+    private readonly reportGenerator: ReportsHandler,
+    private readonly idamWrapper: IdamAPI
   ) {
     super();
   }
@@ -41,7 +42,7 @@ export class DownloadReportController extends RootController {
     const roles = (await this.reportGenerator.getReportQueryRoles(reportUUID));
     this.logger.info(`Fetching data for report ${reportUUID} for roles ${roles}.`);
     do {
-      reportData = (await req.scope.cradle.api.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 2000, pageNo))
+      reportData = (await this.idamWrapper.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
       if (reportData && reportData.length > 0) {
         reportCsv += parse(reportData);

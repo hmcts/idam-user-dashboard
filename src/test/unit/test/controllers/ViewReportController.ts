@@ -8,6 +8,7 @@ import {
   GENERATING_REPORT_NO_USERS_MATCHED,
 } from '../../../../main/utils/error';
 import { User } from '../../../../main/interfaces/User';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('Generate report controller', () => {
   mockRootController();
@@ -18,12 +19,11 @@ describe('Generate report controller', () => {
     saveReportQueryRoles: jest.fn(),
     getReportQueryRoles: jest.fn(),
   };
-  const controller = new ViewReportController(mockReportGenerator);
+  const controller = new ViewReportController(mockReportGenerator, mockApi as unknown as IdamAPI);
   const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
     req.idam_user_dashboard_session = {access_token: testToken};
   });
 

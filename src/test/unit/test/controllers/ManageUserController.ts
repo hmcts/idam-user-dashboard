@@ -10,12 +10,13 @@ import {
   NO_USER_MATCHES_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('Manage user controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new ManageUserController();
+  const controller = new ManageUserController(mockApi as unknown as IdamAPI);
   const email = 'john.smith@test.com';
   const userId = '123';
   const userId2 = '234';
@@ -36,7 +37,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockReturnValue([]);
 
     req.body.search = email;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
   });
@@ -46,7 +46,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
 
     req.body.search = userId;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
@@ -75,7 +74,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue(results);
 
     req.body.search = email;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + email } } });
   });
@@ -105,7 +103,6 @@ describe('Manage user controller', () => {
     when(mockApi.searchUsersBySsoId).calledWith(testToken, ssoId).mockResolvedValue(results);
 
     req.body.search = ssoId;
-    req.scope.cradle.api = mockApi;
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
   });

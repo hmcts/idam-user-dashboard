@@ -1,7 +1,6 @@
 import { mockRootController } from '../../utils/mockRootController';
 import { mockResponse } from '../../utils/mockResponse';
 import { mockRequest } from '../../utils/mockRequest';
-import { mockApi } from '../../utils/mockApi';
 import { GenerateReportController } from '../../../../main/controllers/GenerateReportController';
 import {
   GENERATING_REPORT_CITIZEN_ERROR,
@@ -23,7 +22,6 @@ describe('Generate report controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
   });
 
   test('Should render the generate report page', async () => {

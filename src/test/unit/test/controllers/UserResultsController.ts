@@ -6,6 +6,7 @@ import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
 import {AccountStatus, RecordType} from '../../../../main/interfaces/V2User';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 jest.mock('config');
 
 describe('User results controller', () => {
@@ -21,7 +22,7 @@ describe('User results controller', () => {
   when(config.get).calledWith('providers.moj.idFieldName').mockReturnValue('MOJ User ID');
   when(config.get).calledWith('accounts.status.lock.durationMinutes').mockReturnValue(61);
 
-  const controller = new UserResultsController();
+  const controller = new UserResultsController(mockApi as unknown as IdamAPI);
   const email = 'john.smith@test.com';
   const userId = '123';
   const ssoId = '456';
@@ -51,7 +52,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -93,7 +94,7 @@ describe('User results controller', () => {
 
     req.params = { userUUID: userId };
     req.body.search = email;
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -133,7 +134,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -171,7 +172,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -211,7 +212,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -248,7 +249,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -285,7 +286,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockReturnValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -323,7 +324,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockReturnValue(results[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details',{
@@ -374,7 +375,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockReturnValue(users[0]);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -415,7 +416,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -456,7 +457,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -498,7 +499,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
@@ -533,7 +534,7 @@ describe('User results controller', () => {
     when(mockApi.getUserV2ById).calledWith(userId).mockResolvedValue(getUserByIdResult);
 
     req.params = { userUUID: userId };
-    req.scope.cradle.api = mockApi;
+    
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('user-details', {
