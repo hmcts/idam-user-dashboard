@@ -141,7 +141,7 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
   
   I.fillField('#roles__search-box', 'iud-filter-role-');
-  await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3))
+  await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsHidden(I.locateRoleContainer(adminRole.name));
 
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(testRole.name));
