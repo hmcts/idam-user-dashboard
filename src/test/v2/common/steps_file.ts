@@ -131,11 +131,11 @@ export = function() {
     },
     async seeIsHidden(location) {
       const numVisible = await this.grabNumberOfVisibleElements(location);
-      this.assertTrue(numVisible == 0, "There are visible elements matching locator: " + numVisible);
+      this.assertTrue(numVisible == 0, 'There are visible elements matching locator: ' + numVisible);
     },
     async seeIsNotHidden(location) {
       const numVisible = await this.grabNumberOfVisibleElements(location);
-      this.assertTrue(numVisible > 0, "No visible elements matching locator");
+      this.assertTrue(numVisible > 0, 'No visible elements matching locator');
     },
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
