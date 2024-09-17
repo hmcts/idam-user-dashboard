@@ -73,10 +73,22 @@ export = function() {
     },
     async clickToExpectProblem(clickText : String) {
       this.retry(CLICK_RETRY).click(clickText);
+      await tryTo(() => {
+        this.see('Bad Gateway');
+        this.say('Oh no, there is a bad gateway. Let me try again');
+        this.wait(1);
+        this.refreshPage();
+      });
       this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
     },
     async clickToExpectSuccess(clickText : String) {
       this.retry(CLICK_RETRY).click(clickText);
+      await tryTo(() => {
+        this.see('Bad Gateway');
+        this.say('Oh no, there is a bad gateway. Let me try again');
+        this.wait(1);
+        this.refreshPage();
+      });
       this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
     },
     lockTestUser(email : string) {
@@ -113,6 +125,17 @@ export = function() {
     },
     locateInput(locateName: string, locateValue: string) {
       return locate('input').withAttr({name: locateName, value: locateValue});
+    },
+    locateRoleContainer(locateValue: string) {
+      return locate('div').withChild(this.locateInput('roles', locateValue));
+    },
+    async seeIsHidden(location) {
+      const numVisible = await this.grabNumberOfVisibleElements(location);
+      this.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
+    },
+    async seeIsNotHidden(location) {
+      const numVisible = await this.grabNumberOfVisibleElements(location);
+      this.assertTrue(numVisible > 0, 'Visible elements matching locator: ' + numVisible);
     },
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
