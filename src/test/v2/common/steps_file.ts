@@ -17,6 +17,13 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
+    loginAsWithRetry(email : string, password : string) {
+      tryTo(() => this.loginAs(email, password));
+      tryTo(() => {
+        this.dontSee('What do you want to do?', 'h1');
+        this.loginAs(email, password);
+      });
+    },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
       this.amOnPage(expectedUrl);
       await tryTo(() => {
