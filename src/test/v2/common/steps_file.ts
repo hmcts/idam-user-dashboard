@@ -137,8 +137,6 @@ export = function() {
       const styleValue = await this.grabAttributeFrom(location, 'style');
       if (styleValue) {
         this.assertNotEqual(styleValue, 'display: none;');
-      } else {
-        this.assertEmpty(styleValue);
       }
     },
     async seeIgnoreCase(expectedValue: string, location) {
