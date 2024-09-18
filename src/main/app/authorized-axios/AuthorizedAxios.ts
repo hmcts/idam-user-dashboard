@@ -78,10 +78,10 @@ export class AuthorizedAxios extends Axios {
         scope: this.oauth.clientScope,
       })
     ).then(response => this.setToken(response.data.access_token))
-    .catch(e => {
-      console.log('(console) Failed to get token - ' + e);
-      throw e;
-    });
+      .catch(e => {
+        console.log('(console) Failed to get token - ' + e);
+        throw e;
+      });
   };
 
   private autoRefresh = () => {
@@ -111,7 +111,7 @@ export class AuthorizedAxios extends Axios {
       if (this.oauth.token && !config.url?.endsWith('/o/token')) {
         config.headers = config.headers ?? {} as AxiosRequestHeaders;
         if (this.oauth.token.raw) {
-            config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
+          config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
         } else {
           console.log('(console) skipped adding bearer, token is empty');
         }
