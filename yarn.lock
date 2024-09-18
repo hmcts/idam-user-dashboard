@@ -9050,10 +9050,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:5.6.0":
-  version: 5.6.0
-  resolution: "govuk-frontend@npm:5.6.0"
-  checksum: 10/ae4e7d42e36bf7393bebbfa4a44bd3b03fc36aa4d1886fd35a02c4e2c344f3fdf2bde86c5aa7afbdaf0a9d4d61ac03b72f19534441dbed22b11887c91b90d2f8
+"govuk-frontend@npm:5.3.1":
+  version: 5.3.1
+  resolution: "govuk-frontend@npm:5.3.1"
+  checksum: 10/d909334d28c1985a50bde203f94e024fc3d99faca3c5f50cf0d6a0bdfe185f1c98ab766bba3d5033c7a9059884a1489b2157cc055f444b8708fc91e042f83aa4
   languageName: node
   linkType: hard
 
@@ -9538,7 +9538,7 @@ __metadata:
     express-openid-connect: "npm:^2.17.1"
     express-session: "npm:^1.17.3"
     glob: "npm:^10.3.10"
-    govuk-frontend: "npm:5.6.0"
+    govuk-frontend: "npm:5.3.1"
     helmet: "npm:^5.1.1"
     html-webpack-plugin: "npm:^5.6.0"
     ioredis: "npm:^5.4.1"
