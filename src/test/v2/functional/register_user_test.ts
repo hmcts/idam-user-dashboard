@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 
+const ACTION_RETRY = { retries: 9, minTimeout: 250 };
+
 Feature('v2_register_user');
 
 Before(async ({ setupDAO, login }) => {
@@ -21,8 +23,7 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   I.fillField('#surname', registerSurname);
   I.click('Support');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.wait(3);
-  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToNavigate('Save', '/user/add/roles', 'User registered');
 
   const testingToken = await setupDAO.getToken();
@@ -45,8 +46,7 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   I.fillField('#surname', registerSurname);
   I.click('Professional');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.wait(3);
-  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToNavigate('Save', '/user/add/roles', 'User registered');
 
   const testingToken = await setupDAO.getToken();
@@ -129,15 +129,15 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   I.fillField('#surname', faker.person.lastName());
   I.click('Support');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.uncheckOption('#hide-disabled');
+  I.retry(ACTION_RETRY).uncheckOption('#hide-disabled');
 
   I.fillField('#roles__search-box', adminRole.name);
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(adminRole.name), 3));
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
+  await I.retry(ACTION_RETRY).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
   
   I.fillField('#roles__search-box', 'iud-filter-role-');
   await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsHidden(I.locateRoleContainer(adminRole.name));
+  await I.retry(ACTION_RETRY).seeIsHidden(I.locateRoleContainer(adminRole.name));
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
   roleCheckboxes.forEach(function (checkbox) {
