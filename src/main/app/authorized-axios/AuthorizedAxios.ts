@@ -77,7 +77,11 @@ export class AuthorizedAxios extends Axios {
         'client_secret': this.oauth.clientSecret,
         scope: this.oauth.clientScope,
       })
-    ).then(response => this.setToken(response.data.access_token));
+    ).then(response => this.setToken(response.data.access_token))
+    .catch(e => {
+      console.log('(console) Failed to get token - ' + e);
+      throw e;
+    });
   };
 
   private autoRefresh = () => {
@@ -106,7 +110,11 @@ export class AuthorizedAxios extends Axios {
     this.interceptors.request.use(config => {
       if (this.oauth.token && !config.url?.endsWith('/o/token')) {
         config.headers = config.headers ?? {} as AxiosRequestHeaders;
-        config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
+        if (this.oauth.token.raw) {
+            config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
+        } else {
+          console.log('(console) skipped adding bearer, token is empty');
+        }
       }
       return config;
     });
@@ -117,7 +125,12 @@ export class AuthorizedAxios extends Axios {
       response => response,
       error => {
         if (error?.response?.status === 401) {
-          return this.refreshToken().then(() => this.request(error.config));
+          console.log('(console) Attempting token refresh and retry of request');
+          return this.refreshToken().then(() => this.request(error.config))
+            .catch(e => {
+              console.log('(console) Interceptor failed to refresh - ' + e);
+              throw e;
+            });
         }
         if (error?.response) {
           console.log('axios failed, response code ' + error.response.status + ', ' + JSON.stringify(error.response.data));
