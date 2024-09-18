@@ -12,10 +12,16 @@ import {
 } from '../utils/error';
 import { USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
+import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 const obfuscate = require('obfuscate-email');
 
 @autobind
 export class ManageUserController extends RootController {
+
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
+  }
 
   public get(req: AuthedRequest, res: Response) {
     return super.get(req, res, 'manage-user');
@@ -49,16 +55,16 @@ export class ManageUserController extends RootController {
         this.postError(req, res, INVALID_EMAIL_FORMAT_ERROR);
         return;
       }
-      return await req.scope.cradle.api.searchUsersByEmail(input);
+      return await this.idamWrapper.searchUsersByEmail(req.idam_user_dashboard_session.access_token, input);
     }
 
     // only search for SSO ID if searching with the user ID does not return any result
-    return await req.scope.cradle.api.getUserById(input)
+    return await this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, input)
       .then(user => {
         return [user];
       })
       .catch(() => {
-        return req.scope.cradle.api.searchUsersBySsoId(input);
+        return this.idamWrapper.searchUsersBySsoId(req.idam_user_dashboard_session.access_token, input);
       });
   }
 

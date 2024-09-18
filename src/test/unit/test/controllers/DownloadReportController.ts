@@ -5,6 +5,7 @@ import { DownloadReportController } from '../../../../main/controllers/DownloadR
 import { User } from '../../../../main/interfaces/User';
 import { when } from 'jest-when';
 import * as json2csv from 'json2csv';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 const {Logger} = require('@hmcts/nodejs-logging');
 
 jest.mock('json2csv');
@@ -36,17 +37,18 @@ describe('Download report controller', () => {
       roles: ['IDAM_SUPER_USER'],
     },
   ] as User[];
-  const controller = new DownloadReportController(mockLogger, mockReportGenerator);
+  const controller = new DownloadReportController(mockLogger, mockReportGenerator, mockApi as unknown as IdamAPI);
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
     res = mockResponse();
-    req.scope.cradle.api = mockApi;
   });
 
   test('Should send report that exists', async () => {
     const fileData = 'someFileData';
     req.params = { reportUUID: 'someUUID' };
+    req.idam_user_dashboard_session = {access_token: testToken};
 
     mockReportGenerator.getReportQueryRoles.mockResolvedValue(query);
     mockApi.getUsersWithRoles.mockReturnValueOnce(users).mockReturnValue([]);

@@ -14,15 +14,15 @@ const {Logger} = require('@hmcts/nodejs-logging');
 
 export class IdamAPI {
   constructor(
-    private readonly userAxios: AxiosInstance,
     private readonly idamApiAxios: AxiosInstance,
+    private readonly simpleAxios: AxiosInstance,
     private readonly logger : typeof Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
 
-  private getUserDetails(type: string, query: string): Promise<User[]> {
-    return this.userAxios
-      .get('/api/v1/users', { params: { 'query': `${type}:` + query } })
+  private getUserDetails(token: string, type: string, query: string): Promise<User[]> {
+    return this.simpleAxios
+      .get('/api/v1/users', {headers: {Authorization: 'Bearer ' + token}, params: { 'query': `${type}:` + query } })
       .then(results => results.data)
       .catch(error => {
         const errorMessage = `Error retrieving user by ${type} from IDAM API`;
@@ -32,17 +32,17 @@ export class IdamAPI {
       });
   }
 
-  public searchUsersByEmail(email: string): Promise<User[]> {
-    return this.getUserDetails(SearchType.Email, email);
+  public searchUsersByEmail(token: string, email: string): Promise<User[]> {
+    return this.getUserDetails(token, SearchType.Email, email);
   }
 
-  public searchUsersBySsoId(id: string): Promise<User[]> {
-    return this.getUserDetails(SearchType.SsoId, id);
+  public searchUsersBySsoId(token: string, id: string): Promise<User[]> {
+    return this.getUserDetails(token, SearchType.SsoId, id);
   }
 
-  public getUserById(id: string): Promise<User> {
-    return this.userAxios
-      .get('/api/v1/users/' + id)
+  public getUserById(token: string, id: string): Promise<User> {
+    return this.simpleAxios
+      .get('/api/v1/users/' + id, {headers: {Authorization: 'Bearer ' + token}})
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error retrieving user by ID from IDAM API';
@@ -64,9 +64,9 @@ export class IdamAPI {
       });
   }
 
-  public editUserById(id: string, fields: Partial<User>): Promise<User> {
-    return this.userAxios
-      .patch('/api/v1/users/' + id, fields)
+  public editUserById(token: string, id: string, fields: Partial<User>): Promise<User> {
+    return this.simpleAxios
+      .patch('/api/v1/users/' + id, fields, {headers: {Authorization: 'Bearer ' + token}})
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error patching user details in IDAM API';
@@ -87,9 +87,9 @@ export class IdamAPI {
       });
   }
 
-  public removeSsoById(id: string) {
-    return this.userAxios
-      .delete('/api/v1/users/' + id + '/sso')
+  public removeSsoById(token: string, id: string) {
+    return this.simpleAxios
+      .delete('/api/v1/users/' + id + '/sso', {headers: {Authorization: 'Bearer ' + token}})
       .catch(error => {
         const errorMessage = 'Error removing user SSO by ID from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
@@ -98,9 +98,9 @@ export class IdamAPI {
       });
   }
 
-  public registerUser(user: UserRegistrationDetails): Promise<void> {
-    return this.userAxios
-      .post('/api/v1/users/registration', user)
+  public registerUser(token: string, user: UserRegistrationDetails): Promise<void> {
+    return this.simpleAxios
+      .post('/api/v1/users/registration', user, {headers: {Authorization: 'Bearer ' + token}})
       .then(results => results.data)
       .catch(error => {
         const errorMessage = error.response?.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
@@ -111,7 +111,7 @@ export class IdamAPI {
   }
 
   public getAllServices(): Promise<Service[]> {
-    return this.userAxios
+    return this.simpleAxios
       .get('/services')
       .then(results => results.data)
       .catch(error => {
@@ -153,9 +153,9 @@ export class IdamAPI {
     return Array.from(collection);
   }
 
-  public grantRolesToUser(id: string, roleDefinitions: RoleDefinition[]): Promise<void> {
-    return this.userAxios
-      .post('/api/v1/users/' + id + '/roles', roleDefinitions)
+  public grantRolesToUser(token: string, id: string, roleDefinitions: RoleDefinition[]): Promise<void> {
+    return this.simpleAxios
+      .post('/api/v1/users/' + id + '/roles', roleDefinitions, {headers: {Authorization: 'Bearer ' + token}})
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error granting user roles in IDAM API';
@@ -165,9 +165,9 @@ export class IdamAPI {
       });
   }
 
-  public removeRoleFromUser(id: string, roleName: string): Promise<void> {
-    return this.userAxios
-      .delete('/api/v1/users/' + id + '/roles/' + roleName)
+  public removeRoleFromUser(token: string, id: string, roleName: string): Promise<void> {
+    return this.simpleAxios
+      .delete('/api/v1/users/' + id + '/roles/' + roleName, {headers: {Authorization: 'Bearer ' + token}})
       .then(results => results.data)
       .catch(error => {
         const errorMessage = 'Error deleting user role in IDAM API';
@@ -177,7 +177,7 @@ export class IdamAPI {
       });
   }
 
-  public getUsersWithRoles(roles: string[], size: number = 20, page: number = 0): Promise<User[]> {
+  public getUsersWithRoles(token: string, roles: string[], size: number = 20, page: number = 0): Promise<User[]> {
     let queryString = '';
     roles.forEach((role, index, roles) => {
       queryString += 'roles:' + role;
@@ -186,9 +186,10 @@ export class IdamAPI {
       }
     });
 
-    return this.userAxios
+    return this.simpleAxios
       .get(`/api/v1/users?size=${size}&page=${page}&query=(${queryString})`,
         {
+          headers: {Authorization: 'Bearer ' + token},
           timeout: 20000
         })
       .then(results => results.data)

@@ -46,7 +46,7 @@ Scenario('I as an admin can delete archived user successfully',  async ({ I }) =
   I.checkOption('Manage an existing user');
   await I.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
   I.fillField('search', testUser.email);
-  I.clickToExpectProblem('Search');
+  await I.clickToExpectProblem('Search');
   I.see('No user matches your search for: ' + testUser.email);
 });
 

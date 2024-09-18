@@ -6,16 +6,18 @@ import { mockApi } from '../../utils/mockApi';
 import { when } from 'jest-when';
 import { MISSING_OPTION_ERROR, USER_REMOVE_SSO_ERROR } from '../../../../main/utils/error';
 import {  USER_DETAILS_URL } from '../../../../main/utils/urls';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('User remove SSO controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new UserRemoveSsoController();
+  const controller = new UserRemoveSsoController(mockApi as unknown as IdamAPI);
+  const testToken = 'test-token';
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
+    req.idam_user_dashboard_session = {access_token: testToken};
   });
 
   test('Should render the user remove sso page', async () => {
@@ -29,7 +31,7 @@ describe('User remove SSO controller', () => {
     };
 
     req.body = { _userId: userData.id };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData } });
@@ -46,8 +48,8 @@ describe('User remove SSO controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.removeSsoById).calledWith(userData.id).mockReturnValue(Promise.resolve());
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.removeSsoById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
     expect(res.render).toBeCalledWith('remove-sso-user-successful', { content: { user: userData } });
@@ -64,7 +66,7 @@ describe('User remove SSO controller', () => {
     };
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'false' };
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
     expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
@@ -82,11 +84,11 @@ describe('User remove SSO controller', () => {
 
     const error = { confirmRadio: { message: MISSING_OPTION_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData }, error });
   });
 
@@ -102,13 +104,13 @@ describe('User remove SSO controller', () => {
 
     const error = { userRemoveSsoForm: { message: USER_REMOVE_SSO_ERROR } };
 
-    when(mockApi.getUserById).calledWith(userData.id).mockReturnValue(Promise.resolve(userData));
-    when(mockApi.removeSsoById).calledWith(userData.id).mockReturnValue(Promise.reject('Failed'));
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+    when(mockApi.removeSsoById).calledWith(testToken, userData.id).mockReturnValue(Promise.reject('Failed'));
 
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(userData.id);
+    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
     expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData }, error });
   });
 });

@@ -4,7 +4,7 @@ import { AuthedRequest } from '../../interfaces/AuthedRequest';
 import { asClass, asValue } from 'awilix';
 import { IdamAPI } from '../../app/idam-api/IdamAPI';
 import axios, { AxiosInstance } from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { Session } from 'express-openid-connect';
@@ -15,7 +15,6 @@ import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
 import { auth } from 'express-openid-connect';
 const {Logger} = require('@hmcts/nodejs-logging');
-import { TelemetryClient } from 'applicationinsights';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -27,7 +26,7 @@ export class OidcMiddleware {
   private readonly accessRole: string = config.get('RBAC.access');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
-  constructor(private readonly logger: typeof Logger, private readonly telemetryClient: TelemetryClient) {}
+  constructor(private readonly logger: typeof Logger) {}
 
   public enableFor(app: Application): void {
 
@@ -85,18 +84,13 @@ export class OidcMiddleware {
     }));
 
     app.use((req: AuthedRequest, res: Response, next: NextFunction) => {
-      req.scope = req.app.locals.container.createScope().register({
-        userAxios: asValue(this.createAuthedAxiosInstance(req.idam_user_dashboard_session.access_token, this.telemetryClient)),
-        api: asClass(IdamAPI)
-      });
-
       if (!req.idam_user_dashboard_session.user.assignableRoles) {
-        return req.scope.cradle.api.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-          .then(assignableRoles => {
+        return req.app.locals.container.cradle.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+          .then((assignableRoles: string[]) => {
             req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
             next();
           })
-          .catch(err => {
+          .catch((err: any) => {
             console.log('Failed to get assignable roles', err);
             next(err);
           });
@@ -124,23 +118,6 @@ export class OidcMiddleware {
     }
 
     return new fileStore({ path: '/tmp' });
-  }
-
-  private createAuthedAxiosInstance(accessToken: string, telemetryClient: TelemetryClient): AxiosInstance {
-    const createdAxios = axios.create({
-      baseURL: config.get('services.idam.url.api'),
-      headers: {Authorization: 'Bearer ' + accessToken}
-    });
-    createdAxios.interceptors.response.use(function (response) {
-      return response;
-    }, function (error) {
-      if (error?.response) {
-        console.log('Axios call failed with response code ' + error.response.status + ', data: ' + JSON.stringify(error.response.data));
-        telemetryClient.trackException({exception: error});
-      }
-      return Promise.reject(error);
-    });
-    return createdAxios;
   }
 
 }

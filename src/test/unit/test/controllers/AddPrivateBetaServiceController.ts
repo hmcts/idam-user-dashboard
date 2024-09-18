@@ -6,12 +6,13 @@ import { AddPrivateBetaServiceController } from '../../../../main/controllers/Ad
 import { MISSING_PRIVATE_BETA_SERVICE_ERROR } from '../../../../main/utils/error';
 import { when } from 'jest-when';
 import { mockInviteService } from '../../utils/mockInviteService';
+import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 describe('Add private beta service controller', () => {
   let req: any;
   const res = mockResponse();
   const inviteService = mockInviteService();
-  const controller = new AddPrivateBetaServiceController(inviteService);
+  const controller = new AddPrivateBetaServiceController(inviteService, mockApi as unknown as IdamAPI);
   mockRootController();
 
   const email = 'test@test.com';
@@ -59,7 +60,6 @@ describe('Add private beta service controller', () => {
 
   beforeEach(() => {
     req = mockRequest();
-    req.scope.cradle.api = mockApi;
   });
 
   test('Should render the add user completion page when a service is selected', async () => {

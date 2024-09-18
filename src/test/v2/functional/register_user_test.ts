@@ -131,11 +131,13 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
   I.uncheckOption('#hide-disabled');
 
-  I.fillField('#roles__search-box', setupDAO.getAdminRole().name);
-  I.retry({ retries: 9, minTimeout: 250 }).see(adminRole.name), '.label';
-
+  I.fillField('#roles__search-box', adminRole.name);
+  await tryTo(() => I.waitForVisible(I.locateRoleContainer(adminRole.name), 3));
+  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
+  
   I.fillField('#roles__search-box', 'iud-filter-role-');
-  I.retry({ retries: 9, minTimeout: 250 }).dontSee(adminRole.name), '.label';
+  await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
+  await I.retry({ retries: 9, minTimeout: 250 }).seeIsHidden(I.locateRoleContainer(adminRole.name));
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
   roleCheckboxes.forEach(function (checkbox) {

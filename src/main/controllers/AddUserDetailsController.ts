@@ -17,12 +17,18 @@ import { constructAllRoleAssignments } from '../utils/roleUtils';
 import { UserType } from '../utils/UserType';
 import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
 import { V2Role } from '../interfaces/V2Role';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 export const ROLE_HINT_WITH_PRIVATE_BETA = 'Private Beta Citizen is a citizen who is trialling a new function. Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 export const ROLE_HINT_WITHOUT_PRIVATE_BETA = 'Professional is an external professional e.g. a caseworker. Support is an internal employee e.g. CFT Level 2 Support.';
 
 @autobind
 export class AddUserDetailsController extends RootController {
+
+  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+    super(featureFlags);
+  }
+
   public get(req: AuthedRequest, res: Response) {
     return super.get(req, res, 'add-user-details');
   }
@@ -45,10 +51,10 @@ export class AddUserDetailsController extends RootController {
     }
 
     // check if the user with the same email already exists
-    const users = await req.scope.cradle.api.searchUsersByEmail(email);
+    const users = await this.idamWrapper.searchUsersByEmail(req.idam_user_dashboard_session.access_token, email);
     if (users.length == 0) {
-      const allServices = await req.scope.cradle.api.getAllServices();
-      const rolesMap = await this.getRolesMap(req);
+      const allServices = await this.idamWrapper.getAllServices();
+      const rolesMap = await this.getRolesMap();
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
       const enablePrivateBeta = req.idam_user_dashboard_session.user.assignableRoles.includes(UserType.Citizen);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
@@ -66,8 +72,8 @@ export class AddUserDetailsController extends RootController {
     Object.keys(fields).forEach(field => fields[field] = (typeof fields[field] === 'string') ? fields[field].trim(): fields[field]);
     const error = this.validateFields(fields);
     const user = await this.constructUserDetails(fields);
-    const allServices = await req.scope.cradle.api.getAllServices();
-    const rolesMap = await this.getRolesMap(req);
+    const allServices = await this.idamWrapper.getAllServices();
+    const rolesMap = await this.getRolesMap();
 
     if (!isObjectEmpty(error)) {
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
@@ -87,7 +93,7 @@ export class AddUserDetailsController extends RootController {
         selectedService: ''
       }});
     } else {
-      const allRoles = await req.scope.cradle.api.getAllV2Roles();
+      const allRoles = await this.idamWrapper.getAllV2Roles();
       const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
       return super.post(req, res, 'add-user-roles', { content: { user: user, roles: roleAssignment } });
     }
@@ -121,8 +127,8 @@ export class AddUserDetailsController extends RootController {
     return hasProperty(fields, 'userType') ? fields.userType : '';
   }
 
-  private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
-    const allRoles = await req.scope.cradle.api.getAllV2Roles();
+  private async getRolesMap(): Promise<Map<string, V2Role>> {
+    const allRoles = await this.idamWrapper.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])

@@ -10,20 +10,23 @@ import { UserType } from '../utils/UserType';
 import { Service } from '../interfaces/Service';
 import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
-
+import { IdamAPI } from '../app/idam-api/IdamAPI';
+import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
   constructor(
     private readonly inviteService: InviteService,
+    private readonly idamWrapper: IdamAPI,
+    protected featureFlags?: FeatureFlags
   ) {
-    super();
+    super(featureFlags);
   }
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    const allServices = await req.scope.cradle.api.getAllServices();
+    const allServices = await this.idamWrapper.getAllServices();
     const fields = req.body;
-    const rolesMap = await this.getRolesMap(req);
+    const rolesMap = await this.getRolesMap();
     const privateBetaServices = getServicesForSelect(allServices, rolesMap);
     const user = {
       email: fields._email,
@@ -39,7 +42,7 @@ export class AddPrivateBetaServiceController extends RootController {
     }
 
     const selectedService = allServices.find(service => service.label === fields.service);
-    const rolesToAdd = await this.getRolesToRegisterUser(req, allServices, fields.service);
+    const rolesToAdd = await this.getRolesToRegisterUser(allServices, fields.service);
 
     return this.inviteService.inviteUser({
       email: fields._email,
@@ -61,10 +64,10 @@ export class AddPrivateBetaServiceController extends RootController {
       });
   }
 
-  private async getRolesToRegisterUser(req: AuthedRequest, allServices: Service[], serviceField: string): Promise<string[]> {
+  private async getRolesToRegisterUser(allServices: Service[], serviceField: string): Promise<string[]> {
     const selectedService = allServices.find(service => service.label === serviceField);
     const rolesToAdd: string[] = [UserType.Citizen];
-    const rolesMap = await this.getRolesMap(req);
+    const rolesMap = await this.getRolesMap();
 
     selectedService.onboardingRoles
       .filter(r => rolesMap.has(r))
@@ -72,8 +75,8 @@ export class AddPrivateBetaServiceController extends RootController {
     return rolesToAdd;
   }
 
-  private async getRolesMap(req: AuthedRequest): Promise<Map<string, V2Role>> {
-    const allRoles = await req.scope.cradle.api.getAllV2Roles();
+  private async getRolesMap(): Promise<Map<string, V2Role>> {
+    const allRoles = await this.idamWrapper.getAllV2Roles();
     const rolesMap = new Map(allRoles
       .filter(role => role !== undefined)
       .map(role => [role.id, role])
