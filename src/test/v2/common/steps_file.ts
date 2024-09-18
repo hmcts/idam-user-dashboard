@@ -6,7 +6,7 @@ const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
 
 export = function() {
   return actor({
-    loginAs(email : string, password : string) {
+    doLogin(email : string, password : string) {
       this.amOnPage('/');
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
@@ -17,11 +17,11 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
-    loginAsWithRetry(email : string, password : string) {
-      tryTo(() => this.loginAs(email, password));
+    loginAs(email : string, password : string) {
+      tryTo(() => this.doLogin(email, password));
       tryTo(() => {
         this.dontSee('What do you want to do?', 'h1');
-        this.loginAs(email, password);
+        this.doLogin(email, password);
       });
     },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
