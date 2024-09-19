@@ -37,12 +37,12 @@ export = function() {
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
-      this.fillField('search', searchValue);
+      await this.fillField('search', searchValue);
       await this.clickToNavigate('Search', '/details', 'User Details');
     },
     async navigateToSearchUser() {
       await this.goToPage('/', 'What do you want to do?');
-      this.checkOption('Manage an existing user');
+      await this.checkOption('Manage an existing user');
       await this.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
     },
     async navigateToEditUser(searchValue : string) {
@@ -51,12 +51,12 @@ export = function() {
     },
     async navigateToGenerateReport() {
       await this.goToPage('/', 'What do you want to do?');
-      this.checkOption('Generate a user report');
+      await this.checkOption('Generate a user report');
       await this.clickToNavigate('Continue', '/reports', 'Generate report');
     },
     async navigateToRegisterUser() {
       await this.goToPage('/', 'What do you want to do?');
-      this.checkOption('Add a new user');
+      await this.checkOption('Add a new user');
       await this.clickToNavigate('Continue', '/user/add', 'Add new user email');
     },
     seeAfterClick(seeValue : string, location) {
