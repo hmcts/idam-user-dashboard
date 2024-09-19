@@ -84,6 +84,7 @@ shared_config.plugins = {
       admin: {
         // loginAs function is defined in `steps_file.js`
         login: (I) => {
+          I.say('performing autologin');
           const adminIdentity = codeceptjs.container.support('adminIdentity');
           I.loginAs(adminIdentity.email, adminIdentity.secret);
           I.say('Completed autologin');
