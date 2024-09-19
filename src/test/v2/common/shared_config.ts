@@ -102,8 +102,5 @@ shared_config.plugins = {
   },
   tryTo: {
     enabled: true
-  },
-  retryTo: {
-    enabled: true
   }
 };
