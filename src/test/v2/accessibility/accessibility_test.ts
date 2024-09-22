@@ -5,12 +5,12 @@ Before(async ({ setupDAO, login }) => {
   login('admin');
 });
 
-// Scenario('I am on manage user page',  async ({ I }) => {
-//   const testUser = await I.haveUser();
-//   await I.navigateToManageUser(testUser.email);
+Scenario('I am on manage user page',  async ({ I }) => {
+  const testUser = await I.haveUser();
+  await I.navigateToManageUser(testUser.email);
 
-//   I.checkA11y('manage-user-a11y-audit.html');
-// });
+  I.checkA11y('manage-user-a11y-audit.html');
+});
 
 Scenario('I am on search user page',  async ({ I }) => {
   await I.navigateToSearchUser();
