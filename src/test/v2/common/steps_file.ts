@@ -1,5 +1,5 @@
 // in this file you can append custom step methods to 'I' object
-import { injectAxe, checkA11y } from 'axe-playwright';
+//import { injectAxe, checkA11y } from 'axe-playwright';
 
 const CLICK_RETRY = { retries: 3, minTimeout: 500, maxTimeout: 5000 };
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
@@ -167,21 +167,22 @@ export = function() {
       return rsp;
     },
     checkA11y(fileName: string) {
-      this.runA11yCheck({ reportFileName: fileName });
-      this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
-        await injectAxe(page);
-        //await checkA11y(page);
-        await checkA11y(page, {
-          // rules: {
-          //   'color-contrast': { enabled: true }, 
-          //   'image-alt': { enabled: false },    
-          // },
-          runOnly: {
-            type: 'tag',
-            values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa']        
-          }
-        });
-      });
+      //this.runA11yCheck({ reportFileName: fileName });
+      try {
+        this.runA11yCheck({ reportFileName: fileName });
+      } catch (e) {
+        console.error('Accessibility issues found:', e);
+        throw new Error('Accessibility check failed, breaking pipeline!');
+      }
+      // this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
+      //   await injectAxe(page);
+      //   await checkA11y(page, {
+      //     runOnly: {
+      //       type: 'tag',
+      //       values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa']        
+      //     }
+      //   });
+      // });
     },
   });
 }
