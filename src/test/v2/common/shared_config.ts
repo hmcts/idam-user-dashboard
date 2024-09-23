@@ -28,7 +28,7 @@ shared_config.helpers = {
     //       'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'
     //     ],
     //   },
-    },
+    // },
     outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html',
   },
