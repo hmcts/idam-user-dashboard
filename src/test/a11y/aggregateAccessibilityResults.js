@@ -8,7 +8,7 @@ function aggregateAccessibilityResults() {
     fs.readdir(htmlFilesDir, (err, files) => {
         if (err) {
             console.error('Error reading from accessibility results directory - ', err);
-            return;
+            process.exit(1);
         }
 
         const filteredFiles = files.filter(file => file.endsWith('-a11y-audit.html'));
@@ -20,13 +20,36 @@ function aggregateAccessibilityResults() {
             htmlContent += content;
         });
 
-        fs.writeFile(outputFile, htmlContent, (err) => {
-            if (err) {
+        if (htmlContent.trim().length !== 0) {
+            fs.writeFile(outputFile, htmlContent, err => {
+              if (err) {
                 console.error('Error writing output file - ', err);
-                return;
-            }
-            console.log('Accessibility results aggregated successfully');
-        });
+                process.exit(1);
+              }
+              console.log('Accessibility results aggregated successfully');
+            });
+          } else {
+            const pages = [
+              'Manage User Page',
+              'Search User Page',
+              'Edit User Page',
+              'Generate User Report Page',
+              'Add New User Page',
+            ];
+            const htmlpages = `
+            <ul>
+              ${pages.map(page => `<li>${page}</li>`).join('\n')}
+            </ul>`;
+            const customMessage = `<h3>No Accessibility issues found in below pages ${htmlpages}</h3>`;
+            fs.writeFile(outputFile, customMessage, err => {
+              if (err) {
+                console.error('Error writing output file - ', err);
+                process.exit(1);
+              }
+              console.log('No Accessibility issues found', outputFile);
+            });
+          }
+
     });
 }
 
