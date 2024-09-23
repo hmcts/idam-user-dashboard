@@ -13,11 +13,15 @@ function amendAccessibilityReport() {
     const filenamePattern = new RegExp(regexPattern);
     let auditFileFound = false;
 
+    console.log('iam here - 00000000-----');
+
     files.forEach(filename => {
       if (filenamePattern.test(filename)) {
         auditFileFound = true;
 
         const filePath = path.join(directory, filename);
+        console.log('filePath - 6666-----'+filePath);
+        console.log('filename - 7777-----'+filename);
         fs.readFile(filePath, 'utf8', (err, data) => {
           if (err) {
             console.error(`Error reading accessibility results file ${filename} - `, err);
@@ -26,6 +30,7 @@ function amendAccessibilityReport() {
 
           const filenameRegex = /^.*?_(.*?)-a11y-audit.html$/;
           const match = filenameRegex.exec(filename);
+          console.log('match - 88888-----'+match);
           //if (match) {
             const extractedString = match[1];
             const convertedString = extractedString.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
