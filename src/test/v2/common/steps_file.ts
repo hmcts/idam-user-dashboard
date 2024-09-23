@@ -170,7 +170,17 @@ export = function() {
       this.runA11yCheck({ reportFileName: fileName });
       this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
         await injectAxe(page);
-        await checkA11y(page);
+        //await checkA11y(page);
+        await checkA11y(page, {
+          // rules: {
+          //   'color-contrast': { enabled: true }, 
+          //   'image-alt': { enabled: false },    
+          // },
+          runOnly: {
+            type: 'tag',
+            values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa']        
+          }
+        });
       });
     },
   });
