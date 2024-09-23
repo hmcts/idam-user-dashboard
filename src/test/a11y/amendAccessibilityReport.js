@@ -28,19 +28,10 @@ function amendAccessibilityReport() {
 
         const fileContent = fs.readFile(filePath, 'utf-8');
 
-        const updatedContent = fileContent.replace(
-          new RegExp(`<h3>\\s*${oldHeading}\\s*</h3>`, 'g'),
-          `<h3>${pageTitle}</h3>`
-      );
+        const updatedContent = fileContent.replace(new RegExp(`<h3>\\s*${oldHeading}\\s*</h3>`, 'g'), `<h3>${pageTitle}</h3>`);
 
-      fs.writeFile(filePath, updatedContent, 'utf-8');
-      console.log(`Successfully updated <h3> heading in file: ${filePath}`);
-
-
-
-
-
-
+        fs.writeFile(filePath, updatedContent, 'utf-8');
+        console.log(`Successfully updated <h3> heading in file: ${filePath}`);
       }
     });
 
