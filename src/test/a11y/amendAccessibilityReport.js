@@ -26,11 +26,16 @@ function amendAccessibilityReport() {
 
           const filenameRegex = /^.*?_(.*?)-a11y-audit.html$/;
           const match = filenameRegex.exec(filename);
-          if (match) {
+          //if (match) {
             const extractedString = match[1];
             const convertedString = extractedString.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
+            console.log('convertedString - 1111-----'+convertedString);
+
             const modifiedContent = data.replace(/<h3>.*?<\/h3>/s, `<h3>${convertedString} Page - Accessibility Results</h3>`);
+            console.log('modifiedContent - 22222-----'+modifiedContent);
+
+            console.log(`filename is 3333333---- ${filename}`);
 
             fs.writeFile(filePath, modifiedContent, 'utf8', err => {
               if (err) {
@@ -39,7 +44,7 @@ function amendAccessibilityReport() {
               }
               console.log(`Modified heading in ${filename}`);
             });
-          }
+          //}
         });
       }
     });
