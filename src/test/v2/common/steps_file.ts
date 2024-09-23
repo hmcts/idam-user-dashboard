@@ -167,13 +167,13 @@ export = function() {
       return rsp;
     },
     checkA11y(fileName: string) {
-      //this.runA11yCheck({ reportFileName: fileName });
-      try {
-        this.runA11yCheck({ reportFileName: fileName });
-      } catch (e) {
-        console.error('Accessibility issues found:', e);
-        throw new Error('Accessibility check failed, breaking pipeline!');
-      }
+      this.runA11yCheck({ reportFileName: fileName });
+      // try {
+      //   this.runA11yCheck({ reportFileName: fileName });
+      // } catch (e) {
+      //   console.error('Accessibility issues found:', e);
+      //   throw new Error('Accessibility check failed, breaking pipeline!');
+      // }
       // this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
       //   await injectAxe(page);
       //   await checkA11y(page, {
