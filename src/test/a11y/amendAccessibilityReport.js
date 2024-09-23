@@ -13,6 +13,8 @@ function amendAccessibilityReport() {
     const filenamePattern = new RegExp(regexPattern);
     let auditFileFound = false;
 
+    const customHeading = 'Custom Heading Value';
+
     files.forEach(filename => {
       if (filenamePattern.test(filename)) {
         auditFileFound = true;
@@ -20,7 +22,7 @@ function amendAccessibilityReport() {
 
         const fileContent = fs.readFile(filePath, 'utf-8');
 
-        const updatedContent = fileContent.replace(/<h3>(.*?)<\/h3>/g, `<h3>${newHeading}</h3>`);
+        const updatedContent = fileContent.replace(/<h3>(.*?)<\/h3>/g, `<h3>${customHeading}</h3>`);
 
         fs.writeFile(filePath, updatedContent, 'utf-8');
 
