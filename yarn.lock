@@ -5114,9 +5114,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-playwright@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "axe-playwright@npm:2.0.1"
+"axe-playwright@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "axe-playwright@npm:2.0.2"
   dependencies:
     "@types/junit-report-builder": "npm:^3.0.0"
     axe-core: "npm:^4.5.1"
@@ -5125,7 +5125,7 @@ __metadata:
     picocolors: "npm:^1.0.0"
   peerDependencies:
     playwright: ">1.0.0"
-  checksum: 10/3974c1eefe894219d6a7278a1b024776284d3057d893076a9b1dace812b120308057b588c9c9ca4a8812a16bc82bd3bf2758fa53c5acddd3a7a9b03b0c7e2d00
+  checksum: 10/ad3d9280cc81b97acaa8a88e91a34fb460faf52903cb579dace88dfd2498e1402784b3e2539ebc46d806e327ad2f511b442317d8577d0ea9ffd1d57baf3f5066
   languageName: node
   linkType: hard
 
@@ -9593,7 +9593,7 @@ __metadata:
     applicationinsights: "npm:^2.9.2"
     autobind-decorator: "npm:^2.4.0"
     awilix: "npm:^10.0.0"
-    axe-playwright: "npm:^2.0.1"
+    axe-playwright: "npm:^2.0.2"
     axios: "npm:^1.6.7"
     babel-loader: "npm:^9.1.3"
     codeceptjs: "npm:^3.5.12"
