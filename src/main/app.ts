@@ -50,7 +50,7 @@ new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 new HealthCheck().enableFor(app);
 new Csrf().enableFor(app);
-new OidcMiddleware(logger).enableFor(app);
+new OidcMiddleware().enableFor(app);
 
 glob.sync(__dirname + '/routes/**/*.+(ts|js)')
   .map(filename => require(filename))
@@ -61,4 +61,4 @@ setupDev(app, developmentMode);
 // remaining routes
 routes(app);
 
-new ErrorHandler(logger).enableFor(app);
+new ErrorHandler().enableFor(app);
