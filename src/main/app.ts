@@ -29,8 +29,7 @@ app.locals.ENV = env;
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 import logger from './modules/logging';
-console.log('(console) app logger is at level ' + logger.level);
-logger.info('hello from user dashboard');
+logger.info('app logger is at level ' + logger.level);
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
