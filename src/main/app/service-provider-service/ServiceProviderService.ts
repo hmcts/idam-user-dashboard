@@ -2,14 +2,13 @@ import config from 'config';
 import { AuthorizedAxios } from '../authorized-axios/AuthorizedAxios';
 import { ServiceProvider } from './ServiceProvider';
 import { HTTPError } from '../errors/HttpError';
-const {Logger} = require('@hmcts/nodejs-logging');
+import logger from '../../modules/logging';
 
 export class ServiceProviderService {
   private readonly SERVICES_ENDPOINT: string = config.get('services.idam.endpoint.services');
 
   constructor(
-    private readonly idamApiAxios: AuthorizedAxios,
-    private readonly logger: typeof Logger,
+    private readonly idamApiAxios: AuthorizedAxios
   ) {}
 
   public getService = (clientId: string): Promise<ServiceProvider> => {
@@ -18,7 +17,7 @@ export class ServiceProviderService {
       .catch(error => {
         const errorMessage = 'Error getting service info from IDAM API';
         console.log('(console) failed to get service ' + clientId + ': ' + (error.stack || error));
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         throw new HTTPError(error.response.status, errorMessage);
       });
   };

@@ -1,5 +1,3 @@
-const {Logger} = require('@hmcts/nodejs-logging');
-
 export const mockLogger = () => {
   const logger = {
     info: jest.fn(),
@@ -7,5 +5,5 @@ export const mockLogger = () => {
     error: jest.fn(),
   };
 
-  return logger as typeof Logger;
+  return logger;
 };

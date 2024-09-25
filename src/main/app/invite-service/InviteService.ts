@@ -3,7 +3,7 @@ import {AuthorizedAxios} from '../authorized-axios/AuthorizedAxios';
 import {InvitationTypes, Invite} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
-const {Logger} = require('@hmcts/nodejs-logging');
+import logger from '../../modules/logging';
 const obfuscate = require('obfuscate-email');
 
 export class InviteService {
@@ -12,8 +12,7 @@ export class InviteService {
   private readonly DEFAULT_ROLE = 'citizen';
 
   constructor(
-    private readonly idamApiAxios: AuthorizedAxios,
-    private readonly logger: typeof Logger
+    private readonly idamApiAxios: AuthorizedAxios
   ) {}
 
   private sendInvite = (
@@ -37,7 +36,7 @@ export class InviteService {
       )
       .catch(err => {
         console.log('(console) failed to send ' + invitationType + ' invite  for email ' + obfuscate(invite.email));
-        this.logger.error('(logger) Failed to send invite');
+        logger.error('(logger) Failed to send invite');
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, err);
       });
   };
