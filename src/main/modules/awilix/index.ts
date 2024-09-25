@@ -11,8 +11,6 @@ import { UserDeleteController } from '../../controllers/UserDeleteController';
 import { UserSuspendController } from '../../controllers/UserSuspendController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
-const { Logger } = require('@hmcts/nodejs-logging');
-const logger = Logger.getLogger('app');
 import { defaultClient } from 'applicationinsights';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
@@ -35,11 +33,10 @@ export class Container {
 
   public enableFor(app: Application): void {
     app.locals.container = createContainer({ injectionMode: InjectionMode.CLASSIC }).register({
-      logger: asValue(logger),
       telemetryClient: asValue(defaultClient),
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
-      reportGenerator: asValue(new ReportsHandler(logger, defaultClient)),
+      reportGenerator: asValue(new ReportsHandler(defaultClient)),
       idamApiAxios: asValue(
         new AuthorizedAxios({
           baseURL: config.get('services.idam.url.api'),
