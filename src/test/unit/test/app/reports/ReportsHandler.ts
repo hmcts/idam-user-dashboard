@@ -18,7 +18,6 @@ jest.mock('ioredis', () => ({
 describe('Report handler', () => {
   jest.spyOn(uuid, 'v4');
 
-  const mockLogger = { error: jest.fn(), info: jest.fn() } as any;
   const mockTelemetryClient = { trackTrace: jest.fn() } as any;
   const singleRole = [ 'IDAM_SUPER_USER' ];
   const multipleRoles = [ 'IDAM_SUPER_USER', 'IDAM_ADMIN_USER' ];
@@ -39,7 +38,7 @@ describe('Report handler', () => {
         when(fs.promises.writeFile).mockResolvedValue();
         when(uuid.v4).mockReturnValue(reportUUID);
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.saveReportQueryRoles(singleRole)).resolves.toEqual(reportUUID);
         expect(fs.promises.writeFile).toHaveBeenCalledWith('/' + reportUUID, JSON.stringify(singleRole));
@@ -51,7 +50,7 @@ describe('Report handler', () => {
         when(fs.promises.writeFile).mockResolvedValue();
         when(uuid.v4).mockReturnValue(reportUUID);
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.saveReportQueryRoles(multipleRoles)).resolves.toEqual(reportUUID);
         expect(fs.promises.writeFile).toHaveBeenCalledWith('/' + reportUUID, JSON.stringify(multipleRoles));
@@ -63,11 +62,10 @@ describe('Report handler', () => {
         when(uuid.v4).mockReturnValue(reportUUID);
         when(fs.promises.writeFile).mockRejectedValue(false);
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrowError();
         expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
-        expect(mockLogger.error).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -78,7 +76,7 @@ describe('Report handler', () => {
 
         when(fs.promises.readFile).mockResolvedValue(JSON.stringify(singleRole));
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.getReportQueryRoles(reportUUID)).resolves.toEqual(singleRole);
         expect(fs.promises.readFile).toHaveBeenCalledWith('/' + reportUUID);
@@ -89,7 +87,7 @@ describe('Report handler', () => {
 
         when(fs.promises.readFile).mockRejectedValue('fail');
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrowError();
         expect(fs.promises.readFile).toHaveBeenCalledWith('/' + reportUUID);
@@ -112,7 +110,7 @@ describe('Report handler', () => {
 
         when(uuid.v4).mockReturnValue(reportUUID);
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.saveReportQueryRoles(singleRole)).resolves.toEqual(reportUUID);
         expect(redisClientMock.set).toHaveBeenCalledWith(reportUUID, JSON.stringify(singleRole), 'EX', 30 * 60, expect.any(Function));
@@ -123,7 +121,7 @@ describe('Report handler', () => {
 
         when(uuid.v4).mockReturnValue(reportUUID);
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.saveReportQueryRoles(multipleRoles)).resolves.toEqual(reportUUID);
         expect(redisClientMock.set).toHaveBeenCalledWith(reportUUID, JSON.stringify(multipleRoles), 'EX', 30 * 60, expect.any(Function));
@@ -135,11 +133,10 @@ describe('Report handler', () => {
         when(uuid.v4).mockReturnValue(reportUUID);
         when(redisClientMock.set).mockImplementation((a, b, c, d, callback) => callback(true, null));
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrowError();
         expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
-        expect(mockLogger.error).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -150,7 +147,7 @@ describe('Report handler', () => {
 
         when(redisClientMock.get).mockImplementation((a, callback) => callback(null, JSON.stringify(singleRole)));
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         await expect(reportsHandler.getReportQueryRoles(reportUUID)).resolves.toEqual(singleRole);
         expect(redisClientMock.get).toHaveBeenCalledWith(reportUUID, expect.any(Function));
@@ -161,7 +158,7 @@ describe('Report handler', () => {
 
         when(redisClientMock.get).mockImplementation((a, callback) => callback(true, null));
 
-        const reportsHandler = new ReportsHandler(mockLogger, mockTelemetryClient);
+        const reportsHandler = new ReportsHandler(mockTelemetryClient);
 
         expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrowError();
         expect(redisClientMock.get).toHaveBeenCalledWith(reportUUID, expect.any(Function));

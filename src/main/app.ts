@@ -4,8 +4,6 @@ import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
 
-import { Logger } from '@hmcts/nodejs-logging';
-
 import * as bodyParser from 'body-parser';
 import express from 'express';
 import { Helmet } from './modules/helmet';
@@ -30,8 +28,9 @@ app.locals.ENV = env;
 
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
-const logger = Logger.getLogger('app');
+import logger from './modules/logging';
 console.log('(console) app logger is at level ' + logger.level);
+logger.info('hello from user dashboard');
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());

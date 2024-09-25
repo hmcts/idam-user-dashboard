@@ -6,14 +6,12 @@ import { User } from '../../../../main/interfaces/User';
 import { when } from 'jest-when';
 import * as json2csv from 'json2csv';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
-const {Logger} = require('@hmcts/nodejs-logging');
 
 jest.mock('json2csv');
 
 describe('Download report controller', () => {
   let req: any;
   let res: any;
-  const mockLogger = { info: jest.fn() } as typeof Logger;
   const mockReportGenerator: any = {
     saveReportQueryRoles: jest.fn(),
     getReportQueryRoles: jest.fn(),
@@ -37,7 +35,7 @@ describe('Download report controller', () => {
       roles: ['IDAM_SUPER_USER'],
     },
   ] as User[];
-  const controller = new DownloadReportController(mockLogger, mockReportGenerator, mockApi as unknown as IdamAPI);
+  const controller = new DownloadReportController(mockReportGenerator, mockApi as unknown as IdamAPI);
   const testToken = 'test-token';
 
   beforeEach(() => {

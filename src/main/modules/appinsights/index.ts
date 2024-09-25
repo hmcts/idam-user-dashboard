@@ -39,7 +39,7 @@ export class AppInsights {
         .setAutoCollectConsole(true, true)
         .start();
 
-      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.name');
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get('services.insightname');
       appInsights.defaultClient.addTelemetryProcessor(preprocessAppInsightData);
       appInsights.defaultClient.config.samplingPercentage = 100; // 100% of all telemetry will be sent to Application Insights
       console.log('(console) appInsights configured');

@@ -3,17 +3,15 @@ import { InviteService } from '../../../../../main/app/invite-service/InviteServ
 import config from 'config';
 import { when } from 'jest-when';
 import { mockAxios } from '../../../utils/mockAxios';
-import { mockLogger } from '../../../utils/mockLogger';
 
 jest.mock('config');
 
 describe('InviteService', () => {
   const mockedAxios = mockAxios();
-  const mockedLogger = mockLogger();
   const mockEndpoint = '/invites';
   when(config.get).mockReturnValue(mockEndpoint);
   when(config.get).calledWith('services.idam.appointmentMap').mockReturnValue('{ "@eJudiciary.net" : "APPOINT" }');
-  const inviteService = new InviteService(mockedAxios, mockedLogger);
+  const inviteService = new InviteService(mockedAxios);
 
   describe('inviteUser', () => {
     test('Should resolve if no error from axios', () => {

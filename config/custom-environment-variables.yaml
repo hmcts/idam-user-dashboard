@@ -1,5 +1,6 @@
 services:
   name: 'IDAM User Dashboard'
+  insightname: 'idam-user-dashboard'
   idam:
     url:
       public: STRATEGIC_PUBLIC_URL
