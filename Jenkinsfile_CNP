@@ -8,8 +8,7 @@ properties([
   ])
 ])
 
-@Library("Infrastructure")
-
+@Library("Infrastructure@enable-logging-on-ft")
 def type = "nodejs"
 def product = "idam"
 def component = "user-dashboard"
