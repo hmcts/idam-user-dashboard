@@ -148,13 +148,19 @@ export = function() {
       this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
     async haveUser(body = null) {
-      return this.safeHave('user', body);
+      let rsp = await this.have('user', body);
+      // error responses will always have a path attribute
+      if (rsp.path) {
+        this.say('Failed to create user with status: %s, will try again >> %j', rsp.status, rsp);
+        return await this.safeHave('user', body);
+      }
+      return rsp;
     },
     async haveRole(body = null) {
-      return this.safeHave('role', body);
+      return await this.safeHave('role', body);
     },
     async haveService(body = null) {
-      return this.safeHave('service', body);
+      return await this.safeHave('service', body);
     },
     async safeHave(type, body = null) {
       const rsp = await this.have(type, body);
