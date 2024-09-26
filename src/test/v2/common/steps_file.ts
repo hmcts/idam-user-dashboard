@@ -148,7 +148,7 @@ export = function() {
       this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
     async haveUser(body = null) {
-      let rsp = await this.have('user', body);
+      const rsp = await this.have('user', body);
       // error responses will always have a path attribute
       if (rsp.path) {
         this.say('Failed to create user with status: %s, will try again >> %j', rsp.status, rsp);
