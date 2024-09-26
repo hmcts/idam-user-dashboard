@@ -13,11 +13,11 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
   await I.clickToNavigate('Delete user', '/user/delete', 'Are you sure you want to delet');
-  I.checkOption('#confirmRadio');
+  await I.checkOption('#confirmRadio');
   await I.clickToNavigate('Continue', '/user/delete', 'User deleted successfully');
   I.click('Return to main menu');
   I.seeAfterClick('What do you want to do?', 'h1');
-  I.checkOption('Manage an existing user');
+  await I.checkOption('Manage an existing user');
   await I.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
   I.fillField('search', testUser.email);
   await I.clickToExpectProblem('Search');
@@ -39,11 +39,11 @@ Scenario('I as an admin can delete archived user successfully',  async ({ I }) =
   I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
   I.seeElement(locate('button').withText('Delete user'));
   await I.clickToNavigate('Delete user', '/user/delete', 'Are you sure you want to delet');
-  I.checkOption('#confirmRadio');
+  await I.checkOption('#confirmRadio');
   await I.clickToNavigate('Continue', '/user/delete', 'User deleted successfully');
   I.click('Return to main menu');
   I.seeAfterClick('What do you want to do?', 'h1');
-  I.checkOption('Manage an existing user');
+  await I.checkOption('Manage an existing user');
   await I.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
   I.fillField('search', testUser.email);
   await I.clickToExpectProblem('Search');
@@ -56,7 +56,7 @@ Scenario('I as an admin can cancel deleting a user',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
   await I.clickToNavigate('Delete user', '/user/delete', 'Are you sure you want to delet');
-  I.checkOption('#confirmRadio-2');
+  await I.checkOption('#confirmRadio-2');
   await I.clickToNavigate('Continue', '/details', 'User Details');
   I.see(testUser.email, I.locateDataForTitle('Email'));
 });

@@ -49,9 +49,10 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   await I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
   const testRoleDisabled = await I.grabDisabledElementStatus(I.locateInput('roles', testRole.name));
   I.assertTrue(testRoleDisabled);
-  I.dontSeeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.dontSeeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
-  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
 
@@ -108,9 +109,11 @@ Scenario('I as an admin can enable MFA', async ({ I }) => {
   const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled']});
   await I.navigateToEditUser(testUser.email);
   await I.seeInField('email', testUser.email);
-  I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
 
-  I.checkOption(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  await I.checkOption(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  await I.retry(9).seeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
 
