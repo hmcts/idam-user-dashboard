@@ -23,7 +23,8 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   await I.fillField('#surname', registerSurname);
   await I.click('Support');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToNavigate('Save', '/user/add/roles', 'User registered');
 
   const testingToken = await setupDAO.getToken();
@@ -46,7 +47,8 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   await I.fillField('#surname', registerSurname);
   await I.click('Professional');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToNavigate('Save', '/user/add/roles', 'User registered');
 
   const testingToken = await setupDAO.getToken();
@@ -129,7 +131,7 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   await I.fillField('#surname', faker.person.lastName());
   await I.click('Support');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
-  I.retry(ACTION_RETRY).uncheckOption('#hide-disabled');
+  await I.retry(ACTION_RETRY).uncheckOption('#hide-disabled');
 
   await I.fillField('#roles__search-box', adminRole.name);
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(adminRole.name), 3));

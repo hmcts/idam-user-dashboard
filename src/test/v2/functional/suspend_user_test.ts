@@ -15,7 +15,7 @@ Scenario('I as an admin can suspend user',  async ({ I }) => {
   I.seeElement(locate('button').withText('Suspend user'));
   await I.click('Suspend user');
   I.seeAfterClick('Are you sure you want to suspend', 'h1');
-  I.checkOption('#confirmSuspendRadio');
+  await I.checkOption('#confirmSuspendRadio');
   await I.click('Continue');
   I.seeAfterClick('User suspended successfully', 'h1');
   await I.clickToNavigate('Return to user details', '/details', 'User Details');
@@ -31,7 +31,7 @@ Scenario('I as an admin can cancel suspending a user',  async ({ I }) => {
   I.seeElement(locate('button').withText('Suspend user'));
   await I.click('Suspend user');
   I.seeAfterClick('Are you sure you want to suspend', 'h1');
-  I.checkOption('#confirmSuspendRadio-2');
+  await I.checkOption('#confirmSuspendRadio-2');
   await I.clickToNavigate('Continue', '/details', 'User Details');
   I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
 });
@@ -44,7 +44,7 @@ Scenario('I as an admin can unsuspend user',  async ({ I }) => {
   I.seeElement(locate('button').withText('Unsuspend user'));
   await I.click('Unsuspend user');
   I.seeAfterClick('Are you sure you want to unsuspend', 'h1');
-  I.checkOption('#confirmUnSuspendRadio');
+  await I.checkOption('#confirmUnSuspendRadio');
   await I.click('Continue');
   I.seeAfterClick('User unsuspended successfully', 'h1');
   await I.clickToNavigate('Return to user details', '/details', 'User Details');
@@ -59,7 +59,7 @@ Scenario('I as an admin can cancel unsuspending a user',  async ({ I }) => {
   I.seeElement(locate('button').withText('Unsuspend user'));
   await I.click('Unsuspend user');
   I.seeAfterClick('Are you sure you want to unsuspend', 'h1');
-  I.checkOption('#confirmUnSuspendRadio-2');
+  await I.checkOption('#confirmUnSuspendRadio-2');
   await I.clickToNavigate('Continue', '/details', 'User Details');
   I.seeIgnoreCase('suspended', I.locateStrongDataForTitle('Account state'));
 });
