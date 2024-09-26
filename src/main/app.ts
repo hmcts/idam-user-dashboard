@@ -4,8 +4,6 @@ import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
 import { AppInsights } from './modules/appinsights';
 
-import { Logger } from '@hmcts/nodejs-logging';
-
 import * as bodyParser from 'body-parser';
 import express from 'express';
 import { Helmet } from './modules/helmet';
@@ -30,8 +28,8 @@ app.locals.ENV = env;
 
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
-const logger = Logger.getLogger('app');
-console.log('(console) app logger is at level ' + logger.level);
+import logger from './modules/logging';
+logger.info('app logger is at level ' + logger.level);
 
 app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json());
@@ -51,7 +49,7 @@ new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 new HealthCheck().enableFor(app);
 new Csrf().enableFor(app);
-new OidcMiddleware(logger).enableFor(app);
+new OidcMiddleware().enableFor(app);
 
 glob.sync(__dirname + '/routes/**/*.+(ts|js)')
   .map(filename => require(filename))
@@ -62,4 +60,4 @@ setupDev(app, developmentMode);
 // remaining routes
 routes(app);
 
-new ErrorHandler(logger).enableFor(app);
+new ErrorHandler().enableFor(app);
