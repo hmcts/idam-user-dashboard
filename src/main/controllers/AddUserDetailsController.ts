@@ -13,7 +13,7 @@ import {
 } from '../utils/error';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { PageError } from '../interfaces/PageData';
-import { constructAllRoleAssignments } from '../utils/roleUtils';
+import {constructAllRoleAssignments, loadUserAssignableRoles} from '../utils/roleUtils';
 import { UserType } from '../utils/UserType';
 import { getServicesForSelect, hasPrivateBetaServices } from '../utils/serviceUtils';
 import { V2Role } from '../interfaces/V2Role';
@@ -35,6 +35,7 @@ export class AddUserDetailsController extends RootController {
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
+    loadUserAssignableRoles(req);
     if (hasProperty(req.body, 'email')) {
       return await this.processNewUserEmail(req, res);
     }

@@ -2,8 +2,22 @@ import { V2Role } from '../interfaces/V2Role';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import { V2User } from '../interfaces/V2User';
 import { User } from '../interfaces/User';
+import {AuthedRequest} from '../interfaces/AuthedRequest';
 
 export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
+
+export const loadUserAssignableRoles = (req: AuthedRequest) : void => {
+  if (!req.idam_user_dashboard_session.user.assignableRoles) {
+    return req.app.locals.container.cradle.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+      .then((assignableRoles: string[]) => {
+        req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
+      })
+      .catch((err: any) => {
+        console.log('Failed to get assignable roles', err);
+        throw err;
+      });
+  }
+};
 
 const sortRolesByName = (a: string, b: string): number => {
   if (a < b) {

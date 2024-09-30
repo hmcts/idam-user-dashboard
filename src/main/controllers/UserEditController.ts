@@ -25,7 +25,7 @@ import { PageError } from '../interfaces/PageData';
 import {
   constructUserRoleAssignments,
   determineUserNonAssignableRoles,
-  IDAM_MFA_DISABLED,
+  IDAM_MFA_DISABLED, loadUserAssignableRoles,
   processMfaRole
 } from '../utils/roleUtils';
 import { RoleDefinition } from '../interfaces/RoleDefinition';
@@ -42,6 +42,7 @@ export class UserEditController extends RootController {
 
   @asyncError
   public post(req: AuthedRequest, res: Response) {
+    loadUserAssignableRoles(req);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
