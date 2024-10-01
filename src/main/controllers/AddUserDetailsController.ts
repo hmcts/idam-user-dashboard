@@ -35,7 +35,7 @@ export class AddUserDetailsController extends RootController {
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    loadUserAssignableRoles(req);
+    loadUserAssignableRoles(req, this.idamWrapper);
     if (hasProperty(req.body, 'email')) {
       return await this.processNewUserEmail(req, res);
     }

@@ -3,12 +3,13 @@ import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import { V2User } from '../interfaces/V2User';
 import { User } from '../interfaces/User';
 import {AuthedRequest} from '../interfaces/AuthedRequest';
+import {IdamAPI} from '../app/idam-api/IdamAPI';
 
 export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
 
-export const loadUserAssignableRoles = (req: AuthedRequest) : void => {
+export const loadUserAssignableRoles = (req: AuthedRequest, idamWrapper: IdamAPI) : Promise<void> => {
   if (!req.idam_user_dashboard_session.user.assignableRoles) {
-    return req.app.locals.container.cradle.idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
+    return idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
       .then((assignableRoles: string[]) => {
         req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
       })

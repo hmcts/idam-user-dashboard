@@ -151,7 +151,9 @@ describe('Add user details controller', () => {
 
   test('Should render the add user page with error when adding a user with empty email', async () => {
     req.body.email = '';
-    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user: { roles: [ 'admin' ] } };
+    when(mockApi.getAssignableRoles).calledWith([ 'admin' ])
+      .mockReturnValue(Promise.resolve([UserType.Citizen]));
     await controller.post(req, res);
 
     expect(res.render).toBeCalledWith('add-user', {
