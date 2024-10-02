@@ -22,7 +22,7 @@ export class HealthCheck {
       callback: (err : any, res : any) => {
         if (err) {
           if (res && res.body) {
-            console.log('hc response: ' + (res.body ? JSON.stringify(res.body) : 'n/a') + '; error: ', JSON.stringify(err));
+            console.log('hc response: ' + JSON.stringify(res.body) + '; error: ', JSON.stringify(err));
           } else {
             console.error('hc failed, empty response', err);
           }
