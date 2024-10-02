@@ -21,9 +21,17 @@ export class HealthCheck {
       deadline: config.get('health.deadline'),
       callback: (err : any, res : any) => {
         if (err) {
-          console.log('hc response: ' + (res.body ? JSON.stringify(res.body) : 'n/a') + '; error: ', JSON.stringify(err));
+          if (res && res.body) {
+            console.log('hc response: ' + (res.body ? JSON.stringify(res.body) : 'n/a') + '; error: ', JSON.stringify(err));
+          } else {
+            console.error('hc failed, empty response', err);
+          }
         }
-        return res.body.status == 'UP' ? healthcheck.up() : healthcheck.down();
+        
+        if (res && res.body) {
+          return res.body.status == 'UP' ? healthcheck.up() : healthcheck.down();
+        }
+        return healthcheck.down();
       }
     };
 
