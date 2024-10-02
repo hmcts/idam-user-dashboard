@@ -1,5 +1,5 @@
 import axios, {Axios, AxiosRequestConfig, AxiosRequestHeaders} from 'axios';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { TelemetryClient } from 'applicationinsights';
 
 type Token = {
