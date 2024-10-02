@@ -41,8 +41,8 @@ export class UserEditController extends RootController {
   }
 
   @asyncError
-  public post(req: AuthedRequest, res: Response) {
-    loadUserAssignableRoles(req, this.idamWrapper);
+  public async post(req: AuthedRequest, res: Response) {
+    await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
