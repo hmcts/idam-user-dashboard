@@ -1,6 +1,6 @@
 import { Application, Request, Response } from 'express';
 import config from 'config';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { Session } from 'express-openid-connect';
