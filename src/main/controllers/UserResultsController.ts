@@ -12,7 +12,7 @@ import {RootController} from './RootController';
 import autobind from 'autobind-decorator';
 import {User} from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import {processMfaRoleV2} from '../utils/roleUtils';
+import {loadUserAssignableRoles, processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
 import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
@@ -53,7 +53,7 @@ export class UserResultsController extends RootController {
     const notificationBannerMessage = this.getBannerIfRequired(user);
     const {providerName, providerIdField} = this.computeProviderIdentity(user, providerMap);
     const previousNav = req.header('Referer');
-
+    await loadUserAssignableRoles(req, this.idamWrapper);
     this.preprocessSearchResults(user);
     return super.post(req, res, 'user-details', {
       content: {
