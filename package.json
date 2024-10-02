@@ -24,7 +24,7 @@
     "test:accessibility:v2": "codeceptjs run --steps --config ./src/test/v2/accessibility/codecept.conf.js",
     "test:functional:allreport": "npm-run-all -scl test:functional:report test:accessibility:amendreport test:accessibility:aggregatereport test:accessibility:report",
     "test:functional:report": "allure generate functional-output/functional/reports -c -o functional-output/functional/allure",
-    "test:accessibility:report": "allure generate functional-output/accessibility -c -o functional-output/accessibility/allure",
+    "test:accessibility:report": "allure generate functional-output/accessibility/ -c -o functional-output/accessibility/allure",
     "test:accessibility:amendreport": "node ./src/test/a11y/amendAccessibilityReport.js",
     "test:accessibility:aggregatereport": "node ./src/test/a11y/aggregateAccessibilityResults.js",
     "test:a11y": "echo 'nope' && exit 0",
@@ -36,7 +36,6 @@
     "@axe-core/playwright": "^4.10.0",
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
-    "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/properties-volume": "^1.2.0",
     "@playwright/test": "^1.47.0",
     "@types/config": "^3.3.5",
@@ -93,6 +92,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2",
     "uuid": "^10.0.0"
+    "winston": "^3.14.2"
   },
   "devDependencies": {
     "@babel/core": "7.24.7",
@@ -150,11 +150,16 @@
     "cookiejar": ">=2.1.4",
     "tar": "6.2.1",
     "qs": ">=6.9.7",
-    "express": "4.19.2",
+    "express": "4.20.0",
     "formidable": ">=3.2.4",
     "@azure/msal-node": ">=2.9.2",
     "@azure/identity": ">=4.2.1",
-    "micromatch": ">=4.0.8"
+    "micromatch": ">=4.0.8",
+    "path-to-regexp": "^3.3.0",
+    "body-parser": "^1.20.3",
+    "send": "^0.19.0",
+    "serve-static": "^2.1.0",
+    "@koa/router": "^13.0.1"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.5.0"
 }

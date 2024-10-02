@@ -1,12 +1,11 @@
 // in this file you can append custom step methods to 'I' object
-import { injectAxe, checkA11y } from 'axe-playwright';
 
 const CLICK_RETRY = { retries: 3, minTimeout: 500, maxTimeout: 5000 };
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
 
 export = function() {
   return actor({
-    loginAs(email : string, password : string) {
+    doLogin(email : string, password : string) {
       this.amOnPage('/');
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
@@ -17,32 +16,32 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
-    loginAsWithRetry(email : string, password : string) {
-      tryTo(() => this.loginAs(email, password));
+    loginAs(email : string, password : string) {
+      tryTo(() => this.doLogin(email, password));
       tryTo(() => {
         this.dontSee('What do you want to do?', 'h1');
-        this.loginAs(email, password);
+        this.doLogin(email, password);
       });
     },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
-      this.amOnPage(expectedUrl);
+      await this.amOnPage(expectedUrl);
       await tryTo(() => {
         this.see('Bad Gateway');
         this.say('Oh no, there is a bad gateway. Let me try again');
         this.wait(1);
         this.amOnPage(expectedUrl);
       });
-      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
-      this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+      await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
-      this.fillField('search', searchValue);
+      await this.fillField('search', searchValue);
       await this.clickToNavigate('Search', '/details', 'User Details');
     },
     async navigateToSearchUser() {
       await this.goToPage('/', 'What do you want to do?');
-      this.checkOption('Manage an existing user');
+      await this.checkOption('Manage an existing user');
       await this.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
     },
     async navigateToEditUser(searchValue : string) {
@@ -51,12 +50,12 @@ export = function() {
     },
     async navigateToGenerateReport() {
       await this.goToPage('/', 'What do you want to do?');
-      this.checkOption('Generate a user report');
+      await this.checkOption('Generate a user report');
       await this.clickToNavigate('Continue', '/reports', 'Generate report');
     },
     async navigateToRegisterUser() {
       await this.goToPage('/', 'What do you want to do?');
-      this.checkOption('Add a new user');
+      await this.checkOption('Add a new user');
       await this.clickToNavigate('Continue', '/user/add', 'Add new user email');
     },
     seeAfterClick(seeValue : string, location) {
@@ -64,39 +63,39 @@ export = function() {
     },
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
-      this.retry(CLICK_RETRY).click(clickText);
+      await this.retry(CLICK_RETRY).click(clickText);
       await tryTo(() => {
         this.see('Bad Gateway');
         this.say('Oh no, there is a bad gateway. Let me try again');
         this.wait(1);
         this.refreshPage();
       });
-      this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
-      this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
-      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      await this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
+      await this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
+      await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       if (expectedHeading) {
-        this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+        await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
       }
     },
     async clickToExpectProblem(clickText : String) {
-      this.retry(CLICK_RETRY).click(clickText);
+      await this.retry(CLICK_RETRY).click(clickText);
       await tryTo(() => {
         this.see('Bad Gateway');
         this.say('Oh no, there is a bad gateway. Let me try again');
         this.wait(1);
         this.refreshPage();
       });
-      this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
+      await this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
     },
     async clickToExpectSuccess(clickText : String) {
-      this.retry(CLICK_RETRY).click(clickText);
+      await this.retry(CLICK_RETRY).click(clickText);
       await tryTo(() => {
         this.see('Bad Gateway');
         this.say('Oh no, there is a bad gateway. Let me try again');
         this.wait(1);
         this.refreshPage();
       });
-      this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
+      await this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
     },
     lockTestUser(email : string) {
       for (let i=0; i<5; i++) {
@@ -149,13 +148,19 @@ export = function() {
       this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
     async haveUser(body = null) {
-      return this.safeHave('user', body);
+      const rsp = await this.have('user', body);
+      // error responses will always have a path attribute
+      if (rsp.path) {
+        this.say('Failed to create user with status: %s, will try again >> %j', rsp.status, rsp);
+        return await this.safeHave('user', body);
+      }
+      return rsp;
     },
     async haveRole(body = null) {
-      return this.safeHave('role', body);
+      return await this.safeHave('role', body);
     },
     async haveService(body = null) {
-      return this.safeHave('service', body);
+      return await this.safeHave('service', body);
     },
     async safeHave(type, body = null) {
       const rsp = await this.have(type, body);
@@ -168,10 +173,6 @@ export = function() {
     },
     checkA11y(fileName: string) {
       this.runA11yCheck({ reportFileName: fileName });
-      this.usePlaywrightTo('Run accessibility tests', async ({ page }) => {
-        await injectAxe(page);
-        await checkA11y(page);
-      });
     },
   });
 }

@@ -18,6 +18,6 @@ export = new UserFactory()
   .attr('forename', () => { return faker.person.firstName();})
   .attr('surname', () => { return faker.person.lastName();})
   .attr('email', ['forename', 'surname'], (forename, surname) => {
-    return faker.internet.email({firstName : forename, lastName : surname, provider: 'test.local'});
+    return faker.internet.email({firstName : forename, lastName : surname, provider: 'iud.test.local'});
   })
-  .attr('roleNames', [ codeceptjs.container.support('workerRole').name ]);
+  .attr('roleNames', () => { return [ codeceptjs.container.support('workerRole').name ]; });

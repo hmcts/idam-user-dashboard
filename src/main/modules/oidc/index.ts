@@ -14,7 +14,7 @@ import FileStoreFactory from 'session-file-store';
 import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
 import { auth } from 'express-openid-connect';
-const {Logger} = require('@hmcts/nodejs-logging');
+import logger from '../logging';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -25,8 +25,6 @@ export class OidcMiddleware {
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly accessRole: string = config.get('RBAC.access');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
-
-  constructor(private readonly logger: typeof Logger) {}
 
   public enableFor(app: Application): void {
 
@@ -62,7 +60,7 @@ export class OidcMiddleware {
               roles:string[]};
           } catch (error) {
             console.log('(console) afterCallback: token decode error', error);
-            this.logger.error('afterCallback: token decode error', error);
+            logger.error('afterCallback: token decode error', error);
             throw error;
           }
           if (!tokenUser.roles.includes(this.accessRole)) {

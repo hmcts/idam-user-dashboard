@@ -21,9 +21,9 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
 
   I.see('Remove SSO');
-  I.click('Remove SSO');
+  await I.click('Remove SSO');
   I.seeAfterClick('Are you sure you want to remove single sign-on', 'h1');
-  I.checkOption('#confirmRadio');
+  await I.checkOption('#confirmRadio');
   await I.clickToNavigate('Continue', '/user/sso', 'Single sign-on removed successfully');
 
   await I.clickToNavigate('Return to user details', '/details', 'User Details');
@@ -44,9 +44,9 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
 
   I.see('Remove SSO');
-  I.click('Remove SSO');
+  await I.click('Remove SSO');
   I.seeAfterClick('Are you sure you want to remove single sign-on', 'h1');
-  I.checkOption('#confirmRadio-2');
+  await I.checkOption('#confirmRadio-2');
   await I.clickToNavigate('Continue', '/details', 'User Details');
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));

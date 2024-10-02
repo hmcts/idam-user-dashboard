@@ -10,13 +10,12 @@ import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
 import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 import { V2User } from '../../interfaces/V2User';
-const {Logger} = require('@hmcts/nodejs-logging');
+import logger from '../../modules/logging';
 
 export class IdamAPI {
   constructor(
     private readonly idamApiAxios: AxiosInstance,
     private readonly simpleAxios: AxiosInstance,
-    private readonly logger : typeof Logger,
     private readonly telemetryClient: TelemetryClient
   ) { }
 
@@ -27,7 +26,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = `Error retrieving user by ${type} from IDAM API`;
         this.telemetryClient.trackTrace({message: errorMessage + ' for query ' + query + ' (trackTrace)'});
-        this.logger.error(`${error.stack || error} for query ${query} (logger.error)`);
+        logger.error(`${error.stack || error} for query ${query} (logger.error)`);
         return Promise.reject(errorMessage);
       });
   }
@@ -47,7 +46,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error retrieving user by ID from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage + ' for id ' + id + ' (trackTrace)'});
-        this.logger.error(`${error.stack || error} for ${id} (logger.error)`);
+        logger.error(`${error.stack || error} for ${id} (logger.error)`);
         return Promise.reject(errorMessage);
       });
   }
@@ -59,7 +58,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error retrieving user by ID from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage + ' for id ' + id + ' (trackTrace) v2'});
-        this.logger.error(`${error.stack || error} for ${id} (logger.error)`);
+        logger.error(`${error.stack || error} for ${id} (logger.error)`);
         return Promise.reject(errorMessage);
       });
   }
@@ -71,7 +70,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error patching user details in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
       });
   }
@@ -82,7 +81,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error deleting user by ID from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         throw new Error(errorMessage);
       });
   }
@@ -93,7 +92,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error removing user SSO by ID from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         throw new Error(errorMessage);
       });
   }
@@ -105,7 +104,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = error.response?.status === 403 ? ROLE_PERMISSION_ERROR :'Error register new user in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
       });
   }
@@ -117,7 +116,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error retrieving all services from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
       });
   }
@@ -129,7 +128,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error retrieving all v2 roles from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
   }
@@ -160,7 +159,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error granting user roles in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
       });
   }
@@ -172,7 +171,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error deleting user role in IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         return Promise.reject(errorMessage);
       });
   }
@@ -196,7 +195,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error getting all users with role from IDAM API';
         this.telemetryClient.trackTrace({message: errorMessage});
-        this.logger.error(`${error.stack || error}`);
+        logger.error(`${error.stack || error}`);
         throw new Error(errorMessage);
       });
   }

@@ -2,7 +2,7 @@ import express, {Application, NextFunction} from 'express';
 import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { v4 as uuid } from 'uuid';
-const {Logger} = require('@hmcts/nodejs-logging');
+import logger from '../logging';
 
 const NOT_FOUND = {
   title: 'Page not found',
@@ -31,9 +31,6 @@ const SERVER_ERROR = {
 };
 
 export class ErrorHandler {
-  constructor(public logger: typeof Logger) {
-    this.logger = logger;
-  }
 
   public enableFor(app: Application): void {
     // returning "not found" page for requests with paths not resolved by the router
@@ -62,7 +59,7 @@ export class ErrorHandler {
         default:
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
-          this.logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
+          logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
           console.log('(console) errorUUID: ' + errorUUID + '; ', error);
       }
 

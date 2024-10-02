@@ -5,12 +5,12 @@ import { Response } from 'express';
 import { parse } from 'json2csv';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
-import { IdamAPI } from '../app/idam-api/IdamAPI';const {Logger} = require('@hmcts/nodejs-logging');
+import { IdamAPI } from '../app/idam-api/IdamAPI';
+import logger from '../modules/logging';
 
 @autobind
 export class DownloadReportController extends RootController {
   constructor(
-    private readonly logger: typeof Logger,
     private readonly reportGenerator: ReportsHandler,
     private readonly idamWrapper: IdamAPI
   ) {
@@ -21,7 +21,7 @@ export class DownloadReportController extends RootController {
     const reportUUID = req.params.reportUUID;
     return this.generateReport(reportUUID, req)
       .then(csv => {
-        this.logger.info(`Report generation successful for ${reportUUID}.`);
+        logger.info(`Report generation successful for ${reportUUID}.`);
         // YYYY-MM-DD-hh-mm-ss format
         const timestamp = new Date().toISOString().split('.')[0].replace(/[T:]/g, '-');
         res.header('Content-Type', 'text/csv');
@@ -40,7 +40,7 @@ export class DownloadReportController extends RootController {
     let reportData;
     let pageNo = 0;
     const roles = (await this.reportGenerator.getReportQueryRoles(reportUUID));
-    this.logger.info(`Fetching data for report ${reportUUID} for roles ${roles}.`);
+    logger.info(`Fetching data for report ${reportUUID} for roles ${roles}.`);
     do {
       reportData = (await this.idamWrapper.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
