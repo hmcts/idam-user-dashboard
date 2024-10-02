@@ -58,7 +58,7 @@
     "applicationinsights": "^2.9.2",
     "autobind-decorator": "^2.4.0",
     "awilix": "^11.0.0",
-    "axe-playwright": "^2.0.2",
+    "axe-playwright": "^2.0.3",
     "axios": "^1.7.7",
     "codeceptjs-a11y-helper": "^1.5.3",
     "config": "^3.3.12",
