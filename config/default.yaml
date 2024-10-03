@@ -40,6 +40,10 @@ session:
 health:
   timeout: 10000
   deadline: 15000
+  idam:
+    url:
+      public:
+      api:
 RBAC:
   access: 'idam-user-dashboard--access'
 featureFlags:
