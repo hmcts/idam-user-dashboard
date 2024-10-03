@@ -9770,7 +9770,7 @@ __metadata:
     node-sass: "npm:^9.0.0"
     nodemon: "npm:^3.0.2"
     notifications-node-client: "npm:^8.0.0"
-    npm-run-all2: "npm:^6.0.0"
+    npm-run-all2: "npm:^6.2.2"
     nunjucks: "npm:^3.2.4"
     obfuscate-email: "npm:^0.0.1"
     obfuscate-mail: "npm:^1.5.1"
@@ -13031,9 +13031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-run-all2@npm:^6.0.0":
-  version: 6.1.2
-  resolution: "npm-run-all2@npm:6.1.2"
+"npm-run-all2@npm:^6.2.2":
+  version: 6.2.3
+  resolution: "npm-run-all2@npm:6.2.3"
   dependencies:
     ansi-styles: "npm:^6.2.1"
     cross-spawn: "npm:^7.0.3"
@@ -13047,7 +13047,7 @@ __metadata:
     npm-run-all2: bin/npm-run-all/index.js
     run-p: bin/run-p/index.js
     run-s: bin/run-s/index.js
-  checksum: 10/b031f409a8c7144cd4dc6ef7cbe6007c9c78b1df38e32d2b5049e697f204d13145dcd419656f313a5afce44c9148a77ed87cf050ff98ceff75cc3553d031b896
+  checksum: 10/4fd4186cfc87d42555919337fce245f276be572d9c4a217444f9afbfad05b3d6b05c7c45f13cbc21a8280c4898d03c2ec22c0ce8bcfe00b5eccce19f36854d24
   languageName: node
   linkType: hard
 
