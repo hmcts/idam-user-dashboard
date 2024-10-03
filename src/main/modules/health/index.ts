@@ -6,7 +6,12 @@ const healthcheck = require('@hmcts/nodejs-healthcheck');
 
 export class HealthCheck {
 
+  private readonly publicHealthBaseUrl: string = config.get('health.idam.url.public') ? config.get('health.idam.url.public') : config.get('services.idam.url.public');
+  private readonly idamApiHealthBaseUrl: string = config.get('health.idam.url.api') ? config.get('health.idam.url.api') : config.get('services.idam.url.api');
+
   public enableFor(app: Application): void {
+    console.log('healthcheck using public url: ' + this.publicHealthBaseUrl);
+    console.log('healthcheck using api url: ' + this.idamApiHealthBaseUrl);
     app.get('/info', infoRequestHandler({
       extraBuildInfo: {
         name: config.get('services.name'),
@@ -37,8 +42,8 @@ export class HealthCheck {
 
     const healthCheckConfig = {
       checks: {
-        'idam-web-public': healthcheck.web(`${config.get('services.idam.url.public')}/health`, healthOptions),
-        'idam-api': healthcheck.web(`${config.get('services.idam.url.api')}/health`, healthOptions),
+        'idam-web-public': healthcheck.web(this.publicHealthBaseUrl + '/health', healthOptions),
+        'idam-api': healthcheck.web(this.idamApiHealthBaseUrl + '/health', healthOptions),
         ...(app.locals.redisClient && {
           redis: healthcheck.raw(() => (
             app.locals.redisClient.ping() ? healthcheck.up() : healthcheck.down())
