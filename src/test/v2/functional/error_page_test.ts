@@ -9,6 +9,6 @@ Before(async ({ setupDAO, login }) => {
 
 Scenario('view error page',  ({ I }) => {
   I.amOnPage('/noSuchPage');
-  await I.see('Page not found');
-  await I.see('Status code: 404');
+  I.see('Page not found');
+  I.see('Status code: 404');
 });
