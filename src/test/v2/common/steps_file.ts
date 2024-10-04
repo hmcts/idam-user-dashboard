@@ -36,7 +36,7 @@ export = function() {
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
-      await this.fillField('search', searchValue);
+      await this.retry(AFTER_CLICK_RETRY).fillField('search', searchValue);
       await this.clickToNavigate('Search', '/details', 'User Details');
     },
     async navigateToSearchUser() {
