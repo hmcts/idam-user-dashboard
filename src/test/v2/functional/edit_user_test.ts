@@ -150,8 +150,9 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   await I.scrollPageToBottom();
 
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(testRole.name), 3));
+  const numVisible = await I.grabNumberOfVisibleElements(I.locateRoleContainer(testRole.name));
   await tryTo(() => {
-    I.seeIsHidden(I.locateRoleContainer(testRole.name));
+    I.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
     I.say('filter not working, trying again');
     I.clearField('#roles__search-box');
     I.fillField('#roles__search-box', 'iud-filter-role-');
