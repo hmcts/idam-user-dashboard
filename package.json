@@ -21,7 +21,7 @@
     "test:functional": "npm-run-all -scl playwright:install test:functional:v2 test:accessibility:v2 test:functional:allreport",
     "test:fullfunctional": "npm-run-all -scl playwright:install test:functional:v2 test:accessibility:v2 test:functional:allreport",
     "test:functional:v2": "codeceptjs run --steps --config ./src/test/v2/functional/codecept.conf.js",
-    "test:accessibility:v2": "codeceptjs run --steps --config ./src/test/v2/accessibility/codecept.conf.js --verbose --debug",
+    "test:accessibility:v2": "codeceptjs run --steps --config ./src/test/v2/accessibility/codecept.conf.js",
     "test:functional:allreport": "npm-run-all -scl test:functional:report test:accessibility:amendreport test:accessibility:aggregatereport test:accessibility:report",
     "test:functional:report": "allure generate functional-output/functional/reports -c -o functional-output/functional/allure",
     "test:accessibility:report": "allure generate functional-output/accessibility/ -c -o functional-output/accessibility/allure",
