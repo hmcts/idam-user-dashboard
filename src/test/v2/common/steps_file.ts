@@ -137,11 +137,11 @@ export = function() {
     },
     async seeIsHidden(location) {
       const numVisible = await this.grabNumberOfVisibleElements(location);
-      await this.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
+      return await this.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
     },
     async seeIsNotHidden(location) {
       const numVisible = await this.grabNumberOfVisibleElements(location);
-      await this.assertTrue(numVisible > 0, 'Visible elements matching locator: ' + numVisible);
+      return await this.assertTrue(numVisible > 0, 'Visible elements matching locator: ' + numVisible);
     },
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
