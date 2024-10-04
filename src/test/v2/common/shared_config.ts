@@ -22,13 +22,6 @@ shared_config.helpers = {
   },
   A11yHelper: {
     require: 'codeceptjs-a11y-helper',
-    axeOptions: {
-      runOnly: {
-        values: [
-          'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'
-        ],
-      },
-    },
     outputDir: 'functional-output/accessibility',
     reportFileName: 'a11y-audit.html',
   },
