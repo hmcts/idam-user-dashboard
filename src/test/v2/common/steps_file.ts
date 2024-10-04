@@ -116,8 +116,8 @@ export = function() {
     async getSingleInvite(email: string, token: string) {
       this.amBearerAuthenticated(token);
       const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
-      this.seeResponseCodeIsSuccessful();
-      this.assertEqual(invitationRsp.data.length, 1);
+      await this.seeResponseCodeIsSuccessful();
+      await this.assertEqual(invitationRsp.data.length, 1);
       return invitationRsp.data[0];
     },
     locateDataForTitle(title: string) {
@@ -137,15 +137,15 @@ export = function() {
     },
     async seeIsHidden(location) {
       const numVisible = await this.grabNumberOfVisibleElements(location);
-      this.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
+      await this.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
     },
     async seeIsNotHidden(location) {
       const numVisible = await this.grabNumberOfVisibleElements(location);
-      this.assertTrue(numVisible > 0, 'Visible elements matching locator: ' + numVisible);
+      await this.assertTrue(numVisible > 0, 'Visible elements matching locator: ' + numVisible);
     },
     async seeIgnoreCase(expectedValue: string, location) {
       const actualValue = await this.grabTextFrom(location);
-      this.assertEqualIgnoreCase(actualValue, expectedValue);
+      await this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
     async haveUser(body = null) {
       const rsp = await this.have('user', body);
@@ -167,7 +167,7 @@ export = function() {
       // error responses will always have a path attribute
       if (rsp.path) {
         console.log('error creating %s: %j', type, rsp);
-        this.assertEqual(rsp.status, 201);
+        await this.assertEqual(rsp.status, 201);
       }
       return rsp;
     },
