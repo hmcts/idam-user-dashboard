@@ -21,7 +21,7 @@ Scenario('view test user details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
-  I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
+  await I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
 });
 
 Scenario('view test user with sso details',  async ({ I }) => {
@@ -33,7 +33,7 @@ Scenario('view test user with sso details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('idam-sso', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('IdP User ID'));
-  I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
+  await I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
 });
 
 Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
@@ -45,7 +45,7 @@ Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
-  I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
+  await I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
   I.see('Please check with the eJudiciary support team to see if there are related accounts.', locate('div.govuk-notification-banner'));
 });
 
@@ -55,7 +55,7 @@ Scenario('view suspended user details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
-  I.seeIgnoreCase('suspended', I.locateStrongDataForTitle('Account state'));
+  await I.seeIgnoreCase('suspended', I.locateStrongDataForTitle('Account state'));
 });
 
 Scenario('view locked user details',  async ({ I }) => {
@@ -65,7 +65,7 @@ Scenario('view locked user details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
-  I.seeIgnoreCase('locked', I.locateStrongDataForTitle('Account state'));
+  await I.seeIgnoreCase('locked', I.locateStrongDataForTitle('Account state'));
   I.see('This account has been temporarily locked', locate('div.govuk-warning-text'));
 });
 
@@ -75,6 +75,6 @@ Scenario('view archived user details',  async ({ I }) => {
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
-  I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
+  await I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
   I.see('Archived accounts are read only.', locate('div.govuk-notification-banner'));
 });

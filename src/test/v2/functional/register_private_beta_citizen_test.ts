@@ -18,26 +18,26 @@ Scenario('I as an admin should be able to register private beta citizen', async 
     password: testSecret,
     roleNames: [privateBetaAdminRole.name, 'idam-user-dashboard--access']
   });
-  await I.loginAs(betaAdmin.email, testSecret);
+  I.loginAs(betaAdmin.email, testSecret);
 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
   await I.navigateToRegisterUser();
-  await I.fillField('email', registerEmail);
+  I.fillField('email', registerEmail);
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
-  await I.fillField('#forename', registerForename);
-  await I.fillField('#surname', registerSurname);
-  await I.click('Private Beta Citizen');
+  I.fillField('#forename', registerForename);
+  I.fillField('#surname', registerSurname);
+  I.click('Private Beta Citizen');
   await I.clickToNavigate('Continue', '/user/add/details', 'Add a new user');
-  await I.see('Please select a service you would want to associate with the private beta citizen');
-  await I.selectOption('#service', privateBetaService.clientId);
+  I.see('Please select a service you would want to associate with the private beta citizen');
+  I.selectOption('#service', privateBetaService.clientId);
   await I.clickToNavigate('Save', '/user/add/private-beta-service', 'User registered');
 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
-  I.assertEqual(invite.email, registerEmail);
-  I.assertEqual(invite.invitationType, 'INVITE');
-  I.assertEqual(invite.invitationStatus, 'PENDING');
+  await I.assertEqual(invite.email, registerEmail);
+  await I.assertEqual(invite.invitationType, 'INVITE');
+  await I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });

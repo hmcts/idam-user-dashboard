@@ -21,9 +21,9 @@ Scenario('login as user without access', async ({ I }) => {
   const testSecret = faker.internet.password({prefix: '0Ab'});
   const testUser = await I.haveUser({password: testSecret});
   I.amOnPage('/');
-  await I.fillField('Email', testUser.email);
-  await I.fillField('Password', secret(testSecret));
-  await I.click('Sign in');  
+  I.fillField('Email', testUser.email);
+  I.fillField('Password', secret(testSecret));
+  I.click('Sign in');  
   I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
   I.see('Status code: 403');
   I.dontSeeCookie('idam_user_dashboard_session');

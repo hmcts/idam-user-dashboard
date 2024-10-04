@@ -12,27 +12,27 @@ Before(async ({ setupDAO, login }) => {
 Scenario('I as an admin can see errors for invalid search values', async ({ I }) => {
 
   await I.navigateToSearchUser();
-  await I.fillField('search', 'email..@test.com');
+  I.fillField('search', 'email..@test.com');
   await I.clickToExpectProblem('Search');
   I.see('The email address is not in the correct format');
 
   await I.navigateToSearchUser();
-  await I.fillField('search', '@email@');
+  I.fillField('search', '@email@');
   await I.clickToExpectProblem('Search');
   I.see('The email address is not in the correct format');
 
   await I.navigateToSearchUser();
-  await I.fillField('search', 'email@com..');
+  I.fillField('search', 'email@com..');
   await I.clickToExpectProblem('Search');
   I.see('The email address is not in the correct format');
 
   await I.navigateToSearchUser();
-  await I.fillField('search', '');
+  I.fillField('search', '');
   await I.clickToExpectProblem('Search');
   I.see('You must enter an email address');
 
   await I.navigateToSearchUser();
-  await I.fillField('search', ' ');
+  I.fillField('search', ' ');
   await I.clickToExpectProblem('Search');
   I.see('You must enter an email address');
 
