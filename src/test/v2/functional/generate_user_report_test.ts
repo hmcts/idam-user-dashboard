@@ -12,22 +12,22 @@ Scenario('I as an admin can see errors for invalid report values', async ({ I })
   const testRole = await I.haveRole();
 
   await I.navigateToGenerateReport();
-  await I.fillField('search', 'citizen');
+  I.fillField('search', 'citizen');
   await I.clickToExpectProblem('Generate report');
   I.see('For security reasons, it is not possible to get a report on all citizen users', '#search-error');
 
   await I.navigateToGenerateReport();
-  await I.fillField('#search', ' ');
+  I.fillField('#search', ' ');
   await I.clickToExpectProblem('Generate report');
   I.see('You must enter a role or a list of roles (comma seperated)', '#search-error');
 
   await I.navigateToGenerateReport();
-  await I.fillField('#search', 'idam-never-exists');
+  I.fillField('#search', 'idam-never-exists');
   await I.clickToExpectProblem('Generate report');
   I.see('There are no users with the entered role(s).');
 
   await I.navigateToGenerateReport();
-  await I.fillField('#search', testRole.name);
+  I.fillField('#search', testRole.name);
   await I.clickToExpectProblem('Generate report');
   I.see('There are no users with the entered role(s).');
 
@@ -40,8 +40,8 @@ Scenario('I as an admin can generate a report', async ({ I }) => {
   const archivedUser = await I.haveUser({roleNames: [testRole.name], recordType: 'ARCHIVED'});
 
   await I.navigateToGenerateReport();
-  await I.fillField('search', testRole.name);
-  await I.click('Generate report');
+  I.fillField('search', testRole.name);
+  I.click('Generate report');
   I.wait(5);
   I.seeAfterClick('Generated Report', 'h1');
 
