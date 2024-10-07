@@ -144,11 +144,11 @@ __metadata:
   linkType: hard
 
 "@azure/core-tracing@npm:^1.0.0, @azure/core-tracing@npm:^1.0.1":
-  version: 1.1.2
-  resolution: "@azure/core-tracing@npm:1.1.2"
+  version: 1.2.0
+  resolution: "@azure/core-tracing@npm:1.2.0"
   dependencies:
     tslib: "npm:^2.6.2"
-  checksum: 10/027ab8f6ed0ed859a3999dd192faf7286b6e1da8887852a61150c1cf9fc29dbde95bcaa510ee5138e416e9c026cd177b69b7e2c83a8ec0a9758caba412f5368d
+  checksum: 10/5d63ffc8f6361545b55b108b2898cda2b424db1a533d11a56890d53ba3b385e9be8f50cfd48a21b897351e1f4bbc56ede14d57187ea927d4489637fc93ebe615
   languageName: node
   linkType: hard
 
@@ -246,13 +246,13 @@ __metadata:
   linkType: hard
 
 "@azure/msal-node@npm:>=2.9.2":
-  version: 2.14.0
-  resolution: "@azure/msal-node@npm:2.14.0"
+  version: 2.15.0
+  resolution: "@azure/msal-node@npm:2.15.0"
   dependencies:
     "@azure/msal-common": "npm:14.15.0"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10/4ce735c44c7de88ba31baf03a0852b72592ea1334d3b76ad524126956983db25a19db5d8cb583bcd49bc2ef4d5722b859079b49787defd5cf3b70a629ed0d190
+  checksum: 10/30754beefb02652fa366e5fdc30da398bf95e05abb1c13dd9093bc277fb09bf58c360a03c6e81df06e31557fe675e420a7079fcd292833847f94a647b2b27ab2
   languageName: node
   linkType: hard
 
@@ -6018,9 +6018,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001663":
-  version: 1.0.30001666
-  resolution: "caniuse-lite@npm:1.0.30001666"
-  checksum: 10/c3b5a85f658d140ba53f6e99ee824935194c78effd6f3b7e62c2c0d17f8886a12f5d4ce775f8faf7172f8373fffef713ecfbef2702beb053d558e92d47844b10
+  version: 1.0.30001667
+  resolution: "caniuse-lite@npm:1.0.30001667"
+  checksum: 10/5f0c48abb806737c422f05d0d9dda72facc25ee8adbae2c2ea9c57b87d9c2fa9ad8c3f6d54f21aca4e31ee1742cb5dd1543bf6b9133e3f77f79a645876322414
   languageName: node
   linkType: hard
 
@@ -7775,9 +7775,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.28":
-  version: 1.5.31
-  resolution: "electron-to-chromium@npm:1.5.31"
-  checksum: 10/b1fc54bb6eca9a8e6ed3870d4d2de74f080b4e6384f3bbeef8c9d8911cbe3ccb1f57fd2c8f800b871841836134f2597a7edcb2e4dc644b9281b95fd0323cde46
+  version: 1.5.32
+  resolution: "electron-to-chromium@npm:1.5.32"
+  checksum: 10/906b852f67e9de0a5f643085570f7383c5bb28b28b1dd0916bdc55d24d8a2238eb61c26db51a766630993e4c55fb7bbf6551b0ae570751fec2503eb592611c89
   languageName: node
   linkType: hard
 
@@ -9674,6 +9674,7 @@ __metadata:
   resolution: "idam-user-dashboard@workspace:."
   dependencies:
     "@axe-core/playwright": "npm:^4.10.0"
+    "@azure/msal-node": "npm:^2.15.0"
     "@babel/core": "npm:7.24.7"
     "@babel/eslint-parser": "npm:^7.23.3"
     "@babel/preset-env": "npm:^7.23.8"
@@ -14575,13 +14576,13 @@ __metadata:
   linkType: hard
 
 "regjsparser@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "regjsparser@npm:0.11.0"
+  version: 0.11.1
+  resolution: "regjsparser@npm:0.11.1"
   dependencies:
     jsesc: "npm:~3.0.2"
   bin:
     regjsparser: bin/parser
-  checksum: 10/d8963f9bbb4da0795faaea11130abdb15c17565d515f15c990a2433912e5ed80077cbd7ad99530bb1fc8471c82c321a0699c5f48a2ce00715a7151b027fced55
+  checksum: 10/06295f1666f8e378c3b70eb01578b46e075eee0556865a297497ab40753f04cce526e96513b18e21e66b79c972e7377bd3b5caa86935ed5d736e9b3e0f857363
   languageName: node
   linkType: hard
 
