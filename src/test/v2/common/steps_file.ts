@@ -24,15 +24,17 @@ export = function() {
       });
     },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
-      await this.amOnPage(expectedUrl);
-      await tryTo(() => {
-        this.see('Bad Gateway');
-        this.say('Oh no, there is a bad gateway. Let me try again');
-        this.wait(1);
+      tryTo(() => this.amOnPage(expectedUrl));
+      tryTo(() => this.waitForElement('h1', 3));
+      const currentHeading = await this.grabTextFrom('h1');
+      if (!currentHeading || currentHeading.trim() != expectedHeading) {
+        this.say('failed to reach expected page on first attempt');
         this.amOnPage(expectedUrl);
-      });
-      await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
-      await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+        await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+        await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+      } else {
+        await this.see(expectedHeading, 'h1');
+      }
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
