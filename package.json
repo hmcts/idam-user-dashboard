@@ -159,7 +159,8 @@
     "body-parser": "^1.20.3",
     "send": "^0.19.0",
     "serve-static": "^2.1.0",
-    "@koa/router": "^13.0.1"
+    "@koa/router": "^13.0.1",
+    "cookie": "^0.7.2"
   },
   "packageManager": "yarn@4.5.0"
 }
