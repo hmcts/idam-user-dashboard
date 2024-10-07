@@ -26,7 +26,7 @@ export = function() {
     async goToPage(expectedUrl: String, expectedHeading? : String) {
       tryTo(() => this.amOnPage(expectedUrl));
       tryTo(() => this.waitForElement('h1', 3));
-      let currentHeading = await this.grabTextFrom('h1');
+      const currentHeading = await this.grabTextFrom('h1');
       if (!currentHeading || currentHeading.trim() != expectedHeading) {
         this.say('failed to reach expected page on first attempt');
         this.amOnPage(expectedUrl);
