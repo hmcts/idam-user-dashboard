@@ -20,9 +20,9 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   const changedForename = faker.person.firstName();
   const changedSurname = faker.person.lastName();
   const changedEmail = faker.internet.email({firstName : changedForename, lastName : changedSurname, provider: 'test.local'});
-  await I.fillField('forename', changedForename);
-  await I.fillField('surname', changedSurname);
-  await I.fillField('email', changedEmail);
+  I.fillField('forename', changedForename);
+  I.fillField('surname', changedSurname);
+  I.fillField('email', changedEmail);
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
 
@@ -51,7 +51,7 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
   I.assertTrue(testRoleDisabled);
   await I.dontSeeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
-  await I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
@@ -67,17 +67,17 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   const testUser = await I.haveUser();
 
   await I.navigateToEditUser(testUser.email);
-  await I.fillField('email', 'email..@test.com');
+  I.fillField('email', 'email..@test.com');
   await I.clickToExpectProblem('Save');
   I.see('The email address is not in the correct format');
 
   await I.navigateToEditUser(testUser.email);
-  await I.fillField('email', '@email@');
+  I.fillField('email', '@email@');
   await I.clickToExpectProblem('Save');
   I.see('The email address is not in the correct format');
 
   await I.navigateToEditUser(testUser.email);
-  await I.fillField('email', 'email@com..');
+  I.fillField('email', 'email@com..');
   await I.clickToExpectProblem('Save');
   I.see('The email address is not in the correct format');
 
@@ -91,9 +91,9 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.see('The email address is not in the correct format');
 
   await I.navigateToEditUser(testUser.email);
-  await I.fillField('#forename', ' ');
-  await I.fillField('#surname', ' ');
-  await I.fillField('#email', ' ');
+  I.fillField('#forename', ' ');
+  I.fillField('#surname', ' ');
+  I.fillField('#email', ' ');
   await I.clickToExpectProblem('Save');
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
@@ -111,14 +111,14 @@ Scenario('I as an admin can enable MFA', async ({ I }) => {
   await I.seeInField('email', testUser.email);
   await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
 
-  await I.checkOption(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  I.checkOption(locate('input').withAttr({name: 'multiFactorAuthentication'}));
   await I.retry(9).seeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
 
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
 
   await I.clickToNavigate('Return to user details', '/details', 'User Details');
-  I.seeIgnoreCase('enabled', I.locateStrongDataForTitle('Multi-factor authentication'));
+  await I.seeIgnoreCase('enabled', I.locateStrongDataForTitle('Multi-factor authentication'));
 });
 
 Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
@@ -139,25 +139,23 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   await I.seeInField('email', testUser.email);
   await I.uncheckOption('#hide-disabled');
 
-  await I.fillField('#roles__search-box', adminRole.name);
+  I.fillField('#roles__search-box', adminRole.name);
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(adminRole.name), 3));
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
   
-  await I.fillField('#roles__search-box', 'iud-filter-role-');
+  I.fillField('#roles__search-box', 'iud-filter-role-');
   await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsHidden(I.locateRoleContainer(adminRole.name));
 
-  await I.scrollPageToBottom();
-
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(testRole.name), 3));
   const numVisible = await I.grabNumberOfVisibleElements(I.locateRoleContainer(testRole.name));
-  await tryTo(() => {
-    I.assertTrue(numVisible == 0, 'Visible elements matching locator: ' + numVisible);
+  if (numVisible == 0) {
     I.say('filter not working, trying again');
     I.clearField('#roles__search-box');
     I.fillField('#roles__search-box', 'iud-filter-role-');
     I.wait(3);
-  });
+    I.scrollPageToBottom();
+  }
   await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(testRole.name));
   await I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
 
