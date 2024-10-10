@@ -120,9 +120,11 @@ export = function() {
       const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
       await this.seeResponseCodeIsSuccessful();
       let pendingInvites: any[] = [];
-      invitationRsp.data.forEach(element => {
-        if (element.status === "PENDING") {
-          pendingInvites.push(element);
+      invitationRsp.data.forEach(invitation => {
+        if (invitation.status === 'PENDING') {
+          pendingInvites.push(invitation);
+        } else {
+          this.say('Skipping non-pending invite with invite id ' + invitation.id);
         }
       });
       await this.assertEqual(pendingInvites.length, 1);
