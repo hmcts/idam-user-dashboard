@@ -25,8 +25,11 @@ export = function() {
     },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
       tryTo(() => this.amOnPage(expectedUrl));
-      tryTo(() => this.waitForElement('h1', 3));
-      const currentHeading = await this.grabTextFrom('h1');
+      const foundHeading = await tryTo(() => this.waitForElement('h1', 3));
+      let currentHeading;
+      if (foundHeading) {
+        currentHeading = await this.grabTextFrom('h1');
+      }
       if (!currentHeading || currentHeading.trim() != expectedHeading) {
         this.say('failed to reach expected page on first attempt');
         this.amOnPage(expectedUrl);
@@ -119,8 +122,16 @@ export = function() {
       this.amBearerAuthenticated(token);
       const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
       await this.seeResponseCodeIsSuccessful();
-      await this.assertEqual(invitationRsp.data.length, 1);
-      return invitationRsp.data[0];
+      const pendingInvites: any[] = [];
+      invitationRsp.data.forEach(invitation => {
+        if (invitation.invitationStatus === 'PENDING') {
+          pendingInvites.push(invitation);
+        } else {
+          this.say('Skipping non-pending invite with invite id ' + invitation.id + ', state is ' + invitation.invitationStatus);
+        }
+      });
+      await this.assertEqual(pendingInvites.length, 1);
+      return pendingInvites[0];
     },
     locateDataForTitle(title: string) {
       return locate('dd').after(locate('dt').withText(title).as(title));
