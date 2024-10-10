@@ -119,7 +119,7 @@ export = function() {
       this.amBearerAuthenticated(token);
       const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
       await this.seeResponseCodeIsSuccessful();
-      let pendingInvites: any[] = [];
+      const pendingInvites: any[] = [];
       invitationRsp.data.forEach(invitation => {
         if (invitation.status === 'PENDING') {
           pendingInvites.push(invitation);
