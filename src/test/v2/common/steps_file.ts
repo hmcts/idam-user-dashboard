@@ -121,10 +121,10 @@ export = function() {
       await this.seeResponseCodeIsSuccessful();
       const pendingInvites: any[] = [];
       invitationRsp.data.forEach(invitation => {
-        if (invitation.status === 'PENDING') {
+        if (invitation.invitationStatus === 'PENDING') {
           pendingInvites.push(invitation);
         } else {
-          this.say('Skipping non-pending invite with invite id ' + invitation.id);
+          this.say('Skipping non-pending invite with invite id ' + invitation.id + ', state is ' + invitation.invitationStatus);
         }
       });
       await this.assertEqual(pendingInvites.length, 1);
