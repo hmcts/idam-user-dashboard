@@ -119,8 +119,14 @@ export = function() {
       this.amBearerAuthenticated(token);
       const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
       await this.seeResponseCodeIsSuccessful();
-      await this.assertEqual(invitationRsp.data.length, 1);
-      return invitationRsp.data[0];
+      let pendingInvites: any[] = [];
+      invitationRsp.data.forEach(element => {
+        if (element.status === "PENDING") {
+          pendingInvites.push(element);
+        }
+      });
+      await this.assertEqual(pendingInvites.length, 1);
+      return pendingInvites[0];
     },
     locateDataForTitle(title: string) {
       return locate('dd').after(locate('dt').withText(title).as(title));
