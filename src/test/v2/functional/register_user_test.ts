@@ -139,6 +139,14 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   
   I.fillField('#roles__search-box', 'iud-filter-role-');
   await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
+  const numVisible = await I.grabNumberOfVisibleElements(I.locateRoleContainer(adminRole.name));
+  if (numVisible > 0) {
+    I.say('filter not working, trying again');
+    I.clearField('#roles__search-box');
+    I.fillField('#roles__search-box', 'iud-filter-role-');
+    I.wait(3);
+    I.scrollPageToBottom();
+  }
   await I.retry(ACTION_RETRY).seeIsHidden(I.locateRoleContainer(adminRole.name));
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
