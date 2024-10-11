@@ -1,11 +1,11 @@
 import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from "@azure/monitor-opentelemetry";
 import { trace, Span, SpanKind, TraceFlags, ProxyTracerProvider } from '@opentelemetry/api';
-//import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { Resource } from "@opentelemetry/resources";
-import { ATTR_SERVICE_NAME, SEMRESATTRS_SERVICE_NAMESPACE, SEMRESATTRS_SERVICE_INSTANCE_ID } from "@opentelemetry/semantic-conventions";
+import { SEMRESATTRS_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 import { ReadableSpan, SpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { HttpInstrumentationConfig } from "@opentelemetry/instrumentation-http";
+import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { IncomingMessage } from "http";
 import { RequestOptions } from "https";
 import config from 'config';
@@ -22,6 +22,12 @@ export function initializeTelemetry() {
             if (request.method === 'OPTIONS') {
                 return true;
             }
+            if (request.url?.match(/\/assets\/|\.js|\.css/)) {
+                console.log('skipping request for %j', request.url);
+                return true;
+            } else {
+                console.log('request for %j', request.url);
+            }
             return false;
         },
         ignoreOutgoingRequestHook: (options: RequestOptions) => {
@@ -33,11 +39,9 @@ export function initializeTelemetry() {
     // ----------------------------------------
     // Setting role name and role instance
     // ----------------------------------------
-    customResource.attributes[ATTR_SERVICE_NAME] = 'jbt-' + config.get('services.insightname');
-    customResource.attributes[SEMRESATTRS_SERVICE_NAMESPACE] = "my-namespace";
-    customResource.attributes[SEMRESATTRS_SERVICE_INSTANCE_ID] = "my-instance";
+    customResource.attributes[SEMRESATTRS_SERVICE_NAME] = config.get('services.insightname');
 
-    console.log('service name ' + customResource.attributes[ATTR_SERVICE_NAME]);
+    console.log('service name ' + customResource.attributes[SEMRESATTRS_SERVICE_NAME]);
 
     const options: AzureMonitorOpenTelemetryOptions = {
         azureMonitorExporterOptions: {
@@ -48,34 +52,26 @@ export function initializeTelemetry() {
         // Use custom Resource
         resource: customResource as any,
         instrumentationOptions: {
-            // Custom HTTP Instrumentation Configuration
             http: httpInstrumentationConfig,
             azureSdk: { enabled: true }
-            //mongoDb: { enabled: true },
-            //mySql: { enabled: true },
-            //postgreSql: { enabled: true },
-            //redis: { enabled: true },
-            //redis4: { enabled: true },
         },
     };
 
     addSpanProcessor(options);
-    //addOTLPExporter(options);
     useAzureMonitor(options);
 
     // Need client to be created
     addOpenTelemetryInstrumentation();
+    console.log('instrumentation initialized');
 }
 
 function addOpenTelemetryInstrumentation() {
     const tracerProvider = (trace.getTracerProvider() as ProxyTracerProvider).getDelegate();
-    //const meterProvider = metrics.getMeterProvider();
     registerInstrumentations({
-        //instrumentations: [
-        //    new FsInstrumentation(),
-        //],
+        instrumentations: [
+            new ExpressInstrumentation()
+        ],
         tracerProvider: tracerProvider,
-        //meterProvider: meterProvider
     });
 }
 
@@ -105,14 +101,3 @@ function addSpanProcessor(options: AzureMonitorOpenTelemetryOptions) {
     
     }
 }
-
-/*
-function addOTLPExporter(options: AzureMonitorOpenTelemetryOptions) {
-    const traceExporter = new OTLPTraceExporter();
-    if (options.spanProcessors?.length > 0) {
-        options.spanProcessors.push(new BatchSpanProcessor(traceExporter));
-    } else {
-        options.spanProcessors = [new BatchSpanProcessor(traceExporter)];
-    }
-}
-    */

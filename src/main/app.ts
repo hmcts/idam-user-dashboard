@@ -4,8 +4,19 @@ import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
 import { initializeTelemetry } from './modules/opentelemetry';
 
-import * as bodyParser from 'body-parser';
+const { setupDev } = require('./development');
+const env = process.env.NODE_ENV || 'development';
+const developmentMode = env === 'development';
+
+new PropertiesVolume().enableFor(env);
+initializeTelemetry();
+
 import express from 'express';
+export const app = express();
+app.locals.ENV = env;
+
+import * as bodyParser from 'body-parser';
+
 import { Helmet } from './modules/helmet';
 
 import favicon from 'serve-favicon';
@@ -18,16 +29,6 @@ import { HealthCheck } from './modules/health';
 import { Csrf } from './modules/csrf';
 import routes from './routes';
 import cookieParser from 'cookie-parser';
-
-const { setupDev } = require('./development');
-const env = process.env.NODE_ENV || 'development';
-const developmentMode = env === 'development';
-
-export const app = express();
-app.locals.ENV = env;
-
-new PropertiesVolume().enableFor(app);
-initializeTelemetry();
 
 import logger from './modules/logging';
 logger.info('app logger is at level ' + logger.level);

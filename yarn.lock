@@ -2729,7 +2729,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/core@npm:1.26.0, @opentelemetry/core@npm:^1.1.0, @opentelemetry/core@npm:^1.25.1, @opentelemetry/core@npm:^1.26.0":
+"@opentelemetry/core@npm:1.26.0, @opentelemetry/core@npm:^1.1.0, @opentelemetry/core@npm:^1.25.1, @opentelemetry/core@npm:^1.26.0, @opentelemetry/core@npm:^1.8.0":
   version: 1.26.0
   resolution: "@opentelemetry/core@npm:1.26.0"
   dependencies:
@@ -2857,6 +2857,19 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
   checksum: 10/186c649d95de4902746e1062c1142108c89c73294fcb6fa1e9fe194dd95a1cbef9df01ddc93db274a8a11a424930b4134db1df3d44fe342aaf8b0ad761819306
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/instrumentation-express@npm:^0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/instrumentation-express@npm:0.43.0"
+  dependencies:
+    "@opentelemetry/core": "npm:^1.8.0"
+    "@opentelemetry/instrumentation": "npm:^0.53.0"
+    "@opentelemetry/semantic-conventions": "npm:^1.27.0"
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: 10/52551e9ec83b2a6e3b289d44737c7abda0b00b6be94a1b383fb490aeba84ae117c97173b39ada54a51afefa4b6e6440eff224cc1d25978841a04f50ec740dd34
   languageName: node
   linkType: hard
 
@@ -7290,19 +7303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.3.6":
-  version: 4.3.7
-  resolution: "debug@npm:4.3.7"
-  dependencies:
-    ms: "npm:^2.1.3"
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 10/71168908b9a78227ab29d5d25fe03c5867750e31ce24bf2c44a86efc5af041758bb56569b0a3d48a9b5344c00a24a777e6f4100ed6dfd9534a42c1dde285125a
-  languageName: node
-  linkType: hard
-
-"debug@npm:4.3.4":
+"debug@npm:4, debug@npm:4.3.4, debug@npm:^4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -7311,6 +7312,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/0073c3bcbd9cb7d71dd5f6b55be8701af42df3e56e911186dfa46fac3a5b9eb7ce7f377dd1d3be6db8977221f8eb333d945216f645cf56f6b688cd484837d255
+  languageName: node
+  linkType: hard
+
+"debug@npm:^4.3.5, debug@npm:^4.3.6":
+  version: 4.3.7
+  resolution: "debug@npm:4.3.7"
+  dependencies:
+    ms: "npm:^2.1.3"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/71168908b9a78227ab29d5d25fe03c5867750e31ce24bf2c44a86efc5af041758bb56569b0a3d48a9b5344c00a24a777e6f4100ed6dfd9534a42c1dde285125a
   languageName: node
   linkType: hard
 
@@ -9760,7 +9773,10 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@opentelemetry/api": "npm:^1.9.0"
+    "@opentelemetry/instrumentation-express": "npm:^0.43.0"
+    "@opentelemetry/instrumentation-http": "npm:^0.53.0"
     "@opentelemetry/resources": "npm:^1.26.0"
+    "@opentelemetry/sdk-trace-base": "npm:^1.26.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
     "@playwright/test": "npm:^1.47.0"
     "@types/config": "npm:^3.3.5"
