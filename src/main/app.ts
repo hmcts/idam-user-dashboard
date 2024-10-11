@@ -2,7 +2,7 @@ import { glob } from 'glob';
 import * as path from 'path';
 import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
-import { AppInsights } from './modules/appinsights';
+import { initializeTelemetry } from './modules/opentelemetry';
 
 import * as bodyParser from 'body-parser';
 import express from 'express';
@@ -27,7 +27,8 @@ export const app = express();
 app.locals.ENV = env;
 
 new PropertiesVolume().enableFor(app);
-new AppInsights().enable();
+initializeTelemetry();
+
 import logger from './modules/logging';
 logger.info('app logger is at level ' + logger.level);
 

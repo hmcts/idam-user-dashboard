@@ -2,7 +2,7 @@ useCSRFProtection: true,
 security:
   referrerPolicy: 'origin'
 appInsights:
-  connectionString: false
+  connectionString: InstrumentationKey=6f978b9d-6de2-430c-ab7a-a49ef1fe6d61;IngestionEndpoint=https://uksouth-0.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/
 port: 3100
 services:
   name: 'IDAM User Dashboard'

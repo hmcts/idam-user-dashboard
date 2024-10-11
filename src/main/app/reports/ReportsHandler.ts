@@ -3,7 +3,6 @@ import config from 'config';
 import { User } from '../../interfaces/User';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import { TelemetryClient } from 'applicationinsights';
 import logger from '../../modules/logging';
 import { Redis } from 'ioredis';
 
@@ -16,9 +15,7 @@ export class ReportsHandler {
   private readonly store: Store;
   private readonly reportTimeout = 30 * 60;
 
-  public constructor(
-    private readonly telemetryClient: TelemetryClient
-  ) {
+  public constructor() {
     this.store = this.getStore();
   }
 
@@ -29,7 +26,6 @@ export class ReportsHandler {
       .then(() => uuid)
       .catch(e => {
         logger.error(e);
-        this.telemetryClient.trackTrace(e);
         throw new Error();
       });
   }
@@ -39,7 +35,6 @@ export class ReportsHandler {
       .then((data: string) => JSON.parse(data))
       .catch(e => {
         logger.error(e);
-        this.telemetryClient.trackTrace(e);
         throw new Error();
       });
   }
