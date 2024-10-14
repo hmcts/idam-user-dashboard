@@ -9,6 +9,7 @@ import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { IncomingMessage } from 'http';
 import { RequestOptions } from 'https';
 import config from 'config';
+import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
 
 export function initializeTelemetry() {
 
@@ -73,7 +74,8 @@ function addOpenTelemetryInstrumentation() {
   const tracerProvider = (trace.getTracerProvider() as ProxyTracerProvider).getDelegate();
   registerInstrumentations({
     instrumentations: [
-      new ExpressInstrumentation()
+      new ExpressInstrumentation(),
+      new WinstonInstrumentation()
     ],
     tracerProvider: tracerProvider,
   });
