@@ -47,10 +47,7 @@ export class UserEditController extends RootController {
     await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
-        const currentSpan = trace.getActiveSpan();
-        if (currentSpan) {
-          currentSpan.setAttribute('edit_user_id', user.id);
-        }
+        trace.getActiveSpan()?.setAttribute('edit_user_id', user.id);
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
         processMfaRole(user);
 
