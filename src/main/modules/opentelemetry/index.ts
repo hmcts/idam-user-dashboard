@@ -1,9 +1,8 @@
 import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from '@azure/monitor-opentelemetry';
-import { trace, Span, SpanKind, TraceFlags, ProxyTracerProvider } from '@opentelemetry/api';
+import { trace, ProxyTracerProvider } from '@opentelemetry/api';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { Resource } from '@opentelemetry/resources';
 import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
-import { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { IncomingMessage } from 'http';
@@ -53,7 +52,7 @@ export function initializeTelemetry() {
       connectionString: config.get('appInsights.connectionString')
     },
     // Sampling could be configured here
-    samplingRatio: 0.1,
+    samplingRatio: 1.0,
     // Use custom Resource
     resource: customResource as any,
     instrumentationOptions: {
@@ -62,7 +61,6 @@ export function initializeTelemetry() {
     },
   };
 
-  addSpanProcessor(options);
   useAzureMonitor(options);
 
   // Need client to be created
@@ -79,35 +77,4 @@ function addOpenTelemetryInstrumentation() {
     ],
     tracerProvider: tracerProvider,
   });
-}
-
-function addSpanProcessor(options: AzureMonitorOpenTelemetryOptions) {
-  // Custom SpanProcessor class
-  class SpanEnrichingProcessor implements SpanProcessor {
-    forceFlush(): Promise<void> {
-      return Promise.resolve();
-    }
-    shutdown(): Promise<void> {
-      return Promise.resolve();
-    }
-    onStart(_span: Span): void {
-      if (!_span) {
-        console.log('missing span');
-      }
-    }
-    onEnd(span: ReadableSpan) {
-
-      // Telemetry can be Filtered out here
-      if (span.kind == SpanKind.INTERNAL) {
-        span.spanContext().traceFlags = TraceFlags.NONE;
-      }
-
-    }
-  }
-  if (options.spanProcessors?.length > 0) {
-    options.spanProcessors.push(new SpanEnrichingProcessor());
-  } else {
-    options.spanProcessors = [new SpanEnrichingProcessor()];
-    
-  }
 }
