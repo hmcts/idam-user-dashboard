@@ -33,7 +33,7 @@ import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import config from 'config';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
-import { trace } from "@opentelemetry/api";
+import { trace } from '@opentelemetry/api';
 
 @autobind
 export class UserEditController extends RootController {
@@ -49,7 +49,7 @@ export class UserEditController extends RootController {
       .then(user => {
         const currentSpan = trace.getActiveSpan();
         if (currentSpan) {
-          currentSpan.setAttribute("edit_user_id", user.id);
+          currentSpan.setAttribute('edit_user_id', user.id);
         }
         const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
         processMfaRole(user);
