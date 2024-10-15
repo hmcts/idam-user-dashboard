@@ -8,7 +8,7 @@ properties([
   ])
 ])
 
-@Library("Infrastructure")
+@Library("Infrastructure@DTSPO-19128/show-red-on-failure")
 
 def type = "nodejs"
 def product = "idam"
