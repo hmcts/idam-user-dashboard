@@ -53,7 +53,7 @@ export function initializeTelemetry() {
       connectionString: config.get('appInsights.connectionString')
     },
     // Sampling could be configured here
-    samplingRatio: 1,
+    samplingRatio: 0.1,
     // Use custom Resource
     resource: customResource as any,
     instrumentationOptions: {
