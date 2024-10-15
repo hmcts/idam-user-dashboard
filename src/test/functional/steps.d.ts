@@ -7,9 +7,7 @@ declare namespace CodeceptJS {
   interface Methods extends Playwright, TestingSupportApiHelper {}
   interface I extends ReturnType<stepsFile>, WithTranslation<Methods> {}
   namespace Translation {
-    interface Actions {
-      nonExistentMethod(): void;
-    }
+    interface Actions {}
   }
 }
 

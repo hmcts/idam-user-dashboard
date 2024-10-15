@@ -8,6 +8,8 @@ declare namespace CodeceptJS {
   interface Methods extends Playwright, REST, JSONResponse, ChaiWrapper, ApiDataFactory {}
   interface I extends ReturnType<steps_file>, WithTranslation<Methods> {}
   namespace Translation {
-    interface Actions {}
+    interface Actions {
+      intentionalFailure(): void;
+    }
   }
 }
