@@ -59,7 +59,7 @@ export class OidcMiddleware {
             throw error;
           }
           if (!tokenUser.roles.includes(this.accessRole)) {
-            logger.info('afterCallback: missing access role for user id %s', tokenUser.uid);
+            logger.info('afterCallback: missing access role for user id ' + tokenUser.uid);
             throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
           }
           const user = {
@@ -67,10 +67,10 @@ export class OidcMiddleware {
             email: tokenUser.email,
             roles: tokenUser.roles
           } as User;
-          logger.info('afterCallback: complete for user id %s', tokenUser.uid);
+          logger.info('afterCallback: complete for user id ' + tokenUser.uid);
           return { ...session, user };
         } else {
-          logger.error('afterCallback: failed with response code %s', res.statusCode);
+          logger.error('afterCallback: failed with response code ' + res.statusCode);
           throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
         }
       }
