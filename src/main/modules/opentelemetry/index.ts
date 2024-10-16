@@ -23,7 +23,6 @@ export function initializeTelemetry() {
         return true;
       }
       if (request.url?.match(/\/assets\/|\.js|\.css/)) {
-        console.log('skipping request for %j', request.url);
         return true;
       } else {
         console.log('request for %j', request.url);
@@ -44,8 +43,6 @@ export function initializeTelemetry() {
   // Setting role name and role instance
   // ----------------------------------------
   customResource.attributes[SEMRESATTRS_SERVICE_NAME] = config.get('services.insightname');
-
-  console.log('service name ' + customResource.attributes[SEMRESATTRS_SERVICE_NAME]);
 
   const options: AzureMonitorOpenTelemetryOptions = {
     azureMonitorExporterOptions: {

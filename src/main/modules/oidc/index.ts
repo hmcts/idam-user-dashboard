@@ -55,12 +55,11 @@ export class OidcMiddleware {
               email: string,
               roles:string[]};
           } catch (error) {
-            console.log('(console) afterCallback: token decode error', error);
             logger.error('afterCallback: token decode error', error);
             throw error;
           }
           if (!tokenUser.roles.includes(this.accessRole)) {
-            console.log('(console) afterCallback: missing access role for user id %s', tokenUser.uid);
+            logger.info('afterCallback: missing access role for user id %s', tokenUser.uid);
             throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
           }
           const user = {
@@ -68,10 +67,10 @@ export class OidcMiddleware {
             email: tokenUser.email,
             roles: tokenUser.roles
           } as User;
-          console.log('(console) afterCallback: complete for user id %s', tokenUser.uid);
+          logger.info('afterCallback: complete for user id %s', tokenUser.uid);
           return { ...session, user };
         } else {
-          console.log('(console) afterCallback: failed with response code %s', res.statusCode);
+          logger.error('afterCallback: failed with response code %s', res.statusCode);
           throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
         }
       }

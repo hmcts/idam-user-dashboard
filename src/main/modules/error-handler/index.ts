@@ -36,7 +36,7 @@ export class ErrorHandler {
     // returning "not found" page for requests with paths not resolved by the router
     app.use((req, res) => {
       const status = http.HTTP_STATUS_NOT_FOUND;
-      console.log('error-handler, returning not found for: ' + req.method + ' ' + req.url);
+      logger.error('error-handler, returning not found for: ' + req.method + ' ' + req.url);
       res.status(status);
       res.render('error.njk', {...NOT_FOUND, status});
     });
@@ -60,7 +60,6 @@ export class ErrorHandler {
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
           logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
-          console.log('(console) errorUUID: ' + errorUUID + '; ', error);
       }
 
       res.status(status);

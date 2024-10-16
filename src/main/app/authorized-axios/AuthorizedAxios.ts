@@ -1,5 +1,6 @@
 import axios, {Axios, AxiosRequestConfig, AxiosRequestHeaders} from 'axios';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
+import logger from '../../modules/logging';
 
 type Token = {
   raw: string;
@@ -78,7 +79,7 @@ export class AuthorizedAxios extends Axios {
       })
     ).then(response => this.setToken(response.data.access_token))
       .catch(e => {
-        console.log('(console) Failed to get token - ' + e);
+        logger.error('Failed to get token - ' + e);
         throw e;
       });
   };
@@ -93,11 +94,11 @@ export class AuthorizedAxios extends Axios {
           intervalRate = this.oauth.token?.decoded.expires_in / 2;
         })
         .catch(e => {
-          console.log('(console) Failed to authenticate - ' + e);
+          logger.error('Failed to authenticate - ' + e);
           intervalRate = errorIntervalRate;
         })
         .finally(() => {
-          console.log('(console) Authenticated ' + this.oauth.clientId + ' will authenticate again in: ' + intervalRate + ' seconds.');
+          logger.error('Authenticated ' + this.oauth.clientId + ' will authenticate again in: ' + intervalRate + ' seconds.');
           this.timeoutFunc = setTimeout(intervalFunc, intervalRate * 1000);
         });
     };
@@ -112,7 +113,7 @@ export class AuthorizedAxios extends Axios {
         if (this.oauth.token.raw) {
           config.headers.Authorization = 'Bearer ' + this.oauth.token.raw;
         } else {
-          console.log('(console) skipped adding bearer, token is empty');
+          logger.error('skipped adding bearer, token is empty');
         }
       }
       return config;
@@ -124,15 +125,15 @@ export class AuthorizedAxios extends Axios {
       response => response,
       error => {
         if (error?.response?.status === 401) {
-          console.log('(console) Attempting token refresh and retry of request');
+          logger.info('Attempting token refresh and retry of request');
           return this.refreshToken().then(() => this.request(error.config))
             .catch(e => {
-              console.log('(console) Interceptor failed to refresh - ' + e);
+              logger.error('Interceptor failed to refresh - ' + e);
               throw e;
             });
         }
         if (error?.response) {
-          console.log('axios failed, response code ' + error.response.status + ', ' + JSON.stringify(error.response.data));
+          logger.error('axios failed, response code ' + error.response.status + ', ' + JSON.stringify(error.response.data));
         }
         return Promise.reject(error);
       }
