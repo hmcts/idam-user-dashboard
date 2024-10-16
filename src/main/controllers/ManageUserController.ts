@@ -15,6 +15,7 @@ import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 const obfuscate = require('obfuscate-email');
+import { trace } from '@opentelemetry/api';
 
 @autobind
 export class ManageUserController extends RootController {
@@ -30,16 +31,17 @@ export class ManageUserController extends RootController {
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
-
+    trace.getActiveSpan()?.setAttribute('search_term', possiblyEmail(input) ? obfuscate(input) : input);
     if (isEmpty(input.trim())) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
 
     const users = await this.searchForUser(req, res, input);
+    trace.getActiveSpan().setAttribute('match_count', users ? users.length : 0);
 
     if (users) {
       if (users.length === 1) {
-        console.log('ManageUserController.post, found uuid: ' + users[0].id);
+        trace.getActiveSpan()?.setAttribute('match_user_id', users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
       }
       console.log('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
