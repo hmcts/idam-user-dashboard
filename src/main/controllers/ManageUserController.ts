@@ -37,7 +37,7 @@ export class ManageUserController extends RootController {
     }
 
     const users = await this.searchForUser(req, res, input);
-    trace.getActiveSpan().setAttribute('match_count', users ? users.length : 0);
+    trace.getActiveSpan()?.setAttribute('match_count', users ? users.length : 0);
 
     if (users) {
       if (users.length === 1) {
