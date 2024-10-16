@@ -11,7 +11,6 @@ import { UserDeleteController } from '../../controllers/UserDeleteController';
 import { UserSuspendController } from '../../controllers/UserSuspendController';
 import { FeatureFlags } from '../../app/feature-flags/FeatureFlags';
 import { LaunchDarkly } from '../../app/feature-flags/LaunchDarklyClient';
-import { defaultClient } from 'applicationinsights';
 import config from 'config';
 import { UserEditController } from '../../controllers/UserEditController';
 import { UserRemoveSsoController } from '../../controllers/UserRemoveSsoController';
@@ -33,10 +32,9 @@ export class Container {
 
   public enableFor(app: Application): void {
     app.locals.container = createContainer({ injectionMode: InjectionMode.CLASSIC }).register({
-      telemetryClient: asValue(defaultClient),
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
-      reportGenerator: asValue(new ReportsHandler(defaultClient)),
+      reportGenerator: asValue(new ReportsHandler()),
       idamApiAxios: asValue(
         new AuthorizedAxios({
           baseURL: config.get('services.idam.url.api'),
@@ -47,7 +45,6 @@ export class Container {
             tokenEndpoint: config.get('services.idam.endpoint.token'),
             autoRefresh: true,
           }},
-        defaultClient
         )
       ),
       simpleAxios: asValue(

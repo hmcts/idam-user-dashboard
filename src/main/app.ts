@@ -2,10 +2,21 @@ import { glob } from 'glob';
 import * as path from 'path';
 import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
-import { AppInsights } from './modules/appinsights';
+import { initializeTelemetry } from './modules/opentelemetry';
+
+const { setupDev } = require('./development');
+const env = process.env.NODE_ENV || 'development';
+const developmentMode = env === 'development';
+
+new PropertiesVolume().enableFor(env);
+initializeTelemetry();
+
+import express from 'express';
+export const app = express();
+app.locals.ENV = env;
 
 import * as bodyParser from 'body-parser';
-import express from 'express';
+
 import { Helmet } from './modules/helmet';
 
 import favicon from 'serve-favicon';
@@ -19,15 +30,6 @@ import { Csrf } from './modules/csrf';
 import routes from './routes';
 import cookieParser from 'cookie-parser';
 
-const { setupDev } = require('./development');
-const env = process.env.NODE_ENV || 'development';
-const developmentMode = env === 'development';
-
-export const app = express();
-app.locals.ENV = env;
-
-new PropertiesVolume().enableFor(app);
-new AppInsights().enable();
 import logger from './modules/logging';
 logger.info('app logger is at level ' + logger.level);
 

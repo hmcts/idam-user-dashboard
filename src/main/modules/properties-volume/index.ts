@@ -1,14 +1,13 @@
 import config from 'config';
 import * as propertiesVolume from '@hmcts/properties-volume';
-import { Application } from 'express';
 import { get, set } from 'lodash';
 import { execSync } from 'child_process';
 
 export class PropertiesVolume {
 
-  enableFor(app: Application): void {
-    console.log('env is ' + app.locals.ENV);
-    if (app.locals.ENV !== 'development') {
+  enableFor(env: string): void {
+    console.log('env is ' + env);
+    if (env !== 'development') {
       propertiesVolume.addTo(config);
       this.setSecret('secrets.idam-idam.AppInsightsConnectionString', 'appInsights.connectionString');
       this.setSecret('secrets.idam-idam.launchdarkly-sdk-key', 'featureFlags.launchdarkly.sdkKey');

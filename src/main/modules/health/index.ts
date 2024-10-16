@@ -3,6 +3,7 @@ import os from 'os';
 import { infoRequestHandler } from '@hmcts/info-provider';
 import config from 'config';
 const healthcheck = require('@hmcts/nodejs-healthcheck');
+import logger from '../logging';
 
 export class HealthCheck {
 
@@ -10,8 +11,8 @@ export class HealthCheck {
   private readonly idamApiHealthBaseUrl: string = config.get('health.idam.url.api') ? config.get('health.idam.url.api') : config.get('services.idam.url.api');
 
   public enableFor(app: Application): void {
-    console.log('healthcheck using public url: ' + this.publicHealthBaseUrl);
-    console.log('healthcheck using api url: ' + this.idamApiHealthBaseUrl);
+    logger.info('healthcheck using public url: ' + this.publicHealthBaseUrl);
+    logger.info('healthcheck using api url: ' + this.idamApiHealthBaseUrl);
     app.get('/info', infoRequestHandler({
       extraBuildInfo: {
         name: config.get('services.name'),
@@ -27,9 +28,9 @@ export class HealthCheck {
       callback: (err : any, res : any) => {
         if (err) {
           if (res && res.body) {
-            console.log('hc response: ' + JSON.stringify(res.body) + '; error: ', JSON.stringify(err));
+            logger.error('hc response: ' + JSON.stringify(res.body) + '; error: ', JSON.stringify(err));
           } else {
-            console.error('hc failed, empty response', err);
+            logger.error('hc failed, empty response', err);
           }
         }
         
