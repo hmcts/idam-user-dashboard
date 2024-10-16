@@ -15,7 +15,6 @@ import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 const obfuscate = require('obfuscate-email');
-import { trace } from '@opentelemetry/api';
 
 @autobind
 export class ManageUserController extends RootController {
@@ -36,19 +35,17 @@ export class ManageUserController extends RootController {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
 
-    trace.getActiveSpan()?.setAttribute('search_term', (possiblyEmail(input) ? obfuscate(input) : input));
     const users = await this.searchForUser(req, res, input);
 
     if (users) {
       if (users.length === 1) {
-        trace.getActiveSpan()?.setAttribute('user_id', users[0].id);
-        
+        console.log('ManageUserController.post, found uuid: ' + users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
       }
-      trace.getActiveSpan()?.setAttribute('count', users.length);
+      console.log('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     } else {
-      trace.getActiveSpan()?.setAttribute('count', 0);
+      console.log('ManageUserController.post, found no results for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
     }
   }
 
