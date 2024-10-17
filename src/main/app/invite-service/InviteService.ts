@@ -35,8 +35,7 @@ export class InviteService {
         }
       )
       .catch(err => {
-        console.log('(console) failed to send ' + invitationType + ' invite  for email ' + obfuscate(invite.email));
-        logger.error('(logger) Failed to send invite');
+        logger.error('Failed to send invite' + invitationType + ' invite  for email ' + obfuscate(invite.email));
         throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, err);
       });
   };

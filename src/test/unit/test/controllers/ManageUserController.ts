@@ -78,6 +78,46 @@ describe('Manage user controller', () => {
     expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + email } } });
   });
 
+  test('Should render the manage user page for user that matches by id', async () => {
+    const testemail = 'id.match@test.local';
+    const testuserid = 'test-user-id';
+    const result = {
+      id: testuserid,
+      forename: 'John',
+      surname: 'Smith',
+      email: testemail,
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+      ssoId: ssoId
+    };
+    when(mockApi.getUserById).calledWith(testToken, testuserid).mockResolvedValue(result);
+
+    req.body._userId = testuserid;
+    await controller.post(req, res);
+    expect(res.redirect).toBeCalledWith(307, '/user/' + testuserid + '/details');
+  });
+
+  test('Should render the manage user page for one email that matches the search input', async () => {
+    const localemail = 'exact.match@test.local';
+    const results = [
+      {
+        id: userId,
+        forename: 'John',
+        surname: 'Smith',
+        email: localemail,
+        active: true,
+        roles: ['IDAM_SUPER_USER'],
+        ssoId: ssoId
+      }
+    ];
+    when(mockApi.getUserById).calledWith(testToken, userId).mockRejectedValue('');
+    when(mockApi.searchUsersByEmail).calledWith(testToken, localemail).mockResolvedValue(results);
+
+    req.body.search = localemail;
+    await controller.post(req, res);
+    expect(res.redirect).toBeCalledWith(307, '/user/123/details');
+  });
+
   test('Should render the manage user page when more than one SSO IDs matches the search input', async () => {
     const results = [
       {

@@ -15,6 +15,8 @@ import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 const obfuscate = require('obfuscate-email');
+import { trace } from '@opentelemetry/api';
+import logger from '../modules/logging';
 
 @autobind
 export class ManageUserController extends RootController {
@@ -30,22 +32,21 @@ export class ManageUserController extends RootController {
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
-
+    this.setTraceAttribute('search_term', possiblyEmail(input) ? obfuscate(input) : input);
     if (isEmpty(input.trim())) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
 
     const users = await this.searchForUser(req, res, input);
+    this.setTraceAttribute('match_count', users ? users.length : 0);
 
     if (users) {
       if (users.length === 1) {
-        console.log('ManageUserController.post, found uuid: ' + users[0].id);
+        this.setTraceAttribute('match_user_id', users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
       }
-      console.log('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
+      logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
-    } else {
-      console.log('ManageUserController.post, found no results for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
     }
   }
 
@@ -74,5 +75,9 @@ export class ManageUserController extends RootController {
         search: {message: errorMessage}
       }
     });
+  }
+
+  private setTraceAttribute(attrName : string, attrValue : any) {
+    trace.getActiveSpan()?.setAttribute(attrName, attrValue);
   }
 }
