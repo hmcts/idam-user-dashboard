@@ -16,6 +16,7 @@ import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 const obfuscate = require('obfuscate-email');
 import { trace } from '@opentelemetry/api';
+import logger from '../modules/logging';
 
 @autobind
 export class ManageUserController extends RootController {
@@ -44,7 +45,7 @@ export class ManageUserController extends RootController {
         trace.getActiveSpan()?.setAttribute('match_user_id', users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
       }
-      console.log('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
+      logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
   }
