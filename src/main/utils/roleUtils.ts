@@ -4,6 +4,7 @@ import { V2User } from '../interfaces/V2User';
 import { User } from '../interfaces/User';
 import {AuthedRequest} from '../interfaces/AuthedRequest';
 import {IdamAPI} from '../app/idam-api/IdamAPI';
+import logger from '../modules/logging';
 
 export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
 
@@ -14,7 +15,7 @@ export const loadUserAssignableRoles = (req: AuthedRequest, idamWrapper: IdamAPI
         req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
       })
       .catch((err: any) => {
-        console.log('Failed to get assignable roles', err);
+        logger.error('Failed to get assignable roles', err);
         throw err;
       });
   }
