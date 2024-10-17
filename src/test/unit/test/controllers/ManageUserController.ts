@@ -82,14 +82,14 @@ describe('Manage user controller', () => {
     const testemail = 'id.match@test.local';
     const testuserid = 'test-user-id';
     const result = {
-        id: testuserid,
-        forename: 'John',
-        surname: 'Smith',
-        email: testemail,
-        active: true,
-        roles: ['IDAM_SUPER_USER'],
-        ssoId: ssoId
-      };
+      id: testuserid,
+      forename: 'John',
+      surname: 'Smith',
+      email: testemail,
+      active: true,
+      roles: ['IDAM_SUPER_USER'],
+      ssoId: ssoId
+    };
     when(mockApi.getUserById).calledWith(testToken, testuserid).mockResolvedValue(result);
 
     req.body._userId = testuserid;
