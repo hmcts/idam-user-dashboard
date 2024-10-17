@@ -17,6 +17,7 @@ import config from 'config';
 import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import logger from '../modules/logging';
 @autobind
 export class UserResultsController extends RootController {
 
@@ -41,7 +42,7 @@ export class UserResultsController extends RootController {
     try {
       user = await this.idamWrapper.getUserV2ById(userUUID);
     } catch (e) {
-      console.log('Failed getUserV2ById call for id: ' + userUUID, e);
+      logger.error('Failed getUserV2ById call for id: ' + userUUID, e);
       return req.next();
     }
 
@@ -120,7 +121,6 @@ export class UserResultsController extends RootController {
   private composeLockedMessage(user: V2User): string {
     if (user.accountStatus === AccountStatus.LOCKED) {
       if (!isEmpty(user.accessLockedDate)) {
-        console.log('(console) composing locked message for user id' + user.id + ', locked at ' + convertISODateTimeToUTCFormat(user.accessLockedDate));
         const remainingTime = this.computeRemainingLockedTime(user.accessLockedDate);
         if (remainingTime > 0) {
           const lockedMessage = `This account has been temporarily locked due to multiple failed login attempts. The temporary lock will end in ${remainingTime} `;
