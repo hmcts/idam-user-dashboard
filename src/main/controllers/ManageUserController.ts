@@ -32,17 +32,17 @@ export class ManageUserController extends RootController {
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const input: string = req.body.search || req.body._userId || '';
-    trace.getActiveSpan()?.setAttribute('search_term', possiblyEmail(input) ? obfuscate(input) : input);
+    this.setTraceAttribute('search_term', possiblyEmail(input) ? obfuscate(input) : input);
     if (isEmpty(input.trim())) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
 
     const users = await this.searchForUser(req, res, input);
-    trace.getActiveSpan()?.setAttribute('match_count', users ? users.length : 0);
+    this.setTraceAttribute('match_count', users ? users.length : 0);
 
     if (users) {
       if (users.length === 1) {
-        trace.getActiveSpan()?.setAttribute('match_user_id', users[0].id);
+        this.setTraceAttribute('match_user_id', users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
       }
       logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
@@ -75,5 +75,9 @@ export class ManageUserController extends RootController {
         search: {message: errorMessage}
       }
     });
+  }
+
+  private setTraceAttribute(attrName : string, attrValue : any) {
+    trace.getActiveSpan()?.setAttribute(attrName, attrValue);
   }
 }
