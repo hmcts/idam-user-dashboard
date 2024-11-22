@@ -120,7 +120,7 @@ export = function() {
     },
     async getSingleInvite(email: string, token: string) {
       this.amBearerAuthenticated(token);
-      const invitationRsp = await this.sendGetRequest('/test/idam/invitations?email=' + email);
+      const invitationRsp = await this.getWithRetry('/test/idam/invitations?email=' + email);
       await this.seeResponseCodeIsSuccessful();
       const pendingInvites: any[] = [];
       invitationRsp.data.forEach(invitation => {
@@ -188,6 +188,20 @@ export = function() {
     },
     checkA11y(fileName: string) {
       this.runA11yCheck({ reportFileName: fileName });
+    },
+    async getWithRetry(url: string, headers: any = null) {
+      let result;
+      try {
+        result = await this.sendGetRequest(url, headers);
+      } catch (err) {
+        console.warn('Failed call to ' + url, err);
+      }
+      if (!result || result.status >= 400) {
+        this.say('RETRY: Failed first call to ' + url + ' will try again');
+        this.wait(1);
+        result = await this.sendGetRequest(url, headers);
+      }
+      return result;
     },
   });
 }
