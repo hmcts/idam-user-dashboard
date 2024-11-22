@@ -1,4 +1,5 @@
 // in this file you can append custom step methods to 'I' object
+const { faker } = require('@faker-js/faker');
 
 const CLICK_RETRY = { retries: 3, minTimeout: 500, maxTimeout: 5000 };
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
@@ -162,13 +163,24 @@ export = function() {
       const actualValue = await this.grabTextFrom(location);
       await this.assertEqualIgnoreCase(actualValue, expectedValue);
     },
-    async haveUser(body = null) {
-      const rsp = await this.have('user', body);
-      // error responses will always have a path attribute
-      if (rsp.path) {
-        this.say('Failed to create user with status: %s, will try again >> %j', rsp.status, rsp);
-        return await this.safeHave('user', body);
+    async haveUser(body: any = null) {
+      if (!body) {
+        body = { password: faker.internet.password({ prefix: 'T1a' }) };
+      } else if (!body.password) {
+        body.password = faker.internet.password({ prefix: 'T1a' });
       }
+      const testSecret = body.password;
+      let rsp;
+      try {
+        rsp = await this.have('user', body);
+      } catch (err) {
+        this.say('Failed to create user: ' + err);
+      }
+      if (!rsp || rsp.path) {
+        this.say('RETRY: Failed to create user with status: ' + rsp?.status + ', will try again.');
+        rsp = await this.safeHave('user', body);
+      }
+      rsp.password = testSecret;
       return rsp;
     },
     async haveRole(body = null) {
@@ -194,10 +206,10 @@ export = function() {
       try {
         result = await this.sendGetRequest(url, headers);
       } catch (err) {
-        console.warn('Failed call to ' + url, err);
+        console.warn('Failed call to GET ' + url, err);
       }
       if (!result || result.status >= 400) {
-        this.say('RETRY: Failed first call to ' + url + ' will try again');
+        this.say('RETRY: Failed first call to GET ' + url + ' will try again');
         this.wait(1);
         result = await this.sendGetRequest(url, headers);
       }
