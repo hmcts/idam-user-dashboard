@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 Feature('v2_sign_in');
 
 Before(async ({ setupDAO }) => {
