@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 Feature('v2_sign_in');
 
 Before(async ({ setupDAO }) => {
@@ -18,11 +16,10 @@ Scenario('login as admin successfully',  ({ I, login }) => {
 });
 
 Scenario('login as user without access', async ({ I }) => {
-  const testSecret = faker.internet.password({prefix: '0Ab'});
-  const testUser = await I.haveUser({password: testSecret});
+  const testUser = await I.haveUser();
   I.amOnPage('/');
   I.fillField('Email', testUser.email);
-  I.fillField('Password', secret(testSecret));
+  I.fillField('Password', secret(testUser.password));
   I.click('Sign in');  
   I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
   I.see('Status code: 403');

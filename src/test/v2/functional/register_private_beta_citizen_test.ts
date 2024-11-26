@@ -13,12 +13,10 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   const privateBetaService = await I.haveService({onboardingRoleNames: [privateBetaRole.name]});
   const privateBetaAdminRole = await I.haveRole({assignableRoleNames: ['citizen', privateBetaRole.name]});
 
-  const testSecret = faker.internet.password({prefix: '0Ab'});
   const betaAdmin = await I.haveUser({
-    password: testSecret,
     roleNames: [privateBetaAdminRole.name, 'idam-user-dashboard--access']
   });
-  I.loginAs(betaAdmin.email, testSecret);
+  I.loginAs(betaAdmin.email, betaAdmin.password);
 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
