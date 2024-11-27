@@ -45,7 +45,7 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
 
   I.see('Remove SSO');
   I.click('Remove SSO');
-  I.seeAfterClick('Are you sure you want to remove single sign-on', 'h1');
+  I.seeAfterClick('Are you sure you want to remove single sign-off', 'h1');
   I.checkOption('#confirmRadio-2');
   await I.clickToNavigate('Continue', '/details', 'User Details');
   I.see(testUser.email, I.locateDataForTitle('Email'));
