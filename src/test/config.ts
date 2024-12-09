@@ -32,7 +32,7 @@ export const config = {
       enabled: true
     },
     allure: {
-      enabled: true,
+      enabled: false,
       require: '@codeceptjs/allure-legacy'
     },
   }

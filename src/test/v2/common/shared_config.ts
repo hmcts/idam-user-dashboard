@@ -73,7 +73,7 @@ shared_config.helpers = {
 
 shared_config.plugins = {
   allure: {
-    enabled: true,
+    enabled: false,
     require: '@codeceptjs/allure-legacy'
   },
   autoLogin: {
