@@ -41,7 +41,7 @@ export = function() {
       }
     },
     async goToManageUser(userId: String) {
-      let viewUserPath = "/user/" + userId + "/details";
+      const viewUserPath = '/user/' + userId + '/details';
       await this.goToPage(viewUserPath, 'User Details');
     },
     async navigateToManageUser(searchValue : string) {
