@@ -10,9 +10,9 @@ Before(async ({ setupDAO, login }) => {
 });
 
 Scenario('view admin user details', async ({ I }) => {
-  const admin = codeceptjs.container.support('adminIdentity');
-  await I.goToManageUser(admin.id);
-  I.see(admin.email, I.locateDataForTitle('Email'));
+  const adminEmail = codeceptjs.container.support('adminIdentity').email;
+  await I.navigateToManageUser(adminEmail);
+  I.see(adminEmail, I.locateDataForTitle('Email'));
 });
 
 Scenario('view test user details',  async ({ I }) => {
