@@ -11,7 +11,7 @@ Before(async ({ setupDAO, login }) => {
 
 Scenario('I as an admin should edit user details successfully',  async ({ I, setupDAO }) => {
   const testUser = await I.haveUser();
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   await I.seeInField('forename', testUser.forename);
   await I.seeInField('surname', testUser.surname);
   await I.seeInField('email', testUser.email);
@@ -40,7 +40,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole();
   const testUser = await I.haveUser({roleNames: [testRole.name]});
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
 
   await I.uncheckOption('#hide-disabled');
@@ -66,22 +66,22 @@ Scenario('I as an admin can only edit roles if I can manage them', async ({ I, s
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
   const testUser = await I.haveUser();
 
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   I.fillField('email', 'email..@test.com');
   await I.clickToExpectProblem('Save');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   I.fillField('email', '@email@');
   await I.clickToExpectProblem('Save');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   I.fillField('email', 'email@com..');
   await I.clickToExpectProblem('Save');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   I.clearField('forename');
   I.clearField('surname');
   I.clearField('email');
@@ -90,7 +90,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.see('You must enter a surname for the user');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   I.fillField('#forename', ' ');
   I.fillField('#surname', ' ');
   I.fillField('#email', ' ');
@@ -99,7 +99,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.see('You must enter a surname for the user');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   await I.clickToExpectProblem('Save');
   I.see('No changes to the user were made');
 
@@ -107,7 +107,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
 Scenario('I as an admin can enable MFA', async ({ I }) => {
   const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled']});
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
   await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
 
@@ -126,7 +126,7 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   const emailDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name:'email'}));
   I.assertTrue(emailDisabled);
 });
@@ -135,7 +135,7 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-filter-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const adminRole = setupDAO.getAdminRole();
   const testUser = await I.haveUser({roleNames: [testRole.name, adminRole.name]});
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
   await I.uncheckOption('#hide-disabled');
 

@@ -21,7 +21,7 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', registerEmail);
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', registerForename);

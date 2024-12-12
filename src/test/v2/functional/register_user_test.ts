@@ -16,7 +16,7 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', registerEmail);
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', registerForename);
@@ -40,7 +40,7 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', registerEmail);
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', registerForename);
@@ -60,37 +60,37 @@ Scenario('I as an admin should be able to register professional user', async ({ 
 });
 
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', 'email..@test.com');
   await I.clickToExpectProblem('Continue');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', '@email@');
   await I.clickToExpectProblem('Continue');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', 'email@com..');
   await I.clickToExpectProblem('Continue');
   I.see('The email address is not in the correct format');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', '');
   await I.clickToExpectProblem('Continue');
   I.see('You must enter an email address');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', ' ');
   await I.clickToExpectProblem('Continue');
   I.see('You must enter an email address');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', codeceptjs.container.support('adminIdentity').email);
   await I.clickToExpectProblem('Continue');
   I.see('The email \'' + codeceptjs.container.support('adminIdentity').email + '\' already exists');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.clearField('forename');
@@ -99,7 +99,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', ' ');
@@ -108,7 +108,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.see('You must enter a forename for the user');
   I.see('You must enter a surname for the user');
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', faker.person.firstName());
@@ -124,7 +124,7 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   await I.haveRole({ name: 'iud-filter-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const adminRole = setupDAO.getAdminRole();
 
-  await I.navigateToRegisterUser();
+  await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
   await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', faker.person.firstName());

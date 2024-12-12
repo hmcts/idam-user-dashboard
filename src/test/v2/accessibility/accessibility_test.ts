@@ -20,7 +20,7 @@ Scenario('I am on search user page',  async ({ I }) => {
 
 Scenario('I am on edit user page',  async ({ I }) => {
   const testUser = await I.haveUser();
-  await I.navigateToEditUser(testUser.email);
+  await I.navigateToEditUser(testUser.id);
 
   I.checkA11y('edit-user-a11y-audit.html');
 });

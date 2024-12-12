@@ -9,7 +9,7 @@ Before(async ({ setupDAO, login }) => {
 
 Scenario('I as an admin can suspend user',  async ({ I }) => {
   const testUser = await I.haveUser();
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   await I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Suspend user'));
@@ -25,7 +25,7 @@ Scenario('I as an admin can suspend user',  async ({ I }) => {
 
 Scenario('I as an admin can cancel suspending a user',  async ({ I }) => {
   const testUser = await I.haveUser();
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   await I.seeIgnoreCase('active', I.locateStrongDataForTitle('Account state'));
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Suspend user'));
@@ -38,7 +38,7 @@ Scenario('I as an admin can cancel suspending a user',  async ({ I }) => {
 
 Scenario('I as an admin can unsuspend user',  async ({ I }) => {
   const testUser = await I.haveUser({accountStatus: 'SUSPENDED'});
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   await I.seeIgnoreCase('suspended', I.locateStrongDataForTitle('Account state'));
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Unsuspend user'));
@@ -53,7 +53,7 @@ Scenario('I as an admin can unsuspend user',  async ({ I }) => {
 
 Scenario('I as an admin can cancel unsuspending a user',  async ({ I }) => {
   const testUser = await I.haveUser({accountStatus: 'SUSPENDED'});
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   await I.seeIgnoreCase('suspended', I.locateStrongDataForTitle('Account state'));
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Unsuspend user'));

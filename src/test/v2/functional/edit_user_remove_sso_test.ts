@@ -14,8 +14,7 @@ Scenario('I as an admin can remove SSO successfully',  async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
-
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
@@ -37,8 +36,7 @@ Scenario('I as an admin can cancel removing SSO',  async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
-
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));

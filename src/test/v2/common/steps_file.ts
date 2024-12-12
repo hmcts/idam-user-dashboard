@@ -40,6 +40,10 @@ export = function() {
         await this.see(expectedHeading, 'h1');
       }
     },
+    async goToManageUser(userId: String) {
+      let viewUserPath = "/user/" + userId + "/details";
+      await this.goToPage(viewUserPath, 'User Details');
+    },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
       await this.retry(AFTER_CLICK_RETRY).fillField('search', searchValue);
@@ -51,13 +55,16 @@ export = function() {
       await this.clickToNavigate('Continue', '/user/manage', 'Search for an existing user');
     },
     async navigateToEditUser(searchValue : string) {
-      await this.navigateToManageUser(searchValue);
+      await this.goToManageUser(searchValue);
       await this.clickToNavigate('Edit user', '/user/edit', 'Edit User');
     },
     async navigateToGenerateReport() {
       await this.goToPage('/', 'What do you want to do?');
       await this.checkOption('Generate a user report');
       await this.clickToNavigate('Continue', '/reports', 'Generate report');
+    },
+    async goToRegisterUser() {
+      await this.amOnPage('/user/add', 'Add new user email');
     },
     async navigateToRegisterUser() {
       await this.goToPage('/', 'What do you want to do?');
