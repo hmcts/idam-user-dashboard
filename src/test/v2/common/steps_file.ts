@@ -90,7 +90,7 @@ export = function() {
       const foundHeading = await tryTo(() => this.waitForElement('h1', 3));
       if (!foundHeading) {
         this.say('RETRY: No heading on page, going back to try again');
-        await this.executeScript("window.history.back();");
+        await this.executeScript('window.history.back();');
         await this.wait(1);
         const onStartPage = await tryTo(() => this.see(originalHeading, 'h1'));
         if (onStartPage) {
