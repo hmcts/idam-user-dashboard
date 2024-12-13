@@ -18,14 +18,14 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
   await I.goToRegisterUser();
   I.fillField('email', registerEmail);
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', registerForename);
   I.fillField('#surname', registerSurname);
   I.click('Support');
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
   await I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
-  await I.clickToNavigate('Save', '/user/add/roles', 'User registered');
+  await I.clickToNavigateWithNoRetry('Save', '/user/add/roles', 'User registered');
 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
@@ -42,14 +42,14 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
   await I.goToRegisterUser();
   I.fillField('email', registerEmail);
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', registerForename);
   I.fillField('#surname', registerSurname);
   I.click('Professional');
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
   await I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
-  await I.clickToNavigate('Save', '/user/add/roles', 'User registered');
+  await I.clickToNavigateWithNoRetry('Save', '/user/add/roles', 'User registered');
 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
@@ -92,7 +92,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
   await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.clearField('forename');
   I.clearField('surname');
   await I.clickToExpectProblem('Continue');
@@ -101,7 +101,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
   await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', ' ');
   I.fillField('#surname', ' ');
   await I.clickToExpectProblem('Continue');
@@ -110,11 +110,11 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
   await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', faker.person.firstName());
   I.fillField('#surname', faker.person.lastName());
   I.click('Support');
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
   await I.clickToExpectProblem('Save');
   I.see('A user must have at least one role assigned to be able to create them');
 });
@@ -126,11 +126,11 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
 
   await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', faker.person.firstName());
   I.fillField('#surname', faker.person.lastName());
   I.click('Support');
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user roles');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
   I.retry(ACTION_RETRY).uncheckOption('#hide-disabled');
 
   I.fillField('#roles__search-box', adminRole.name);
