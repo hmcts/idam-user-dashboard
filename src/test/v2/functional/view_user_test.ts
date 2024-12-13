@@ -17,7 +17,7 @@ Scenario('view admin user details', async ({ I }) => {
 
 Scenario('view test user details',  async ({ I }) => {
   const testUser = await I.haveUser();
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -29,7 +29,7 @@ Scenario('view test user with sso details',  async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'idam-sso'
   });
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('idam-sso', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('IdP User ID'));
@@ -41,7 +41,7 @@ Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
     ssoId: faker.string.uuid(),
     ssoProvider: 'azure'
   });
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('eJudiciary.net', I.locateDataForTitle('Identity Provider'));
   I.see(testUser.ssoId, I.locateDataForTitle('eJudiciary User ID'));
@@ -51,7 +51,7 @@ Scenario('view test user with ejudiciary provider details',  async ({ I }) => {
 
 Scenario('view suspended user details',  async ({ I }) => {
   const testUser = await I.haveUser({accountStatus: 'SUSPENDED'});
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -61,7 +61,7 @@ Scenario('view suspended user details',  async ({ I }) => {
 Scenario('view locked user details',  async ({ I }) => {
   const testUser = await I.haveUser();
   I.lockTestUser(testUser.email);
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));
@@ -71,7 +71,7 @@ Scenario('view locked user details',  async ({ I }) => {
 
 Scenario('view archived user details',  async ({ I }) => {
   const testUser = await I.haveUser({recordType: 'ARCHIVED'});
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
   I.dontSeeElement(I.locateTitle('IdP User ID'));

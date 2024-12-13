@@ -9,7 +9,7 @@ Before(async ({ setupDAO, login }) => {
 
 Scenario('I as an admin can delete user successfully',  async ({ I }) => {
   const testUser = await I.haveUser();
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
   await I.clickToNavigate('Delete user', '/user/delete', 'Are you sure you want to delet');
@@ -27,14 +27,14 @@ Scenario('I as an admin can delete user successfully',  async ({ I }) => {
 Scenario('I as an admin cannot delete user with unmanageable roles',  async ({ I, setupDAO }) => {
   const testRole = await I.haveRole();
   const testUser = await I.haveUser({roleNames: [testRole.name, setupDAO.getWorkerRole().name]});
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
 Scenario('I as an admin can delete archived user successfully',  async ({ I }) => {
   const testUser = await I.haveUser({recordType: 'ARCHIVED'});
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   await I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
   I.seeElement(locate('button').withText('Delete user'));
@@ -52,7 +52,7 @@ Scenario('I as an admin can delete archived user successfully',  async ({ I }) =
 
 Scenario('I as an admin can cancel deleting a user',  async ({ I }) => {
   const testUser = await I.haveUser();
-  await I.navigateToManageUser(testUser.email);
+  await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.seeElement(locate('button').withText('Delete user'));
   await I.clickToNavigate('Delete user', '/user/delete', 'Are you sure you want to delet');
