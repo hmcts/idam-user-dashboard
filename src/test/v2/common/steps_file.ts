@@ -74,15 +74,32 @@ export = function() {
     seeAfterClick(seeValue : string, location) {
       this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
     },
+    async clickToNavigateWithNoRetry(clickText : String, expectedUrl : String, expectedHeading? : String) {
+      const originalHeading : String = await this.grabTextFrom('h1');
+      await this.retry(CLICK_RETRY).click(clickText);
+      await this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
+      await this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
+      await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      if (expectedHeading) {
+        await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+      }
+    },
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
       await this.retry(CLICK_RETRY).click(clickText);
-      await tryTo(() => {
-        this.see('Bad Gateway');
-        this.say('Oh no, there is a bad gateway. Let me try again');
-        this.wait(1);
-        this.refreshPage();
-      });
+      const foundHeading = await tryTo(() => this.waitForElement('h1', 3));
+      if (!foundHeading) {
+        this.say('RETRY: No heading on page, going back to try again');
+        await this.executeScript('window.history.back();');
+        await this.wait(1);
+        const onStartPage = await tryTo(() => this.see(originalHeading, 'h1'));
+        if (onStartPage) {
+          await this.retry(CLICK_RETRY).click(clickText);
+          await this.wait(1);
+        } else {
+          this.say('RETRY: looks like browser back button failed');
+        }
+      } 
       await this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
       await this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
       await this.retry(AFTER_CLICK_RETRY).seeElement('h1');

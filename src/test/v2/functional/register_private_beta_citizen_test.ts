@@ -23,14 +23,14 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
   await I.goToRegisterUser();
   I.fillField('email', registerEmail);
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add new user details');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
   I.fillField('#forename', registerForename);
   I.fillField('#surname', registerSurname);
   I.click('Private Beta Citizen');
-  await I.clickToNavigate('Continue', '/user/add/details', 'Add a new user');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add a new user');
   I.see('Please select a service you would want to associate with the private beta citizen');
   I.selectOption('#service', privateBetaService.clientId);
-  await I.clickToNavigate('Save', '/user/add/private-beta-service', 'User registered');
+  await I.clickToNavigateWithNoRetry('Save', '/user/add/private-beta-service', 'User registered');
 
   const testingToken = await setupDAO.getToken();
   const invite = await I.getSingleInvite(registerEmail, testingToken);
