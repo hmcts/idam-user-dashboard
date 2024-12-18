@@ -23,6 +23,7 @@ export = function() {
         this.dontSee('What do you want to do?', 'h1');
         this.doLogin(email, password);
       });
+      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
       tryTo(() => this.amOnPage(expectedUrl));
