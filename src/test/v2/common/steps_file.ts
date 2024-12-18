@@ -91,21 +91,32 @@ export = function() {
       const foundHeading = await tryTo(() => this.waitForElement('h1', 3));
       if (!foundHeading) {
         this.say('RETRY: No heading on page, going back to try again');
-        const screenshotName = clickText + '-failure-' + faker.number.int();
+        const screenshotName =  'click-failure-' + faker.number.int();
         this.say('RETRY: Saving screenshot with name ' + screenshotName);
         await this.saveScreenshot(screenshotName);
         const pageSource = await this.grabSource();
         if (pageSource) {
           console.log('RETRY: Failed page source: ' + pageSource);
+          if (pageSource.includes('bad gateway')) {
+            this.say('RETRY: Failed page source contains BAD GATEWAY (see console log)');
+          }
         }
         await this.executeScript('window.history.back();');
-        await this.wait(1);
+        await this.wait(3);
         const onStartPage = await tryTo(() => this.see(originalHeading, 'h1'));
         if (onStartPage) {
           await this.retry(CLICK_RETRY).click(clickText);
-          await this.wait(1);
+          await this.wait(3);
         } else {
-          this.say('RETRY: looks like browser back button failed');
+          const backUrl = await this.grabCurrentUrl();
+          this.say('RETRY: looks like browser back button failed, url is now ' + backUrl);
+          const backPageSource = await this.grabSource();
+          if (backPageSource) {
+            console.log('RETRY: Failed back page source: ' + pageSource);
+            if (pageSource.includes('bad gateway')) {
+              this.say('RETRY: After clicking back page source contains BAD GATEWAY (see console log)');
+            }
+          }
         }
       } 
       await this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
