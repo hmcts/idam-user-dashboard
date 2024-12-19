@@ -11,6 +11,7 @@ const setupConfig = {
   include: sharedConfig.include,
   helpers: sharedConfig.helpers,
   plugins: sharedConfig.plugins,
+  retry: 3,
   bootstrap() {
     const {Playwright} = container.helpers();
     const sauceName = Playwright.options.capabilities['sauce:options'].name;
