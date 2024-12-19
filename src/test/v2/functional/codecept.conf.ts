@@ -8,6 +8,7 @@ export const config: CodeceptJS.MainConfig = {
     I: '../common/steps_file',
     setupDAO: '../common/dao/SetupDao.ts'
   },
+  retry: 3,
   helpers: sharedConfig.helpers,
   plugins: sharedConfig.plugins
 };
