@@ -82,7 +82,7 @@
     "helmet": "^7.1.0",
     "ioredis": "^5.4.1",
     "jest-when": "^3.6.0",
-    "json2csv": "^5.5.8",
+    "json2csv": "^6.0.0-alpha.2",
     "jwt-decode": "^4.0.0",
     "launchdarkly-node-server-sdk": "^7.0.4",
     "lodash": "^4.17.21",
@@ -168,7 +168,8 @@
     "serve-static": "^2.1.0",
     "@koa/router": "^13.0.1",
     "cookie": "^0.7.2",
-    "cross-spawn": "^7.0.5"
+    "cross-spawn": "^7.0.5",
+    "json2csv@npm": "6.0.0-alpha.2"
   },
   "packageManager": "yarn@4.5.0"
 }
