@@ -168,8 +168,7 @@
     "serve-static": "^2.1.0",
     "@koa/router": "^13.0.1",
     "cookie": "^0.7.2",
-    "cross-spawn": "^7.0.5",
-    "json2csv@npm": "6.0.0-alpha.2"
+    "cross-spawn": "^7.0.5"
   },
   "packageManager": "yarn@4.5.0"
 }
