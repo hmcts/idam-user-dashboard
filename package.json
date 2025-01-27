@@ -55,7 +55,7 @@
     "@types/glob": "^8.1.0",
     "@types/helmet": "^4.0.0",
     "@types/jest-when": "^3.5.5",
-    "@types/json2csv": "^5.5.8",
+    "@types/json2csv": "^5.0.7",
     "@types/lodash": "^4.17.7",
     "@types/node": "^22.5.4",
     "@types/nunjucks": "^3.2.6",
