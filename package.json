@@ -15,7 +15,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:smoke": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.smoke.config.js",
-    "test:crossbrowser": "yarn playwright:install-deps && npm-run-all -scl playwright:install test:crossbrowser:v2 test:crossbrowser:report",
+    "test:crossbrowser": "yarn playwright:install-deps && npm-run-all -scl playwright:install test:crossbrowser:v2 test:crossbrowser:report && echo 'Report generated at functional-output/cross-browser/allure'",
     "test:crossbrowser:v2": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-multiple cross_browser --config src/test/v2/cross-browser/codecept.conf.js --grep '@arun'",
     "test:crossbrowser:report": "allure generate functional-output/cross-browser/reports/* -c -o functional-output/cross-browser/allure ",
     "test:functional": "npm-run-all -scl playwright:install test:functional:v2 test:accessibility:v2 test:functional:allreport",
