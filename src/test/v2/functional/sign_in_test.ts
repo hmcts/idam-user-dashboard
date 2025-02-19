@@ -15,12 +15,12 @@ Scenario('login as admin successfully',  ({ I, login }) => {
   I.seeCookie('idam_user_dashboard_session');
 });
 
-Scenario('login as user without access', async ({ I }) => {
+Scenario('@arun login as user without access', async ({ I }) => {
   const testUser = await I.haveUser();
   I.amOnPage('/');
   I.fillField('Email', testUser.email);
   I.fillField('Password', secret(testUser.password));
-  I.click('Sign in');  
+  I.click('Sign in');
   I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
   I.see('Status code: 403');
   I.dontSeeCookie('idam_user_dashboard_session');

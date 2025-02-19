@@ -6,7 +6,7 @@ const LATEST_WINDOWS = 'Windows 10';
 
 const setupConfig = {
   name: 'cross-browser',
-  tests: '../functional/*_test.ts',
+  tests: '../functional/_test.ts',
   output: '../../../../functional-output/cross-browser/reports',
   include: sharedConfig.include,
   helpers: sharedConfig.helpers,
@@ -39,7 +39,7 @@ const setupConfig = {
             browserVersion: 'latest',
             'sauce:options': {
               name: 'Win_chromium_latest',
-            },          
+            },
           }
         },
         {
@@ -49,7 +49,7 @@ const setupConfig = {
             browserVersion: 'latest',
             'sauce:options': {
               name: 'Mac_chromium_latest',
-            },          
+            },
           }
         },
         {
@@ -59,7 +59,7 @@ const setupConfig = {
             browserVersion: 'latest',
             'sauce:options': {
               name: 'Win_Firefox_latest',
-            },          
+            },
           }
         },
         {
@@ -69,10 +69,10 @@ const setupConfig = {
             browserVersion: 'latest',
             'sauce:options': {
               name: 'Mac_Firefox_latest',
-            },          
+            },
           }
         },
-      ]    
+      ]
     }
   },
 };
