@@ -1,5 +1,6 @@
 # ---- Base image ----
 FROM hmctspublic.azurecr.io/base/node:20-alpine as base
+RUN corepack enable && corepack prepare yarn@4.5.0 --activate
 COPY --chown=hmcts:hmcts . .
 RUN yarn install --production \
   && yarn cache clean
