@@ -6,6 +6,7 @@ IdAM User Dashboard is to be the new and improved replacement for the [IdAM web-
 
 ## Getting Started
 
+
 ### Prerequisites
 
 Running the application requires the following tools to be installed in your environment:
