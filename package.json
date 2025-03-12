@@ -152,7 +152,7 @@
     "follow-redirects": "^1.15.6",
     "puppeteer": "22.15.0",
     "jose": "^2.0.7",
-    "axios": "^1.8.3",
+    "axios": "^1.8.0",
     "async": "^3.2.2",
     "cookiejar": ">=2.1.4",
     "tar": "6.2.1",
