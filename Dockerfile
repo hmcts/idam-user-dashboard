@@ -1,9 +1,16 @@
 # ---- Base image ----
 FROM hmctspublic.azurecr.io/base/node:20-alpine as base
+
+# Switch to root to enable Corepack
+USER root
+RUN corepack enable && corepack prepare yarn@4.5.0 --activate
+
+# Switch back to hmcts user
+USER hmcts
 COPY --chown=hmcts:hmcts . .
-RUN npm install -g yarn@4.5.0
-RUN yarn install --production \
-  && yarn cache clean
+
+RUN yarn install --production && yarn cache clean
+
 # ---- Build image ----
 FROM base as build
 RUN yarn install && yarn build:prod
