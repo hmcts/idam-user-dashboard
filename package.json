@@ -93,6 +93,8 @@
     "openid-client": "^5.7.0",
     "playwright-core": "^1.47.0",
     "require-directory": "^2.1.1",
+    "sass": "^1.77.8",
+    "sass-loader": "^14.1.0",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "ts-node": "^10.9.2",
@@ -128,7 +130,6 @@
     "jest-html-reporter": "^3.10.2",
     "mini-css-extract-plugin": "^2.7.7",
     "nock": "^13.4.0",
-    "node-sass": "^9.0.0",
     "nodemon": "^3.0.2",
     "notifications-node-client": "^8.0.0",
     "npm-run-all2": "^6.0.0",
@@ -136,7 +137,6 @@
     "pa11y": "^8.0.0",
     "playwright": "^1.43.0",
     "rosie": "^2.1.1",
-    "sass-loader": "^14.1.0",
     "sonar-scanner": "^3.1.0",
     "style-loader": "^3.3.4",
     "ts-jest": "^29.1.2",
@@ -169,7 +169,8 @@
     "@koa/router": "^13.0.1",
     "cookie": "^0.7.2",
     "cross-spawn": "^7.0.5",
-    "@babel/helpers": "^7.26.10"
+    "@babel/helpers": "^7.26.10",
+    "detox": "12.11.3"
   },
   "packageManager": "yarn@4.5.0"
 }

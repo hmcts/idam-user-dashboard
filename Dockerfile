@@ -3,6 +3,7 @@ FROM hmctspublic.azurecr.io/base/node:20-alpine as base
 USER root
 RUN corepack enable
 USER hmcts
+WORKDIR /opt/app
 COPY --chown=hmcts:hmcts . .
 
 # ---- Build image ----
@@ -13,6 +14,6 @@ RUN yarn install && \
 
 # ---- Runtime image ----
 FROM base as runtime
-COPY --from=build $WORKDIR/src/main ./src/main
+COPY --from=build /opt/app/src/main /opt/app/src/main
 
 EXPOSE 3100
