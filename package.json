@@ -6,9 +6,7 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "_start": "NODE_ENV=production ./node_modules/.bin/ts-node -r tsconfig-paths/register src/main/server.ts",
-
-    "start": "NODE_ENV=production ts-node -r tsconfig-paths/register src/main/server.ts",
+    "start": "NODE_ENV=production ./node_modules/.bin/ts-node -r tsconfig-paths/register src/main/server.ts",
     "start:dev": "nodemon --config nodemon.json",
     "lint": "eslint . --ext .ts",
     "build": "yarn webpack --config webpack.config.js",

@@ -4,7 +4,7 @@ USER root
 RUN corepack enable
 USER hmcts
 COPY --chown=hmcts:hmcts . .
-RUN yarn install \
+RUN yarn install && yarn workspaces focus \
   && yarn cache clean
 
 # ---- Build image ----
