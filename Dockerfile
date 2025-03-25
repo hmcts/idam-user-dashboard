@@ -3,17 +3,17 @@ FROM hmctspublic.azurecr.io/base/node:20-alpine as base
 USER root
 RUN corepack enable
 USER hmcts
-WORKDIR /opt/app
 COPY --chown=hmcts:hmcts . .
+RUN yarn install \
+  && yarn cache clean
 
 # ---- Build image ----
 FROM base as build
-RUN yarn install && \
-    yarn build:prod && \
-    rm -rf webpack/ webpack.config.js
+RUN yarn install && yarn build:prod
 
 # ---- Runtime image ----
 FROM base as runtime
-COPY --from=build /opt/app/src/main /opt/app/src/main
+RUN rm -rf webpack/ webpack.config.js
+COPY --from=build $WORKDIR/src/main ./src/main
 
 EXPOSE 3100
