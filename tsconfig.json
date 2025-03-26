@@ -7,8 +7,6 @@
     "target": "es6",
     "noImplicitAny": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "strict": true,
     "noUnusedLocals": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
