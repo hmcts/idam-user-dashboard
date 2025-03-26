@@ -13,6 +13,7 @@ RUN yarn install && yarn build:prod
 
 # ---- Runtime image ----
 FROM base as runtime
+RUN yarn install
 RUN rm -rf webpack/ webpack.config.js
 COPY --from=build $WORKDIR/src/main ./src/main
 
