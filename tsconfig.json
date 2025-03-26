@@ -7,6 +7,8 @@
     "target": "es6",
     "noImplicitAny": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "strict": true,
     "noUnusedLocals": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -27,7 +29,8 @@
     "typeRoots": [
       "./node_modules/@types",
       "./src/main/typing"
-    ]
+    ],
+    "types": ["node"]
   },
   "exclude": ["**/*.test.ts", "**/codecept.conf.ts", "**/__mocks__/*"]
 }
