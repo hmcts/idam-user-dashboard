@@ -27,8 +27,7 @@
     "typeRoots": [
       "./node_modules/@types",
       "./src/main/typing"
-    ],
-    "types": ["node"]
+    ]
   },
   "exclude": ["**/*.test.ts", "**/codecept.conf.ts", "**/__mocks__/*"]
 }
