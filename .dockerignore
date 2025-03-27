@@ -10,6 +10,9 @@
 !config/**
 !webpack.config.js
 
-# Yarn 3 files
-.yarn/cache
-.yarn/install-state.gz
+
+!.yarn/**
+!.yarnrc.yml
+!.pnp.cjs
+
+

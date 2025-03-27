@@ -19,7 +19,7 @@ import * as bodyParser from 'body-parser';
 
 import { Helmet } from './modules/helmet';
 
-import favicon from 'serve-favicon';
+
 import { Nunjucks } from './modules/nunjucks';
 
 import { OidcMiddleware } from './modules/oidc';
@@ -33,7 +33,7 @@ import cookieParser from 'cookie-parser';
 import logger from './modules/logging';
 logger.info('app logger is at level ' + logger.level);
 
-app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
