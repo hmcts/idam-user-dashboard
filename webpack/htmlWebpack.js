@@ -1,20 +1,20 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const cssPath = path.resolve(__dirname, '../src/main/views/webpack/css-template.njk');
-const jsPath= path.resolve(__dirname, '../src/main/views/webpack/js-template.njk');
 
+const cssTemplatePath = path.resolve(__dirname, '../src/main/views/webpack/css-template.njk');
+const jsTemplatePath = path.resolve(__dirname, '../src/main/views/webpack/js-template.njk');
 
 const cssWebPackPlugin = new HtmlWebpackPlugin({
-  template:  cssPath,
+  template: cssTemplatePath,
   publicPath: '/',
-  filename: cssPath.replace('-template', ''),
+  filename: 'css.njk',
   inject: false,
 });
 
 const jsWebPackPlugin = new HtmlWebpackPlugin({
-  template: jsPath,
+  template: jsTemplatePath,
   publicPath: '/',
-  filename: jsPath.replace('-template', ''),
+  filename: 'js.njk',
   inject: false,
 });
 
