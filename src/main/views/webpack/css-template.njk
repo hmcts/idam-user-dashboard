@@ -1,6 +1,1 @@
-{% if htmlWebpackPlugin.files.css and htmlWebpackPlugin.files.css.length > 0 %}
-  {% for cssFile in htmlWebpackPlugin.files.css %}
-    <link href="{{ cssFile }}" rel="stylesheet">
-  {% endfor %}
-{% else %}
-{% endif %}
+<link href="/<%= htmlWebpackPlugin.files.css[0].substr(htmlWebpackPlugin.files.publicPath.length) %>" rel="stylesheet">
