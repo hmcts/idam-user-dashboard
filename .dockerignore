@@ -6,13 +6,13 @@
 
 !package.json
 !yarn.lock
+!.yarn/**
+!.yarnrc.yml
+!.pnp.cjs
 
 !tsconfig.json
 !webpack/**
 !src/main/**
 !config/**
 !webpack.config.js
-
-# Yarn 3 files
-.yarn/cache
-.yarn/install-state.gz
+!acb.yaml

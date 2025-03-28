@@ -12,7 +12,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   "reporters": [
     "default",
-    ["./node_modules/jest-html-reporter", {
+    ["jest-html-reporter", {
       "pageTitle": "Unit Test Report",
       "outputPath": "./test-output/unit/test-report.html",
       "includeFailureMsg": true

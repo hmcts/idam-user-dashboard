@@ -16,7 +16,6 @@ export class Nunjucks {
       '..',
       '..',
       '..',
-      'node_modules',
       'govuk-frontend',
     );
     const env =  nunjucks.configure(
