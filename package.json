@@ -13,7 +13,7 @@
     "build:prod": "NODE_ENV=production yarn webpack --mode production --config webpack.config.js",
     "playwright:install": "playwright install",
     "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "yarn build && jest --coverage",
     "test:smoke": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.smoke.config.js",
     "test:crossbrowser": "npm-run-all -scl playwright:install test:crossbrowser:v2 test:crossbrowser:report",
     "test:crossbrowser:v2": "NODE_TLS_REJECT_UNAUTHORIZED=0 codeceptjs run-multiple cross_browser --config src/test/v2/cross-browser/codecept.conf.js",
