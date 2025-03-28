@@ -9,11 +9,11 @@ RUN yarn install --production \
 
 # ---- Build image ----
 FROM base as build
-RUN yarn install && yarn build:prod
+RUN yarn build:prod && \
+    rm -rf webpack/ webpack.config.js
 
 # ---- Runtime image ----
 FROM base as runtime
-RUN rm -rf webpack/ webpack.config.js
 COPY --from=build $WORKDIR/src/main ./src/main
 
 EXPOSE 3100
