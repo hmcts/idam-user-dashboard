@@ -12,6 +12,9 @@
 !src/main/**
 !config/**
 !webpack.config.js
+!.yarn/**
+!.yarnrc.yml
+!.pnp.cjs
 
 # Yarn 3 files
 .yarn/cache
