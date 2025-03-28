@@ -53,15 +53,15 @@ shared_config.helpers = {
     },
     factories: {
       user: {
-        factory: '../common/factories/users.ts',
+        factory: './factories/users',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/users', data })
       },
       role: {
-        factory: '../common/factories/roles.ts',
+        factory: './factories/roles',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/roles', data })
       },
       service: {
-        factory: '../common/factories/services.ts',
+        factory: './factories/services',
         create: (data) =>  ({ method: 'POST',  url: '/test/idam/services', data })
       }
     },
