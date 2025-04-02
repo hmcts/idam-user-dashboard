@@ -165,3 +165,39 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
   });
 
 });
+
+Scenario('I as an admin can add a filtered role and existing roles are unchanged', async ({ I, setupDAO }) => {
+  const testRole = await I.haveRole({ name: 'iud-user-role-' + faker.word.verb() + '-' + faker.word.noun()});
+  const workerRole = setupDAO.getWorkerRole();
+  const testUser = await I.haveUser({roleNames: [testRole.name]});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+  await I.uncheckOption('#hide-disabled');
+
+  I.fillField('#roles__search-box', workerRole.name);
+  await tryTo(() => I.waitForVisible(I.locateRoleContainer(workerRole.name), 3));
+  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(workerRole.name));
+  
+  await tryTo(() => I.waitForVisible(I.locateRoleContainer(workerRole.name), 3));
+  const numVisible = await I.grabNumberOfVisibleElements(I.locateRoleContainer(workerRole.name));
+  if (numVisible == 0) {
+    I.say('filter not working, trying again');
+    I.clearField('#roles__search-box');
+    I.fillField('#roles__search-box', workerRole.name);
+    I.wait(3);
+    I.scrollPageToBottom();
+  }
+  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(workerRole.name));
+
+  I.checkOption(I.locateInput('roles', workerRole.name));
+  await I.seeCheckboxIsChecked(I.locateInput('roles', workerRole.name));
+  await I.clickToExpectSuccess('Save');
+  I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
+
+  I.scrollPageToBottom();
+
+  await I.clickToNavigate('Return to user details', '/details', 'User Details');
+  I.see(testRole.name, I.locateDataForTitle('Assigned roles'));
+  I.see(workerRole.name, I.locateDataForTitle('Assigned roles'));
+
+});
