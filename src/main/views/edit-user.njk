@@ -39,7 +39,7 @@
     {{ govukNotificationBanner({
       html: notificationHtml,
       type: 'success'
-    }) if content.notification }}
+    }) if notification and not error }}
 
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Edit User</h1>
@@ -87,7 +87,7 @@
 
       {% set displayedRoles = [] %}
       {% for role in content.roles %}
-        {% if role.name !== 'idam-mfa-disabled' %}
+        {% if role.name !== 'idam-mfa-disabled' and role.name !== 'citizen' %}
           {% set displayedRoles = (displayedRoles.push(role), displayedRoles) %}
         {% endif %}
       {% endfor %}
@@ -116,6 +116,38 @@
       </div>
 
       <div class="govuk-grid-column-full">
+
+        {% if content.user.isCitizen %}
+          {% call govukFieldset({
+            legend: {
+              text: "Citizen status",
+              classes: "govuk-fieldset__legend--s"
+            }
+          }) %}
+            {% if content.showCitizenConflict %}
+              {{ govukWarningText({
+                text: "This user should probably not be a citizen.",
+                iconFallbackText: "Warning"
+              }) }}
+            {% endif %}
+
+            {{ govukCheckboxes({
+              idPrefix: "isCitizen",
+              name: "isCitizen",
+              classes: "govuk-checkboxes--small",
+              items: [
+                {
+                  value: 'enabled',
+                  text: 'Citizen',
+                  checked: content.user.isCitizen,
+                  disabled: not content.manageCitizenAttribute
+                }
+              ]
+            }) }}
+
+          {% endcall %}
+        {% endif %}
+
         {% if featureFlags.values[featureFlags.flags.GAMMA_MFA] %}
 
           {% call govukFieldset({

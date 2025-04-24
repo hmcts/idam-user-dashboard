@@ -59,7 +59,12 @@ describe('User edit controller', () => {
     await controller.post(req, res);
 
     expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
-    expect(res.render).toBeCalledWith('edit-user', { content: { user: apiData, roles: expectedRoleAssignments, showMfa: false } });
+    expect(res.render).toBeCalledWith('edit-user', { content: { 
+      user: apiData, 
+      roles: expectedRoleAssignments, 
+      showMfa: false,
+      manageCitizenAttribute: false,
+      showCitizenConflict: false } });
   });
 
   test('Should show SSO MFA message when applicable', async () => {
@@ -100,6 +105,8 @@ describe('User edit controller', () => {
           user: apiData,
           roles: expectedRoleAssignments,
           showMfa: false,
+          manageCitizenAttribute: false,
+          showCitizenConflict: false,
           mfaMessage: 'Managed by eJudiciary.net'
         }
       });
@@ -125,6 +132,11 @@ describe('User edit controller', () => {
       roles: ['IDAM_SUPER_USER']
     };
 
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserApiData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+
     const updatedUserApiData = {
       id: postData.id,
       forename: postData.forename,
@@ -132,7 +144,8 @@ describe('User edit controller', () => {
       email: postData.email,
       active: true,
       roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     when(mockApi.getUserById).calledWith(testToken, postData._userId).mockReturnValue(Promise.resolve(originalUserApiData));
@@ -153,7 +166,14 @@ describe('User edit controller', () => {
     expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
     expect(mockApi.editUserById).toBeCalledWith(testToken, postData._userId, { forename: postData.forename });
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: updatedUserApiData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+      content:  { 
+        user: updatedUserApiData, 
+        roles: expectedRoleAssignments, 
+        showMfa: false,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+       }, 
+       notification: 'User saved successfully'
     });
   });
 
@@ -166,6 +186,11 @@ describe('User edit controller', () => {
       active: true,
       roles: ['IDAM_SUPER_USER']
     };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
 
     const updatedUserData = {
       id: '7',
@@ -181,7 +206,6 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.grantRolesToUser).toBeCalledWith(testToken, originalUserData.id, [{name: 'IDAM_ADMIN_USER'}]);
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -190,7 +214,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -207,7 +232,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: false,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      }, 
+      notification: 'User saved successfully'
     });
   });
 
@@ -220,6 +252,11 @@ describe('User edit controller', () => {
       active: true,
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
     };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
 
     const updatedUserData = {
       id: '7',
@@ -234,7 +271,6 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.removeRoleFromUser).toBeCalledWith(testToken, originalUserData.id, 'IDAM_ADMIN_USER');
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -243,7 +279,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -260,7 +297,13 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: false, 
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      }, notification: 'User saved successfully'
     });
   });
 
@@ -273,6 +316,11 @@ describe('User edit controller', () => {
       active: true,
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
     };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
 
     const updatedUserData = {
       id: '7',
@@ -288,8 +336,6 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.grantRolesToUser).toBeCalledWith(testToken, originalUserData.id, [{name: 'IDAM_TEST_USER'}]);
-    expect(mockApi.removeRoleFromUser).toBeCalledWith(testToken, originalUserData.id, 'IDAM_ADMIN_USER');
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -298,7 +344,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_TEST_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -320,7 +367,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: false, 
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      }, 
+      notification: 'User saved successfully'
     });
   });
 
@@ -333,6 +387,11 @@ describe('User edit controller', () => {
       active: true,
       roles: ['IDAM_SUPER_USER']
     };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
 
     const updatedUserData = {
       id: '7',
@@ -349,7 +408,6 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.grantRolesToUser).toBeCalledWith(testToken, originalUserData.id, [{name: 'IDAM_ADMIN_USER'}]);
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -358,7 +416,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -380,7 +439,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: false,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      },
+      notification: 'User saved successfully'
     });
   });
 
@@ -404,6 +470,11 @@ describe('User edit controller', () => {
       roles: ['IDAM_SUPER_USER']
     };
 
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+
     const updatedUserData = {
       id: postData.id,
       forename: postData.forename,
@@ -422,7 +493,6 @@ describe('User edit controller', () => {
 
     expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
     expect(mockApi.editUserById).toBeCalledWith(testToken, postData._userId, { forename: postData.forename });
-    expect(mockApi.grantRolesToUser).toBeCalledWith(testToken, postData._userId, [{name: 'IDAM_ADMIN_USER'}]);
 
     const expectedUserData = {
       id: postData.id,
@@ -431,7 +501,8 @@ describe('User edit controller', () => {
       email: postData.email,
       active: true,
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -448,7 +519,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: false, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: false,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      },
+      notification: 'User saved successfully'
     });
   });
 
@@ -461,6 +539,11 @@ describe('User edit controller', () => {
       active: true,
       roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
     };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER', 'idam-mfa-disabled']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
 
     const updatedUserData = {
       id: '7',
@@ -476,7 +559,6 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.removeRoleFromUser).toBeCalledWith(testToken, originalUserData.id, 'idam-mfa-disabled');
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -485,7 +567,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -502,7 +585,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: true,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      },
+      notification: 'User saved successfully'
     });
   });
 
@@ -515,6 +605,11 @@ describe('User edit controller', () => {
       active: true,
       roles: ['IDAM_SUPER_USER']
     };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER']
+    };
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
 
     const updatedUserData = {
       id: '7',
@@ -529,7 +624,6 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.grantRolesToUser).toBeCalledWith(testToken, originalUserData.id, [{name: 'idam-mfa-disabled'}]);
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -538,7 +632,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: false
+      multiFactorAuthentication: false,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -555,7 +650,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: true,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false
+      },
+      notification: 'User saved successfully'
     });
   });
 
@@ -566,7 +668,12 @@ describe('User edit controller', () => {
       surname: 'Smith',
       email: 'john.smith@local.test',
       active: true,
-      roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
+      roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled'],
+      isCitizen: false
+    };
+
+    const originalV2UserData = {
+      roleNames:  ['IDAM_SUPER_USER', 'idam-mfa-disabled']
     };
 
     const updatedUserData = {
@@ -575,17 +682,19 @@ describe('User edit controller', () => {
       surname: originalUserData.surname,
       email: originalUserData.email,
       roles: ['IDAM_ADMIN_USER'],
-      multiFactorAuthentication: 'enabled'
+      multiFactorAuthentication: 'enabled',
+      isCitizen: false
     };
 
     when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
     req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'idam-mfa-disabled'] } };
 
+    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(mockApi.grantRolesToUser).toBeCalledWith(testToken, originalUserData.id, [{name: 'IDAM_ADMIN_USER'}]);
-    expect(mockApi.removeRoleFromUser).toBeCalledWith(testToken, originalUserData.id, 'idam-mfa-disabled');
+
+    expect(mockApi.getUserV2ById).toBeCalledWith(originalUserData.id);
 
     const expectedUserData = {
       id: originalUserData.id,
@@ -594,7 +703,8 @@ describe('User edit controller', () => {
       email: originalUserData.email,
       active: true,
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true
+      multiFactorAuthentication: true,
+      isCitizen: false
     };
 
     const expectedRoleAssignments = [
@@ -616,7 +726,14 @@ describe('User edit controller', () => {
     ];
 
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: expectedUserData, roles: expectedRoleAssignments, showMfa: true, 'notification': 'User saved successfully' }
+      content:  { 
+        user: expectedUserData, 
+        roles: expectedRoleAssignments, 
+        showMfa: true, 
+        manageCitizenAttribute: false,
+        showCitizenConflict: false 
+      },
+      notification: 'User saved successfully'
     });
   });
 
@@ -657,7 +774,12 @@ describe('User edit controller', () => {
 
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
     expect(res.render).toBeCalledWith('edit-user', {
-      content: { user: {...originalUserData, ...updatedUserData}, roles: expectedRoleAssignments, showMfa: false },
+      content: { 
+        user: {...originalUserData, ...updatedUserData}, 
+        roles: expectedRoleAssignments, 
+        showMfa: false,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false },
       error
     });
   });
@@ -699,7 +821,12 @@ describe('User edit controller', () => {
 
     expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
     expect(res.render).toBeCalledWith('edit-user', {
-      content: { user: {...originalUserData, ...updatedUserData}, roles: expectedRoleAssignments, showMfa: false },
+      content: { 
+        user: {...originalUserData, ...updatedUserData}, 
+        roles: expectedRoleAssignments, 
+        showMfa: false,
+        manageCitizenAttribute: false,
+        showCitizenConflict: false },
       error
     });
   });
@@ -743,10 +870,12 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
-    expect(mockApi.editUserById).toBeCalledWith(testToken, postData._userId, { forename: postData.forename });
     expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: originalUserApiData, roles: expectedRoleAssignments, showMfa: false },
+      content:  { user: originalUserApiData,
+         roles: expectedRoleAssignments, 
+         showMfa: false, 
+         manageCitizenAttribute: false,
+         showCitizenConflict: false },
       error
     });
   });

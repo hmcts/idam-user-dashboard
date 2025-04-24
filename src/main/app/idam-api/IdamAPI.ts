@@ -58,6 +58,17 @@ export class IdamAPI {
       });
   }
 
+  public updateV2User(user: V2User): Promise<V2User> {
+    return this.idamApiAxios
+      .put('/api/v2/users/' + user.id, user)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error updating user from V2 IDAM API';
+        logger.error(`${error.stack || error} for ${user.id} (logger.error)`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
   public editUserById(token: string, id: string, fields: Partial<User>): Promise<User> {
     return this.simpleAxios
       .patch('/api/v1/users/' + id, fields, {headers: {Authorization: 'Bearer ' + token}})

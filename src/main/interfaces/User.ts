@@ -15,4 +15,5 @@ export interface User {
   createDate: string;
   assignableRoles?: string[];
   multiFactorAuthentication?: boolean;
+  isCitizen?: boolean
 }
