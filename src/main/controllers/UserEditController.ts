@@ -107,7 +107,7 @@ export class UserEditController extends RootController {
     const error = this.validateFields(changedFields);
     if (!isObjectEmpty(error)) {
       return super.post(req, res, 'edit-user', { content: this.editUserContent(req, {...user, ...changedFields}, roleAssignments),
-      error });
+        error });
     }
 
     try {
@@ -130,7 +130,7 @@ export class UserEditController extends RootController {
       return super.post(req, res, 'edit-user', {
         content: 
           this.editUserContent(req, updatedUser, roleAssignments),
-          ...{notification: 'User saved successfully'}
+        ...{notification: 'User saved successfully'}
       });
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };

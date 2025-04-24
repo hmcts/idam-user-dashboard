@@ -172,8 +172,8 @@ describe('User edit controller', () => {
         showMfa: false,
         manageCitizenAttribute: false,
         showCitizenConflict: false
-       }, 
-       notification: 'User saved successfully'
+      }, 
+      notification: 'User saved successfully'
     });
   });
 
@@ -872,10 +872,10 @@ describe('User edit controller', () => {
 
     expect(res.render).toBeCalledWith('edit-user', {
       content:  { user: originalUserApiData,
-         roles: expectedRoleAssignments, 
-         showMfa: false, 
-         manageCitizenAttribute: false,
-         showCitizenConflict: false },
+        roles: expectedRoleAssignments, 
+        showMfa: false, 
+        manageCitizenAttribute: false,
+        showCitizenConflict: false },
       error
     });
   });
