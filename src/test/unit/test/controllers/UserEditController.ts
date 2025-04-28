@@ -6,8 +6,29 @@ import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
-import { convertToV2User, createV1User as setupV1User } from '../utils/userUtils';
 jest.mock('config');
+
+const setupV1User = (roleNames: string[]) => {
+  return {
+    id: 'test-user-id',
+    forename: 'test-forename',
+    surname: 'test-surname',
+    email: 'test@test.local',
+    active: true,
+    roles: roleNames
+  };
+};
+
+const convertToV2User = (user: any) => {
+  return {
+    id: user.id,
+    forename: user.forename,
+    surname: user.surname,
+    email: user.email,
+    active: user.active,
+    roleNames: user.roles
+  };
+};
 
 const setupPostData = (user: any, action: string) => {
   return {
