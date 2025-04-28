@@ -6,7 +6,30 @@ import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import { convertToV2User, createV1User as setupV1User } from '../utils/userUtils';
 jest.mock('config');
+
+const setupPostData = (user: any, action: string) => {
+  return {
+    _userId: user.id,
+    _action: action,
+    id: user.id,
+    forename: user.forename,
+    surname: user.surname,
+    email: user.email,
+    roles: user.roles
+  }
+}
+
+const setupPageContent = (user: any, roleAssignments: any) => {
+  return {
+    user: user,
+    roles: roleAssignments, 
+    showMfa: false,
+    manageCitizenAttribute: false,
+    showCitizenConflict: false 
+  }
+}
 
 describe('User edit controller', () => {
   mockRootController();
@@ -30,23 +53,18 @@ describe('User edit controller', () => {
   });
 
   test('Should render the edit user page', async () => {
-    const postData = {
-      _userId: '7',
-      _action: 'edit'
-    };
 
-    const apiData = {
-      id: postData._userId,
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@test.local',
-      active: true,
-      roles: ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'edit'),
+      ssoProvider: 'azure'
     };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
 
-    when(mockApi.getUserById).calledWith(testToken, postData._userId).mockReturnValue(Promise.resolve(apiData));
-    req.body = postData;
-    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: ['IDAM_SUPER_USER'] } };
+    when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -56,37 +74,25 @@ describe('User edit controller', () => {
       }
     ];
 
-    await controller.post(req, res);
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: setupPageContent(testUser, expectedRoleAssignments)
+    });
 
-    expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
-    expect(res.render).toBeCalledWith('edit-user', { content: { 
-      user: apiData, 
-      roles: expectedRoleAssignments, 
-      showMfa: false,
-      manageCitizenAttribute: false,
-      showCitizenConflict: false } });
   });
 
   test('Should show SSO MFA message when applicable', async () => {
-    const postData = {
-      _userId: '7',
-      _action: 'edit'
-    };
 
-    const apiData = {
-      id: postData._userId,
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@test.local',
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
+    const testUser = {
+      ...setupV1User(['IDAM_SUPER_USER']),
       ssoProvider: 'azure'
     };
+    req.body = setupPostData(testUser, 'edit');
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
 
     when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
-    when(mockApi.getUserById).calledWith(testToken, postData._userId).mockReturnValue(Promise.resolve(apiData));
-    req.body = postData;
-    req.idam_user_dashboard_session = { access_token: testToken, user: {assignableRoles: ['IDAM_SUPER_USER']}};
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -96,62 +102,35 @@ describe('User edit controller', () => {
       }
     ];
 
-    await controller.post(req, res);
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content:  {
+        ...setupPageContent(testUser, expectedRoleAssignments),
+        mfaMessage: 'Managed by eJudiciary.net',
+        showMfa: false
+      }
+    });
 
-    expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
-    expect(res.render).toBeCalledWith('edit-user',
-      {
-        content: {
-          user: apiData,
-          roles: expectedRoleAssignments,
-          showMfa: false,
-          manageCitizenAttribute: false,
-          showCitizenConflict: false,
-          mfaMessage: 'Managed by eJudiciary.net'
-        }
-      });
   });
 
   test('Should render the edit user page after saving when user fields changed', async () => {
-    const postData = {
-      _userId: '7',
-      _action: 'save',
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@test.local',
-      roles: ['IDAM_SUPER_USER']
-    };
 
-    const originalUserApiData = {
-      id: postData.id,
-      forename: 'Tom',
-      surname: postData.surname,
-      email: postData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      forename: 'changed-forename'
     };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER']
-    };
-    when(mockApi.getUserV2ById).calledWith(originalUserApiData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
 
-    const updatedUserApiData = {
-      id: postData.id,
-      forename: postData.forename,
-      surname: postData.surname,
-      email: postData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    const v1UserAfterDetailsUpdate = {
+      ...testUser,
+      forename: 'changed-forename'
+    }
 
-    when(mockApi.getUserById).calledWith(testToken, postData._userId).mockReturnValue(Promise.resolve(originalUserApiData));
-    when(mockApi.editUserById).calledWith(testToken, postData._userId, { forename: postData.forename }).mockReturnValue(Promise.resolve(updatedUserApiData));
-    req.body = postData;
-    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: ['IDAM_SUPER_USER'] } };
+    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(v1UserAfterDetailsUpdate));
+
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -161,62 +140,39 @@ describe('User edit controller', () => {
       }
     ];
 
-    await controller.post(req, res);
-
-    expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
-    expect(mockApi.editUserById).toBeCalledWith(testToken, postData._userId, { forename: postData.forename });
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: updatedUserApiData, 
-        roles: expectedRoleAssignments, 
-        showMfa: false,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
-      }, 
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            forename: 'changed-forename'
+          }, 
+          expectedRoleAssignments
+        )
+      },
       notification: 'User saved successfully'
     });
+
   });
 
   test('Should render the edit user page after saving when user roles added', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER']
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_ADMIN_USER'],
     };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
 
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      roles: ['IDAM_ADMIN_USER']
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
-    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: ['IDAM_ADMIN_USER'] } };
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
 
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -231,57 +187,38 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: false,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
-      }, 
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+          }, 
+          expectedRoleAssignments
+        )
+      },
       notification: 'User saved successfully'
     });
   });
 
   test('Should render the edit user page after saving when user roles removed', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']
+    const testUser = setupV1User(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: [],
     };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
-
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
 
-    await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_SUPER_USER']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -296,57 +233,39 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: false, 
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
-      }, notification: 'User saved successfully'
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER'],
+          }, 
+          expectedRoleAssignments
+        )
+      },
+      notification: 'User saved successfully'
     });
+
   });
 
   test('Should render the edit user page after saving when user roles added and removed', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_TEST_USER'],
     };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_TEST_USER'] } };
 
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      roles: ['IDAM_TEST_USER']
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
-    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_TEST_USER'] } };
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
 
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_TEST_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_SUPER_USER', 'IDAM_TEST_USER']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -366,59 +285,43 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: false, 
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
-      }, 
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER', 'IDAM_TEST_USER'],
+          }, 
+          expectedRoleAssignments
+        )
+      },
       notification: 'User saved successfully'
     });
+
   });
 
   test('Should render the edit user page after saving when the requesting user adding roles to themselves', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER']
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_ADMIN_USER'],
     };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ id: testUser.id, assignableRoles: ['IDAM_ADMIN_USER'] } };
 
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      roles: ['IDAM_ADMIN_USER']
-    };
+    when(mockApi.getAssignableRoles).calledWith(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']).mockReturnValue(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
 
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    when(mockApi.getAssignableRoles).calledWith(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']).mockReturnValue(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
-    req.idam_user_dashboard_session = { access_token: testToken, user: { id: originalUserData.id, assignableRoles: ['IDAM_ADMIN_USER'] } };
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(testUser));
+
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
 
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -438,72 +341,46 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: false,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+          }, 
+          expectedRoleAssignments
+        )
       },
       notification: 'User saved successfully'
     });
   });
 
   test('Should render the edit user page after saving when both user fields and roles changed', async () => {
-    const postData = {
-      _userId: '7',
-      _action: 'save',
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@test.local',
-      roles: ['IDAM_ADMIN_USER']
-    };
 
-    const originalUserData = {
-      id: postData.id,
-      forename: 'Tom',
-      surname: postData.surname,
-      email: postData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_ADMIN_USER'],
+      forename: 'changed-forename'
     };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'] } };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER']
-    };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+    const v1UserAfterDetailsUpdate = {
+      ...testUser,
+      forename: 'changed-forename'
+    }
 
-    const updatedUserData = {
-      id: postData.id,
-      forename: postData.forename,
-      surname: postData.surname,
-      email: postData.email,
-      active: true,
-      roles: ['IDAM_ADMIN_USER']
-    };
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(v1UserAfterDetailsUpdate));
 
-    when(mockApi.getUserById).calledWith(testToken, postData._userId).mockReturnValue(Promise.resolve(originalUserData));
-    when(mockApi.editUserById).calledWith(testToken, postData._userId, { forename: postData.forename }).mockReturnValue(Promise.resolve(updatedUserData));
-    req.body = postData;
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(v1UserAfterDetailsUpdate)));
 
     await controller.post(req, res);
 
-    expect(mockApi.getUserById).toBeCalledWith(testToken, postData._userId);
-    expect(mockApi.editUserById).toBeCalledWith(testToken, postData._userId, { forename: postData.forename });
-
-    const expectedUserData = {
-      id: postData.id,
-      forename: postData.forename,
-      surname: postData.surname,
-      email: postData.email,
-      active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(v1UserAfterDetailsUpdate),
+      roleNames: ['IDAM_ADMIN_USER']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -513,63 +390,47 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
-        assigned: true
+        assignable: true,
+        assigned: false
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: false,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_ADMIN_USER'],
+            forename: 'changed-forename'
+          }, 
+          expectedRoleAssignments
+        )
       },
       notification: 'User saved successfully'
     });
+    
   });
 
   test('Should render the edit user page after saving when user mfa enabled', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER', 'idam-mfa-disabled']
-    };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
-
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
+    const testUser = setupV1User(['IDAM_SUPER_USER', 'idam-mfa-disabled']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_SUPER_USER'],
       multiFactorAuthentication: 'enabled'
     };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['idam-mfa-disabled'] } };
 
-    await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    await controller.post(req, res);
+
+
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_SUPER_USER']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -584,57 +445,41 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: true,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER'],
+            multiFactorAuthentication: true
+          }, 
+          expectedRoleAssignments
+        ),
+        showMfa: true, 
       },
       notification: 'User saved successfully'
     });
+
   });
 
   test('Should render the edit user page after saving when user mfa disabled', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER']
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      multiFactorAuthentication: undefined
     };
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
-
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['idam-mfa-disabled'] } };
 
-    await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER'],
-      multiFactorAuthentication: false,
-      isCitizen: false
-    };
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
+    })
 
     const expectedRoleAssignments = [
       {
@@ -649,63 +494,42 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
-        showMfa: true,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER'],
+            multiFactorAuthentication: false
+          }, 
+          expectedRoleAssignments
+        ),
+        showMfa: true, 
       },
       notification: 'User saved successfully'
     });
+
   });
 
   test('Should render the edit user page after saving when user mfa enabled and a role added', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER', 'idam-mfa-disabled'],
-      isCitizen: false
-    };
 
-    const originalV2UserData = {
-      roleNames:  ['IDAM_SUPER_USER', 'idam-mfa-disabled']
+    const testUser = setupV1User(['IDAM_SUPER_USER', 'idam-mfa-disabled']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
+      multiFactorAuthentication: 'enabled'
     };
-
-    const updatedUserData = {
-      id: '7',
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      roles: ['IDAM_ADMIN_USER'],
-      multiFactorAuthentication: 'enabled',
-      isCitizen: false
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'idam-mfa-disabled'] } };
 
-    when(mockApi.getUserV2ById).calledWith(originalUserData.id).mockReturnValue(Promise.resolve(originalV2UserData));
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
     await controller.post(req, res);
 
-    expect(mockApi.getUserV2ById).toBeCalledWith(originalUserData.id);
-
-    const expectedUserData = {
-      id: originalUserData.id,
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      active: true,
-      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
-      multiFactorAuthentication: true,
-      isCitizen: false
-    };
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: req.body.roles
+    })
 
     const expectedRoleAssignments = [
       {
@@ -725,42 +549,36 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { 
-        user: expectedUserData, 
-        roles: expectedRoleAssignments, 
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+            multiFactorAuthentication: true
+          }, 
+          expectedRoleAssignments
+        ),
         showMfa: true, 
-        manageCitizenAttribute: false,
-        showCitizenConflict: false 
       },
       notification: 'User saved successfully'
     });
+
   });
-
+ 
   test('Should render the edit user page with validation errors after saving', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER']
-    };
 
-    const updatedUserData = {
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
       forename: '',
-      surname: '',
-      email: originalUserData.email
+      surname: ''
     };
-
-    const error = {
-      forename: { message: 'You must enter a forename for the user' },
-      surname: { message: 'You must enter a surname for the user' }
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -770,44 +588,35 @@ describe('User edit controller', () => {
       }
     ];
 
-    await controller.post(req, res);
-
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(res.render).toBeCalledWith('edit-user', {
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
       content: { 
-        user: {...originalUserData, ...updatedUserData}, 
-        roles: expectedRoleAssignments, 
-        showMfa: false,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false },
-      error
+        ...setupPageContent(
+          {
+            ...testUser,
+            forename: '',
+            surname: ''
+          }, 
+          expectedRoleAssignments
+        )
+      },
+      error: {
+        forename: { message: 'You must enter a forename for the user' },
+        surname: { message: 'You must enter a surname for the user' }
+      }
     });
   });
 
   test('Should render the edit user page with errors when no fields changed', async () => {
-    const originalUserData = {
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@local.test',
-      active: true,
-      roles: ['IDAM_SUPER_USER']
-    };
 
-    const updatedUserData = {
-      forename: originalUserData.forename,
-      surname: originalUserData.surname,
-      email: originalUserData.email,
-      roles: ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save')
     };
-
-    const error = {
-      userEditForm: { message: 'No changes to the user were made' },
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, originalUserData.id).mockReturnValue(Promise.resolve(originalUserData));
-    req.body = { _userId: originalUserData.id, _action: 'save', ...updatedUserData};
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+ 
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -817,48 +626,29 @@ describe('User edit controller', () => {
       }
     ];
 
-    await controller.post(req, res);
-
-    expect(mockApi.getUserById).toBeCalledWith(testToken, originalUserData.id);
-    expect(res.render).toBeCalledWith('edit-user', {
-      content: { 
-        user: {...originalUserData, ...updatedUserData}, 
-        roles: expectedRoleAssignments, 
-        showMfa: false,
-        manageCitizenAttribute: false,
-        showCitizenConflict: false },
-      error
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content: { ...setupPageContent(testUser, expectedRoleAssignments) },
+      error: {
+        userEditForm: { 
+          message: 'No changes to the user were made' 
+        },
+      }
     });
   });
 
-  test('Should render the edit user page after there was an API issue saving', async () => {
-    const postData = {
-      _userId: '7',
-      _action: 'save',
-      id: '7',
-      forename: 'John',
-      surname: 'Smith',
-      email: 'john.smith@test.local',
-      roles: ['IDAM_SUPER_USER']
-    };
+  test('Should render the edit user page after there was an API issue saving user details', async () => {
 
-    const originalUserApiData = {
-      id: postData.id,
-      forename: 'Tom',
-      surname: postData.surname,
-      email: postData.email,
-      active: true,
-      roles: ['IDAM_SUPER_USER']
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      forename: 'changed-forename'
     };
-
-    const error = {
-      userEditForm: { message: 'An error occurred whilst updating user ' + postData.email },
-    };
-
-    when(mockApi.getUserById).calledWith(testToken, postData._userId).mockReturnValue(Promise.resolve(originalUserApiData));
-    when(mockApi.editUserById).calledWith(testToken, postData._userId, { forename: postData.forename }).mockReturnValue(Promise.reject());
-    req.body = postData;
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.reject());
+
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -868,15 +658,61 @@ describe('User edit controller', () => {
       }
     ];
 
-    await controller.post(req, res);
-
-    expect(res.render).toBeCalledWith('edit-user', {
-      content:  { user: originalUserApiData,
-        roles: expectedRoleAssignments, 
-        showMfa: false, 
-        manageCitizenAttribute: false,
-        showCitizenConflict: false },
-      error
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content:  { 
+        ...setupPageContent(testUser, expectedRoleAssignments)
+      },
+      error: {
+        userEditForm: { 
+          message: 'An error occurred whilst updating user ' + testUser.email 
+        }
+      }
     });
   });
+
+  test('Should render the edit user page after there was an API issue saving user roles', async () => {
+
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_ADMIN_USER']
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+    when(mockApi.updateV2User).calledWith(expect.anything()).mockReturnValue(Promise.reject());
+
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+    })
+
+    const expectedRoleAssignments = [
+      {
+        name: 'IDAM_ADMIN_USER',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+    expect(res.render).toHaveBeenCalledWith('edit-user', {
+      content:  { 
+        ...setupPageContent(testUser, expectedRoleAssignments)
+      },
+      error: {
+        userEditForm: { 
+          message: 'An error occurred whilst updating user ' + testUser.email 
+        }
+      }
+    });
+  });
+  
 });
