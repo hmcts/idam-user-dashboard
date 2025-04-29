@@ -93,6 +93,9 @@ export class UserEditController extends RootController {
     const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
     const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
 
+    console.log('mfa assignable' + mfaAssignable + ', mfaAdded? ' + mfaAdded + ', mfaRemoved? ' + mfaRemoved);
+
+
     const citizenAssignable = this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
 
     const {citizenAdded, citizenRemoved} = this.wasCitizenAddedOrRemoved(user, citizenAssignable, originalIsCitizen, editedIsCitizen);
