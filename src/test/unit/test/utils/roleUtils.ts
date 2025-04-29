@@ -1,7 +1,7 @@
 import {
   constructAllRoleAssignments,
   constructUserRoleAssignments,
-  processMfaRole, rolesExist
+  processRoleBasedAttributes, rolesExist
 } from '../../../../main/utils/roleUtils';
 import { V2Role } from '../../../../main/interfaces/V2Role';
 import { User } from '../../../../main/interfaces/User';
@@ -145,13 +145,13 @@ describe('roleUtils', () => {
 
     test('Should set multi-factor authentication flag if user does not have the idam-mfa-disabled role', async () => {
       user.roles = ['IDAM_SUPER_USER'];
-      processMfaRole(user);
+      processRoleBasedAttributes(user);
       expect(user.multiFactorAuthentication).toBeTruthy();
     });
 
     test('Should not set multi-factor authentication flag if user has the idam-mfa-disabled role', async () => {
       user.roles = ['IDAM_SUPER_USER', 'idam-mfa-disabled'];
-      processMfaRole(user);
+      processRoleBasedAttributes(user);
       expect(user.multiFactorAuthentication).toBeFalsy();
     });
   });

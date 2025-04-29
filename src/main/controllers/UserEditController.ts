@@ -4,8 +4,8 @@ import { RootController } from './RootController';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { User } from '../interfaces/User';
+import { V2User } from '../interfaces/V2User';
 import {
-  convertToArray,
   findDifferentElements,
   getObjectVariation,
   hasProperty,
@@ -26,9 +26,9 @@ import {
   constructUserRoleAssignments,
   determineUserNonAssignableRoles,
   IDAM_MFA_DISABLED, loadUserAssignableRoles,
-  processMfaRole
+  processRoleBasedAttributes,
+  CITIZEN_ROLE, CASEWORKER_ROLE
 } from '../utils/roleUtils';
-import { RoleDefinition } from '../interfaces/RoleDefinition';
 import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import config from 'config';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
@@ -48,63 +48,70 @@ export class UserEditController extends RootController {
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         trace.getActiveSpan()?.setAttribute('edit_user_id', user.id);
-        const roleAssignments = constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, user.roles);
-        processMfaRole(user);
+
+        const assignableRoles: string[] = req.idam_user_dashboard_session.user.assignableRoles;
+
+        const roleAssignments = constructUserRoleAssignments(assignableRoles, user.roles);
+        processRoleBasedAttributes(user);
 
         if(req.body._action === 'save') {
           return this.saveUser(req, res, user, roleAssignments);
         }
 
-        return super.post(req, res, 'edit-user', {
-          content: {
-            user,
-            roles: roleAssignments,
-            showMfa: this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles),
-            ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
-          }
-        });
+        return super.post(req, res, 'edit-user', {content: this.editUserContent(req, user, roleAssignments)});
       });
+  }
+
+  private editUserContent(req: AuthedRequest, user: any, roleAssignments: any) {
+    return {
+      user,
+      roles: roleAssignments,
+      showMfa: this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles),
+      ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) },
+      manageCitizenAttribute: this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles),
+      showCitizenConflict: this.isCaseworkerCitizen(user.isCitizen, user.roles)
+    };
   }
 
   private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {_action, _csrf, _userId, ...editedUser} = req.body;
 
-    const {roles: originalRoles, multiFactorAuthentication: originalMfa, ...originalFields} = user;
-    const {roles: editedRoles, multiFactorAuthentication: editedMfa, ...editedFields} = editedUser as Partial<User>;
+    const {roles: originalRoles, multiFactorAuthentication: originalMfa, isCitizen: originalIsCitizen, ...originalFields} = user;
+    const {roles: inEditedRoles, multiFactorAuthentication: editedMfa,  isCitizen: editedIsCitizen, ...editedFields} = editedUser as Partial<User>;
 
-    const originalRolesWithMfaRemoved = originalRoles.filter(r => r !== IDAM_MFA_DISABLED);
-    const newRoleList = this.getUserRolesAfterUpdate(req, originalRolesWithMfaRemoved, editedRoles);
-    const rolesAdded = findDifferentElements(newRoleList, originalRolesWithMfaRemoved);
-    const rolesRemoved = findDifferentElements(originalRolesWithMfaRemoved, newRoleList);
+    const editedRoles = Array.isArray(inEditedRoles)? inEditedRoles : (inEditedRoles? [inEditedRoles] : []);
+
+    const originalRolesWithAttributeRolesRemoved = originalRoles.filter(r => r !== IDAM_MFA_DISABLED && r !== CITIZEN_ROLE);
+    const newRoleList = this.getUserRolesAfterUpdate(req, originalRolesWithAttributeRolesRemoved, editedRoles);
+    const rolesAdded = newRoleList && newRoleList.length > 0 ? findDifferentElements(newRoleList, originalRolesWithAttributeRolesRemoved) : [];
+    const rolesRemoved = newRoleList && newRoleList.length > 0 ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList) : originalRolesWithAttributeRolesRemoved;
 
     const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
     const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
 
-    const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved;
+    const citizenAssignable = this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
+
+    const {citizenAdded, citizenRemoved} = this.wasCitizenAddedOrRemoved(user, citizenAssignable, originalIsCitizen, editedIsCitizen);
+
+    const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved || citizenAdded || citizenRemoved;
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
     // No changes
     if (isObjectEmpty(changedFields) && !rolesChanged) {
-      return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments, mfaAssignable);
+      return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
     }
-
     Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
 
     // Validation errors
     const error = this.validateFields(changedFields);
     if (!isObjectEmpty(error)) {
-      return super.post(req, res, 'edit-user', { content: {
-        user: {...user, ...changedFields},
-        roles: roleAssignments,
-        showMfa: mfaAssignable,
-        ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
-      },
-      error });
+      return super.post(req, res, 'edit-user', { content: this.editUserContent(req, {...user, ...changedFields}, roleAssignments),
+        error });
     }
 
     try {
-      let updatedUser = { ...originalFields, roles: originalRolesWithMfaRemoved, multiFactorAuthentication: originalMfa };
+      let updatedUser = { ...originalFields, roles: originalRolesWithAttributeRolesRemoved, multiFactorAuthentication: originalMfa, isCitizen: originalIsCitizen };
       if (!isObjectEmpty(changedFields)) {
         updatedUser = {
           ...updatedUser,
@@ -114,43 +121,30 @@ export class UserEditController extends RootController {
 
       if (rolesChanged) {
         const updatedMfa = (user.multiFactorAuthentication && !mfaRemoved) || (!user.multiFactorAuthentication && mfaAdded);
-        updatedUser = { ...updatedUser, roles: newRoleList, multiFactorAuthentication: updatedMfa };
-        await this.updateUserRoles(req, user, rolesAdded, rolesRemoved, mfaAdded, mfaRemoved);
+        const updatedCitizen = (user.isCitizen && !citizenRemoved) || (!user.isCitizen && citizenAdded);
+        updatedUser = { ...updatedUser, roles: newRoleList, multiFactorAuthentication: updatedMfa, isCitizen: updatedCitizen };
+        await this.updateUserRoles(user, rolesAdded, rolesRemoved, mfaAdded, mfaRemoved, citizenAdded, citizenRemoved);
         roleAssignments = await this.reconstructRoleAssignments(req, _userId, newRoleList);
       }
 
       return super.post(req, res, 'edit-user', {
-        content: {
-          user: updatedUser,
-          roles: roleAssignments,
-          showMfa: mfaAssignable,
-          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) },
-          notification: 'User saved successfully'
-        }
+        content: 
+          this.editUserContent(req, updatedUser, roleAssignments),
+        ...{notification: 'User saved successfully'}
       });
     } catch (e) {
       const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
       return super.post(req, res, 'edit-user', {
-        content: {
-          user,
-          roles: roleAssignments,
-          showMfa: mfaAssignable,
-          ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) }
-        },
+        content: this.editUserContent(req, user, roleAssignments),
         error
       });
     }
   }
 
-  private userWasNotChangedErrorMessage(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[], mfaAssignable: any) {
+  private userWasNotChangedErrorMessage(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
     const error = {userEditForm: {message: USER_UPDATE_NO_CHANGE_ERROR}};
     return super.post(req, res, 'edit-user', {
-      content: {
-        user,
-        roles: roleAssignments,
-        showMfa: mfaAssignable,
-        ...(user.ssoProvider) && {mfaMessage: this.generateMFAMessage(user.ssoProvider)}
-      },
+      content: this.editUserContent(req, user, roleAssignments),
       error
     });
   }
@@ -163,6 +157,16 @@ export class UserEditController extends RootController {
       mfaRemoved = mfaAssignable && originalMfa && typeof editedMfa === 'undefined';
     }
     return {mfaAdded, mfaRemoved};
+  }
+
+  private wasCitizenAddedOrRemoved(user: User, citizenAssignable: any, originalIsCitizen: boolean, editedIsCitizen: boolean) {
+    let citizenAdded, citizenRemoved = false;
+
+    if (!user.ssoProvider) {
+      citizenAdded = citizenAssignable && !originalIsCitizen && typeof editedIsCitizen !== 'undefined';
+      citizenRemoved = citizenAssignable && originalIsCitizen && typeof editedIsCitizen === 'undefined';
+    }
+    return {citizenAdded, citizenRemoved};
   }
 
   private comparePartialUsers(userA: Partial<User>, userB: Partial<User>) {
@@ -187,35 +191,34 @@ export class UserEditController extends RootController {
 
   private getUserRolesAfterUpdate(req: AuthedRequest, originalRoles: string[], editedRoles: string[]): string[] {
     const nonAssignableRoles = determineUserNonAssignableRoles(req.idam_user_dashboard_session.user.assignableRoles, originalRoles);
-    const rolesToAssign = editedRoles ? convertToArray(editedRoles) : [];
 
-    const newRoleList = [];
-    newRoleList.push(...rolesToAssign, ...nonAssignableRoles);
-    return newRoleList;
+    const arr1 = Array.isArray(nonAssignableRoles) ? nonAssignableRoles : [];
+    const arr2 = Array.isArray(editedRoles) ? editedRoles : [];
+    return Array.from(new Set([...arr1, ...arr2]));
+    
   }
 
-  private convertRolesToDefinitions(roles: string[]): RoleDefinition[] {
-    const roleDefinitions: RoleDefinition[] = [];
-    roles.forEach(r => roleDefinitions.push({name: r}));
-    return roleDefinitions;
-  }
-
-  private async updateUserRoles(req: AuthedRequest, user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean) {
+  private async updateUserRoles(user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean, citizenAdded: boolean, citizenRemoved: boolean) {
+    const v2User: V2User = await this.idamWrapper.getUserV2ById(user.id);
+    const roleNameSet = new Set<string>(v2User.roleNames);
     if (rolesAdded.length > 0) {
-      await this.idamWrapper.grantRolesToUser(req.idam_user_dashboard_session.access_token,user.id, this.convertRolesToDefinitions(rolesAdded));
+      rolesAdded.forEach(r => roleNameSet.add(r));
     }
-
-    for (const r of rolesRemoved) {
-      await this.idamWrapper.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, r);
+    if (rolesRemoved.length > 0) {
+      rolesRemoved.forEach(r => roleNameSet.delete(r));
     }
-
-    if (!user.multiFactorAuthentication && mfaAdded) {
-      await this.idamWrapper.removeRoleFromUser(req.idam_user_dashboard_session.access_token, user.id, IDAM_MFA_DISABLED);
+    if (mfaAdded) {
+      roleNameSet.delete(IDAM_MFA_DISABLED);
+    } else if (mfaRemoved) {
+      roleNameSet.add(IDAM_MFA_DISABLED);
     }
-
-    if (user.multiFactorAuthentication && mfaRemoved) {
-      await this.idamWrapper.grantRolesToUser(req.idam_user_dashboard_session.access_token, user.id, this.convertRolesToDefinitions(convertToArray(IDAM_MFA_DISABLED)));
+    if (citizenAdded) {
+      roleNameSet.add(CITIZEN_ROLE);
+    } else if (citizenRemoved) {
+      roleNameSet.delete(CITIZEN_ROLE);
     }
+    v2User.roleNames = Array.from(roleNameSet).sort((a, b) => a.localeCompare(b));
+    await this.idamWrapper.updateV2User(v2User);
   }
 
   private async reconstructRoleAssignments(req: AuthedRequest, userId: string, newRoles: string[]): Promise<UserRoleAssignment[]> {
@@ -238,5 +241,13 @@ export class UserEditController extends RootController {
 
   private canShowMfa(assignableRoles: string[]) {
     return assignableRoles.includes(IDAM_MFA_DISABLED);
+  }
+
+  private canManageCitizen(assignableRoles: string[]) {
+    return assignableRoles.includes(CITIZEN_ROLE);
+  }
+
+  private isCaseworkerCitizen(isCitizen: boolean, roles: string[]) {
+    return isCitizen && roles.includes(CASEWORKER_ROLE);
   }
 }

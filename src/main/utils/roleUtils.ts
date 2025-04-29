@@ -7,6 +7,8 @@ import {IdamAPI} from '../app/idam-api/IdamAPI';
 import logger from '../modules/logging';
 
 export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
+export const CITIZEN_ROLE = 'citizen';
+export const CASEWORKER_ROLE = 'caseworker';
 
 export const loadUserAssignableRoles = (req: AuthedRequest, idamWrapper: IdamAPI) : Promise<void> => {
   if (!req.idam_user_dashboard_session.user.assignableRoles) {
@@ -54,8 +56,7 @@ export const constructAllRoleAssignments = (allRoles: V2Role[], assignedRoleName
 
 export const constructUserRoleAssignments = (assignableRoleNames: string[], assignedRoleNames: string[]): UserRoleAssignment[] => {
   const userRoleAssignments: UserRoleAssignment[] = [];
-  const combinedRoles = [];
-  combinedRoles.push(...assignableRoleNames, ...assignedRoleNames);
+  const combinedRoles = new Set<string>([...assignableRoleNames, ...assignedRoleNames]);
 
   combinedRoles.forEach(r => {
     const obj = {} as UserRoleAssignment;
@@ -82,11 +83,15 @@ export const processMfaRoleV2 = (user: V2User) => {
   }
 };
 
-export const processMfaRole = (user: User) => {
+export const processRoleBasedAttributes = (user: User) => {
   // Set a specific field using the idam-mfa-disabled role and remove that role from the role list
   user.multiFactorAuthentication = !user.roles.includes(IDAM_MFA_DISABLED);
   if (!user.multiFactorAuthentication) {
     user.roles = user.roles.filter(r => r !== IDAM_MFA_DISABLED);
+  }
+  user.isCitizen = user.roles.includes(CITIZEN_ROLE);
+  if (user.isCitizen) {
+    user.roles = user.roles.filter(r => r !== CITIZEN_ROLE);
   }
 };
 

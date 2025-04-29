@@ -15,7 +15,7 @@ shared_config.helpers = {
   Playwright: {
     browser: 'chromium',
     url: process.env.TEST_URL || 'https://idam-user-dashboard.aat.platform.hmcts.net/',
-    show: false,
+    show: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS !== 'true' : false,
     timeout: 20002,
     bypassCSP: false,
     capabilities: {}

@@ -105,8 +105,8 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
 });
 
-Scenario('I as an admin can enable MFA', async ({ I }) => {
-  const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled']});
+Scenario('I as an admin can enable MFA', async ({ I, setupDAO }) => {
+  const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled', setupDAO.getWorkerRole().name]});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
   await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
