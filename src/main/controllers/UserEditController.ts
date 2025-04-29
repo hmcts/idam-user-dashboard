@@ -88,6 +88,7 @@ export class UserEditController extends RootController {
     const rolesRemoved = newRoleList && newRoleList.length > 0 ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList) : originalRolesWithAttributeRolesRemoved;
 
     console.log('new role list: ' + newRoleList);
+    
 
     const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
     const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
@@ -95,6 +96,8 @@ export class UserEditController extends RootController {
     const citizenAssignable = this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
 
     const {citizenAdded, citizenRemoved} = this.wasCitizenAddedOrRemoved(user, citizenAssignable, originalIsCitizen, editedIsCitizen);
+
+    console.log('citizen assignable' + citizenAssignable + ', edited is citizen? ' + editedIsCitizen);
 
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved || citizenAdded || citizenRemoved;
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
@@ -233,7 +236,7 @@ export class UserEditController extends RootController {
     } else if (citizenRemoved) {
       roleNameSet.delete(CITIZEN_ROLE);
     }
-    v2User.roleNames = Array.from(roleNameSet).sort();
+    v2User.roleNames = Array.from(roleNameSet).sort((a, b) => a.localeCompare(b));
     console.log('v2 update with roles ' + v2User.roleNames);
     await this.idamWrapper.updateV2User(v2User);
   }

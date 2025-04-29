@@ -95,7 +95,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: setupPageContent(testUser, expectedRoleAssignments)
     });
 
@@ -123,7 +123,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content:  {
         ...setupPageContent(testUser, expectedRoleAssignments),
         mfaMessage: 'Managed by eJudiciary.net',
@@ -161,7 +161,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -190,7 +190,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
     });
@@ -208,7 +208,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -236,7 +236,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_SUPER_USER']
     });
@@ -254,7 +254,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -283,7 +283,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_SUPER_USER', 'IDAM_TEST_USER']
     });
@@ -306,7 +306,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -330,7 +330,7 @@ describe('User edit controller', () => {
     };
     req.idam_user_dashboard_session = { access_token: testToken, user:{ id: testUser.id, assignableRoles: ['IDAM_ADMIN_USER'] } };
 
-    when(mockApi.getAssignableRoles).calledWith(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']).mockReturnValue(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
+    when(mockApi.getAssignableRoles).calledWith(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']).mockReturnValueOnce(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(testUser));
@@ -339,7 +339,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
     });
@@ -362,7 +362,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -398,7 +398,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(v1UserAfterDetailsUpdate),
       roleNames: ['IDAM_ADMIN_USER']
     });
@@ -416,7 +416,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -448,7 +448,7 @@ describe('User edit controller', () => {
     await controller.post(req, res);
 
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_SUPER_USER']
     });
@@ -466,7 +466,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -497,7 +497,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
     });
@@ -515,7 +515,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -547,7 +547,7 @@ describe('User edit controller', () => {
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: req.body.roles
     });
@@ -570,7 +570,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -609,7 +609,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -647,7 +647,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { ...setupPageContent(testUser, expectedRoleAssignments) },
       error: {
         userEditForm: { 
@@ -679,7 +679,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content:  { 
         ...setupPageContent(testUser, expectedRoleAssignments)
       },
@@ -702,11 +702,11 @@ describe('User edit controller', () => {
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
-    when(mockApi.updateV2User).calledWith(expect.anything()).mockReturnValue(Promise.reject());
+    when(mockApi.updateV2User).calledWith(expect.anything()).mockReturnValueOnce(Promise.reject());
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenCalledWith({
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
       ...convertToV2User(testUser),
       roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
     });
@@ -724,7 +724,7 @@ describe('User edit controller', () => {
       }
     ];
 
-    expect(res.render).toHaveBeenCalledWith('edit-user', {
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content:  { 
         ...setupPageContent(testUser, expectedRoleAssignments)
       },
@@ -734,6 +734,291 @@ describe('User edit controller', () => {
         }
       }
     });
+    
   });
   
+  test('Should render the edit user page after saving when citizen added', async () => {
+
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_SUPER_USER'],
+      isCitizen: 'enabled'
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['citizen', 'IDAM_SUPER_USER']
+    });
+
+    const expectedRoleAssignments = [
+      {
+        name: 'citizen',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            isCitizen: true,
+          }, 
+          expectedRoleAssignments
+        ),
+        manageCitizenAttribute: true,
+        showCitizenConflict: false,
+      },
+      notification: 'User saved successfully'
+    });
+
+  });
+
+  test('Should render the edit user page after saving when user citizen removed', async () => {
+
+    const testUser = {
+      ...setupV1User(['IDAM_SUPER_USER', 'citizen']),
+      isCitizen: true
+    };
+    req.body = {
+      ...setupPostData({
+        ...testUser,
+        roles: ['IDAM_SUPER_USER']
+      }, 'save'),
+      isCitizen: undefined
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_SUPER_USER']
+    });
+
+    const expectedRoleAssignments = [
+      {
+        name: 'citizen',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_SUPER_USER'],
+            isCitizen: false
+          }, 
+          expectedRoleAssignments,
+        ),
+        manageCitizenAttribute: true,
+        showCitizenConflict: false,
+      },
+      notification: 'User saved successfully'
+    });
+
+  });
+
+  test('Should render the edit user page with citizen manageable', async () => {
+
+    const testUser = setupV1User(['IDAM_ADMIN_USER']);
+    req.body = req.body = setupPostData(testUser, 'edit');
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+
+    when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
+
+    const expectedRoleAssignments = [
+      {
+        name: 'citizen',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_ADMIN_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: {
+        ...setupPageContent(testUser, expectedRoleAssignments),
+        manageCitizenAttribute: true,
+        showCitizenConflict: false,
+      }
+    });
+
+  });
+
+  test('Should render the edit user page with caseworker citizen conflict', async () => {
+
+    const testUser = {
+      ...setupV1User(['caseworker', 'citizen']),
+      isCitizen: true
+    };
+    req.body = req.body = setupPostData(testUser, 'edit');
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: [] } };
+
+    when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
+
+    const expectedRoleAssignments = [
+      {
+        name: 'caseworker',
+        assignable: false,
+        assigned: true
+      },
+      {
+        name: 'citizen',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: {
+        ...setupPageContent(testUser, expectedRoleAssignments),
+        manageCitizenAttribute: true,
+        showCitizenConflict: true,
+      }
+    });
+
+  });
+
+  test('Should render the edit user page after saving when user citizen removed due to caseworker conflict', async () => {
+
+    const testUser = {
+      ...setupV1User(['caseworker', 'citizen']),
+      isCitizen: true
+    };
+    req.body = {
+      ...setupPostData({
+        ...testUser,
+        roles: ['caseworker']
+      }, 'save'),
+      isCitizen: undefined
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: [] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['caseworker']
+    });
+
+    const expectedRoleAssignments = [
+      {
+        name: 'caseworker',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['caseworker'],
+            isCitizen: false
+          }, 
+          expectedRoleAssignments,
+        ),
+        manageCitizenAttribute: false,
+        showCitizenConflict: false,
+      },
+      notification: 'User saved successfully'
+    });
+
+  });
+
+  test('Should render the edit user page after saving when user citizen removed manageably', async () => {
+
+    const testUser = {
+      ...setupV1User(['IDAM_ADMIN_USER', 'citizen']),
+      isCitizen: true
+    };
+    req.body = {
+      ...setupPostData({
+        ...testUser,
+        roles: ['IDAM_ADMIN_USER']
+      }, 'save'),
+      isCitizen: undefined
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
+      ...convertToV2User(testUser),
+      roleNames: ['IDAM_ADMIN_USER']
+    });
+
+    const expectedRoleAssignments = [
+      {
+        name: 'citizen',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_ADMIN_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: { 
+        ...setupPageContent(
+          {
+            ...testUser,
+            roles: ['IDAM_ADMIN_USER'],
+            isCitizen: false
+          }, 
+          expectedRoleAssignments,
+        ),
+        manageCitizenAttribute: true,
+        showCitizenConflict: false,
+      },
+      notification: 'User saved successfully'
+    });
+
+  });
+
 });
