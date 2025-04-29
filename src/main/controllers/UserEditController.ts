@@ -87,40 +87,24 @@ export class UserEditController extends RootController {
     const rolesAdded = newRoleList && newRoleList.length > 0 ? findDifferentElements(newRoleList, originalRolesWithAttributeRolesRemoved) : [];
     const rolesRemoved = newRoleList && newRoleList.length > 0 ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList) : originalRolesWithAttributeRolesRemoved;
 
-    console.log('new role list: ' + newRoleList);
-    
-
     const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
     const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
-
-    console.log('mfa assignable' + mfaAssignable + ', mfaAdded? ' + mfaAdded + ', mfaRemoved? ' + mfaRemoved);
-
 
     const citizenAssignable = this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
 
     const {citizenAdded, citizenRemoved} = this.wasCitizenAddedOrRemoved(user, citizenAssignable, originalIsCitizen, editedIsCitizen);
 
-    console.log('citizen assignable' + citizenAssignable + ', edited is citizen? ' + editedIsCitizen);
-
     const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved || citizenAdded || citizenRemoved;
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
-    console.log('fields changed? ' + !isObjectEmpty(changedFields) + ', roles changed? ' + rolesChanged);
-
     // No changes
     if (isObjectEmpty(changedFields) && !rolesChanged) {
-      console.log('no chagnges');
       return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
     }
-    console.log('changes ');
-    Object.keys(changedFields).forEach(f => console.log(f));
-
     Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
-    console.log('before err ');
 
     // Validation errors
     const error = this.validateFields(changedFields);
-    console.log('errir ' + error);
     if (!isObjectEmpty(error)) {
       return super.post(req, res, 'edit-user', { content: this.editUserContent(req, {...user, ...changedFields}, roleAssignments),
         error });
@@ -129,16 +113,13 @@ export class UserEditController extends RootController {
     try {
       let updatedUser = { ...originalFields, roles: originalRolesWithAttributeRolesRemoved, multiFactorAuthentication: originalMfa, isCitizen: originalIsCitizen };
       if (!isObjectEmpty(changedFields)) {
-        console.log('fields editing');
         updatedUser = {
           ...updatedUser,
           ...await this.idamWrapper.editUserById(req.idam_user_dashboard_session.access_token, user.id, changedFields)
         };
-        console.log('fields edited');
       }
 
       if (rolesChanged) {
-        console.log('changing roles');
         const updatedMfa = (user.multiFactorAuthentication && !mfaRemoved) || (!user.multiFactorAuthentication && mfaAdded);
         const updatedCitizen = (user.isCitizen && !citizenRemoved) || (!user.isCitizen && citizenAdded);
         updatedUser = { ...updatedUser, roles: newRoleList, multiFactorAuthentication: updatedMfa, isCitizen: updatedCitizen };
@@ -220,13 +201,10 @@ export class UserEditController extends RootController {
   private async updateUserRoles(user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean, citizenAdded: boolean, citizenRemoved: boolean) {
     const v2User: V2User = await this.idamWrapper.getUserV2ById(user.id);
     const roleNameSet = new Set<string>(v2User.roleNames);
-    console.log('Starting roles for user ' + roleNameSet);
     if (rolesAdded.length > 0) {
-      console.log('roles added ' + rolesAdded.length + ', ' + rolesAdded);
       rolesAdded.forEach(r => roleNameSet.add(r));
     }
     if (rolesRemoved.length > 0) {
-      console.log('roles removed ' + rolesRemoved);
       rolesRemoved.forEach(r => roleNameSet.delete(r));
     }
     if (mfaAdded) {
@@ -240,7 +218,6 @@ export class UserEditController extends RootController {
       roleNameSet.delete(CITIZEN_ROLE);
     }
     v2User.roleNames = Array.from(roleNameSet).sort((a, b) => a.localeCompare(b));
-    console.log('v2 update with roles ' + v2User.roleNames);
     await this.idamWrapper.updateV2User(v2User);
   }
 
@@ -248,16 +225,13 @@ export class UserEditController extends RootController {
     // if the users are editing their owned roles, we need to get the users' new assignable roles again as these might have changed
     // after their roles are updated
     if (req.idam_user_dashboard_session.user.id === userId) {
-      console.log('self edit: ' + newRoles);
       const newAssignableRoles = await this.idamWrapper.getAssignableRoles(newRoles);
-      console.log('new ass roles' + newAssignableRoles);
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
     return constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, newRoles);
   }
 
   private generateMFAMessage(ssoProvider: string): string {
-    console.log('generating mfa message');
     if(config.has(`providers.${ssoProvider}.internalName`)) {
       return 'Managed by ' + config.get(`providers.${ssoProvider}.externalName`);
     } else {
