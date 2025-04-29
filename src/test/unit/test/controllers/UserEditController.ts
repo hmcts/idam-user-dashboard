@@ -95,7 +95,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: setupPageContent(testUser, expectedRoleAssignments)
     });
 
@@ -161,7 +161,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -208,7 +208,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -254,7 +254,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -306,7 +306,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -362,7 +362,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -416,7 +416,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -466,7 +466,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -515,7 +515,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -570,7 +570,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -609,7 +609,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -647,7 +647,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { ...setupPageContent(testUser, expectedRoleAssignments) },
       error: {
         userEditForm: { 
@@ -679,7 +679,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content:  { 
         ...setupPageContent(testUser, expectedRoleAssignments)
       },
@@ -724,7 +724,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content:  { 
         ...setupPageContent(testUser, expectedRoleAssignments)
       },
@@ -770,7 +770,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -825,7 +825,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -867,7 +867,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: {
         ...setupPageContent(testUser, expectedRoleAssignments),
         manageCitizenAttribute: true,
@@ -904,7 +904,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: {
         ...setupPageContent(testUser, expectedRoleAssignments),
         manageCitizenAttribute: true,
@@ -947,7 +947,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
@@ -1003,7 +1003,7 @@ describe('User edit controller', () => {
       }
     ];
 
-     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: { 
         ...setupPageContent(
           {
