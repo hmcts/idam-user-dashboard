@@ -217,7 +217,7 @@ Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO
   I.assertTrue(citizenRoleDisabled);
 });
 
-Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict', async ({ I, setupDAO }) => {
+Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict', async ({ I }) => {
   const testUser = await I.haveUser({roleNames: ['caseworker', 'citizen']});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
