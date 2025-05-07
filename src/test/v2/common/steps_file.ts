@@ -6,7 +6,7 @@ const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
 export = function() {
   return actor({
     doLogin(email : string, password : string) {
-      this.amOnPage('/');
+      this.amOnPage('https://idam-web-public.aat.platform.hmcts.net/health');
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
       this.fillField('Email', email);
