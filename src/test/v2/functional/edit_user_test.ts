@@ -201,3 +201,48 @@ Scenario('I as an admin can add a filtered role and existing roles are unchanged
   I.see(workerRole.name, I.locateDataForTitle('Assigned roles'));
 
 });
+
+
+Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO }) => {
+  const testUser = await I.haveUser({roleNames: [setupDAO.getWorkerRole().name, 'citizen']});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.uncheckOption('#hide-disabled');
+  I.scrollPageToBottom();
+
+  I.see('Citizen role', 'legend');
+  await I.seeCheckboxIsChecked('isCitizen');
+  const citizenRoleDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name:'isCitizen'}));
+  I.assertTrue(citizenRoleDisabled);
+});
+
+Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict', async ({ I }) => {
+  const testUser = await I.haveUser({roleNames: ['caseworker', 'citizen']});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.uncheckOption('#hide-disabled');
+  I.scrollPageToBottom();
+
+  I.see('Citizen role', 'legend');
+  I.see('This user should probably not be a citizen.', locate('div.govuk-warning-text'));
+  await I.seeCheckboxIsChecked('isCitizen');
+  const citizenRoleDisabled = await I.grabDisabledElementStatus(locate('input').withAttr({name:'isCitizen'}));
+  I.assertFalse(citizenRoleDisabled);
+
+  I.uncheckOption(locate('input').withAttr({name: 'isCitizen'}));
+  await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'isCitizen'}));
+
+  await I.clickToExpectSuccess('Save');
+  I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
+
+  await I.clickToNavigate('Return to user details', '/details', 'User Details');
+  I.dontSee('citizen', I.locateDataForTitle('Assigned roles'));
+
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  I.dontSee('Citizen role', 'legend');
+
+});
