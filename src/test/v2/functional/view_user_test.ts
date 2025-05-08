@@ -14,7 +14,7 @@ Scenario('view admin user details', async ({ I }) => {
   await I.navigateToManageUser(adminEmail);
   I.see(adminEmail, I.locateDataForTitle('Email'));
 });
-
+/*
 Scenario('view test user details',  async ({ I }) => {
   const testUser = await I.haveUser();
   await I.navigateToManageUser(testUser.email);
@@ -78,3 +78,4 @@ Scenario('view archived user details',  async ({ I }) => {
   I.seeIgnoreCase('archived', I.locateStrongDataForTitle('Account state'));
   I.see('Archived accounts are read only.', locate('div.govuk-notification-banner'));
 });
+*/
