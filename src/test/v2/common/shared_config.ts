@@ -13,7 +13,7 @@ shared_config.include = {
 
 shared_config.helpers = {
   Playwright: {
-    browser: 'firefox',
+    browser: 'chromium',
     url: process.env.TEST_URL || 'https://idam-user-dashboard.aat.platform.hmcts.net/',
     show: false,
     timeout: 20002,
