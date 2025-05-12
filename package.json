@@ -150,6 +150,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
+    "axe-html-reporter": ">=2.2.11",
     "braces": ">=3.0.3",
     "follow-redirects": "^1.15.6",
     "puppeteer": "22.15.0",
