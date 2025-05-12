@@ -25,6 +25,7 @@ public/
 functional-output/
 src/main/views/govuk
 test-output/
+coverage/
 
 # Yarn 3 files
 .pnp.*
