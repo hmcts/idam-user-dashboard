@@ -3,7 +3,6 @@ import { mockRequest } from '../../utils/mockRequest';
 import { mockApi } from '../../utils/mockApi';
 import { DownloadReportController } from '../../../../main/controllers/DownloadReportController';
 import { User } from '../../../../main/interfaces/User';
-//import { when } from 'jest-when';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
 
