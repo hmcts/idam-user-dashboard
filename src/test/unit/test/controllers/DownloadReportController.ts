@@ -3,11 +3,8 @@ import { mockRequest } from '../../utils/mockRequest';
 import { mockApi } from '../../utils/mockApi';
 import { DownloadReportController } from '../../../../main/controllers/DownloadReportController';
 import { User } from '../../../../main/interfaces/User';
-import { when } from 'jest-when';
-import * as json2csv from 'json2csv';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
-jest.mock('json2csv');
 
 describe('Download report controller', () => {
   let req: any;
@@ -21,18 +18,18 @@ describe('Download report controller', () => {
     {
       id: '1',
       forename: 'test',
-      surname: 'test',
-      email: 'test@test.email',
+      surname: 'test1',
+      email: 'test1@test.email',
       active: true,
-      roles: ['IDAM_SUPER_USER'],
+      roles: ['IDAM_SUPER_USER', 'test-role'],
     },
     {
       id: '2',
       forename: 'test',
-      surname: 'test',
-      email: 'test@test.email',
+      surname: 'test2',
+      email: 'test2@test.email',
       active: true,
-      roles: ['IDAM_SUPER_USER'],
+      roles: [],
     },
   ] as User[];
   const controller = new DownloadReportController(mockReportGenerator, mockApi as unknown as IdamAPI);
@@ -44,15 +41,19 @@ describe('Download report controller', () => {
   });
 
   test('Should send report that exists', async () => {
-    const fileData = 'someFileData';
     req.params = { reportUUID: 'someUUID' };
     req.idam_user_dashboard_session = {access_token: testToken};
 
     mockReportGenerator.getReportQueryRoles.mockResolvedValue(query);
     mockApi.getUsersWithRoles.mockReturnValueOnce(users).mockReturnValue([]);
-    when(json2csv.parse).mockReturnValue(fileData);
 
     await controller.get(req, res);
+
+    const expectedHeader = '"id","forename","surname","email","active","roles"';
+    const expectedUser1 = '"1","test","test1","test1@test.email",true,"[""IDAM_SUPER_USER"",""test-role""]"';
+    const expectedUser2 = '"2","test","test2","test2@test.email",true,"[]"';
+    const fileData = expectedHeader + '\n' + expectedUser2 + '\n' + expectedUser1;
+
     expect(res.send).toHaveBeenCalledWith(fileData);
     expect(res.attachment).toHaveBeenCalled();
     expect(res.header).toHaveBeenCalledWith('Content-Type', 'text/csv');
