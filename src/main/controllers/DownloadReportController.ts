@@ -2,11 +2,11 @@ import autobind from 'autobind-decorator';
 import { ReportsHandler } from '../app/reports/ReportsHandler';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import { Response } from 'express';
-import { parse } from 'json2csv';
 import { GENERATING_FILE_FAILED_TRY_AGAIN } from '../utils/error';
 import { RootController } from './RootController';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import logger from '../modules/logging';
+import { User } from '../interfaces/User';
 
 @autobind
 export class DownloadReportController extends RootController {
@@ -37,7 +37,7 @@ export class DownloadReportController extends RootController {
 
   private async generateReport(reportUUID: string, req: AuthedRequest) {
     let reportCsv = '';
-    let reportData;
+    let reportData: User[];
     let pageNo = 0;
     const roles = (await this.reportGenerator.getReportQueryRoles(reportUUID));
     logger.info(`Fetching data for report ${reportUUID} for roles ${roles}.`);
@@ -45,10 +45,37 @@ export class DownloadReportController extends RootController {
       reportData = (await this.idamWrapper.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 2000, pageNo))
         .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
       if (reportData && reportData.length > 0) {
-        reportCsv += parse(reportData);
+        reportCsv += this.jsonToCsv(reportData);
       }
       pageNo++;
     } while (reportData && reportData.length > 1);
     return reportCsv;
   }
+
+private jsonToCsv(data: User[]): string {
+  if (!Array.isArray(data) || data.length === 0) return '';
+
+  const headers = Object.keys(data[0]) as (keyof User)[];
+  const escape = (value: string): string => `"${value.replace(/"/g, '""')}"`;
+
+  const headerLine = headers.map(h => escape(h)).join(',');
+
+  const rows = data.map(row =>
+    headers.map(field => {
+      const value = row[field];
+
+      if (Array.isArray(value)) {
+        return escape(JSON.stringify(value));
+      }
+
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        return String(value);
+      }
+
+      return escape(value ?? '');
+    }).join(',')
+  );
+
+  return [headerLine, ...rows].join('\n');
+}
 }
