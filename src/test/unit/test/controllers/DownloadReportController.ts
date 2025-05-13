@@ -52,7 +52,7 @@ describe('Download report controller', () => {
     const expectedHeader = '"id","forename","surname","email","active","roles"';
     const expectedUser1 = '"1","test","test1","test1@test.email",true,"[""IDAM_SUPER_USER"",""test-role""]"';
     const expectedUser2 = '"2","test","test2","test2@test.email",true,"[]"';
-    const fileData = expectedHeader + '\n' + expectedUser2 + '\n' + expectedUser1
+    const fileData = expectedHeader + '\n' + expectedUser2 + '\n' + expectedUser1;
 
     expect(res.send).toHaveBeenCalledWith(fileData);
     expect(res.attachment).toHaveBeenCalled();

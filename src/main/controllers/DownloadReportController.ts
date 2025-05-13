@@ -52,30 +52,30 @@ export class DownloadReportController extends RootController {
     return reportCsv;
   }
 
-private jsonToCsv(data: User[]): string {
-  if (!Array.isArray(data) || data.length === 0) return '';
+  private jsonToCsv(data: User[]): string {
+    if (!Array.isArray(data) || data.length === 0) return '';
 
-  const headers = Object.keys(data[0]) as (keyof User)[];
-  const escape = (value: string): string => `"${value.replace(/"/g, '""')}"`;
+    const headers = Object.keys(data[0]) as (keyof User)[];
+    const escape = (value: string): string => `"${value.replace(/"/g, '""')}"`;
 
-  const headerLine = headers.map(h => escape(h)).join(',');
+    const headerLine = headers.map(h => escape(h)).join(',');
 
-  const rows = data.map(row =>
-    headers.map(field => {
-      const value = row[field];
+    const rows = data.map(row =>
+      headers.map(field => {
+        const value = row[field];
 
-      if (Array.isArray(value)) {
-        return escape(JSON.stringify(value));
-      }
+        if (Array.isArray(value)) {
+          return escape(JSON.stringify(value));
+        }
 
-      if (typeof value === 'boolean' || typeof value === 'number') {
-        return String(value);
-      }
+        if (typeof value === 'boolean' || typeof value === 'number') {
+          return String(value);
+        }
 
-      return escape(value ?? '');
-    }).join(',')
-  );
+        return escape(value ?? '');
+      }).join(',')
+    );
 
-  return [headerLine, ...rows].join('\n');
-}
+    return [headerLine, ...rows].join('\n');
+  }
 }
