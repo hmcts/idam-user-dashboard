@@ -4,6 +4,11 @@ import config = require('config');
 import { PropertiesVolume } from './modules/properties-volume';
 import { initializeTelemetry } from './modules/opentelemetry';
 
+const env = process.env.NODE_ENV || 'development';
+const developmentMode = env === 'development';
+new PropertiesVolume().enableFor(env);
+initializeTelemetry();
+
 import express from 'express';
 import * as bodyParser from 'body-parser';
 import favicon from 'serve-favicon';
@@ -19,12 +24,6 @@ import { Csrf } from './modules/csrf';
 import routes from './routes';
 import logger from './modules/logging';
 const { setupDev } = require('./development');
-
-const env = process.env.NODE_ENV || 'development';
-const developmentMode = env === 'development';
-
-new PropertiesVolume().enableFor(env);
-initializeTelemetry();
 
 export const app = express();
 app.locals.ENV = env;
