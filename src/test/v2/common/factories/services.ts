@@ -1,5 +1,6 @@
 const { Factory } = require('rosie');
 const { faker } = require('@faker-js/faker');
+import { BuildInfoHelper } from '../build_info';
 
 class ServiceFactory extends Factory {
 
@@ -20,7 +21,7 @@ class ServiceFactory extends Factory {
 }
 
 export = new ServiceFactory()
-  .attr('clientId', () => { return ('iud-service-' + faker.word.verb() + '-' + faker.word.noun()).normalize('NFD').replace(/[\u0300-\u036f]/g, '');})
+  .attr('clientId', () => { return ('iud-service-'  + BuildInfoHelper.getBuildInfo(faker.word.verb()) + '-' + faker.word.noun()).normalize('NFD').replace(/[\u0300-\u036f]/g, '');})
   .attr('clientSecret', ['clientId'], (clientId) => { return clientId; })
   .attr('redirectUris', ['clientId'], (clientId) => { return ['http://' + clientId];})
   .attr('onboardingRoleNames', []);

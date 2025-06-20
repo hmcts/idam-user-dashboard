@@ -1,5 +1,6 @@
 const { Factory } = require('rosie');
 const { faker } = require('@faker-js/faker');
+import { BuildInfoHelper } from '../build_info';
 
 class UserFactory extends Factory {
 
@@ -18,6 +19,6 @@ export = new UserFactory()
   .attr('forename', () => { return faker.person.firstName();})
   .attr('surname', () => { return faker.person.lastName();})
   .attr('email', ['forename', 'surname'], (forename, surname) => {
-    return faker.internet.email({firstName : forename, lastName : surname, provider: 'iud.test.local'});
+    return faker.internet.email({firstName : forename, lastName : surname, provider: 'iud.' + BuildInfoHelper.getBuildInfo('test') + '.local'});
   })
   .attr('roleNames', () => { return [ codeceptjs.container.support('workerRole').name ]; });
