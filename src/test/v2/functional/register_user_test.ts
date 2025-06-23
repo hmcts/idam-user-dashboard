@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { BuildInfoHelper } from '../common/build_info';
 
 const ACTION_RETRY = { retries: 9, minTimeout: 250 };
 
@@ -15,7 +16,7 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
-  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
+  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'iud.register.' + BuildInfoHelper.getBuildInfo() + '.local'});
   await I.goToRegisterUser();
   I.fillField('email', registerEmail);
   await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
@@ -39,7 +40,7 @@ Scenario('I as an admin should be able to register professional user', async ({ 
 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();
-  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'test.local'});
+  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'iud.register.' + BuildInfoHelper.getBuildInfo() + '.local'});
   await I.goToRegisterUser();
   I.fillField('email', registerEmail);
   await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');

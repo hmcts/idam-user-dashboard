@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
-
+import { BuildInfoHelper } from '../common/build_info';
+ 
 Feature('v2_edit_user');
 
 Before(async ({ setupDAO, login }) => {
@@ -19,7 +20,7 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
 
   const changedForename = faker.person.firstName();
   const changedSurname = faker.person.lastName();
-  const changedEmail = faker.internet.email({firstName : changedForename, lastName : changedSurname, provider: 'test.local'});
+  const changedEmail = faker.internet.email({firstName : changedForename, lastName : changedSurname, provider: 'iud.changed.' + BuildInfoHelper.getBuildInfo() + '.local'});
   I.fillField('forename', changedForename);
   I.fillField('surname', changedSurname);
   I.fillField('email', changedEmail);
