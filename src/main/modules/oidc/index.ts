@@ -35,6 +35,7 @@ export class OidcMiddleware {
       idpLogout: true,
       authorizationParams: {
         'response_type': 'code',
+        code_challenge_method: null,
         scope: this.clientScope
       },
       session: {
