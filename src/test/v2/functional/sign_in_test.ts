@@ -18,9 +18,17 @@ Scenario('login as admin successfully',  ({ I, login }) => {
 Scenario('login as user without access', async ({ I }) => {
   const testUser = await I.haveUser();
   I.amOnPage('/');
-  I.fillField('Email', testUser.email);
-  I.fillField('Password', secret(testUser.password));
-  I.click('Sign in');  
+  const currentHeading = await I.grabTextFrom('h1');
+  if (currentHeading == 'Sign in') {
+    I.fillField('Email', testUser.email);
+    I.fillField('Password', secret(testUser.password));
+    I.click('Sign in');  
+  } else {
+    I.fillField('Email', testUser.email);
+    I.click('Continue');  
+    I.fillField('Password', secret(testUser.password));
+    I.click('Continue');  
+  }
   I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
   I.see('Status code: 403');
   I.dontSeeCookie('idam_user_dashboard_session');
