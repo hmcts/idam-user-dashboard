@@ -19,7 +19,7 @@ export = function() {
       });
     },
     doClassicLogin(email : string, password : string) {
-      this.say('Classic login')
+      this.say('Classic login');
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
@@ -28,8 +28,8 @@ export = function() {
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
-   doModernLogin(email : string, password : string) {
-      this.say('Modern login')
+    doModernLogin(email : string, password : string) {
+      this.say('Modern login');
       this.retry(AFTER_CLICK_RETRY).see('Enter your email address to sign in to your HMCTS Access account', 'h1');
       this.fillField('Email', email);
       this.retry(CLICK_RETRY).click('Continue');
