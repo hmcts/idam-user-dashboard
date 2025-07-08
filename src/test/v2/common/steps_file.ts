@@ -9,11 +9,34 @@ export = function() {
     doLogin(email : string, password : string) {
       this.amOnPage('/');
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      tryTo(() => {
+        this.see('Sign in', 'h1');
+        this.doClassicLogin(email, password);
+      });
+      tryTo(() => {
+        this.see('Enter your email address to sign in to your HMCTS Access account', 'h1');
+        this.doModernLogin(email, password);
+      });
+    },
+    doClassicLogin(email : string, password : string) {
+      this.say('Classic login');
       this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
       this.fillField('Email', email);
       this.fillField('Password', secret(password));
       this.retry(CLICK_RETRY).click('Sign in');
       this.retry(AFTER_CLICK_RETRY).dontSee('Sign in', 'h1');
+      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
+    },
+    doModernLogin(email : string, password : string) {
+      this.say('Modern login');
+      this.retry(AFTER_CLICK_RETRY).see('Enter your email address to sign in to your HMCTS Access account', 'h1');
+      this.fillField('Email', email);
+      this.retry(CLICK_RETRY).click('Continue');
+      this.retry(AFTER_CLICK_RETRY).see('Enter your password', 'h1');
+      this.fillField('Password', secret(password));
+      this.retry(CLICK_RETRY).click('Continue');
+      this.retry(AFTER_CLICK_RETRY).dontSee('Enter your password', 'h1');
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
       this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
     },
@@ -148,7 +171,7 @@ export = function() {
     },
     lockTestUser(email : string) {
       for (let i=0; i<5; i++) {
-        this.sendPostRequest('https://idam-api.aat.platform.hmcts.net/o/token', {
+        this.sendPostRequest(process.env.STRATEGIC_SERVICE_URL + '/o/token', {
           'grant_type':'password',
           'client_id':'idam-functional-test-service',
           'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
