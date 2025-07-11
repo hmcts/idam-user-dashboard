@@ -160,12 +160,8 @@ export class UserEditController extends RootController {
   }
 
   private wasCitizenAddedOrRemoved(user: User, citizenAssignable: any, originalIsCitizen: boolean, editedIsCitizen: boolean) {
-    let citizenAdded, citizenRemoved = false;
-
-    if (!user.ssoProvider) {
-      citizenAdded = citizenAssignable && !originalIsCitizen && typeof editedIsCitizen !== 'undefined';
-      citizenRemoved = citizenAssignable && originalIsCitizen && typeof editedIsCitizen === 'undefined';
-    }
+    const citizenAdded = citizenAssignable && !originalIsCitizen && typeof editedIsCitizen !== 'undefined';
+    const citizenRemoved = citizenAssignable && originalIsCitizen && typeof editedIsCitizen === 'undefined';
     return {citizenAdded, citizenRemoved};
   }
 
