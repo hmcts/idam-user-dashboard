@@ -228,11 +228,11 @@ export class UserEditController extends RootController {
   }
 
   private generateMFAMessage(ssoProvider: string): string {
+    let ssoDisplayName: string = ssoProvider;
     if(config.has(`providers.${ssoProvider}.internalName`)) {
-      return 'Managed by ' + config.get(`providers.${ssoProvider}.externalName`);
-    } else {
-      return 'Managed by ' + ssoProvider;
+      ssoDisplayName = config.get(`providers.${ssoProvider}.externalName`);
     }
+    return 'Managed by ' + ssoDisplayName;
   }
 
   private canShowMfa(assignableRoles: string[]) {
