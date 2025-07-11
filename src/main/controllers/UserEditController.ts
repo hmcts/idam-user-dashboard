@@ -160,12 +160,8 @@ export class UserEditController extends RootController {
   }
 
   private wasCitizenAddedOrRemoved(user: User, citizenAssignable: any, originalIsCitizen: boolean, editedIsCitizen: boolean) {
-    let citizenAdded, citizenRemoved = false;
-
-    if (!user.ssoProvider) {
-      citizenAdded = citizenAssignable && !originalIsCitizen && typeof editedIsCitizen !== 'undefined';
-      citizenRemoved = citizenAssignable && originalIsCitizen && typeof editedIsCitizen === 'undefined';
-    }
+    const citizenAdded = citizenAssignable && !originalIsCitizen && typeof editedIsCitizen !== 'undefined';
+    const citizenRemoved = citizenAssignable && originalIsCitizen && typeof editedIsCitizen === 'undefined';
     return {citizenAdded, citizenRemoved};
   }
 
@@ -232,11 +228,11 @@ export class UserEditController extends RootController {
   }
 
   private generateMFAMessage(ssoProvider: string): string {
+    let ssoDisplayName: string = ssoProvider;
     if(config.has(`providers.${ssoProvider}.internalName`)) {
-      return 'Managed by ' + config.get(`providers.${ssoProvider}.externalName`);
-    } else {
-      return 'Managed by ' + ssoProvider;
+      ssoDisplayName = config.get(`providers.${ssoProvider}.externalName`);
     }
+    return 'Managed by ' + ssoDisplayName;
   }
 
   private canShowMfa(assignableRoles: string[]) {

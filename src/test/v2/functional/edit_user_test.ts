@@ -219,7 +219,11 @@ Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO
 });
 
 Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict', async ({ I }) => {
-  const testUser = await I.haveUser({roleNames: ['caseworker', 'citizen']});
+  const testUser = await I.haveUser({
+    roleNames: ['caseworker', 'citizen'],
+    ssoId: faker.string.uuid(),
+    ssoProvider: 'azure'
+  });
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
 
