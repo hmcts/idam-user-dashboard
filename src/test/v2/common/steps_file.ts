@@ -14,7 +14,7 @@ export = function() {
         this.doClassicLogin(email, password);
       });
       tryTo(() => {
-        this.see('Enter your email address to sign in to your HMCTS Access account', 'h1');
+        this.see('Enter your email address', 'h1');
         this.doModernLogin(email, password);
       });
     },
@@ -30,11 +30,11 @@ export = function() {
     },
     doModernLogin(email : string, password : string) {
       this.say('Modern login');
-      this.retry(AFTER_CLICK_RETRY).see('Enter your email address to sign in to your HMCTS Access account', 'h1');
-      this.fillField('Email', email);
+      this.retry(AFTER_CLICK_RETRY).see('Enter your email address', 'h1');
+      this.fillField('email', email);
       this.retry(CLICK_RETRY).click('Continue');
       this.retry(AFTER_CLICK_RETRY).see('Enter your password', 'h1');
-      this.fillField('Password', secret(password));
+      this.fillField('password', secret(password));
       this.retry(CLICK_RETRY).click('Continue');
       this.retry(AFTER_CLICK_RETRY).dontSee('Enter your password', 'h1');
       this.retry(AFTER_CLICK_RETRY).seeElement('h1');
