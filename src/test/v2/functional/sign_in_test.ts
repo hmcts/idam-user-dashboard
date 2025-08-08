@@ -24,9 +24,9 @@ Scenario('login as user without access', async ({ I }) => {
     I.fillField('Password', secret(testUser.password));
     I.click('Sign in');  
   } else {
-    I.fillField('Email', testUser.email);
+    I.fillField('email', testUser.email);
     I.click('Continue');  
-    I.fillField('Password', secret(testUser.password));
+    I.fillField('password', secret(testUser.password));
     I.click('Continue');  
   }
   I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');

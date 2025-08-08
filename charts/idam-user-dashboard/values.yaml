@@ -24,7 +24,7 @@ nodejs:
         - AppInsightsConnectionString
   environment:
     STRATEGIC_SERVICE_URL: 'https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net'
-    STRATEGIC_PUBLIC_URL: 'https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net'
+    STRATEGIC_PUBLIC_URL: 'https://hmcts-access.{{ .Values.global.environment }}.platform.hmcts.net'
     DASHBOARD_URL: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net'
     OAUTH_CLIENT_REDIRECT: 'https://idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net/oauth2/callback'
     TESTING_SUPPORT_URL: 'https://idam-testing-support-api.{{ .Values.global.environment }}.platform.hmcts.net'
