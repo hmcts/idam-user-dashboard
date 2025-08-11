@@ -22,6 +22,8 @@ Running the application requires the following tools to be installed in your env
 $ yarn install
 ```
 
+Test
+
 #### Managing dependencies:
 
 To update the versions in package.json use:
