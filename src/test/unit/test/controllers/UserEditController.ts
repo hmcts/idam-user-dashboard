@@ -209,7 +209,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -257,7 +257,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: ['IDAM_SUPER_USER']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -306,7 +306,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_TEST_USER'])
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -363,7 +363,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'])
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -424,7 +424,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(v1UserAfterDetailsUpdate),
         roleNames: ['IDAM_ADMIN_USER']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -473,7 +473,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: ['IDAM_SUPER_USER']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -524,7 +524,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'idam-mfa-disabled'])
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -576,7 +576,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: expect.arrayContaining(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'])
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -739,7 +739,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: expect.arrayContaining(['citizen', 'IDAM_SUPER_USER'])
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -796,7 +796,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: ['IDAM_SUPER_USER']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -930,7 +930,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: ['caseworker']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
@@ -983,7 +983,7 @@ describe('User edit controller', () => {
       .calledWith({
         ...convertToV2User(testUser),
         roleNames: ['IDAM_ADMIN_USER']
-        })
+      })
       .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);

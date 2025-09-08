@@ -105,7 +105,7 @@ export class UserEditController extends RootController {
     user: User,
     roleAssignments: UserRoleAssignment[]
   ) {
-    const { _action, _csrf, _userId, ...editedUser } = req.body;
+    const {_userId, ...editedUser } = req.body;
 
     const {
       roles: originalRoles,
@@ -124,8 +124,8 @@ export class UserEditController extends RootController {
     const editedRoles = Array.isArray(inEditedRoles)
       ? inEditedRoles
       : inEditedRoles
-      ? [inEditedRoles]
-      : [];
+        ? [inEditedRoles]
+        : [];
 
     const originalRolesWithAttributeRolesRemoved = originalRoles.filter(
       (r) => r !== IDAM_MFA_DISABLED && r !== CITIZEN_ROLE
@@ -174,9 +174,9 @@ export class UserEditController extends RootController {
 
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
-  if (isObjectEmpty(changedFields) && !rolesChanged) {
-    return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
-  }
+    if (isObjectEmpty(changedFields) && !rolesChanged) {
+      return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
+    }
 
     Object.keys(changedFields).forEach(
       (field) => (changedFields[field] = changedFields[field].trim())
@@ -231,7 +231,7 @@ export class UserEditController extends RootController {
 
       const savedUser = await this.idamWrapper.updateV2User(updatedUser);
 
-      const v1View = this.convertToV1View(savedUser)
+      const v1View = this.convertToV1View(savedUser);
 
       roleAssignments = await this.reconstructRoleAssignments(
         req,
@@ -244,7 +244,7 @@ export class UserEditController extends RootController {
         ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
-      logger.warn('Exception saving user', e)
+      logger.warn('Exception saving user', e);
       const error = {
         userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email },
       };
