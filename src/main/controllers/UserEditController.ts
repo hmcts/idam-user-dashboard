@@ -34,6 +34,7 @@ import config from 'config';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import { trace } from '@opentelemetry/api';
+import logger from '../modules/logging';
 
 @autobind
 export class UserEditController extends RootController {
@@ -143,13 +144,6 @@ export class UserEditController extends RootController {
         ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList)
         : originalRolesWithAttributeRolesRemoved;
 
-    console.log('originalRoles:', originalRoles);
-    console.log('originalRolesWithAttributeRolesRemoved:', originalRolesWithAttributeRolesRemoved);
-    console.log('editedRoles:', editedRoles);
-    console.log('newRoleList:', newRoleList);
-    console.log('rolesAdded:', rolesAdded);
-    console.log('rolesRemoved:', rolesRemoved);
-
     const mfaAssignable = this.canShowMfa(
       req.idam_user_dashboard_session.user.assignableRoles
     );
@@ -181,28 +175,7 @@ export class UserEditController extends RootController {
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
   if (isObjectEmpty(changedFields) && !rolesChanged) {
-    console.log('no changes detected', {
-      changedFields,
-      rolesChanged,
-      rolesAdded,
-      rolesRemoved,
-      mfaAdded,
-      mfaRemoved,
-      citizenAdded,
-      citizenRemoved,
-    });
     return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
-  } else {
-    console.log('changes detected', {
-      changedFields,
-      rolesChanged,
-      rolesAdded,
-      rolesRemoved,
-      mfaAdded,
-      mfaRemoved,
-      citizenAdded,
-      citizenRemoved,
-    });
   }
 
     Object.keys(changedFields).forEach(
@@ -211,7 +184,10 @@ export class UserEditController extends RootController {
 
     const error = this.validateFields(changedFields);
     if (!isObjectEmpty(error)) {
-      console.log('Validation Failure');
+      logger.warn(
+        'Validation errors detected:',
+        Object.entries(error).map(([key, { message }]) => `${key}: ${message}`)
+      );
       return super.post(req, res, 'edit-user', {
         content: this.editUserContent(req, { ...user, ...changedFields }, roleAssignments),
         error,
@@ -220,7 +196,6 @@ export class UserEditController extends RootController {
 
     try {
 
-      console.log('Saving user ' + user.id);
       // fetch authoritative V2 user first
       const v2User = await this.idamWrapper.getUserV2ById(user.id);
 
@@ -269,7 +244,7 @@ export class UserEditController extends RootController {
         ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
-      console.log('Exception ' + e.message);
+      logger.warn('Exception saving user', e)
       const error = {
         userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email },
       };
