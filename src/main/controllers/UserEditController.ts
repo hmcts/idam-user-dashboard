@@ -18,7 +18,6 @@ import {
   USER_EMPTY_EMAIL_ERROR,
   USER_EMPTY_FORENAME_ERROR,
   USER_EMPTY_SURNAME_ERROR,
-  USER_UPDATE_FAILED_ERROR,
   USER_UPDATE_NO_CHANGE_ERROR
 } from '../utils/error';
 import { PageError } from '../interfaces/PageData';

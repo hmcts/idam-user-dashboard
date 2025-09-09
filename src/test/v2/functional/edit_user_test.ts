@@ -263,6 +263,6 @@ Scenario('I as an admin cannot change a user email if there is a conflict',  asy
 
   I.fillField('email', conflictUser.email);
   await I.clickToExpectProblem('Save');
-  pause();
+  
   I.see('An error occurred whilst updating user ' + testUser.email);
 });
