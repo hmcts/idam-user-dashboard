@@ -10,6 +10,7 @@ import { RoleDefinition } from '../../interfaces/RoleDefinition';
 import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 import { V2User } from '../../interfaces/V2User';
 import logger from '../../modules/logging';
+import { handleApiError } from '../../utils/v2Error';
 
 export class IdamAPI {
   constructor(
@@ -65,7 +66,7 @@ export class IdamAPI {
       .catch(error => {
         const errorMessage = 'Error updating user from V2 IDAM API';
         logger.error(`${error.stack || error} for ${user.id} (logger.error)`);
-        return Promise.reject(errorMessage);
+        throw handleApiError(error, errorMessage);
       });
   }
 

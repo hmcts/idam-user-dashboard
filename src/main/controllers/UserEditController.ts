@@ -35,6 +35,8 @@ import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import { trace } from '@opentelemetry/api';
 import logger from '../modules/logging';
+import { ApiError } from '../interfaces/ApiError';
+import { mapApiErrorToPageError } from '../utils/v2Error';
 
 @autobind
 export class UserEditController extends RootController {
@@ -244,10 +246,9 @@ export class UserEditController extends RootController {
         ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
-      logger.warn('Exception saving user', e);
-      const error = {
-        userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email },
-      };
+      const apiErr = e as ApiError;
+      logger.warn('Exception saving user', apiErr);
+      const error = mapApiErrorToPageError(apiErr, 'userEditForm');
       return super.post(req, res, 'edit-user', {
         content: this.editUserContent(req, user, roleAssignments),
         error,
