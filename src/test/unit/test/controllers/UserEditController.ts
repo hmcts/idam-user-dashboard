@@ -716,7 +716,7 @@ describe('User edit controller', () => {
       },
       error: {
         userEditForm: { 
-          message: 'An error occurred whilst updating user ' + testUser.email 
+          message: 'Failed!' 
         }
       }
     });
