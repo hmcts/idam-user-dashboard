@@ -191,7 +191,7 @@ export = function() {
         password: 'redundant',
         user
       };
-      return await this.sendPutRequest('/test/idam/user/' + user.id, activateRequest);
+      return await this.sendPutRequest('/test/idam/users/' + user.id, activateRequest);
     },
     async getSingleInvite(email: string, token: string) {
       this.amBearerAuthenticated(token);
