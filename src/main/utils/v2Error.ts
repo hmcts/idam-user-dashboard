@@ -4,7 +4,7 @@ import logger from '../modules/logging';
 import { PageError } from '../interfaces/PageData';
 
 const ERROR_CODE_MESSAGES: Record<string, string> = {
-  'user.username+NOT_UNIQUE': 'A user with this email already exists',
+  'user.username+NOT_UNIQUE': 'A user with this email address already exists',
 };
 
 const GENERIC_ERROR = 'Unable to save user';

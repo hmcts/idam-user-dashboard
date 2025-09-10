@@ -135,7 +135,7 @@ describe('mapApiErrorToPageError', () => {
     const result: PageError = mapApiErrorToPageError(apiError, mainLocation);
 
     expect(result).toEqual({
-      [mainLocation]: { message: 'A user with this email already exists' }
+      [mainLocation]: { message: 'A user with this email address already exists' }
     });
   });
 
