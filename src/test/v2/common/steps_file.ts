@@ -190,7 +190,7 @@ export = function() {
       const activateRequest = {
         password: 'redundant',
         user
-      }
+      };
       return await this.sendPutRequest('/test/idam/user/' + user.id, activateRequest);
     },
     async getSingleInvite(email: string, token: string) {
