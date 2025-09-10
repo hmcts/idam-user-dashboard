@@ -276,12 +276,10 @@ Scenario('I as an admin cannot change a user email if the account is archived', 
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
   await I.archiveExistingTestUser(testUser);
-  pause();
 
   const changedEmail = faker.internet.email({firstName : testUser.forename, lastName : testUser.surname, provider: 'iud.changed.' + BuildInfoHelper.getBuildInfo() + '.local'});
 
   I.fillField('email', changedEmail);
   await I.clickToExpectProblem('Save');
-  pause();
   I.see('A user with this email address already exists');
 });
