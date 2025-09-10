@@ -185,6 +185,14 @@ export = function() {
         this.wait(1);
       }
     },
+    async archiveExistingTestUser(user: any) {
+      user.recordType = 'ARCHIVED';
+      const activateRequest = {
+        password: 'redundant',
+        user
+      }
+      return await this.sendPutRequest('/test/idam/user/' + user.id, activateRequest);
+    },
     async getSingleInvite(email: string, token: string) {
       this.amBearerAuthenticated(token);
       const invitationRsp = await this.getWithRetry('/test/idam/invitations?email=' + email);

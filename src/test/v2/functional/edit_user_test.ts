@@ -264,11 +264,10 @@ Scenario('I as an admin cannot change a user email if there is a conflict',  asy
   I.fillField('email', conflictUser.email);
   await I.clickToExpectProblem('Save');
   
-  I.see('A user with this email already exists');
+  I.see('A user with this email address already exists');
 });
 
-Scenario('I as an admin cannot change a user email if there is an archived conflict',  async ({ I, setupDAO }) => {
-  const conflictUser = await I.haveUser({recordType: 'ARCHIVED'});
+Scenario('I as an admin cannot change a user email if the account is archived',  async ({ I, setupDAO }) => {
   const testUser = await I.haveUser();
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('forename', testUser.forename);
@@ -276,8 +275,13 @@ Scenario('I as an admin cannot change a user email if there is an archived confl
   await I.seeInField('email', testUser.email);
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
-  I.fillField('email', conflictUser.email);
+  await I.archiveExistingTestUser(testUser);
+  pause();
+
+  const changedEmail = faker.internet.email({firstName : testUser.forename, lastName : testUser.surname, provider: 'iud.changed.' + BuildInfoHelper.getBuildInfo() + '.local'});
+
+  I.fillField('email', changedEmail);
   await I.clickToExpectProblem('Save');
-  
+  pause();
   I.see('A user with this email address already exists');
 });
