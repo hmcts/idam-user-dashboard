@@ -194,9 +194,9 @@ export class UserEditController extends RootController {
 
       const updatedUser: V2User = {
         ...v2User,
-        forename: changedFields.forename ?? user.forename,
-        surname: changedFields.surname ?? user.surname,
-        email: changedFields.email ?? user.email,
+        forename: changedFields.forename ?? v2User.forename,
+        surname: changedFields.surname ?? v2User.surname,
+        email: changedFields.email ?? v2User.email,
         roleNames: finalRoles
       };
 
