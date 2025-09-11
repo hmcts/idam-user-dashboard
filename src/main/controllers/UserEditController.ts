@@ -75,31 +75,6 @@ export class UserEditController extends RootController {
     };
   }
 
-  private convertToV1View(v2User: V2User): User {
-    const filteredRoles =
-    v2User.roleNames?.filter(
-      (r) => r !== CITIZEN_ROLE && r !== IDAM_MFA_DISABLED
-    ) || [];
-    return {
-      id: v2User.id,
-      forename: v2User.forename,
-      surname: v2User.surname,
-      email: v2User.email,
-      active: v2User.accountStatus === AccountStatus.ACTIVE,
-      locked: v2User.accountStatus === AccountStatus.LOCKED,
-      pending: false, // always false
-      stale: v2User.recordType === RecordType.ARCHIVED, // based on RecordType
-      pwdAccountLockedTime: v2User.accessLockedDate,
-      roles: filteredRoles,
-      ssoProvider: v2User.ssoProvider || '',
-      ssoId: v2User.ssoId || '',
-      lastModified: v2User.lastModified || '',
-      createDate: v2User.createDate,
-      multiFactorAuthentication: !v2User.roleNames?.includes(IDAM_MFA_DISABLED),
-      isCitizen: v2User.roleNames?.includes(CITIZEN_ROLE) || false
-    };
-  }
-
   private async saveUser(
     req: AuthedRequest,
     res: Response,
@@ -221,7 +196,6 @@ export class UserEditController extends RootController {
         finalRoles = v2User.roleNames;
       }
 
-      // build V2User payload
       const updatedUser: V2User = {
         ...v2User,
         forename: changedFields.forename ?? user.forename,
@@ -253,6 +227,31 @@ export class UserEditController extends RootController {
         error,
       });
     }
+  }
+
+  private convertToV1View(v2User: V2User): User {
+    const filteredRoles =
+    v2User.roleNames?.filter(
+      (r) => r !== CITIZEN_ROLE && r !== IDAM_MFA_DISABLED
+    ) || [];
+    return {
+      id: v2User.id,
+      forename: v2User.forename,
+      surname: v2User.surname,
+      email: v2User.email,
+      active: v2User.accountStatus === AccountStatus.ACTIVE,
+      locked: v2User.accountStatus === AccountStatus.LOCKED,
+      pending: false, // always false
+      stale: v2User.recordType === RecordType.ARCHIVED,
+      pwdAccountLockedTime: v2User.accessLockedDate,
+      roles: filteredRoles,
+      ssoProvider: v2User.ssoProvider || '',
+      ssoId: v2User.ssoId || '',
+      lastModified: v2User.lastModified || '',
+      createDate: v2User.createDate,
+      multiFactorAuthentication: !v2User.roleNames?.includes(IDAM_MFA_DISABLED),
+      isCitizen: v2User.roleNames?.includes(CITIZEN_ROLE) || false
+    };
   }
 
   private userWasNotChangedErrorMessage(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {

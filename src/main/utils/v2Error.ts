@@ -1,6 +1,5 @@
 import { AxiosError } from 'axios';
 import { ApiError, ApiErrorDetail } from '../interfaces/ApiError';
-import logger from '../modules/logging';
 import { PageError } from '../interfaces/PageData';
 
 const ERROR_CODE_MESSAGES: Record<string, string> = {
@@ -56,11 +55,6 @@ export function handleApiError(error: unknown, fallbackMessage = 'Unknown error'
       details,
     };
 
-    logger.error(
-      `API error: ${status} ${method} ${path} - ${message}` +
-      (details ? ` | details: ${JSON.stringify(details)}` : '')
-    );
-
     return apiError;
   }
 
@@ -72,7 +66,6 @@ export function handleApiError(error: unknown, fallbackMessage = 'Unknown error'
     message: error instanceof Error ? error.message : String(error ?? fallbackMessage),
   };
 
-  logger.error(`Non-Axios error: ${JSON.stringify(apiError)}`);
   return apiError;
 }
 
