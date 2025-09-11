@@ -275,7 +275,8 @@ Scenario('I as an admin cannot change a user email if the account is archived', 
   await I.seeInField('email', testUser.email);
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
 
-  await I.archiveExistingTestUser(testUser);
+  const testToken = await setupDAO.getToken();
+  await I.archiveExistingTestUser(testUser, testToken);
 
   const changedEmail = faker.internet.email({firstName : testUser.forename, lastName : testUser.surname, provider: 'iud.changed.' + BuildInfoHelper.getBuildInfo() + '.local'});
 

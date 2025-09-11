@@ -185,12 +185,13 @@ export = function() {
         this.wait(1);
       }
     },
-    async archiveExistingTestUser(user: any) {
+    async archiveExistingTestUser(user: any, testToken: string) {
       user.recordType = 'ARCHIVED';
       const activateRequest = {
         password: 'redundant',
         user
       };
+      this.amBearerAuthenticated(testToken);
       return await this.sendPutRequest('/test/idam/users/' + user.id, activateRequest);
     },
     async getSingleInvite(email: string, token: string) {
