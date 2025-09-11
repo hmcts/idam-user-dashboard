@@ -4,7 +4,7 @@ import { RootController } from './RootController';
 import { AuthedRequest } from '../interfaces/AuthedRequest';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { User } from '../interfaces/User';
-import { V2User } from '../interfaces/V2User';
+import { AccountStatus, RecordType, V2User } from '../interfaces/V2User';
 import {
   findDifferentElements,
   getObjectVariation,
@@ -18,7 +18,6 @@ import {
   USER_EMPTY_EMAIL_ERROR,
   USER_EMPTY_FORENAME_ERROR,
   USER_EMPTY_SURNAME_ERROR,
-  USER_UPDATE_FAILED_ERROR,
   USER_UPDATE_NO_CHANGE_ERROR
 } from '../utils/error';
 import { PageError } from '../interfaces/PageData';
@@ -34,6 +33,9 @@ import config from 'config';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import { trace } from '@opentelemetry/api';
+import logger from '../modules/logging';
+import { ApiError } from '../interfaces/ApiError';
+import { mapApiErrorToPageError } from '../utils/v2Error';
 
 @autobind
 export class UserEditController extends RootController {
@@ -73,72 +75,179 @@ export class UserEditController extends RootController {
     };
   }
 
-  private async saveUser(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {_action, _csrf, _userId, ...editedUser} = req.body;
+  private async saveUser(
+    req: AuthedRequest,
+    res: Response,
+    user: User,
+    roleAssignments: UserRoleAssignment[]
+  ) {
+    const {_userId, ...editedUser } = req.body;
 
-    const {roles: originalRoles, multiFactorAuthentication: originalMfa, isCitizen: originalIsCitizen, ...originalFields} = user;
-    const {roles: inEditedRoles, multiFactorAuthentication: editedMfa,  isCitizen: editedIsCitizen, ...editedFields} = editedUser as Partial<User>;
+    const {
+      roles: originalRoles,
+      multiFactorAuthentication: originalMfa,
+      isCitizen: originalIsCitizen,
+      ...originalFields
+    } = user;
 
-    const editedRoles = Array.isArray(inEditedRoles)? inEditedRoles : (inEditedRoles? [inEditedRoles] : []);
+    const {
+      roles: inEditedRoles,
+      multiFactorAuthentication: editedMfa,
+      isCitizen: editedIsCitizen,
+      ...editedFields
+    } = editedUser as Partial<User>;
 
-    const originalRolesWithAttributeRolesRemoved = originalRoles.filter(r => r !== IDAM_MFA_DISABLED && r !== CITIZEN_ROLE);
-    const newRoleList = this.getUserRolesAfterUpdate(req, originalRolesWithAttributeRolesRemoved, editedRoles);
-    const rolesAdded = newRoleList && newRoleList.length > 0 ? findDifferentElements(newRoleList, originalRolesWithAttributeRolesRemoved) : [];
-    const rolesRemoved = newRoleList && newRoleList.length > 0 ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList) : originalRolesWithAttributeRolesRemoved;
+    const editedRoles = Array.isArray(inEditedRoles)
+      ? inEditedRoles
+      : inEditedRoles
+        ? [inEditedRoles]
+        : [];
 
-    const mfaAssignable = this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles);
-    const {mfaAdded, mfaRemoved} = this.wasMfaAddedOrRemoved(user, mfaAssignable, originalMfa, editedMfa);
+    const originalRolesWithAttributeRolesRemoved = originalRoles.filter(
+      (r) => r !== IDAM_MFA_DISABLED && r !== CITIZEN_ROLE
+    );
+    const newRoleList = this.getUserRolesAfterUpdate(
+      req,
+      originalRolesWithAttributeRolesRemoved,
+      editedRoles
+    );
+    const rolesAdded =
+      newRoleList && newRoleList.length > 0
+        ? findDifferentElements(newRoleList, originalRolesWithAttributeRolesRemoved)
+        : [];
+    const rolesRemoved =
+      newRoleList && newRoleList.length > 0
+        ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList)
+        : originalRolesWithAttributeRolesRemoved;
 
-    const citizenAssignable = this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
+    const mfaAssignable = this.canShowMfa(
+      req.idam_user_dashboard_session.user.assignableRoles
+    );
+    const { mfaAdded, mfaRemoved } = this.wasMfaAddedOrRemoved(
+      user,
+      mfaAssignable,
+      originalMfa,
+      editedMfa
+    );
 
-    const {citizenAdded, citizenRemoved} = this.wasCitizenAddedOrRemoved(user, citizenAssignable, originalIsCitizen, editedIsCitizen);
+    const citizenAssignable =
+      this.isCaseworkerCitizen(user.isCitizen, user.roles) ||
+      this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
+    const { citizenAdded, citizenRemoved } = this.wasCitizenAddedOrRemoved(
+      user,
+      citizenAssignable,
+      originalIsCitizen,
+      editedIsCitizen
+    );
 
-    const rolesChanged = rolesAdded.length > 0 || rolesRemoved.length > 0 || mfaAdded || mfaRemoved || citizenAdded || citizenRemoved;
+    const rolesChanged =
+      rolesAdded.length > 0 ||
+      rolesRemoved.length > 0 ||
+      mfaAdded ||
+      mfaRemoved ||
+      citizenAdded ||
+      citizenRemoved;
+
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
-    // No changes
     if (isObjectEmpty(changedFields) && !rolesChanged) {
       return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
     }
-    Object.keys(changedFields).forEach(field => changedFields[field] = changedFields[field].trim());
 
-    // Validation errors
+    Object.keys(changedFields).forEach(
+      (field) => (changedFields[field] = changedFields[field].trim())
+    );
+
     const error = this.validateFields(changedFields);
     if (!isObjectEmpty(error)) {
-      return super.post(req, res, 'edit-user', { content: this.editUserContent(req, {...user, ...changedFields}, roleAssignments),
-        error });
+      return super.post(req, res, 'edit-user', {
+        content: this.editUserContent(req, { ...user, ...changedFields }, roleAssignments),
+        error,
+      });
     }
 
     try {
-      let updatedUser = { ...originalFields, roles: originalRolesWithAttributeRolesRemoved, multiFactorAuthentication: originalMfa, isCitizen: originalIsCitizen };
-      if (!isObjectEmpty(changedFields)) {
-        updatedUser = {
-          ...updatedUser,
-          ...await this.idamWrapper.editUserById(req.idam_user_dashboard_session.access_token, user.id, changedFields)
-        };
+
+      // fetch authoritative V2 user first
+      const v2User = await this.idamWrapper.getUserV2ById(user.id);
+
+      let finalRoles;
+      if (rolesChanged) {
+        const roleNameSet = new Set<string>(newRoleList);
+
+        if (mfaRemoved) {
+          roleNameSet.add(IDAM_MFA_DISABLED);
+        } else {
+          roleNameSet.delete(IDAM_MFA_DISABLED);
+        }
+
+        if (citizenAdded) {
+          roleNameSet.add(CITIZEN_ROLE);
+        } else if (citizenRemoved) {
+          roleNameSet.delete(CITIZEN_ROLE);
+        }
+
+        finalRoles = Array.from(roleNameSet).sort((a, b) => a.localeCompare(b));
+      } else {
+        finalRoles = v2User.roleNames;
       }
 
-      if (rolesChanged) {
-        const updatedMfa = (user.multiFactorAuthentication && !mfaRemoved) || (!user.multiFactorAuthentication && mfaAdded);
-        const updatedCitizen = (user.isCitizen && !citizenRemoved) || (!user.isCitizen && citizenAdded);
-        updatedUser = { ...updatedUser, roles: newRoleList, multiFactorAuthentication: updatedMfa, isCitizen: updatedCitizen };
-        await this.updateUserRoles(user, rolesAdded, rolesRemoved, mfaAdded, mfaRemoved, citizenAdded, citizenRemoved);
-        roleAssignments = await this.reconstructRoleAssignments(req, _userId, newRoleList);
-      }
+      const updatedUser: V2User = {
+        ...v2User,
+        forename: changedFields.forename ?? v2User.forename,
+        surname: changedFields.surname ?? v2User.surname,
+        email: changedFields.email ?? v2User.email,
+        roleNames: finalRoles
+      };
+
+      const savedUser = await this.idamWrapper.updateV2User(updatedUser);
+
+      const v1View = this.convertToV1View(savedUser);
+
+      roleAssignments = await this.reconstructRoleAssignments(
+        req,
+        _userId,
+        v1View.roles
+      );
 
       return super.post(req, res, 'edit-user', {
-        content: 
-          this.editUserContent(req, updatedUser, roleAssignments),
-        ...{notification: 'User saved successfully'}
+        content: this.editUserContent(req, v1View, roleAssignments),
+        ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
-      const error = { userEditForm: { message: USER_UPDATE_FAILED_ERROR + user.email } };
+      const apiErr = e as ApiError;
+      logger.error('Exception saving user', apiErr);
+      const error = mapApiErrorToPageError(apiErr, 'userEditForm');
       return super.post(req, res, 'edit-user', {
         content: this.editUserContent(req, user, roleAssignments),
-        error
+        error,
       });
     }
+  }
+
+  private convertToV1View(v2User: V2User): User {
+    const filteredRoles =
+    v2User.roleNames?.filter(
+      (r) => r !== CITIZEN_ROLE && r !== IDAM_MFA_DISABLED
+    ) || [];
+    return {
+      id: v2User.id,
+      forename: v2User.forename,
+      surname: v2User.surname,
+      email: v2User.email,
+      active: v2User.accountStatus === AccountStatus.ACTIVE,
+      locked: v2User.accountStatus === AccountStatus.LOCKED,
+      pending: false, // always false
+      stale: v2User.recordType === RecordType.ARCHIVED,
+      pwdAccountLockedTime: v2User.accessLockedDate,
+      roles: filteredRoles,
+      ssoProvider: v2User.ssoProvider || '',
+      ssoId: v2User.ssoId || '',
+      lastModified: v2User.lastModified || '',
+      createDate: v2User.createDate,
+      multiFactorAuthentication: !v2User.roleNames?.includes(IDAM_MFA_DISABLED),
+      isCitizen: v2User.roleNames?.includes(CITIZEN_ROLE) || false
+    };
   }
 
   private userWasNotChangedErrorMessage(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
@@ -192,29 +301,6 @@ export class UserEditController extends RootController {
     const arr2 = Array.isArray(editedRoles) ? editedRoles : [];
     return Array.from(new Set([...arr1, ...arr2]));
     
-  }
-
-  private async updateUserRoles(user: User, rolesAdded: string[], rolesRemoved: string[], mfaAdded: boolean, mfaRemoved: boolean, citizenAdded: boolean, citizenRemoved: boolean) {
-    const v2User: V2User = await this.idamWrapper.getUserV2ById(user.id);
-    const roleNameSet = new Set<string>(v2User.roleNames);
-    if (rolesAdded.length > 0) {
-      rolesAdded.forEach(r => roleNameSet.add(r));
-    }
-    if (rolesRemoved.length > 0) {
-      rolesRemoved.forEach(r => roleNameSet.delete(r));
-    }
-    if (mfaAdded) {
-      roleNameSet.delete(IDAM_MFA_DISABLED);
-    } else if (mfaRemoved) {
-      roleNameSet.add(IDAM_MFA_DISABLED);
-    }
-    if (citizenAdded) {
-      roleNameSet.add(CITIZEN_ROLE);
-    } else if (citizenRemoved) {
-      roleNameSet.delete(CITIZEN_ROLE);
-    }
-    v2User.roleNames = Array.from(roleNameSet).sort((a, b) => a.localeCompare(b));
-    await this.idamWrapper.updateV2User(v2User);
   }
 
   private async reconstructRoleAssignments(req: AuthedRequest, userId: string, newRoles: string[]): Promise<UserRoleAssignment[]> {

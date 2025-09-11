@@ -3,7 +3,7 @@ export interface V2User {
   forename: string;
   surname: string;
   email: string;
-  displayName: string;
+  displayName?: string;
   roleNames: string[];
   ssoId?: string;
   ssoProvider?: string;

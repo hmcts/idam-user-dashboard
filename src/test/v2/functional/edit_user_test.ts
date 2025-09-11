@@ -251,3 +251,36 @@ Scenario('I as an admin can remove the citizen attribute if there is a caseworke
   I.dontSee('Citizen role', 'legend');
 
 });
+
+Scenario('I as an admin cannot change a user email if there is a conflict',  async ({ I, setupDAO }) => {
+  const conflictUser = await I.haveUser();
+  const testUser = await I.haveUser();
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('forename', testUser.forename);
+  await I.seeInField('surname', testUser.surname);
+  await I.seeInField('email', testUser.email);
+  await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
+
+  I.fillField('email', conflictUser.email);
+  await I.clickToExpectProblem('Save');
+  
+  I.see('A user with this email address already exists');
+});
+
+Scenario('I as an admin cannot change a user email if the account is archived',  async ({ I, setupDAO }) => {
+  const testUser = await I.haveUser();
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('forename', testUser.forename);
+  await I.seeInField('surname', testUser.surname);
+  await I.seeInField('email', testUser.email);
+  await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
+
+  const testToken = await setupDAO.getToken();
+  await I.archiveExistingTestUser(testUser, testToken);
+
+  const changedEmail = faker.internet.email({firstName : testUser.forename, lastName : testUser.surname, provider: 'iud.changed.' + BuildInfoHelper.getBuildInfo() + '.local'});
+
+  I.fillField('email', changedEmail);
+  await I.clickToExpectProblem('Save');
+  I.see('Cannot update archived user');
+});

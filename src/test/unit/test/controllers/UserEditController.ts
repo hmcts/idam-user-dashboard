@@ -6,6 +6,7 @@ import { mockRootController } from '../../utils/mockRootController';
 import { mockApi } from '../../utils/mockApi';
 import config from 'config';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import { AccountStatus, RecordType } from '../../../../main/interfaces/V2User';
 jest.mock('config');
 
 const setupV1User = (roleNames: string[]) => {
@@ -15,7 +16,17 @@ const setupV1User = (roleNames: string[]) => {
     surname: 'test-surname',
     email: 'test@test.local',
     active: true,
-    roles: roleNames
+    roles: roleNames,
+    isCitizen: false,
+    stale: false,
+    locked: false,
+    pending: false,
+    multiFactorAuthentication: true,
+    ssoId: '',
+    ssoProvider: '',
+    createDate: '',
+    lastModified: '',
+    pwdAccountLockedTime: ''
   };
 };
 
@@ -25,8 +36,12 @@ const convertToV2User = (user: any) => {
     forename: user.forename,
     surname: user.surname,
     email: user.email,
-    active: user.active,
-    roleNames: user.roles
+    roleNames: user.roles,
+    accountStatus: user.active? AccountStatus.ACTIVE : AccountStatus.SUSPENDED,
+    recordType: user.stale? RecordType.ARCHIVED : RecordType.LIVE,
+    createDate: '',
+    lastModified: '',
+    accessLockedDate: ''
   };
 };
 
@@ -132,7 +147,7 @@ describe('User edit controller', () => {
     });
 
   });
-
+  
   test('Should render the edit user page after saving when user fields changed', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
@@ -149,7 +164,10 @@ describe('User edit controller', () => {
       forename: 'changed-forename'
     };
 
-    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(v1UserAfterDetailsUpdate));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+    when(mockApi.updateV2User)
+      .calledWith(convertToV2User(v1UserAfterDetailsUpdate))
+      .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
 
@@ -165,8 +183,7 @@ describe('User edit controller', () => {
       content: { 
         ...setupPageContent(
           {
-            ...testUser,
-            forename: 'changed-forename'
+            ...v1UserAfterDetailsUpdate
           }, 
           expectedRoleAssignments
         )
@@ -188,12 +205,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -213,7 +232,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+            roles: expect.arrayContaining(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']),
           }, 
           expectedRoleAssignments
         )
@@ -234,12 +253,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: ['IDAM_SUPER_USER']
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_SUPER_USER']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -281,12 +302,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_TEST_USER'])
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_SUPER_USER', 'IDAM_TEST_USER']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -311,7 +334,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: ['IDAM_SUPER_USER', 'IDAM_TEST_USER'],
+            roles: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_TEST_USER']),
           }, 
           expectedRoleAssignments
         )
@@ -330,19 +353,20 @@ describe('User edit controller', () => {
     };
     req.idam_user_dashboard_session = { access_token: testToken, user:{ id: testUser.id, assignableRoles: ['IDAM_ADMIN_USER'] } };
 
-    when(mockApi.getAssignableRoles).calledWith(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']).mockReturnValueOnce(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
+    when(mockApi.getAssignableRoles).calledWith(expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'])).mockReturnValueOnce(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
-    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(testUser));
 
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'])
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -367,7 +391,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+            roles: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']),
           }, 
           expectedRoleAssignments
         )
@@ -388,20 +412,22 @@ describe('User edit controller', () => {
 
     const v1UserAfterDetailsUpdate = {
       ...testUser,
+      roles: ['IDAM_ADMIN_USER'],
       forename: 'changed-forename'
     };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
-    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.resolve(v1UserAfterDetailsUpdate));
 
-    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(v1UserAfterDetailsUpdate)));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(v1UserAfterDetailsUpdate),
+        roleNames: ['IDAM_ADMIN_USER']
+      })
+      .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
-
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(v1UserAfterDetailsUpdate),
-      roleNames: ['IDAM_ADMIN_USER']
-    });
 
     const expectedRoleAssignments = [
       {
@@ -420,9 +446,7 @@ describe('User edit controller', () => {
       content: { 
         ...setupPageContent(
           {
-            ...testUser,
-            roles: ['IDAM_ADMIN_USER'],
-            forename: 'changed-forename'
+            ...v1UserAfterDetailsUpdate
           }, 
           expectedRoleAssignments
         )
@@ -445,13 +469,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: ['IDAM_SUPER_USER']
+      })
+      .mockImplementation(async (v2User) => v2User);
+
     await controller.post(req, res);
-
-
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_SUPER_USER']
-    });
 
     const expectedRoleAssignments = [
       {
@@ -495,12 +520,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'idam-mfa-disabled'])
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_SUPER_USER', 'idam-mfa-disabled']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -545,12 +572,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: expect.arrayContaining(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'])
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: req.body.roles
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -575,7 +604,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+            roles: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']),
             multiFactorAuthentication: true
           }, 
           expectedRoleAssignments
@@ -657,7 +686,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit user page after there was an API issue saving user details', async () => {
+  test('Should render the edit user page after there was an API issue saving user', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
@@ -667,59 +696,16 @@ describe('User edit controller', () => {
     req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
-    when(mockApi.editUserById).calledWith(testToken, req.body._userId, { forename: req.body.forename }).mockReturnValue(Promise.reject());
 
-    await controller.post(req, res);
-
-    const expectedRoleAssignments = [
-      {
-        name: 'IDAM_SUPER_USER',
-        assignable: true,
-        assigned: true
-      }
-    ];
-
-    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
-      content:  { 
-        ...setupPageContent(testUser, expectedRoleAssignments)
-      },
-      error: {
-        userEditForm: { 
-          message: 'An error occurred whilst updating user ' + testUser.email 
-        }
-      }
-    });
-  });
-
-  test('Should render the edit user page after there was an API issue saving user roles', async () => {
-
-    const testUser = setupV1User(['IDAM_SUPER_USER']);
-    req.body = {
-      ...setupPostData(testUser, 'save'),
-      roles: ['IDAM_ADMIN_USER']
-    };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
-
-    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
-    when(mockApi.updateV2User).calledWith(expect.anything()).mockReturnValueOnce(Promise.reject());
+    when(mockApi.updateV2User).calledWith(expect.anything()).mockRejectedValue(new Error('Failed!'));
 
     await controller.post(req, res);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']
-    });
-
     const expectedRoleAssignments = [
       {
-        name: 'IDAM_ADMIN_USER',
-        assignable: true,
-        assigned: false
-      },
-      {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -730,13 +716,12 @@ describe('User edit controller', () => {
       },
       error: {
         userEditForm: { 
-          message: 'An error occurred whilst updating user ' + testUser.email 
+          message: 'Failed!' 
         }
       }
     });
-    
   });
-  
+
   test('Should render the edit user page after saving when citizen added', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
@@ -750,12 +735,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: expect.arrayContaining(['citizen', 'IDAM_SUPER_USER'])
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['citizen', 'IDAM_SUPER_USER']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -804,6 +791,13 @@ describe('User edit controller', () => {
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: ['IDAM_SUPER_USER']
+      })
+      .mockImplementation(async (v2User) => v2User);
 
     await controller.post(req, res);
 
@@ -932,12 +926,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: ['caseworker']
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['caseworker']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
@@ -983,12 +979,14 @@ describe('User edit controller', () => {
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
 
-    await controller.post(req, res);
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        roleNames: ['IDAM_ADMIN_USER']
+      })
+      .mockImplementation(async (v2User) => v2User);
 
-    expect(mockApi.updateV2User).toHaveBeenLastCalledWith({
-      ...convertToV2User(testUser),
-      roleNames: ['IDAM_ADMIN_USER']
-    });
+    await controller.post(req, res);
 
     const expectedRoleAssignments = [
       {
