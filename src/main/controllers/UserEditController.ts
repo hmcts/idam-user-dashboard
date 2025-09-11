@@ -160,10 +160,6 @@ export class UserEditController extends RootController {
 
     const error = this.validateFields(changedFields);
     if (!isObjectEmpty(error)) {
-      logger.warn(
-        'Validation errors detected:',
-        Object.entries(error).map(([key, { message }]) => `${key}: ${message}`)
-      );
       return super.post(req, res, 'edit-user', {
         content: this.editUserContent(req, { ...user, ...changedFields }, roleAssignments),
         error,
@@ -220,7 +216,7 @@ export class UserEditController extends RootController {
       });
     } catch (e) {
       const apiErr = e as ApiError;
-      logger.warn('Exception saving user', apiErr);
+      logger.error('Exception saving user', apiErr);
       const error = mapApiErrorToPageError(apiErr, 'userEditForm');
       return super.post(req, res, 'edit-user', {
         content: this.editUserContent(req, user, roleAssignments),
