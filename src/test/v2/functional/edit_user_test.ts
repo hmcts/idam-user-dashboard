@@ -282,5 +282,5 @@ Scenario('I as an admin cannot change a user email if the account is archived', 
 
   I.fillField('email', changedEmail);
   await I.clickToExpectProblem('Save');
-  I.see('A user with this email address already exists');
+  I.see('Cannot update archived user');
 });

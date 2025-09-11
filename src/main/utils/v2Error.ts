@@ -5,6 +5,7 @@ import { PageError } from '../interfaces/PageData';
 
 const ERROR_CODE_MESSAGES: Record<string, string> = {
   'user.username+NOT_UNIQUE': 'A user with this email address already exists',
+  'user.recordType+BAD_VALUE': 'Cannot update archived user'
 };
 
 const GENERIC_ERROR = 'Unable to save user';
