@@ -171,7 +171,7 @@
     "cross-spawn": "^7.0.5",
     "@babel/helpers": "^7.26.10",
     "glob": "^9.3.5",
-    "superagent": ">=10.2.2",
+    "superagent": ">=10.2.3",
     "on-headers": "^1.1.0"
   },
   "packageManager": "yarn@4.5.0"
