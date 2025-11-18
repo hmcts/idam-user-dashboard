@@ -34,7 +34,7 @@ describe('User delete controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('delete-user', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('delete-user', { content: { user: userData } });
   });
 
   test('Should redirect to the user manage page after deleting user', async () => {
@@ -52,7 +52,7 @@ describe('User delete controller', () => {
     when(mockApi.deleteUserById).calledWith(userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('delete-user-successful', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('delete-user-successful', { content: { user: userData } });
   });
 
   test('Should redirect to the user details page after cancelling delete user', async () => {
@@ -69,7 +69,7 @@ describe('User delete controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
+    expect(res.redirect).toHaveBeenCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
   });
 
   test('Should render the delete user page with validation errors after confirming', async () => {
@@ -88,8 +88,8 @@ describe('User delete controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-delete' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('delete-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('delete-user', { content: { user: userData }, error });
   });
 
   test('Should render the delete user page after there was an API issue', async () => {
@@ -110,7 +110,7 @@ describe('User delete controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-delete', confirmDelete: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('delete-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('delete-user', { content: { user: userData }, error });
   });
 });

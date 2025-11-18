@@ -55,7 +55,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: true,
@@ -97,7 +97,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: false,
@@ -137,7 +137,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: false,
@@ -175,7 +175,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: false,
@@ -215,7 +215,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: false,
@@ -252,7 +252,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: false,
@@ -289,7 +289,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: results[0],
         canManage: false,
@@ -327,7 +327,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details',{
+    expect(res.render).toHaveBeenCalledWith('user-details',{
       content: {
         user: results[0],
         canManage: false,
@@ -378,7 +378,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: expectedResults[0],
         canManage: false,
@@ -419,7 +419,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
         canManage: false,
@@ -460,7 +460,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
         canManage: false,
@@ -502,7 +502,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
         canManage: false,
@@ -537,7 +537,7 @@ describe('User results controller', () => {
     
     req.idam_user_dashboard_session = { user: { assignableRoles: [] } };
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('user-details', {
+    expect(res.render).toHaveBeenCalledWith('user-details', {
       content: {
         user: getUserByIdResult,
         canManage: false,

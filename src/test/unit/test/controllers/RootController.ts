@@ -19,7 +19,7 @@ describe('Root controller', () => {
 
   test('Should render the view with no data', async () => {
     await controller.post(req, res, 'view', {});
-    expect(res.render).toBeCalledWith('view', { urls });
+    expect(res.render).toHaveBeenCalledWith('view', { urls });
   });
 
   test('Should render the view with only feature flag data', async () => {
@@ -36,7 +36,7 @@ describe('Root controller', () => {
     };
 
     await controller.post(req, res, 'view', {});
-    expect(res.render).toBeCalledWith('view', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('view', expectedPageData);
   });
 
   test('Should render the view with only user data', async () => {
@@ -51,7 +51,7 @@ describe('Root controller', () => {
     };
 
     await controller.post(req, res, 'view', {});
-    expect(res.render).toBeCalledWith('view', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('view', expectedPageData);
   });
 
   test('Should render the view with only view data', async () => {
@@ -63,7 +63,7 @@ describe('Root controller', () => {
     await controller.post(req, res, 'view', {
       content: { testContent: 'test text' }
     });
-    expect(res.render).toBeCalledWith('view', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('view', expectedPageData);
   });
 
   test('Should render the view with view, user and feature flag data', async () => {
@@ -87,6 +87,6 @@ describe('Root controller', () => {
     req.idam_user_dashboard_session = { user: userDetails };
 
     await controller.post(req, res, 'view', { content: pageData });
-    expect(res.render).toBeCalledWith('view', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('view', expectedPageData);
   });
 });

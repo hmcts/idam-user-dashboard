@@ -80,7 +80,7 @@ describe('Add private beta service controller', () => {
     };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-completion');
+    expect(res.render).toHaveBeenCalledWith('add-user-completion');
   });
 
   test('Should render the add private beta service page with error when problem occurring during user registration', async () => {
@@ -120,7 +120,7 @@ describe('Add private beta service controller', () => {
     ];
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-private-beta-service', {
+    expect(res.render).toHaveBeenCalledWith('add-user-private-beta-service', {
       content: {
         user : expectedUser,
         services: expectedServiceSelectItems,
@@ -160,7 +160,7 @@ describe('Add private beta service controller', () => {
     ];
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-private-beta-service', {
+    expect(res.render).toHaveBeenCalledWith('add-user-private-beta-service', {
       content: {
         user : expectedUser,
         services: expectedServiceSelectItems,

@@ -93,7 +93,7 @@ describe('Add user details controller', () => {
 
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: false, enablePrivateBeta: true, roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA },
+    expect(res.render).toHaveBeenCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: false, enablePrivateBeta: true, roleHint: ROLE_HINT_WITHOUT_PRIVATE_BETA },
     });
   });
 
@@ -107,7 +107,7 @@ describe('Add user details controller', () => {
 
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: true, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
+    expect(res.render).toHaveBeenCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: true, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
     });
   });
 
@@ -121,7 +121,7 @@ describe('Add user details controller', () => {
 
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: false, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
+    expect(res.render).toHaveBeenCalledWith('add-user-details', { content: { user: { email }, showPrivateBeta: true, enablePrivateBeta: false, roleHint: ROLE_HINT_WITH_PRIVATE_BETA },
     });
   });
 
@@ -142,7 +142,7 @@ describe('Add user details controller', () => {
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user', {
+    expect(res.render).toHaveBeenCalledWith('add-user', {
       error: { email: {
         message: duplicatedEmailError(email)
       }},
@@ -156,7 +156,7 @@ describe('Add user details controller', () => {
       .mockReturnValue(Promise.resolve([UserType.Citizen]));
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-user', {
+    expect(res.render).toHaveBeenCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
@@ -168,7 +168,7 @@ describe('Add user details controller', () => {
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-user', {
+    expect(res.render).toHaveBeenCalledWith('add-user', {
       error: { email: {
         message: MISSING_EMAIL_ERROR
       }},
@@ -180,7 +180,7 @@ describe('Add user details controller', () => {
     req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: [UserType.Citizen] } };
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('add-user', {
+    expect(res.render).toHaveBeenCalledWith('add-user', {
       error: { email: {
         message: INVALID_EMAIL_FORMAT_ERROR
       }},
@@ -198,7 +198,7 @@ describe('Add user details controller', () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', {
+    expect(res.render).toHaveBeenCalledWith('add-user-details', {
       content: {
         user : {
           email: email,
@@ -227,7 +227,7 @@ describe('Add user details controller', () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithoutPrivateBeta);
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', {
+    expect(res.render).toHaveBeenCalledWith('add-user-details', {
       content: {
         user : {
           email: email,
@@ -256,7 +256,7 @@ describe('Add user details controller', () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', {
+    expect(res.render).toHaveBeenCalledWith('add-user-details', {
       content: {
         user : {
           email: email,
@@ -283,7 +283,7 @@ describe('Add user details controller', () => {
     when(mockApi.getAllServices).calledWith().mockReturnValue(servicesWithPrivateBeta);
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-details', {
+    expect(res.render).toHaveBeenCalledWith('add-user-details', {
       content: {
         user : {
           email: email,
@@ -335,7 +335,7 @@ describe('Add user details controller', () => {
     };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-roles', {
+    expect(res.render).toHaveBeenCalledWith('add-user-roles', {
       content: expectedContent,
     });
   });

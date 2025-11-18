@@ -15,6 +15,6 @@ describe('Add user controller', () => {
 
   test('Should render the add user page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('add-user');
+    expect(res.render).toHaveBeenCalledWith('add-user');
   });
 });

@@ -13,18 +13,18 @@ describe('User actions controller', () => {
   test('Should redirect to edit controller', async () => {
     req.body = { _action: 'edit' };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, EDIT_USER_URL);
+    expect(res.redirect).toHaveBeenCalledWith(307, EDIT_USER_URL);
   });
 
   test('Should redirect to suspend controller', async () => {
     req.body = { _action: 'suspend' };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_SUSPEND_URL);
+    expect(res.redirect).toHaveBeenCalledWith(307, USER_SUSPEND_URL);
   });
 
   test('Should redirect to delete controller', async () => {
     req.body = { _action: 'delete' };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_DELETE_URL);
+    expect(res.redirect).toHaveBeenCalledWith(307, USER_DELETE_URL);
   });
 });

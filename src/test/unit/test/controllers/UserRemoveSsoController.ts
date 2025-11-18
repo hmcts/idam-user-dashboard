@@ -34,7 +34,7 @@ describe('User remove SSO controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('remove-sso-user', { content: { user: userData } });
   });
 
   test('Should redirect to the user manage page after removing sso for user', async () => {
@@ -52,7 +52,7 @@ describe('User remove SSO controller', () => {
     when(mockApi.removeSsoById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('remove-sso-user-successful', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('remove-sso-user-successful', { content: { user: userData } });
   });
 
   test('Should redirect to the user details page after cancelling removing sso for user', async () => {
@@ -69,7 +69,7 @@ describe('User remove SSO controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
+    expect(res.redirect).toHaveBeenCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
   });
 
   test('Should render the remove sso page with validation errors after confirming', async () => {
@@ -88,8 +88,8 @@ describe('User remove SSO controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('remove-sso-user', { content: { user: userData }, error });
   });
 
   test('Should render the remove sso page after there was an API issue', async () => {
@@ -110,7 +110,7 @@ describe('User remove SSO controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-remove-sso', confirmSso: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('remove-sso-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('remove-sso-user', { content: { user: userData }, error });
   });
 });

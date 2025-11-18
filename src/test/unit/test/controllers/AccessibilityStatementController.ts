@@ -15,6 +15,6 @@ describe('Manage accessibility controller', () => {
 
   test('Should render the accessibility statement page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('accessibility-statement');
+    expect(res.render).toHaveBeenCalledWith('accessibility-statement');
   });
 });
