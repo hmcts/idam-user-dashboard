@@ -48,7 +48,7 @@ describe('Generate report controller', () => {
 
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('view-report', {
+    expect(res.render).toHaveBeenCalledWith('view-report', {
       content: {
         query,
         reportUUID,
@@ -70,7 +70,7 @@ describe('Generate report controller', () => {
     mockReportGenerator.getReportQueryRoles.mockResolvedValue(query);
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('view-report', {
+    expect(res.render).toHaveBeenCalledWith('view-report', {
       content: {
         reportData: users,
         query
@@ -92,7 +92,7 @@ describe('Generate report controller', () => {
 
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('view-report', {
+    expect(res.render).toHaveBeenCalledWith('view-report', {
       error: {
         body: { message: GENERATING_REPORT_FILE_ERROR }
       },

@@ -54,7 +54,7 @@ describe('Add user roles controller', () => {
     };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-completion',
+    expect(res.render).toHaveBeenCalledWith('add-user-completion',
       { content: { isAppointInvitationType: true }});
   });
 
@@ -75,7 +75,7 @@ describe('Add user roles controller', () => {
     };
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-completion',
+    expect(res.render).toHaveBeenCalledWith('add-user-completion',
       { content: { isAppointInvitationType: false }});
   });
 
@@ -95,7 +95,7 @@ describe('Add user roles controller', () => {
     };
 
     await controller.post(req, res);
-    expect(inviteService.inviteUser).toBeCalledWith({
+    expect(inviteService.inviteUser).toHaveBeenCalledWith({
       email,
       forename,
       surname,
@@ -122,7 +122,7 @@ describe('Add user roles controller', () => {
     };
 
     await controller.post(req, res);
-    expect(inviteService.inviteUser).toBeCalledWith({
+    expect(inviteService.inviteUser).toHaveBeenCalledWith({
       email,
       forename,
       surname,
@@ -176,7 +176,7 @@ describe('Add user roles controller', () => {
     }};
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('add-user-roles', {
+    expect(res.render).toHaveBeenCalledWith('add-user-roles', {
       content: expectedContent,
       error: expectedError
     });

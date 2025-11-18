@@ -34,7 +34,7 @@ describe('User suspend controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('suspend-user', { content: { user: userData } });
   });
 
   test('Should render the user suspend successful page after suspending a user', async () => {
@@ -52,7 +52,7 @@ describe('User suspend controller', () => {
     when(mockApi.editUserById).calledWith(testToken, userData.id, { active: false }).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('suspend-user-successful', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('suspend-user-successful', { content: { user: userData } });
   });
 
   test('Should redirect to the user details page after cancelling suspend user', async () => {
@@ -69,7 +69,7 @@ describe('User suspend controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
+    expect(res.redirect).toHaveBeenCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
   });
 
   test('Should render the suspend user page with validation errors after confirming', async () => {
@@ -88,8 +88,8 @@ describe('User suspend controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-suspend' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('suspend-user', { content: { user: userData }, error });
   });
 
   test('Should render the suspend user page after there was an API issue', async () => {
@@ -110,8 +110,8 @@ describe('User suspend controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-suspend', confirmSuspendRadio: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('suspend-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('suspend-user', { content: { user: userData }, error });
   });
 
   test('Should render the user unsuspend page', async () => {
@@ -128,7 +128,7 @@ describe('User suspend controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('unsuspend-user', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('unsuspend-user', { content: { user: userData } });
   });
 
   test('Should render the user unsuspend successful page after unsuspending a user', async () => {
@@ -146,7 +146,7 @@ describe('User suspend controller', () => {
     when(mockApi.editUserById).calledWith(testToken, userData.id, { active: true }).mockReturnValue(Promise.resolve());
 
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('unsuspend-user-successful', { content: { user: userData } });
+    expect(res.render).toHaveBeenCalledWith('unsuspend-user-successful', { content: { user: userData } });
   });
 
   test('Should redirect to the user details page after cancelling unsuspend user', async () => {
@@ -163,7 +163,7 @@ describe('User suspend controller', () => {
     when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
 
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
+    expect(res.redirect).toHaveBeenCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
   });
 
   test('Should render the unsuspend user page with validation errors after confirming', async () => {
@@ -182,8 +182,8 @@ describe('User suspend controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-unsuspend' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('unsuspend-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('unsuspend-user', { content: { user: userData }, error });
   });
 
   test('Should render the unsuspend user page after there was an API issue', async () => {
@@ -204,7 +204,7 @@ describe('User suspend controller', () => {
     req.body = { _userId: userData.id, _action: 'confirm-unsuspend', confirmUnSuspendRadio: 'true' };
 
     await controller.post(req, res);
-    expect(mockApi.getUserById).toBeCalledWith(testToken, userData.id);
-    expect(res.render).toBeCalledWith('unsuspend-user', { content: { user: userData }, error });
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userData.id);
+    expect(res.render).toHaveBeenCalledWith('unsuspend-user', { content: { user: userData }, error });
   });
 });

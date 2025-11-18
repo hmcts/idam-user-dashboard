@@ -63,7 +63,7 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler();
 
-        await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrowError();
+        await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrow();
       });
     });
 
@@ -87,7 +87,7 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler();
 
-        expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrowError();
+        expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrow();
         expect(fs.promises.readFile).toHaveBeenCalledWith('/' + reportUUID);
       });
     });
@@ -133,7 +133,7 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler();
 
-        await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrowError();
+        await expect(reportsHandler.saveReportQueryRoles(singleRole)).rejects.toThrow();
       });
     });
 
@@ -157,7 +157,7 @@ describe('Report handler', () => {
 
         const reportsHandler = new ReportsHandler();
 
-        expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrowError();
+        expect(reportsHandler.getReportQueryRoles(reportUUID)).rejects.toThrow();
         expect(redisClientMock.get).toHaveBeenCalledWith(reportUUID, expect.any(Function));
       });
     });

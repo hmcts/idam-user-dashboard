@@ -65,6 +65,6 @@ describe('Download report controller', () => {
 
     await controller.get(req, res);
     expect(res.send).not.toHaveBeenCalled();
-    expect(res.render).toBeCalledWith('view-report', expect.any(Object));
+    expect(res.render).toHaveBeenCalledWith('view-report', expect.any(Object));
   });
 });

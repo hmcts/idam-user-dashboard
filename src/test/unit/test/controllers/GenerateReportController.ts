@@ -26,14 +26,14 @@ describe('Generate report controller', () => {
 
   test('Should render the generate report page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('generate-report');
+    expect(res.render).toHaveBeenCalledWith('generate-report');
   });
 
   test('Should render the generate report page with error when searching with empty query', async () => {
     req.body.search = '';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('generate-report', {
+    expect(res.render).toHaveBeenCalledWith('generate-report', {
       error: {
         search: { message: MISSING_ROLE_INPUT_ERROR }
       },
@@ -44,7 +44,7 @@ describe('Generate report controller', () => {
     req.body.search = 'citizen';
     await controller.post(req, res);
 
-    expect(res.render).toBeCalledWith('generate-report', {
+    expect(res.render).toHaveBeenCalledWith('generate-report', {
       error: {
         search: { message: GENERATING_REPORT_CITIZEN_ERROR }
       },
@@ -56,7 +56,7 @@ describe('Generate report controller', () => {
     req.body.search = query[0];
     mockReportGenerator.saveReportQueryRoles.mockRejectedValue(false);
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('generate-report', {
+    expect(res.render).toHaveBeenCalledWith('generate-report', {
       error: {
         body: { message: GENERATING_REPORT_ERROR }
       },
@@ -72,6 +72,6 @@ describe('Generate report controller', () => {
 
     await controller.post(req, res);
 
-    expect(res.redirect).toBeCalledWith(307, VIEW_REPORT_URL.replace(':reportUUID', reportUUID));
+    expect(res.redirect).toHaveBeenCalledWith(307, VIEW_REPORT_URL.replace(':reportUUID', reportUUID));
   });
 });

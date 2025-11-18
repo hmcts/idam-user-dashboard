@@ -137,7 +137,7 @@ describe('IdamAPI', () => {
       const mockAxios = {get: () => Promise.reject('')} as any;
       const api = new IdamAPI(mockAxios, mockAxios);
 
-      await expect(api.getAllV2Roles()).rejects.toThrowError();
+      await expect(api.getAllV2Roles()).rejects.toThrow();
     });
   });
 
@@ -158,7 +158,7 @@ describe('IdamAPI', () => {
 
       when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-3'])).resolves.toEqual(results);
-      expect(api.getAllV2Roles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles). toHaveBeenCalledTimes(1);
     });
 
     test('Should return all the assignable roles for a set of roles', () => {
@@ -183,7 +183,7 @@ describe('IdamAPI', () => {
 
       when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-3', 'test-role-6', 'test-role-8'])).resolves.toEqual(results);
-      expect(api.getAllV2Roles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles). toHaveBeenCalledTimes(1);
     });
 
     test('Should return only itself as assignable role if no other assignable roles', () => {
@@ -201,7 +201,7 @@ describe('IdamAPI', () => {
 
       when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-2'])).resolves.toEqual(results);
-      expect(api.getAllV2Roles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles). toHaveBeenCalledTimes(1);
     });
 
     test('Should return empty if no assignable roles or role undefined', () => {
@@ -220,7 +220,7 @@ describe('IdamAPI', () => {
 
       when(api.getAllV2Roles).mockReturnValue(Promise.resolve(getAllRolesMockResponse as V2Role[]));
       expect(api.getAssignableRoles(['test-role-2', 'test-role-3'])).resolves.toEqual([]);
-      expect(api.getAllV2Roles).toBeCalledTimes(1);
+      expect(api.getAllV2Roles). toHaveBeenCalledTimes(1);
     });
   });
 
@@ -268,7 +268,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios);
 
       await expect(api.deleteUserById(testUserId)).resolves.not.toThrow();
-      expect(mockAxios.delete).toBeCalledWith('/api/v2/users/12345');
+      expect(mockAxios.delete).toHaveBeenCalledWith('/api/v2/users/12345');
     });
 
     test('Should not return user details when using invalid ID', async () => {
@@ -276,8 +276,8 @@ describe('IdamAPI', () => {
       
       const api = new IdamAPI(mockAxios, mockAxios);
 
-      await expect(api.deleteUserById('-1')).rejects.toThrowError('Error deleting user by ID from IDAM API');
-      expect(mockAxios.delete).toBeCalledWith('/api/v2/users/-1');
+      await expect(api.deleteUserById('-1')).rejects.toThrow('Error deleting user by ID from IDAM API');
+      expect(mockAxios.delete).toHaveBeenCalledWith('/api/v2/users/-1');
     });
   });
 
@@ -417,7 +417,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios);
 
       expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {
+      expect(mockAxios.get).toHaveBeenCalledWith(expectedAxiosCall, {
         'headers': {
           Authorization: 'Bearer test-token'
         },
@@ -452,7 +452,7 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios);
 
       expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual(results.data);
-      expect(mockAxios.get).toBeCalledWith(expectedAxiosCall, {
+      expect(mockAxios.get).toHaveBeenCalledWith(expectedAxiosCall, {
         'headers': {
           Authorization: 'Bearer test-token'
         },
@@ -466,7 +466,7 @@ describe('IdamAPI', () => {
       
       const api = new IdamAPI(mockAxios, mockAxios);
 
-      await expect(api.getUsersWithRoles(testToken, roles)).rejects.toThrowError();
+      await expect(api.getUsersWithRoles(testToken, roles)).rejects.toThrow();
     });
   });
 });

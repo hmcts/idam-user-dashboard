@@ -30,7 +30,7 @@ describe('Manage user controller', () => {
 
   test('Should render the manage user page', async () => {
     await controller.get(req, res);
-    expect(res.render).toBeCalledWith('manage-user');
+    expect(res.render).toHaveBeenCalledWith('manage-user');
   });
 
   test('Should render the manage user page when searching with a non-existent email', async () => {
@@ -38,7 +38,7 @@ describe('Manage user controller', () => {
 
     req.body.search = email;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
   });
 
   test('Should render the manage user page when searching with a non-existent ID', async () => {
@@ -47,7 +47,7 @@ describe('Manage user controller', () => {
 
     req.body.search = userId;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
 
   test('Should render the manage user page when more than one emails matches the search input', async () => {
@@ -75,7 +75,7 @@ describe('Manage user controller', () => {
 
     req.body.search = email;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + email } } });
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + email } } });
   });
 
   test('Should render the manage user page for user that matches by id', async () => {
@@ -94,7 +94,7 @@ describe('Manage user controller', () => {
 
     req.body._userId = testuserid;
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, '/user/' + testuserid + '/details');
+    expect(res.redirect).toHaveBeenCalledWith(307, '/user/' + testuserid + '/details');
   });
 
   test('Should render the manage user page for one email that matches the search input', async () => {
@@ -115,7 +115,7 @@ describe('Manage user controller', () => {
 
     req.body.search = localemail;
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(307, '/user/123/details');
+    expect(res.redirect).toHaveBeenCalledWith(307, '/user/123/details');
   });
 
   test('Should render the manage user page when more than one SSO IDs matches the search input', async () => {
@@ -144,19 +144,19 @@ describe('Manage user controller', () => {
 
     req.body.search = ssoId;
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
   });
 
   test('Should render the manage user page with error when searching with empty input', async () => {
     req.body.search = '';
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: MISSING_INPUT_ERROR } } });
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: MISSING_INPUT_ERROR } } });
   });
 
   test('Should render the manage user page with error when searching with email with invalid format', async () => {
     req.body.search = 'test@test';
     await controller.post(req, res);
-    expect(res.render).toBeCalledWith('manage-user', { error: { search: { message: INVALID_EMAIL_FORMAT_ERROR } }});
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: INVALID_EMAIL_FORMAT_ERROR } }});
   });
 
 });

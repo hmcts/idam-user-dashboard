@@ -30,7 +30,7 @@ describe('User option controller', () => {
     const expectedPageData: PageData = {
       content: { options: [ {value: 'manage-user', text: 'Manage an existing user' } ] },
     };
-    expect(res.render).toBeCalledWith('user-option', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('user-option', expectedPageData);
   });
 
   test('Should render the user option page with multiple options', async () => {
@@ -50,7 +50,7 @@ describe('User option controller', () => {
         { value: 'generate-report', text: 'Generate a user report' }
       ]},
     };
-    expect(res.render).toBeCalledWith('user-option', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('user-option', expectedPageData);
   });
 
   test('Should render the user option page with error when posting with no option selected', async () => {
@@ -66,7 +66,7 @@ describe('User option controller', () => {
       ]},
       error: { userAction: { message: 'Select if you would like to manage an existing user or add a new user' } },
     };
-    expect(res.render).toBeCalledWith('user-option', expectedPageData);
+    expect(res.render).toHaveBeenCalledWith('user-option', expectedPageData);
   });
 
   test('Should redirect to the manage user page when "Manage an exiting user" option is selected', async () => {
@@ -74,7 +74,7 @@ describe('User option controller', () => {
       userAction: 'manage-user',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(urls.MANAGER_USER_URL);
+    expect(res.redirect).toHaveBeenCalledWith(urls.MANAGER_USER_URL);
   });
 
   test('Should redirect to the add user page when "Add a new user" option is selected', async () => {
@@ -82,7 +82,7 @@ describe('User option controller', () => {
       userAction: 'add-user',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(urls.ADD_USER_URL);
+    expect(res.redirect).toHaveBeenCalledWith(urls.ADD_USER_URL);
   });
 
   test('Should redirect to the generate a report page when "Generate a user report" option is selected', async () => {
@@ -90,6 +90,6 @@ describe('User option controller', () => {
       userAction: 'generate-report',
     };
     await controller.post(req, res);
-    expect(res.redirect).toBeCalledWith(urls.GENERATE_REPORT_URL);
+    expect(res.redirect).toHaveBeenCalledWith(urls.GENERATE_REPORT_URL);
   });
 });

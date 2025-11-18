@@ -31,7 +31,7 @@ describe('FeatureToggleService', () => {
       .mockReturnValue(Promise.resolve(true));
 
     const testResult = await featureFlags.getFlagValue('test-feature-flag');
-    expect(mockFeatureFlagClient.getFlagValue).toBeCalled();
+    expect(mockFeatureFlagClient.getFlagValue).toHaveBeenCalled();
     expect(testResult).toBe(true);
   });
 
@@ -59,7 +59,7 @@ describe('FeatureToggleService', () => {
       .mockReturnValue(Promise.resolve(mockData));
 
     const testResult = await featureFlags.getAllFlagValues();
-    expect(mockFeatureFlagClient.getAllFlagValues).toBeCalled();
+    expect(mockFeatureFlagClient.getAllFlagValues).toHaveBeenCalled();
     expect(testResult).toStrictEqual(mockData);
   });
 
@@ -87,7 +87,7 @@ describe('FeatureToggleService', () => {
       .mockReturnValue({ 'test-feature-flag-2': true });
 
     const testResult = await featureFlags.getAllFlagValues();
-    expect(mockFeatureFlagClient.getAllFlagValues).toBeCalled();
+    expect(mockFeatureFlagClient.getAllFlagValues).toHaveBeenCalled();
     expect(testResult).toStrictEqual(expectedData);
   });
 
@@ -101,8 +101,8 @@ describe('FeatureToggleService', () => {
       .mockReturnValue(Promise.resolve(true));
 
     await featureFlags.toggleRoute('test-feature-flag--true')(mockReq, mockRes, mockNextController);
-    expect(mockFeatureFlagClient.getFlagValue).toBeCalledWith('test-feature-flag--true', false);
-    expect(mockNextController).toBeCalledWith();
+    expect(mockFeatureFlagClient.getFlagValue).toHaveBeenCalledWith('test-feature-flag--true', false);
+    expect(mockNextController).toHaveBeenCalledWith();
   });
 
   test('Should send to forbidden error page if flag is false', async () => {
@@ -115,7 +115,7 @@ describe('FeatureToggleService', () => {
       .mockReturnValue(Promise.resolve(false));
 
     await featureFlags.toggleRoute('test-feature-flag--false')(mockReq, mockRes, mockNextController);
-    expect(mockFeatureFlagClient.getFlagValue).toBeCalledWith('test-feature-flag--false', false);
-    expect(mockNextController).toBeCalledWith(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
+    expect(mockFeatureFlagClient.getFlagValue).toHaveBeenCalledWith('test-feature-flag--false', false);
+    expect(mockNextController).toHaveBeenCalledWith(new HTTPError(http.HTTP_STATUS_FORBIDDEN));
   });
 });
