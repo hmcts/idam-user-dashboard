@@ -35,3 +35,4 @@ coverage/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+version
