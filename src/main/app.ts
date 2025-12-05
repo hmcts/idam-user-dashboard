@@ -45,11 +45,13 @@ async function bootstrap() {
   });
 
   new Container().enableFor(app);
+  new OidcMiddleware().enableFor(app);
+  //csrf uses express session so must come after OidcMiddleware as that initiates the express session
+  // and before nunjucks as that uses the csrf token in templates
+  new Csrf().enableFor(app);
   new Nunjucks(developmentMode).enableFor(app);
   new Helmet(config.get('security')).enableFor(app);
   new HealthCheck().enableFor(app);
-  new Csrf().enableFor(app);
-  new OidcMiddleware().enableFor(app);
 
   const routeFiles = await glob(path.join(__dirname, 'routes/**/*.+(ts|js)'));
   routeFiles
