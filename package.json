@@ -160,7 +160,7 @@
     "@types/express-serve-static-core": "4.17.43",
     "@types/express": "^4.17.21",
     "@azure/msal-node": ">=2.9.2",
-    "@azure/identity": ">=4.2.1",
+    "@azure/identity": ">=4.13.0",
     "micromatch": ">=4.0.8",
     "path-to-regexp": "^3.3.0",
     "body-parser": "^1.20.3",
