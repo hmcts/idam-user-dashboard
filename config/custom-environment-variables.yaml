@@ -38,4 +38,5 @@ health:
   idam:
     url:
       public: HEALTH_PUBLIC_URL
+      hmctsAccess: HEALTH_HMCTS_ACCESS_URL
       api: HEALTH_IDAM_API_URL
