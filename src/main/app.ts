@@ -21,6 +21,7 @@ import { Container } from './modules/awilix';
 import { ErrorHandler } from './modules/error-handler';
 import { HealthCheck } from './modules/health';
 import { Csrf } from './modules/csrf';
+import { AppSession } from './modules/session';
 import routes from './routes';
 import logger from './modules/logging';
 const { setupDev } = require('./development');
@@ -45,9 +46,8 @@ async function bootstrap() {
   });
 
   new Container().enableFor(app);
+  new AppSession().enableFor(app);
   new OidcMiddleware().enableFor(app);
-  //csrf uses express session so must come after OidcMiddleware as that initiates the express session
-  // and before nunjucks as that uses the csrf token in templates
   new Csrf().enableFor(app);
   new Nunjucks(developmentMode).enableFor(app);
   new Helmet(config.get('security')).enableFor(app);
