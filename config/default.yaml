@@ -37,6 +37,8 @@ session:
     host:
     port:
     key:
+  appCookie:
+    name: 'idam_user_dashboard_sid'
 health:
   timeout: 10000
   deadline: 15000
