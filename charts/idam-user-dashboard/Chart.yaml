@@ -3,7 +3,7 @@ appVersion: "1.0"
 description: A Helm chart for idam-user-dashboard App
 name: idam-user-dashboard
 home: https://github.com/hmcts/idam-user-dashboard
-version: 1.0.7
+version: 1.0.8
 dependencies:
   - name: nodejs
     version: 3.2.0
@@ -11,4 +11,4 @@ dependencies:
   - name: idam-pr
     version: 2.3.0
     repository: 'oci://hmctspublic.azurecr.io/helm'
-    condition: idam-pr.enabled    
+    condition: idam-pr.enabled

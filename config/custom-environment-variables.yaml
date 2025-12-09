@@ -3,6 +3,7 @@ services:
   idam:
     url:
       public: STRATEGIC_PUBLIC_URL
+      hmctsAccess: HMCTS_ACCESS_URL
       api: STRATEGIC_SERVICE_URL
       dashboard: DASHBOARD_URL
       testingSupportApi: TESTING_SUPPORT_URL
