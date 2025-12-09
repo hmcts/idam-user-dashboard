@@ -159,8 +159,6 @@
     "formidable": ">=3.5.4",
     "@types/express-serve-static-core": "4.17.43",
     "@types/express": "^4.17.21",
-    "@azure/msal-node": ">=2.9.2",
-    "@azure/identity": ">=4.13.0",
     "micromatch": ">=4.0.8",
     "path-to-regexp": "^3.3.0",
     "body-parser": "^1.20.3",
@@ -172,7 +170,8 @@
     "@babel/helpers": "^7.26.10",
     "glob": "^9.3.5",
     "superagent": ">=10.2.3",
-    "on-headers": "^1.1.0"
+    "on-headers": "^1.1.0",
+    "jsonwebtoken": "^9.0.3"
   },
   "packageManager": "yarn@4.5.0"
 }
