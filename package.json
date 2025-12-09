@@ -171,7 +171,10 @@
     "@babel/helpers": "^7.26.10",
     "glob": "^9.3.5",
     "superagent": ">=10.2.3",
-    "on-headers": "^1.1.0"
+    "on-headers": "^1.1.0",
+    "js-yaml": "^4.1.1",
+    "jsonwebtoken": "^9.0.3",
+    "jws": "^4.0.1"
   },
   "packageManager": "yarn@4.5.0"
 }
