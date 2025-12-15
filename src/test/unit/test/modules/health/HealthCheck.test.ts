@@ -19,7 +19,6 @@ const downMock = jest.fn(() => DOWN_SENTINEL);
 
 jest.mock('@hmcts/nodejs-healthcheck', () => ({
   __esModule: true,
-  default: undefined,
   // Node require style import in code under test uses `require(...)`
   // so we export as module.exports shape
   addTo: (...args: any[]) => addToMock(...args),
