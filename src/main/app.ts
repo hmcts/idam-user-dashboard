@@ -37,6 +37,7 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'public')));
+  app.disable('x-powered-by');
   app.use((req, res, next) => {
     res.setHeader(
       'Cache-Control',
