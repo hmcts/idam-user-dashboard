@@ -47,12 +47,12 @@ async function bootstrap() {
   });
 
   new Container().enableFor(app);
+  new Helmet(config.get('security')).enableFor(app);
   new HealthCheck().enableFor(app);
   new AppSession().enableFor(app);
   new OidcMiddleware().enableFor(app);
   new Csrf().enableFor(app);
   new Nunjucks(developmentMode).enableFor(app);
-  new Helmet(config.get('security')).enableFor(app);
 
   const routeFiles = await glob(path.join(__dirname, 'routes/**/*.+(ts|js)'));
   routeFiles
