@@ -14,11 +14,13 @@ class UserFactory extends Factory {
 
 }
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 export = new UserFactory()
-  .attr('password', () => { return faker.internet.password({prefix: '0Ab'});})
-  .attr('forename', () => { return faker.person.firstName();})
-  .attr('surname', () => { return faker.person.lastName();})
+  .attr('password', () => { await delay(10_000); return faker.internet.password({prefix: '0Ab'});})
+  .attr('forename', () => { await delay(10_000); return faker.person.firstName();})
+  .attr('surname', () => { await delay(10_000); return faker.person.lastName();})
   .attr('email', ['forename', 'surname'], (forename, surname) => {
-    return faker.internet.email({firstName : forename, lastName : surname, provider: 'iud.' + BuildInfoHelper.getBuildInfo('test') + '.local'});
+    return await delay(10_000); faker.internet.email({firstName : forename, lastName : surname, provider: 'iud.' + BuildInfoHelper.getBuildInfo('test') + '.local'});
   })
-  .attr('roleNames', () => { return [ codeceptjs.container.support('workerRole').name ]; });
+  .attr('roleNames', () => { await delay(10_000); return [ codeceptjs.container.support('workerRole').name ]; });
