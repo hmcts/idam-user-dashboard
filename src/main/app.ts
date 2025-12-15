@@ -21,6 +21,7 @@ import { Container } from './modules/awilix';
 import { ErrorHandler } from './modules/error-handler';
 import { HealthCheck } from './modules/health';
 import { Csrf } from './modules/csrf';
+import { AppSession } from './modules/session';
 import routes from './routes';
 import logger from './modules/logging';
 const { setupDev } = require('./development');
@@ -45,11 +46,12 @@ async function bootstrap() {
   });
 
   new Container().enableFor(app);
+  new HealthCheck().enableFor(app);
+  new AppSession().enableFor(app);
+  new OidcMiddleware().enableFor(app);
+  new Csrf().enableFor(app);
   new Nunjucks(developmentMode).enableFor(app);
   new Helmet(config.get('security')).enableFor(app);
-  new HealthCheck().enableFor(app);
-  new Csrf().enableFor(app);
-  new OidcMiddleware().enableFor(app);
 
   const routeFiles = await glob(path.join(__dirname, 'routes/**/*.+(ts|js)'));
   routeFiles
