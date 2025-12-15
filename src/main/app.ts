@@ -37,6 +37,7 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'public')));
+  app.disable('x-powered-by');
   app.use((req, res, next) => {
     res.setHeader(
       'Cache-Control',
@@ -46,12 +47,12 @@ async function bootstrap() {
   });
 
   new Container().enableFor(app);
+  new Helmet(config.get('security')).enableFor(app);
   new HealthCheck().enableFor(app);
   new AppSession().enableFor(app);
   new OidcMiddleware().enableFor(app);
   new Csrf().enableFor(app);
   new Nunjucks(developmentMode).enableFor(app);
-  new Helmet(config.get('security')).enableFor(app);
 
   const routeFiles = await glob(path.join(__dirname, 'routes/**/*.+(ts|js)'));
   routeFiles
