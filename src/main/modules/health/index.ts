@@ -36,7 +36,7 @@ export class HealthCheck {
           }
         }
 
-        return res?.body?.status == 'UP' ? healthcheck.up() : healthcheck.down();
+        return res?.body?.status === 'UP' ? healthcheck.up() : healthcheck.down();
       }
     };
 
