@@ -1,16 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
-    {
-      "rangeStrategy": "bump"
-    }
-  ],
-  "extends": [
-    "local>hmcts/.github:renovate-config",
-    "local>hmcts/.github//renovate/automerge-all"
-  ],
-  "lockFileMaintenance": {
-    "enabled": false
-  },
-  "schedule": ["after 4pm and before 7pm every weekday"]
+  "extends": ["local>hmcts/.github:renovate-config", "local>hmcts/.github//renovate/automerge-all"],
+  "schedule": ["after 3pm and before 6pm every weekday"],
+  "automergeSchedule": ["after 10am and before 6pm every weekday"]
 }
