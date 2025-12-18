@@ -12,5 +12,5 @@
   "lockFileMaintenance": {
     "enabled": false
   },
-  "schedule": "after 4pm and before 7pm every weekday"
+  "schedule": ["after 4pm and before 7pm every weekday"]
 }
