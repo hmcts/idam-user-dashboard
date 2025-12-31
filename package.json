@@ -153,7 +153,7 @@
     "async": "^3.2.2",
     "cookiejar": ">=2.1.4",
     "tar": "6.2.1",
-    "qs": ">=6.9.7",
+    "qs": ">=6.14.1",
     "express": "4.21.0",
     "formidable": ">=3.5.4",
     "@types/express-serve-static-core": "4.17.43",
