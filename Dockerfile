@@ -15,7 +15,7 @@ RUN yarn install && yarn build:prod
 # ---- Runtime image ----
 FROM base as runtime
 RUN rm -rf webpack/ webpack.config.js
-COPY --from=build $WORKDIR/src/main ./src/main
-COPY --from=build $WORKDIR/version .
-
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/src/main ./src/main
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/version .
+USER hmcts
 EXPOSE 3100
