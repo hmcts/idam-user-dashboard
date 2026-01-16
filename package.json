@@ -174,7 +174,8 @@
     "on-headers": "^1.1.0",
     "js-yaml": "^4.1.1",
     "jsonwebtoken": "^9.0.3",
-    "jws": "^4.0.1"
+    "jws": "^4.0.1",
+    "diff": "^8.0.3"
   },
   "packageManager": "yarn@4.5.0"
 }
