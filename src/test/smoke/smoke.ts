@@ -5,6 +5,7 @@ import { constants as httpConstants } from 'http2';
 
 const servicesToCheck = [
   { name: 'idam-web-public', url: config.get('services.idam.url.public') },
+  { name: 'hmcts-access', url: config.get('services.idam.url.hmctsAccess') },
   { name: 'idam-api', url: config.get('services.idam.url.api') },
   { name: 'idam-user-dashboard', url: testConfig.TEST_URL }
 ];
