@@ -54,7 +54,7 @@
     "@types/express-session": "^1.18.2",
     "@types/glob": "^8.1.0",
     "@types/jest-when": "^3.5.5",
-    "@types/lodash": "^4.17.16",
+    "@types/lodash": "^4.17.23",
     "@types/node": "^22.15.16",
     "@types/nunjucks": "^3.2.6",
     "@types/require-directory": "^2.1.6",
@@ -82,7 +82,7 @@
     "jest-when": "^3.7.0",
     "jwt-decode": "^4.0.0",
     "launchdarkly-node-server-sdk": "^7.0.4",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "memfs": "^4.17.1",
     "npm-run-all2": "^6.2.6",
     "nunjucks": "^3.2.4",
@@ -101,7 +101,7 @@
     "winston": "^3.18.3"
   },
   "devDependencies": {
-    "@babel/core": "7.28.5",
+    "@babel/core": "7.28.6",
     "@babel/eslint-parser": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
     "@codeceptjs/allure-legacy": "^1.0.2",
@@ -152,8 +152,8 @@
     "jose": "^2.0.7",
     "async": "^3.2.2",
     "cookiejar": ">=2.1.4",
-    "tar": "6.2.1",
-    "qs": ">=6.9.7",
+    "tar": "^7.5.4",
+    "qs": ">=6.14.1",
     "express": "4.21.0",
     "formidable": ">=3.5.4",
     "@types/express-serve-static-core": "4.17.43",
@@ -174,7 +174,9 @@
     "on-headers": "^1.1.0",
     "js-yaml": "^4.1.1",
     "jsonwebtoken": "^9.0.3",
-    "jws": "^4.0.1"
+    "jws": "^4.0.1",
+    "diff": "^8.0.3",
+    "lodash": "^4.17.23"
   },
   "packageManager": "yarn@4.5.0"
 }
