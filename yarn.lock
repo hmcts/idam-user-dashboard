@@ -7569,7 +7569,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codeceptjs@npm:^3.7.6":
+"codeceptjs@npm:^3.5.12":
   version: 3.7.6
   resolution: "codeceptjs@npm:3.7.6"
   dependencies:
@@ -10539,7 +10539,7 @@ __metadata:
     axe-playwright: "npm:^2.2.2"
     axios: "npm:^1.13.3"
     babel-loader: "npm:^10.0.0"
-    codeceptjs: "npm:^3.7.6"
+    codeceptjs: "npm:^3.5.12"
     codeceptjs-a11y-helper: "npm:^1.5.9"
     codeceptjs-chai: "npm:^2.3.5"
     config: "npm:^3.3.12"
