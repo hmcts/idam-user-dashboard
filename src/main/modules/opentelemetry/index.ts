@@ -1,7 +1,7 @@
 import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from '@azure/monitor-opentelemetry';
 import { trace, ProxyTracerProvider } from '@opentelemetry/api';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
@@ -38,11 +38,9 @@ export function initializeTelemetry() {
     }
   };
 
-  const customResource = Resource.EMPTY;
-  // ----------------------------------------
-  // Setting role name and role instance
-  // ----------------------------------------
-  customResource.attributes[SEMRESATTRS_SERVICE_NAME] = config.get('services.insightname');
+  const customResource = resourceFromAttributes({
+    [SEMRESATTRS_SERVICE_NAME]: config.get('services.insightname'),
+  });
 
   const options: AzureMonitorOpenTelemetryOptions = {
     azureMonitorExporterOptions: {
@@ -51,7 +49,7 @@ export function initializeTelemetry() {
     // Sampling could be configured here
     samplingRatio: 1.0,
     // Use custom Resource
-    resource: customResource as any,
+    resource: customResource,
     instrumentationOptions: {
       http: httpInstrumentationConfig,
       azureSdk: { enabled: true }
