@@ -2261,7 +2261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codeceptjs/helper@npm:2.0.4, @codeceptjs/helper@npm:^2.0.1, @codeceptjs/helper@npm:^2.0.4":
+"@codeceptjs/helper@npm:2.0.4, @codeceptjs/helper@npm:^2.0.1":
   version: 2.0.4
   resolution: "@codeceptjs/helper@npm:2.0.4"
   dependencies:
@@ -10498,7 +10498,7 @@ __metadata:
     "@babel/eslint-parser": "npm:^7.28.6"
     "@babel/preset-env": "npm:^7.28.6"
     "@codeceptjs/allure-legacy": "npm:^1.0.2"
-    "@codeceptjs/helper": "npm:^2.0.4"
+    "@codeceptjs/helper": "npm:^2.0.1"
     "@faker-js/faker": "npm:^8.4.1"
     "@hmcts/info-provider": "npm:^1.4.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
