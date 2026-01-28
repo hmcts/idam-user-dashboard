@@ -8345,12 +8345,12 @@ __metadata:
   linkType: hard
 
 "codeceptjs-a11y-helper@npm:^1.5.3":
-  version: 1.5.3
-  resolution: "codeceptjs-a11y-helper@npm:1.5.3"
+  version: 1.5.9
+  resolution: "codeceptjs-a11y-helper@npm:1.5.9"
   dependencies:
     "@codeceptjs/helper": "npm:^2.0.1"
     axe-playwright: "npm:^1.2.3"
-  checksum: 10/d90803064f322b69b46fb37d495c766f469d6234547675fdac12f97cdd33478288f9cde4c408a3c812519790da82d7b22282045ee7ad9b010bfa5a40193b3b22
+  checksum: 10/415fad49be65200944d318e00f708d8b2b524fe48dbea91b242206e25aaac579be55a309439dbff7780b7b8656e22d1f304455857bc106a6ebc8dab130877976
   languageName: node
   linkType: hard
 
