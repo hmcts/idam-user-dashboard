@@ -11,6 +11,8 @@ import { Redis } from 'ioredis';
 import { User } from '../../interfaces/User';
 import { auth } from 'express-openid-connect';
 import logger from '../logging';
+import { AuthedRequest } from 'interfaces/AuthedRequest';
+import { isObjectEmpty } from '../../utils/utils';
 
 export class OidcMiddleware {
   private readonly clientId: string = config.get('services.idam.clientID');
@@ -58,10 +60,6 @@ export class OidcMiddleware {
             logger.error('afterCallback: token decode error', error);
             throw error;
           }
-          if (!tokenUser.roles.includes(this.accessRole)) {
-            logger.info('afterCallback: missing access role for user id ' + tokenUser.uid);
-            throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
-          }
           const user = {
             id: tokenUser.uid,
             email: tokenUser.email,
@@ -75,6 +73,26 @@ export class OidcMiddleware {
         }
       }
     }));
+
+    app.use((req: AuthedRequest, res: Response, next) => {
+      logger.debug('OIDC middleware auth check', { isAuthenticated: req.oidc?.isAuthenticated?.() });
+
+      const session = req.idam_user_dashboard_session;
+      if (!session) {
+        throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+      }
+
+      const user = session.user;
+      if (!user || isObjectEmpty(user)) {
+        throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+      }
+
+      if (!user.roles?.includes(this.accessRole)) {
+        throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+      }
+
+      next();
+    });
   }
 
   private getSessionStore(app: Application): any {

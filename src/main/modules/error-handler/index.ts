@@ -3,6 +3,9 @@ import { HTTPError } from '../../app/errors/HttpError';
 import { constants as http } from 'http2';
 import { v4 as uuid } from 'uuid';
 import logger from '../logging';
+import { isObjectEmpty } from '../../utils/utils';
+import { AuthedRequest } from 'interfaces/AuthedRequest';
+import { User } from 'interfaces/User';
 
 const NOT_FOUND = {
   title: 'Page not found',
@@ -43,11 +46,19 @@ export class ErrorHandler {
 
     // error handler
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    app.use((error: HTTPError, req: express.Request, res: express.Response, next: NextFunction) => {
+    app.use((error: HTTPError, req: AuthedRequest, res: express.Response, next: NextFunction) => {
       res.locals.error = app.locals.ENV === 'development' ? error : {};
       let errorSummary: ErrorSummary;
       let errorUUID: string;
+      let user: Partial<User>;
       const status = error.status || 500;
+    
+      if(req.idam_user_dashboard_session) {
+        const sessionUser = req.idam_user_dashboard_session.user;
+        if(sessionUser && !isObjectEmpty(sessionUser)) {
+          user = sessionUser;
+        }
+      }
 
       switch(status) {
         case http.HTTP_STATUS_UNAUTHORIZED:
@@ -63,7 +74,7 @@ export class ErrorHandler {
       }
 
       res.status(status);
-      res.render('error.njk', {...errorSummary, status, errorUUID});
+      res.render('error.njk', {...errorSummary, status, errorUUID, user});
     });
   }
 }
