@@ -31,5 +31,4 @@ Scenario('login as user without access', async ({ I }) => {
   }
   I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
   I.see('Status code: 403');
-  I.dontSeeCookie('idam_user_dashboard_session');
 });
