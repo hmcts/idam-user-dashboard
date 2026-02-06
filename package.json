@@ -101,7 +101,7 @@
     "winston": "^3.18.3"
   },
   "devDependencies": {
-    "@babel/core": "7.28.6",
+    "@babel/core": "7.29.0",
     "@babel/eslint-parser": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
     "@codeceptjs/allure-legacy": "^1.0.2",
