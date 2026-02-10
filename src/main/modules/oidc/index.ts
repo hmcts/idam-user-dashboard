@@ -19,6 +19,7 @@ export class OidcMiddleware {
   private readonly clientSecret: string = config.get('services.idam.clientSecret');
   private readonly clientScope: string = config.get('services.idam.scope');
   private readonly baseUrl: string = config.get('services.idam.url.dashboard');
+  private readonly callbackUrl: string = config.get('services.idam.callbackURL');
   private readonly idamBaseUrl: string = config.get('services.idam.url.public');
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly accessRole: string = config.get('RBAC.access');
@@ -37,7 +38,8 @@ export class OidcMiddleware {
       idpLogout: true,
       authorizationParams: {
         'response_type': 'code',
-        scope: this.clientScope
+        scope: this.clientScope,
+        redirect_uri: this.callbackUrl
       },
       session: {
         name: this.sessionCookieName,
