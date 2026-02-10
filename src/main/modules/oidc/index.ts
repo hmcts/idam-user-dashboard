@@ -26,7 +26,7 @@ export class OidcMiddleware {
 
   public enableFor(app: Application): void {
     app.get('/callback', (req, res, next) => {
-      if (!req.query.code) {
+      if (!req.query.code && !req.query.error) {
         return res.redirect('/login');
       }
       next();
