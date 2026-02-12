@@ -7152,17 +7152,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.10.0, axe-core@npm:^4.5.1":
-  version: 4.10.0
-  resolution: "axe-core@npm:4.10.0"
-  checksum: 10/6158489a7a704edc98bd30ed56243b8280c5203c60e095a2feb5bff95d9bf2ef10becfe359b1cbc8601338418999c26cf4eee704181dedbcb487f4d63a06d8d5
-  languageName: node
-  linkType: hard
-
-"axe-core@npm:~4.11.1":
+"axe-core@npm:^4.10.1, axe-core@npm:~4.11.1":
   version: 4.11.1
   resolution: "axe-core@npm:4.11.1"
   checksum: 10/bbc8e8959258a229b92fbaa73437050825579815051cac7b0fdbb6752946fea226e403bfeeef3d60d712477bdd4c01afdc8455f27c3d85e4251df88b032b6250
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:^4.5.1":
+  version: 4.10.0
+  resolution: "axe-core@npm:4.10.0"
+  checksum: 10/6158489a7a704edc98bd30ed56243b8280c5203c60e095a2feb5bff95d9bf2ef10becfe359b1cbc8601338418999c26cf4eee704181dedbcb487f4d63a06d8d5
   languageName: node
   linkType: hard
 
@@ -7198,17 +7198,17 @@ __metadata:
   linkType: hard
 
 "axe-playwright@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "axe-playwright@npm:2.0.3"
+  version: 2.2.2
+  resolution: "axe-playwright@npm:2.2.2"
   dependencies:
     "@types/junit-report-builder": "npm:^3.0.2"
-    axe-core: "npm:^4.10.0"
+    axe-core: "npm:^4.10.1"
     axe-html-reporter: "npm:2.2.11"
     junit-report-builder: "npm:^5.1.1"
-    picocolors: "npm:^1.1.0"
+    picocolors: "npm:^1.1.1"
   peerDependencies:
     playwright: ">1.0.0"
-  checksum: 10/c50c1879624be3a4c77faf236d77a8dd7be2d24e01e95f2b90e33ab43a0aabc74c2a1e07d74e8c349ef2742a98fdb34c1438f103ff6cca5a538af91f246603dd
+  checksum: 10/939111de0766ab9d4936cf9235538a691dda1fde6ca24606bf82fe6a45ee3af8de38b4995623eecd361fbc472a1077e8514bdad073a7454859cbdb5ff435c5b0
   languageName: node
   linkType: hard
 
