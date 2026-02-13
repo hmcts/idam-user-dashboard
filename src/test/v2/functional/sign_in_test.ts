@@ -33,3 +33,11 @@ Scenario('login as user without access', async ({ I }) => {
   I.see('Status code: 403');
   I.seeCookie('idam_user_dashboard_session');
 });
+
+Scenario('return back from service on the callback url', async ({ I }) => {
+  I.amOnPage('/callback');
+  I.wait(1);
+
+  const currentUrl = await I.grabCurrentUrl();
+  I.assertFalse(currentUrl.includes('/callback'));
+});

@@ -25,7 +25,12 @@ export class OidcMiddleware {
   private readonly sessionCookieName: string = config.get('session.cookie.name');
 
   public enableFor(app: Application): void {
-
+    app.get('/callback', (req, res, next) => {
+      if (!req.query.code && !req.query.error) {
+        return res.redirect('/login');
+      }
+      next();
+    });
     app.use(auth({
       issuerBaseURL: this.idamBaseUrl + '/o',
       baseURL: this.baseUrl,
