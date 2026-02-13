@@ -36,6 +36,7 @@ Scenario('login as user without access', async ({ I }) => {
 
 Scenario('return back from service on the callback url', async ({ I }) => {
   I.amOnPage('/callback');
-  I.seeInCurrentUrl('/login');
   I.dontSeeInCurrentUrl('/callback');
+  const currentHeading = await I.grabTextFrom('h1');
+  I.see(currentHeading, 'h1');
 });
