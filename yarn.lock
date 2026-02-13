@@ -390,21 +390,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:16.0.3":
-  version: 16.0.3
-  resolution: "@azure/msal-common@npm:16.0.3"
-  checksum: 10/9f96ae1a4bed1218c00fe97c4bce36d74ec0442691333e0edd564ff5a074cf4eaf45a0a91ff1b35a451153d517d6f5ca0db352fe882482d79518a481155721d6
+"@azure/msal-common@npm:16.0.4":
+  version: 16.0.4
+  resolution: "@azure/msal-common@npm:16.0.4"
+  checksum: 10/f65535bcdfe9084248c308f19ea956ae62e38df151041338c9b6bda13bf3642fcad30d04082557665d87b16ff0cb1d3e00aedb3b9a882627d0f6cd242370a0ae
   languageName: node
   linkType: hard
 
 "@azure/msal-node@npm:>=2.9.2":
-  version: 5.0.3
-  resolution: "@azure/msal-node@npm:5.0.3"
+  version: 5.0.4
+  resolution: "@azure/msal-node@npm:5.0.4"
   dependencies:
-    "@azure/msal-common": "npm:16.0.3"
+    "@azure/msal-common": "npm:16.0.4"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10/e754089e37b84712322c355e5649d53bc6782cd1219deeb534c0f10a5153cf76f0e095d86dff067395dd7defbfd9471286dd026465136db823287a530490156a
+  checksum: 10/e881a306f2b42a3dc17a6aa0be5a1099235c734af88b12d9cccf9a9cc494748cc87ec974b011addf41c220ed82ded9dd71108fd19276c781c0faa5ad047ad116
   languageName: node
   linkType: hard
 
@@ -5811,29 +5811,29 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 25.2.1
-  resolution: "@types/node@npm:25.2.1"
+  version: 25.2.3
+  resolution: "@types/node@npm:25.2.3"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10/aab73de56dbb674a173a49618b9f9b4aff3ed5815c47104a8fcaa8ca0728effced8d6ed941aa342b7d1f9dfcd641513250a178f4a656067f461dd793ab422911
+  checksum: 10/46962e3c1c0205da5b637c2e924f4eb03ce16f384af686b69afeb5fd4f8274d9a570375f8a24de2750633b69cb7ac33f0e458d9c3f20a66e12eb3a569499062d
   languageName: node
   linkType: hard
 
 "@types/node@npm:^20.1.0":
-  version: 20.19.32
-  resolution: "@types/node@npm:20.19.32"
+  version: 20.19.33
+  resolution: "@types/node@npm:20.19.33"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/539e892da014abf6404d0e56d79e8eb6f7b6c47ac1a955752e05b84e164c1cf3c90748af97fe073dc1282f5ea0a12bfeefbfa79622d3fc1b75dfe2b6dc5d53bc
+  checksum: 10/8aff7b1acba98a724659b228cbfb21aaabffaf377e914dd117c8f0b1fce2ee18a2e578f701fd43bffa4e2ca32e6a9f6d011e86c63c2efed2d17d2865b1eaac77
   languageName: node
   linkType: hard
 
 "@types/node@npm:^22.15.16":
-  version: 22.19.9
-  resolution: "@types/node@npm:22.19.9"
+  version: 22.19.11
+  resolution: "@types/node@npm:22.19.11"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/32bcafba1de0eff44a3527568549ba03132a53f4e3d6270bb3148005338c81bed17b78d1f35f373164b6125718034d524b7f9f221103cc8649b9da52d6752497
+  checksum: 10/bb899551432ce2bf3e1a175d58802f25dfb6a96e574ce1f0056d55d0ce48513961976ee3621215565142a8ad99a2464d9c384fa53ccba0650def031d218800f7
   languageName: node
   linkType: hard
 
@@ -6867,11 +6867,11 @@ __metadata:
   linkType: hard
 
 "allure-commandline@npm:^2.34.0":
-  version: 2.34.0
-  resolution: "allure-commandline@npm:2.34.0"
+  version: 2.36.0
+  resolution: "allure-commandline@npm:2.36.0"
   bin:
     allure: bin/allure
-  checksum: 10/7b45ee993b1d3aa96188f97c7267403f5587d74339b83f3dc710757cd5c7ef04e22d5c4b3c9756032b2f643986acf077a8551a249f82aa669e65bef389c9e41d
+  checksum: 10/7c56539dc219fdfc588764781643a707f3e1bf1625dc3142e8c5962f8ede3404449a2d6652584c33918071d2ca2457cfa3750d35b605f08b98ce19f4fad9aa80
   languageName: node
   linkType: hard
 
@@ -7152,17 +7152,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.10.0, axe-core@npm:^4.5.1":
-  version: 4.10.0
-  resolution: "axe-core@npm:4.10.0"
-  checksum: 10/6158489a7a704edc98bd30ed56243b8280c5203c60e095a2feb5bff95d9bf2ef10becfe359b1cbc8601338418999c26cf4eee704181dedbcb487f4d63a06d8d5
-  languageName: node
-  linkType: hard
-
-"axe-core@npm:~4.11.1":
+"axe-core@npm:^4.10.1, axe-core@npm:~4.11.1":
   version: 4.11.1
   resolution: "axe-core@npm:4.11.1"
   checksum: 10/bbc8e8959258a229b92fbaa73437050825579815051cac7b0fdbb6752946fea226e403bfeeef3d60d712477bdd4c01afdc8455f27c3d85e4251df88b032b6250
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:^4.5.1":
+  version: 4.10.0
+  resolution: "axe-core@npm:4.10.0"
+  checksum: 10/6158489a7a704edc98bd30ed56243b8280c5203c60e095a2feb5bff95d9bf2ef10becfe359b1cbc8601338418999c26cf4eee704181dedbcb487f4d63a06d8d5
   languageName: node
   linkType: hard
 
@@ -7198,17 +7198,17 @@ __metadata:
   linkType: hard
 
 "axe-playwright@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "axe-playwright@npm:2.0.3"
+  version: 2.2.2
+  resolution: "axe-playwright@npm:2.2.2"
   dependencies:
     "@types/junit-report-builder": "npm:^3.0.2"
-    axe-core: "npm:^4.10.0"
+    axe-core: "npm:^4.10.1"
     axe-html-reporter: "npm:2.2.11"
     junit-report-builder: "npm:^5.1.1"
-    picocolors: "npm:^1.1.0"
+    picocolors: "npm:^1.1.1"
   peerDependencies:
     playwright: ">1.0.0"
-  checksum: 10/c50c1879624be3a4c77faf236d77a8dd7be2d24e01e95f2b90e33ab43a0aabc74c2a1e07d74e8c349ef2742a98fdb34c1438f103ff6cca5a538af91f246603dd
+  checksum: 10/939111de0766ab9d4936cf9235538a691dda1fde6ca24606bf82fe6a45ee3af8de38b4995623eecd361fbc472a1077e8514bdad073a7454859cbdb5ff435c5b0
   languageName: node
   linkType: hard
 
