@@ -33,3 +33,11 @@ Scenario('login as user without access', async ({ I }) => {
   I.see('Status code: 403');
   I.seeCookie('idam_user_dashboard_session');
 });
+
+Scenario('Redirect back to login on the callback url when required OIDC parameters are missing', async ({ I }) => {
+  I.amOnPage('/callback');
+  I.wait(1);
+
+  const currentUrl = await I.grabCurrentUrl();
+  I.assertFalse(currentUrl.includes('/callback'));
+});
