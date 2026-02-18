@@ -34,7 +34,7 @@ Scenario('login as user without access', async ({ I }) => {
   I.seeCookie('idam_user_dashboard_session');
 });
 
-Scenario('return back from service on the callback url', async ({ I }) => {
+Scenario('Redirect back to login on the callback url when required OIDC parameters are missing', async ({ I }) => {
   I.amOnPage('/callback');
   I.wait(1);
 
