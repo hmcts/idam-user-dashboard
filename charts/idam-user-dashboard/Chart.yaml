@@ -11,4 +11,4 @@ dependencies:
   - name: idam-pr
     version: 2.3.1
     repository: 'oci://hmctspublic.azurecr.io/helm'
-    condition: idam-pr.enabled    
+    condition: idam-pr.enabled

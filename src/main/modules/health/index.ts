@@ -8,10 +8,12 @@ import logger from '../logging';
 export class HealthCheck {
 
   private readonly publicHealthBaseUrl: string = config.get('health.idam.url.public') ? config.get('health.idam.url.public') : config.get('services.idam.url.public');
+  private readonly hmctsAccessHealthBaseUrl: string = config.get('health.idam.url.hmctsAccess') ? config.get('health.idam.url.hmctsAccess') : config.get('services.idam.url.hmctsAccess');
   private readonly idamApiHealthBaseUrl: string = config.get('health.idam.url.api') ? config.get('health.idam.url.api') : config.get('services.idam.url.api');
 
   public enableFor(app: Application): void {
     logger.info('healthcheck using public url: ' + this.publicHealthBaseUrl);
+    logger.info('healthcheck using hmctsAccess url: ' + this.hmctsAccessHealthBaseUrl);
     logger.info('healthcheck using api url: ' + this.idamApiHealthBaseUrl);
     app.get('/info', infoRequestHandler({
       extraBuildInfo: {
@@ -33,14 +35,15 @@ export class HealthCheck {
             logger.error('hc failed, empty response', err);
           }
         }
-        
-        return res?.body?.status == 'UP' ? healthcheck.up() : healthcheck.down();
+
+        return res?.body?.status === 'UP' ? healthcheck.up() : healthcheck.down();
       }
     };
 
     const healthCheckConfig = {
       checks: {
         'idam-web-public': healthcheck.web(this.publicHealthBaseUrl + '/health', healthOptions),
+        'hmcts-access': healthcheck.web(this.hmctsAccessHealthBaseUrl + '/health', healthOptions),
         'idam-api': healthcheck.web(this.idamApiHealthBaseUrl + '/health', healthOptions),
         ...(app.locals.redisClient && {
           redis: healthcheck.raw(() => (
