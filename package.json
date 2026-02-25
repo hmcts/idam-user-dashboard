@@ -178,7 +178,8 @@
     "diff": "^8.0.3",
     "lodash": "^4.17.23",
     "axios": "^1.13.5",
-    "bn.js": "^5.2.3"
+    "bn.js": "^5.2.3",
+    "test-exclude": "^8.0.0"
   },
   "packageManager": "yarn@4.5.0"
 }
