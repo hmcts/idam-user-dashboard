@@ -8016,13 +8016,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-equal@npm:~0.2.0":
-  version: 0.2.2
-  resolution: "deep-equal@npm:0.2.2"
-  checksum: 10/1377f87ad590e2863536b5bd48e053d221fd01f0134ca56de0c98b90b03f9c1c4bd68964a65b4d3b6b6c46344d97aee72e9b0c9f42c01841a0c5a2773534b605
-  languageName: node
-  linkType: hard
-
 "deep-is@npm:^0.1.3":
   version: 0.1.4
   resolution: "deep-is@npm:0.1.4"
@@ -8074,13 +8067,6 @@ __metadata:
   version: 3.0.0
   resolution: "define-lazy-prop@npm:3.0.0"
   checksum: 10/f28421cf9ee86eecaf5f3b8fe875f13d7009c2625e97645bfff7a2a49aca678270b86c39f9c32939e5ca7ab96b551377ed4139558c795e076774287ad3af1aa4
-  languageName: node
-  linkType: hard
-
-"defined@npm:~0.0.0":
-  version: 0.0.0
-  resolution: "defined@npm:0.0.0"
-  checksum: 10/97893afcae3764dbfe226e4b3f3fffda193aab21433f1310fd3740bda8adf37321857b19c02e890785f30f407acc3fd0e7e807feff0b2ed55128ff36b7eb7582
   languageName: node
   linkType: hard
 
@@ -10147,7 +10133,6 @@ __metadata:
     nodemon: "npm:^3.1.10"
     npm-run-all2: "npm:^6.2.6"
     nunjucks: "npm:^3.2.4"
-    obfuscate-email: "npm:^0.0.1"
     obfuscate-mail: "npm:^1.5.1"
     openid-client: "npm:^5.7.1"
     pa11y: "npm:^9.1.0"
@@ -10263,7 +10248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inherits@npm:2.0.4, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.1, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
+"inherits@npm:2.0.4, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 10/cd45e923bee15186c07fa4c89db0aace24824c482fb887b528304694b2aa6ff8a898da8657046a5dcf3e46cd6db6c61629551f9215f208d7c3f157cf9b290521
@@ -13076,15 +13061,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"obfuscate-email@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "obfuscate-email@npm:0.0.1"
-  dependencies:
-    tape: "npm:^3.0.3"
-  checksum: 10/c77fcfaf2dc7c39ed89c3837bf4d8f1f3196eb0c8e1de3640ce445d7918eae3d391e47cd266f71fd629034b91bcd609af7e4adf12ecc2a30e7186de379548db6
-  languageName: node
-  linkType: hard
-
 "obfuscate-mail@npm:^1.5.1":
   version: 1.5.1
   resolution: "obfuscate-mail@npm:1.5.1"
@@ -13110,13 +13086,6 @@ __metadata:
   version: 1.13.4
   resolution: "object-inspect@npm:1.13.4"
   checksum: 10/aa13b1190ad3e366f6c83ad8a16ed37a19ed57d267385aa4bfdccda833d7b90465c057ff6c55d035a6b2e52c1a2295582b294217a0a3a1ae7abdd6877ef781fb
-  languageName: node
-  linkType: hard
-
-"object-inspect@npm:~0.4.0":
-  version: 0.4.0
-  resolution: "object-inspect@npm:0.4.0"
-  checksum: 10/69cbf844d4aa3b9899d1a89a88bcf1376ba9c007b152b506fb0f75386ec011676c078cdcea1f7e3e04bd3ed684318367bf5acbcb9a9200a7cbdec6e970bfdfc7
   languageName: node
   linkType: hard
 
@@ -14602,15 +14571,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resumer@npm:~0.0.0":
-  version: 0.0.0
-  resolution: "resumer@npm:0.0.0"
-  dependencies:
-    through: "npm:~2.3.4"
-  checksum: 10/58952d77b658faa337edc11c1bae9b7fbf92f6373cd4e6eea2d55aafa959cd11f52e9b7f319f32c0d8d4c88b2b9cb163abab96630754ab29fd17608585855c15
-  languageName: node
-  linkType: hard
-
 "retry@npm:^0.10.0":
   version: 0.10.1
   resolution: "retry@npm:0.10.1"
@@ -15416,23 +15376,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tape@npm:^3.0.3":
-  version: 3.6.1
-  resolution: "tape@npm:3.6.1"
-  dependencies:
-    deep-equal: "npm:~0.2.0"
-    defined: "npm:~0.0.0"
-    glob: "npm:~3.2.9"
-    inherits: "npm:~2.0.1"
-    object-inspect: "npm:~0.4.0"
-    resumer: "npm:~0.0.0"
-    through: "npm:~2.3.4"
-  bin:
-    tape: ./bin/tape
-  checksum: 10/1ec6f27e43446b442eee856ab71cd28c449a7f5c24f4a44ae0e72165d64d9d9ba91e0be85af56e59d230dd2ad3ab02a6ef881ef06b442e5cac2b3d5b8ae48dc7
-  languageName: node
-  linkType: hard
-
 "tar-fs@npm:^3.0.6":
   version: 3.0.6
   resolution: "tar-fs@npm:3.0.6"
@@ -15583,7 +15526,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"through@npm:^2.3.6, through@npm:^2.3.8, through@npm:~2.3.4":
+"through@npm:^2.3.6, through@npm:^2.3.8":
   version: 2.3.8
   resolution: "through@npm:2.3.8"
   checksum: 10/5da78346f70139a7d213b65a0106f3c398d6bc5301f9248b5275f420abc2c4b1e77c2abc72d218dedc28c41efb2e7c312cb76a7730d04f9c2d37d247da3f4198
