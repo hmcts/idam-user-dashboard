@@ -4,6 +4,7 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { IncomingMessage } from 'http';
 import { RequestOptions } from 'https';
 import config from 'config';
@@ -38,7 +39,7 @@ export function initializeTelemetry() {
   };
 
   const customResource = resourceFromAttributes({
-    'service.name': config.get('services.insightname') as string,
+    [ATTR_SERVICE_NAME]: config.get('services.insightname') as string,
   });
 
   const options: AzureMonitorOpenTelemetryOptions = {
