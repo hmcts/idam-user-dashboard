@@ -1,18 +1,19 @@
 import { faker } from '@faker-js/faker';
 
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
+
 Feature('v2_view_user');
 
 Before(async ({ setupDAO, login }) => {
 
   await setupDAO.setupAdmin();
-  login('admin');
+  await login('admin');
 
 });
 
 Scenario('view admin user details', async ({ I }) => {
-  const adminEmail = codeceptjs.container.support('adminIdentity').email;
-  await I.navigateToManageUser(adminEmail);
-  I.see(adminEmail, I.locateDataForTitle('Email'));
+  await I.navigateToManageUser(ADMIN_EMAIL);
+  I.see(ADMIN_EMAIL, I.locateDataForTitle('Email'));
 });
 
 Scenario('view test user details',  async ({ I }) => {

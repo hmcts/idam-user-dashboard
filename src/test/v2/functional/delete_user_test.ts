@@ -3,7 +3,7 @@ Feature('v2_delete_user');
 Before(async ({ setupDAO, login }) => {
 
   await setupDAO.setupAdmin();
-  login('admin');
+  await login('admin');
 
 });
 

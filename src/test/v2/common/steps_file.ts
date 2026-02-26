@@ -1,5 +1,6 @@
 // in this file you can append custom step methods to 'I' object
 const { faker } = require('@faker-js/faker');
+const { tryTo } = require('codeceptjs/effects');
 
 const CLICK_RETRY = { retries: 3, minTimeout: 500, maxTimeout: 5000 };
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };

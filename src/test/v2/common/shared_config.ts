@@ -1,5 +1,9 @@
 const envConfig = require('config');
 
+function getSetupDao() {
+  return codeceptjs.container.support('setupDAO');
+}
+
 export const shared_config = {
   include: {},
   helpers: {},
@@ -48,7 +52,7 @@ shared_config.helpers = {
       'Accept': 'application/json',
     },
     onRequest: async (request) => {
-      const testToken = await codeceptjs.container.support('testingToken');
+      const testToken = await getSetupDao().getToken();
       request.headers = { 'Authorization': 'bearer ' + testToken };
     },
     factories: {
@@ -76,7 +80,7 @@ shared_config.plugins = {
     enabled: true,
     require: '@codeceptjs/allure-legacy'
   },
-  autoLogin: {
+  auth: {
     enabled: true,
     saveToFile: false,
     inject: 'login',
@@ -85,7 +89,10 @@ shared_config.plugins = {
         // loginAs function is defined in `steps_file.js`
         login: (I) => {
           I.say('performing autologin');
-          const adminIdentity = codeceptjs.container.support('adminIdentity');
+          const adminIdentity = getSetupDao().getAdminIdentity();
+          if (!adminIdentity) {
+            throw new Error('adminIdentity is not set. Run setupDAO.setupAdmin() before login.');
+          }
           I.loginAs(adminIdentity.email, adminIdentity.secret);
           I.say('Completed autologin');
         },
@@ -93,14 +100,11 @@ shared_config.plugins = {
         check: (I) => {
           I.amOnPage('/');
           I.say('performing login check');
-          I.retry({ retries: 9, minTimeout: 500 }).seeElement('h1');
+          I.waitForElement('h1', 10);
           I.see('What do you want to do?', 'h1');
           I.say('completed login check');
         }
       }
     }
-  },
-  tryTo: {
-    enabled: true
   }
 };

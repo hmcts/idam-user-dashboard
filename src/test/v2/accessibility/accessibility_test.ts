@@ -2,7 +2,7 @@ Feature('v2_accessibility_tests');
 
 Before(async ({ setupDAO, login }) => {
   await setupDAO.setupAdmin();
-  login('admin');
+  await login('admin');
 });
 
 Scenario('I am on manage user page',  async ({ I }) => {

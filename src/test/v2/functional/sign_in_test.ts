@@ -6,8 +6,8 @@ Before(async ({ setupDAO }) => {
 
 });
 
-Scenario('login as admin successfully',  ({ I, login }) => {
-  login('admin');
+Scenario('login as admin successfully',  async ({ I, login }) => {
+  await login('admin');
   I.seeAfterClick('What do you want to do?', 'h1');
   I.dontSee('Sorry, access to this resource is forbidden');
   I.dontSee('Status code: 403');

@@ -4,7 +4,7 @@ import {InvitationTypes, Invite} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
 import logger from '../../modules/logging';
-const obfuscate = require('obfuscate-email');
+const obfuscate = require('obfuscate-mail');
 
 export class InviteService {
   private readonly INVITE_ENDPOINT: string = config.get('services.idam.endpoint.invite');

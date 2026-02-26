@@ -5,7 +5,7 @@ Feature('v2_edit_user_remove_sso');
 Before(async ({ setupDAO, login }) => {
 
   await setupDAO.setupAdmin();
-  login('admin');
+  await login('admin');
 
 });
 
