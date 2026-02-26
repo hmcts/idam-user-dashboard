@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { tryTo } from 'codeceptjs/effects';
 import { BuildInfoHelper } from '../common/build_info';
 
 const ACTION_RETRY = { retries: 9, minTimeout: 250 };
