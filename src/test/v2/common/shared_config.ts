@@ -100,7 +100,7 @@ shared_config.plugins = {
         check: (I) => {
           I.amOnPage('/');
           I.say('performing login check');
-          I.retry({ retries: 9, minTimeout: 500 }).seeElement('h1');
+          I.seeElement('h1').retry({ retries: 9, minTimeout: 500 });
           I.see('What do you want to do?', 'h1');
           I.say('completed login check');
         }
