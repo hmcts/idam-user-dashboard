@@ -3,7 +3,7 @@ Feature('v2_generate_report');
 Before(async ({ setupDAO, login }) => {
 
   await setupDAO.setupAdmin();
-  login('admin');
+  await login('admin');
 
 });
 

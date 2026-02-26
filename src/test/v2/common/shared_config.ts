@@ -1,5 +1,9 @@
 const envConfig = require('config');
 
+function getSetupDao() {
+  return codeceptjs.container.support('setupDAO');
+}
+
 export const shared_config = {
   include: {},
   helpers: {},
@@ -48,7 +52,7 @@ shared_config.helpers = {
       'Accept': 'application/json',
     },
     onRequest: async (request) => {
-      const testToken = await codeceptjs.container.support('testingToken');
+      const testToken = await getSetupDao().getToken();
       request.headers = { 'Authorization': 'bearer ' + testToken };
     },
     factories: {
@@ -85,7 +89,10 @@ shared_config.plugins = {
         // loginAs function is defined in `steps_file.js`
         login: (I) => {
           I.say('performing autologin');
-          const adminIdentity = codeceptjs.container.support('adminIdentity');
+          const adminIdentity = getSetupDao().getAdminIdentity();
+          if (!adminIdentity) {
+            throw new Error('adminIdentity is not set. Run setupDAO.setupAdmin() before login.');
+          }
           I.loginAs(adminIdentity.email, adminIdentity.secret);
           I.say('Completed autologin');
         },

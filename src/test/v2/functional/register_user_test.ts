@@ -3,13 +3,14 @@ import { tryTo } from 'codeceptjs/effects';
 import { BuildInfoHelper } from '../common/build_info';
 
 const ACTION_RETRY = { retries: 9, minTimeout: 250 };
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
 
 Feature('v2_register_user');
 
 Before(async ({ setupDAO, login }) => {
 
   await setupDAO.setupAdmin();
-  login('admin');
+  await login('admin');
 
 });
 
@@ -88,9 +89,9 @@ Scenario('I as an admin should see validation errors for invalid values', async 
   I.see('You must enter an email address');
 
   await I.goToRegisterUser();
-  I.fillField('email', codeceptjs.container.support('adminIdentity').email);
+  I.fillField('email', ADMIN_EMAIL);
   await I.clickToExpectProblem('Continue');
-  I.see('The email \'' + codeceptjs.container.support('adminIdentity').email + '\' already exists');
+  I.see('The email \'' + ADMIN_EMAIL + '\' already exists');
 
   await I.goToRegisterUser();
   I.fillField('email', faker.internet.email());
