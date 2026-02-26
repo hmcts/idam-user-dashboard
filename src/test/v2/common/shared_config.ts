@@ -76,7 +76,7 @@ shared_config.plugins = {
     enabled: true,
     require: '@codeceptjs/allure-legacy'
   },
-  autoLogin: {
+  auth: {
     enabled: true,
     saveToFile: false,
     inject: 'login',
