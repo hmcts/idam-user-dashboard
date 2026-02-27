@@ -1,9 +1,14 @@
 // in this file you can append custom step methods to 'I' object
 const { faker } = require('@faker-js/faker');
+const envConfig = require('config');
 const { tryTo, retryTo } = require('codeceptjs/effects');
 
 const CLICK_RETRY = { retries: 3, minTimeout: 500, maxTimeout: 5000 };
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
+const IDAM_API_URL = String(envConfig.get('services.idam.url.api') || '');
+if (!/^https?:\/\//.test(IDAM_API_URL)) {
+  throw new Error(`Invalid services.idam.url.api URL: "${envConfig.get('services.idam.url.api')}"`);
+}
 
 export = function() {
   return actor({
@@ -19,7 +24,7 @@ export = function() {
       if (heading === 'Sign in') {
         return this.doClassicLogin(email, password);
       }
-      if (heading === 'Enter your email address') {
+      if (heading === 'Enter your email address' || heading === 'Enter your password' || heading === 'What do you want to do?') {
         return this.doModernLogin(email, password);
       }
       throw new Error(`Unexpected login page heading: "${heading}"`);
@@ -36,13 +41,24 @@ export = function() {
     },
     async doModernLogin(email : string, password : string) {
       await this.say('Modern login');
-      await this.withRetry(() => this.see('Enter your email address', 'h1'));
-      await this.fillField('email', email);
-      await this.withRetry(() => this.click('Continue'), CLICK_RETRY);
+      await this.waitForElement('h1', 10);
+      const startHeading = (await this.grabTextFrom('h1')).trim();
+      if (startHeading === 'What do you want to do?') {
+        return;
+      }
+      if (startHeading === 'Sign in') {
+        await this.doClassicLogin(email, password);
+        return;
+      }
+      if (startHeading === 'Enter your email address') {
+        await this.fillField('email', email);
+        await this.withRetry(() => this.click('Continue'), CLICK_RETRY);
+      } else if (startHeading !== 'Enter your password') {
+        throw new Error(`Unexpected modern login heading: "${startHeading}"`);
+      }
       await this.withRetry(() => this.see('Enter your password', 'h1'));
       await this.fillField('password', secret(password));
       await this.withRetry(() => this.click('Continue'), CLICK_RETRY);
-      await this.withRetry(() => this.dontSee('Enter your password', 'h1'));
       await this.withRetry(() => this.seeElement('h1'));
       await this.withRetry(() => this.see('What do you want to do?', 'h1'));
     },
@@ -175,20 +191,24 @@ export = function() {
       });
       await this.seeAfterClick('Success', locate('h2.govuk-notification-banner__title'));
     },
-    lockTestUser(email : string) {
+    async lockTestUser(email : string) {
       for (let i=0; i<5; i++) {
-        this.sendPostRequest(process.env.STRATEGIC_SERVICE_URL + '/o/token', {
-          'grant_type':'password',
-          'client_id':'idam-functional-test-service',
-          'client_secret': process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET,
-          'scope':'profile roles',
-          'username':email,
-          'password':'invalid'
-        },
-        {
+        const clientSecret = process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET;
+        if (!clientSecret) {
+          throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is not set');
+        }
+        const form = new URLSearchParams({
+          grant_type: 'password',
+          client_id: 'idam-functional-test-service',
+          client_secret: clientSecret,
+          scope: 'profile roles',
+          username: email,
+          password: 'invalid'
+        }).toString();
+        await this.sendPostRequest(`${IDAM_API_URL}/o/token`, form, {
           'Content-Type': 'application/x-www-form-urlencoded'
         });
-        this.wait(1);
+        await this.wait(1);
       }
     },
     async archiveExistingTestUser(user: any, testToken: string) {

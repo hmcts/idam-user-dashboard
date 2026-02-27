@@ -5,6 +5,9 @@ function getSetupDao() {
 }
 
 const testingSupportApiUrl = String(envConfig.get('services.idam.url.testingSupportApi') || '');
+if (!/^https?:\/\//.test(testingSupportApiUrl) || testingSupportApiUrl.includes('undefined')) {
+  throw new Error(`Invalid services.idam.url.testingSupportApi URL: "${envConfig.get('services.idam.url.testingSupportApi')}"`);
+}
 
 export const shared_config = {
   include: {},

@@ -17,7 +17,7 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   const betaAdmin = await I.haveUser({
     roleNames: [privateBetaAdminRole.name, 'idam-user-dashboard--access']
   });
-  I.loginAs(betaAdmin.email, betaAdmin.password);
+  await I.loginAs(betaAdmin.email, betaAdmin.password);
 
   const registerForename = faker.person.firstName();
   const registerSurname = faker.person.lastName();

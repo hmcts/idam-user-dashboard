@@ -61,7 +61,7 @@ Scenario('view suspended user details',  async ({ I }) => {
 
 Scenario('view locked user details',  async ({ I }) => {
   const testUser = await I.haveUser();
-  I.lockTestUser(testUser.email);
+  await I.lockTestUser(testUser.email);
   await I.goToManageUser(testUser.id);
   I.see(testUser.email, I.locateDataForTitle('Email'));
   I.see('IDAM', I.locateDataForTitle('Identity Provider'));
