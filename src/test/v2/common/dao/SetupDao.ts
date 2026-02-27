@@ -37,8 +37,7 @@ class SetupDAO {
         client_secret: clientSecret,
         scope: 'profile roles',
       }).toString();
-      const tokenRsp = await I.sendPostRequest(`${IDAM_API_URL}/o/token`, form,
-      {
+      const tokenRsp = await I.sendPostRequest(`${IDAM_API_URL}/o/token`, form, {
         'Content-Type': 'application/x-www-form-urlencoded'
       });
       I.seeResponseCodeIsSuccessful();
