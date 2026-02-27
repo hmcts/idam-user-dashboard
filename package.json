@@ -179,7 +179,8 @@
     "lodash": "^4.17.23",
     "axios": "^1.13.5",
     "bn.js": "^5.2.3",
-    "test-exclude": "^8.0.0"
+    "test-exclude": "^8.0.0",
+    "minimatch": "^10.2.3"
   },
   "packageManager": "yarn@4.5.0"
 }
