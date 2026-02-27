@@ -31,12 +31,13 @@ class SetupDAO {
       if (!clientSecret) {
         throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is not set');
       }
-      const tokenRsp = await I.sendPostRequest(`${IDAM_API_URL}/o/token`, { 
-        'grant_type':'client_credentials',
-        'client_id':'idam-functional-test-service',
-        'client_secret': clientSecret,
-        'scope':'profile roles',
-      },
+      const form = new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: 'idam-functional-test-service',
+        client_secret: clientSecret,
+        scope: 'profile roles',
+      }).toString();
+      const tokenRsp = await I.sendPostRequest(`${IDAM_API_URL}/o/token`, form,
       {
         'Content-Type': 'application/x-www-form-urlencoded'
       });
