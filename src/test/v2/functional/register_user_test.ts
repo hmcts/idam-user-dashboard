@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { tryTo } from 'codeceptjs/effects';
+import { tryTo, retryTo } from 'codeceptjs/effects';
 import { BuildInfoHelper } from '../common/build_info';
 
 const ACTION_RETRY = { retries: 9, minTimeout: 250 };
@@ -26,7 +26,7 @@ Scenario('I as an admin should be able to register support user', async ({ I, se
   I.fillField('#surname', registerSurname);
   I.click('Support');
   await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
-  await I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await retryTo(() => I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name)), ACTION_RETRY.retries);
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToNavigateWithNoRetry('Save', '/user/add/roles', 'User registered');
 
@@ -50,7 +50,7 @@ Scenario('I as an admin should be able to register professional user', async ({ 
   I.fillField('#surname', registerSurname);
   I.click('Professional');
   await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
-  await I.retry(ACTION_RETRY).checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await retryTo(() => I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name)), ACTION_RETRY.retries);
   await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
   await I.clickToNavigateWithNoRetry('Save', '/user/add/roles', 'User registered');
 
@@ -134,11 +134,11 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
   I.fillField('#surname', faker.person.lastName());
   I.click('Support');
   await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
-  I.retry(ACTION_RETRY).uncheckOption('#hide-disabled');
+  await retryTo(() => I.uncheckOption('#hide-disabled'), ACTION_RETRY.retries);
 
   I.fillField('#roles__search-box', adminRole.name);
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(adminRole.name), 3));
-  await I.retry(ACTION_RETRY).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
+  await retryTo(() => I.seeIsNotHidden(I.locateRoleContainer(adminRole.name)), ACTION_RETRY.retries);
   
   I.fillField('#roles__search-box', 'iud-filter-role-');
   await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
@@ -150,7 +150,7 @@ Scenario('I as an admin can search for roles to add', async ({ I, setupDAO }) =>
     I.wait(3);
     I.scrollPageToBottom();
   }
-  await I.retry(ACTION_RETRY).seeIsHidden(I.locateRoleContainer(adminRole.name));
+  await retryTo(() => I.seeIsHidden(I.locateRoleContainer(adminRole.name)), ACTION_RETRY.retries);
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
   roleCheckboxes.forEach(function (checkbox) {

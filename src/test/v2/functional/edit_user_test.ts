@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { tryTo } from 'codeceptjs/effects';
+import { tryTo, retryTo } from 'codeceptjs/effects';
 import { BuildInfoHelper } from '../common/build_info';
  
 Feature('v2_edit_user');
@@ -111,10 +111,10 @@ Scenario('I as an admin can enable MFA', async ({ I, setupDAO }) => {
   const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled', setupDAO.getWorkerRole().name]});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
-  await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  await retryTo(() => I.dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'})), 9);
 
   I.checkOption(locate('input').withAttr({name: 'multiFactorAuthentication'}));
-  await I.retry(9).seeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'}));
+  await retryTo(() => I.seeCheckboxIsChecked(locate('input').withAttr({name: 'multiFactorAuthentication'})), 9);
 
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
@@ -143,11 +143,11 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
 
   I.fillField('#roles__search-box', adminRole.name);
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(adminRole.name), 3));
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(adminRole.name));
+  await retryTo(() => I.seeIsNotHidden(I.locateRoleContainer(adminRole.name)), 9);
   
   I.fillField('#roles__search-box', 'iud-filter-role-');
   await tryTo(() => I.waitForInvisible(I.locateRoleContainer(adminRole.name), 3));
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsHidden(I.locateRoleContainer(adminRole.name));
+  await retryTo(() => I.seeIsHidden(I.locateRoleContainer(adminRole.name)), 9);
 
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(testRole.name), 3));
   const numVisible = await I.grabNumberOfVisibleElements(I.locateRoleContainer(testRole.name));
@@ -158,7 +158,7 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
     I.wait(3);
     I.scrollPageToBottom();
   }
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(testRole.name));
+  await retryTo(() => I.seeIsNotHidden(I.locateRoleContainer(testRole.name)), 9);
   await I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
 
   const roleCheckboxes = await I.grabValueFromAll(locate('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']'));
@@ -178,7 +178,7 @@ Scenario('I as an admin can add a filtered role and existing roles are unchanged
 
   I.fillField('#roles__search-box', workerRole.name);
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(workerRole.name), 3));
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(workerRole.name));
+  await retryTo(() => I.seeIsNotHidden(I.locateRoleContainer(workerRole.name)), 9);
   
   await tryTo(() => I.waitForVisible(I.locateRoleContainer(workerRole.name), 3));
   const numVisible = await I.grabNumberOfVisibleElements(I.locateRoleContainer(workerRole.name));
@@ -189,7 +189,7 @@ Scenario('I as an admin can add a filtered role and existing roles are unchanged
     I.wait(3);
     I.scrollPageToBottom();
   }
-  await I.retry({ retries: 9, minTimeout: 250 }).seeIsNotHidden(I.locateRoleContainer(workerRole.name));
+  await retryTo(() => I.seeIsNotHidden(I.locateRoleContainer(workerRole.name)), 9);
 
   I.checkOption(I.locateInput('roles', workerRole.name));
   await I.seeCheckboxIsChecked(I.locateInput('roles', workerRole.name));
@@ -238,7 +238,7 @@ Scenario('I as an admin can remove the citizen attribute if there is a caseworke
   I.assertFalse(citizenRoleDisabled);
 
   I.uncheckOption(locate('input').withAttr({name: 'isCitizen'}));
-  await I.retry(9).dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'isCitizen'}));
+  await retryTo(() => I.dontSeeCheckboxIsChecked(locate('input').withAttr({name: 'isCitizen'})), 9);
 
   await I.clickToExpectSuccess('Save');
   I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));

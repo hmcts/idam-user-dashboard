@@ -1,56 +1,61 @@
 // in this file you can append custom step methods to 'I' object
 const { faker } = require('@faker-js/faker');
-const { tryTo } = require('codeceptjs/effects');
+const { tryTo, retryTo } = require('codeceptjs/effects');
 
 const CLICK_RETRY = { retries: 3, minTimeout: 500, maxTimeout: 5000 };
 const AFTER_CLICK_RETRY = { retries: 9, minTimeout: 300 };
 
 export = function() {
   return actor({
-    doLogin(email : string, password : string) {
-      this.amOnPage('/');
-      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
-      tryTo(() => {
-        this.see('Sign in', 'h1');
-        this.doClassicLogin(email, password);
-      });
-      tryTo(() => {
-        this.see('Enter your email address', 'h1');
-        this.doModernLogin(email, password);
-      });
+    async withRetry(action, retryConfig = AFTER_CLICK_RETRY) {
+      const retries = typeof retryConfig === 'number' ? retryConfig : retryConfig.retries;
+      const minTimeout = typeof retryConfig === 'number' ? 200 : retryConfig.minTimeout;
+      await retryTo(async () => action(), retries, minTimeout || 200);
     },
-    doClassicLogin(email : string, password : string) {
-      this.say('Classic login');
-      this.retry(AFTER_CLICK_RETRY).see('Sign in', 'h1');
-      this.fillField('Email', email);
-      this.fillField('Password', secret(password));
-      this.retry(CLICK_RETRY).click('Sign in');
-      this.retry(AFTER_CLICK_RETRY).dontSee('Sign in', 'h1');
-      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
-      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
+    async doLogin(email : string, password : string) {
+      await this.amOnPage('/');
+      await this.waitForElement('h1', 10);
+      const heading = (await this.grabTextFrom('h1')).trim();
+      if (heading === 'Sign in') {
+        return this.doClassicLogin(email, password);
+      }
+      if (heading === 'Enter your email address') {
+        return this.doModernLogin(email, password);
+      }
+      throw new Error(`Unexpected login page heading: "${heading}"`);
     },
-    doModernLogin(email : string, password : string) {
-      this.say('Modern login');
-      this.retry(AFTER_CLICK_RETRY).see('Enter your email address', 'h1');
-      this.fillField('email', email);
-      this.retry(CLICK_RETRY).click('Continue');
-      this.retry(AFTER_CLICK_RETRY).see('Enter your password', 'h1');
-      this.fillField('password', secret(password));
-      this.retry(CLICK_RETRY).click('Continue');
-      this.retry(AFTER_CLICK_RETRY).dontSee('Enter your password', 'h1');
-      this.retry(AFTER_CLICK_RETRY).seeElement('h1');
-      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
+    async doClassicLogin(email : string, password : string) {
+      await this.say('Classic login');
+      await this.withRetry(() => this.see('Sign in', 'h1'));
+      await this.fillField('Email', email);
+      await this.fillField('Password', secret(password));
+      await this.withRetry(() => this.click('Sign in'), CLICK_RETRY);
+      await this.withRetry(() => this.dontSee('Sign in', 'h1'));
+      await this.withRetry(() => this.seeElement('h1'));
+      await this.withRetry(() => this.see('What do you want to do?', 'h1'));
     },
-    loginAs(email : string, password : string) {
-      tryTo(() => this.doLogin(email, password));
-      tryTo(() => {
-        this.dontSee('What do you want to do?', 'h1');
-        this.doLogin(email, password);
-      });
-      this.retry(AFTER_CLICK_RETRY).see('What do you want to do?', 'h1');
+    async doModernLogin(email : string, password : string) {
+      await this.say('Modern login');
+      await this.withRetry(() => this.see('Enter your email address', 'h1'));
+      await this.fillField('email', email);
+      await this.withRetry(() => this.click('Continue'), CLICK_RETRY);
+      await this.withRetry(() => this.see('Enter your password', 'h1'));
+      await this.fillField('password', secret(password));
+      await this.withRetry(() => this.click('Continue'), CLICK_RETRY);
+      await this.withRetry(() => this.dontSee('Enter your password', 'h1'));
+      await this.withRetry(() => this.seeElement('h1'));
+      await this.withRetry(() => this.see('What do you want to do?', 'h1'));
+    },
+    async loginAs(email : string, password : string) {
+      await this.doLogin(email, password);
+      const atHome = await tryTo(() => this.see('What do you want to do?', 'h1'));
+      if (!atHome) {
+        await this.doLogin(email, password);
+      }
+      await this.withRetry(() => this.see('What do you want to do?', 'h1'));
     },
     async goToPage(expectedUrl: String, expectedHeading? : String) {
-      tryTo(() => this.amOnPage(expectedUrl));
+      await tryTo(() => this.amOnPage(expectedUrl));
       const foundHeading = await tryTo(() => this.waitForElement('h1', 3));
       let currentHeading;
       if (foundHeading) {
@@ -59,8 +64,8 @@ export = function() {
       if (!currentHeading || currentHeading.trim() != expectedHeading) {
         this.say('failed to reach expected page on first attempt');
         this.amOnPage(expectedUrl);
-        await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
-        await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+        await this.withRetry(() => this.seeElement('h1'));
+        await this.withRetry(() => this.see(expectedHeading, 'h1'));
       } else {
         await this.see(expectedHeading, 'h1');
       }
@@ -71,7 +76,7 @@ export = function() {
     },
     async navigateToManageUser(searchValue : string) {
       await this.navigateToSearchUser();
-      await this.retry(AFTER_CLICK_RETRY).fillField('search', searchValue);
+      await this.withRetry(() => this.fillField('search', searchValue));
       await this.clickToNavigate('Search', '/details', 'User Details');
     },
     async navigateToSearchUser() {
@@ -97,21 +102,21 @@ export = function() {
       await this.clickToNavigate('Continue', '/user/add', 'Add new user email');
     },
     seeAfterClick(seeValue : string, location) {
-      this.retry(AFTER_CLICK_RETRY).see(seeValue, location);
+      this.withRetry(() => this.see(seeValue, location));
     },
     async clickToNavigateWithNoRetry(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
-      await this.retry(CLICK_RETRY).click(clickText);
-      await this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
-      await this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
-      await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      await this.withRetry(() => this.click(clickText), CLICK_RETRY);
+      await this.withRetry(() => this.dontSee(originalHeading.trim(), 'h1'));
+      await this.withRetry(() => this.seeInCurrentUrl(expectedUrl));
+      await this.withRetry(() => this.seeElement('h1'));
       if (expectedHeading) {
-        await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+        await this.withRetry(() => this.see(expectedHeading, 'h1'));
       }
     },
     async clickToNavigate(clickText : String, expectedUrl : String, expectedHeading? : String) {
       const originalHeading : String = await this.grabTextFrom('h1');
-      await this.retry(CLICK_RETRY).click(clickText);
+      await this.withRetry(() => this.click(clickText), CLICK_RETRY);
       const foundHeading = await tryTo(() => this.waitForElement('h1', 3));
       if (!foundHeading) {
         this.say('RETRY: No heading on page, going back to try again');
@@ -129,7 +134,7 @@ export = function() {
         await this.wait(3);
         const onStartPage = await tryTo(() => this.see(originalHeading, 'h1'));
         if (onStartPage) {
-          await this.retry(CLICK_RETRY).click(clickText);
+          await this.withRetry(() => this.click(clickText), CLICK_RETRY);
           await this.wait(3);
         } else {
           const backUrl = await this.grabCurrentUrl();
@@ -143,15 +148,15 @@ export = function() {
           }
         }
       } 
-      await this.retry(AFTER_CLICK_RETRY).dontSee(originalHeading.trim(), 'h1');
-      await this.retry(AFTER_CLICK_RETRY).seeInCurrentUrl(expectedUrl);
-      await this.retry(AFTER_CLICK_RETRY).seeElement('h1');
+      await this.withRetry(() => this.dontSee(originalHeading.trim(), 'h1'));
+      await this.withRetry(() => this.seeInCurrentUrl(expectedUrl));
+      await this.withRetry(() => this.seeElement('h1'));
       if (expectedHeading) {
-        await this.retry(AFTER_CLICK_RETRY).see(expectedHeading, 'h1');
+        await this.withRetry(() => this.see(expectedHeading, 'h1'));
       }
     },
     async clickToExpectProblem(clickText : String) {
-      await this.retry(CLICK_RETRY).click(clickText);
+      await this.withRetry(() => this.click(clickText), CLICK_RETRY);
       await tryTo(() => {
         this.see('Bad Gateway');
         this.say('Oh no, there is a bad gateway. Let me try again');
@@ -161,7 +166,7 @@ export = function() {
       await this.seeAfterClick('There is a problem', locate('h2.govuk-error-summary__title'));
     },
     async clickToExpectSuccess(clickText : String) {
-      await this.retry(CLICK_RETRY).click(clickText);
+      await this.withRetry(() => this.click(clickText), CLICK_RETRY);
       await tryTo(() => {
         this.see('Bad Gateway');
         this.say('Oh no, there is a bad gateway. Let me try again');

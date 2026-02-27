@@ -4,6 +4,10 @@ const { I } = inject();
 const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
 const ADMIN_ROLE_NAME = 'iud-test-admin';
 const WORKER_ROLE_NAME = 'iud-test-worker';
+const IDAM_API_URL = String(envConfig.get('services.idam.url.api') || '');
+if (!/^https?:\/\//.test(IDAM_API_URL)) {
+  throw new Error(`Invalid services.idam.url.api URL: "${envConfig.get('services.idam.url.api')}"`);
+}
 
 class SetupDAO {
   private testingToken?: string;
@@ -27,7 +31,7 @@ class SetupDAO {
       if (!clientSecret) {
         throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is not set');
       }
-      const tokenRsp = await I.sendPostRequest(`${envConfig.get('services.idam.url.api')}/o/token`, { 
+      const tokenRsp = await I.sendPostRequest(`${IDAM_API_URL}/o/token`, { 
         'grant_type':'client_credentials',
         'client_id':'idam-functional-test-service',
         'client_secret': clientSecret,

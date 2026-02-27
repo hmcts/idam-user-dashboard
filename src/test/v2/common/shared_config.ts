@@ -4,6 +4,8 @@ function getSetupDao() {
   return codeceptjs.container.support('setupDAO');
 }
 
+const testingSupportApiUrl = String(envConfig.get('services.idam.url.testingSupportApi') || '');
+
 export const shared_config = {
   include: {},
   helpers: {},
@@ -37,7 +39,7 @@ shared_config.helpers = {
     reportFileName: 'a11y-audit.html',
   },
   REST: {
-    endpoint: envConfig.get('services.idam.url.testingSupportApi'),
+    endpoint: testingSupportApiUrl,
     timeout: 30000
   },
   JSONResponse: {},
@@ -45,7 +47,7 @@ shared_config.helpers = {
     require: 'codeceptjs-chai'
   },
   ApiDataFactory: {
-    endpoint: envConfig.get('services.idam.url.testingSupportApi'),
+    endpoint: testingSupportApiUrl,
     cleanup: false,
     headers: {
       'Content-Type': 'application/json',
@@ -87,22 +89,21 @@ shared_config.plugins = {
     users: {
       admin: {
         // loginAs function is defined in `steps_file.js`
-        login: (I) => {
-          I.say('performing autologin');
+        login: async (I) => {
+          await I.say('performing autologin');
           const adminIdentity = getSetupDao().getAdminIdentity();
-          if (!adminIdentity) {
-            throw new Error('adminIdentity is not set. Run setupDAO.setupAdmin() before login.');
-          }
-          I.loginAs(adminIdentity.email, adminIdentity.secret);
-          I.say('Completed autologin');
+          await I.loginAs(adminIdentity.email, adminIdentity.secret);
+          await I.say('Completed autologin');
         },
+        fetch: async () => undefined,
+        restore: async () => {},
         // if we see manage users page,  we are logged in
-        check: (I) => {
-          I.amOnPage('/');
-          I.say('performing login check');
-          I.waitForElement('h1', 10);
-          I.see('What do you want to do?', 'h1');
-          I.say('completed login check');
+        check: async (I) => {
+          await I.amOnPage('/');
+          await I.say('performing login check');
+          await I.waitForElement('h1', 10);
+          await I.see('What do you want to do?', 'h1');
+          await I.say('completed login check');
         }
       }
     }

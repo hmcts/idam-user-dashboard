@@ -5,7 +5,7 @@ type A11yHelper = import('codeceptjs-a11y-helper');
 type ChaiWrapper = import('codeceptjs-chai');
 
 declare namespace CodeceptJS {
-  interface SupportObject { I: I, current: any, setupDAO: setupDAO, login: (name: string) => Promise<void> | void }
+  interface SupportObject { I: I, current: any, setupDAO: setupDAO }
   interface Methods extends Playwright, A11yHelper, REST, JSONResponse, ChaiWrapper, ApiDataFactory {}
   interface I extends ReturnType<steps_file>, WithTranslation<Methods> {}
   namespace Translation {
