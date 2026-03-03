@@ -1,5 +1,7 @@
+const normalizeTestUrl = (url: string): string => url.replace(/\/+$/, '');
+
 export const config = {
-  TEST_URL: process.env.TEST_URL || 'http://localhost:3100',
+  TEST_URL: normalizeTestUrl(process.env.TEST_URL || 'http://localhost:3100'),
   SMOKE_TEST_USER_USERNAME: process.env.SMOKE_TEST_USER_USERNAME,
   SMOKE_TEST_USER_PASSWORD: process.env.SMOKE_TEST_USER_PASSWORD,
   TEST_SUITE_PREFIX: 'TEST_IDAM_',
@@ -56,4 +58,3 @@ config.helpers = {
     require: '../functional/shared/helpers/featureFlagHelper.ts'
   }
 };
-
