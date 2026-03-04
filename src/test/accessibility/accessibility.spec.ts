@@ -1,13 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { Page } from '@playwright/test';
-import { test, expect } from '../fixtures/admin.fixture';
+import { test, expect } from '../playwright/fixtures/admin.fixture';
 import {
   navigateToEditUser,
   navigateToGenerateReport,
   navigateToManageUser,
   navigateToRegisterUser,
   navigateToSearchUser,
-} from '../helpers/navigation';
+} from '../playwright/helpers/navigation';
 
 async function runA11yAudit(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page })

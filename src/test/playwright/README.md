@@ -6,6 +6,7 @@ This folder is the migration target for replacing CodeceptJS tests with Playwrig
 
 - `yarn test:pw:list` lists discovered Playwright tests.
 - `yarn test:pw` runs Playwright tests with `playwright.config.ts`.
+- `yarn test:accessibility:v2` runs the migrated accessibility suite in Playwright.
 
 ## Environment
 
@@ -19,6 +20,7 @@ This folder is the migration target for replacing CodeceptJS tests with Playwrig
 - `fixtures/admin.fixture.ts`: auto-login admin fixture with auto-skip when required secret is missing.
 - `helpers/`: shared navigation, locators, and action helpers.
 - `specs/`: migrated Playwright specs.
+- `../accessibility/`: migrated accessibility scenarios.
 
 ## Current Coverage
 
