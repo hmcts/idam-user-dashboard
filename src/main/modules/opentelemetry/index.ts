@@ -9,6 +9,7 @@ import { IncomingMessage } from 'http';
 import { RequestOptions } from 'https';
 import config from 'config';
 import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
+import { applyRequestTraceAttributesToSpan } from './requestTraceAttributes';
 
 export function initializeTelemetry() {
 
@@ -35,6 +36,9 @@ export function initializeTelemetry() {
         return true;
       }
       return false;
+    },
+    applyCustomAttributesOnSpan: (span, request) => {
+      applyRequestTraceAttributesToSpan(span, request);
     }
   };
 
