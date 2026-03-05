@@ -14,7 +14,7 @@ import { USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
-const obfuscate = require('obfuscate-email');
+const obfuscate = require('obfuscate-mail');
 import { trace } from '@opentelemetry/api';
 import logger from '../modules/logging';
 
