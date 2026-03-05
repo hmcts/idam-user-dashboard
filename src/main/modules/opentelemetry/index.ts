@@ -2,7 +2,7 @@ import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from '@azure/monito
 import { trace, ProxyTracerProvider } from '@opentelemetry/api';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { resourceFromAttributes } from '@opentelemetry/resources';
-import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { IncomingMessage } from 'http';
@@ -42,7 +42,7 @@ export function initializeTelemetry() {
   // Setting role name and role instance
   // ----------------------------------------
   const customResource = resourceFromAttributes({
-    [SEMRESATTRS_SERVICE_NAME]: config.get('services.insightname'),
+    [ATTR_SERVICE_NAME]: config.get('services.insightname'),
   });
 
   const options: AzureMonitorOpenTelemetryOptions = {
