@@ -1,5 +1,5 @@
 import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from '@azure/monitor-opentelemetry';
-import { trace, ProxyTracerProvider } from '@opentelemetry/api';
+import { trace } from '@opentelemetry/api';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
@@ -67,12 +67,11 @@ export function initializeTelemetry() {
 }
 
 function addOpenTelemetryInstrumentation() {
-  const tracerProvider = (trace.getTracerProvider() as ProxyTracerProvider).getDelegate();
   registerInstrumentations({
     instrumentations: [
       new ExpressInstrumentation(),
       new WinstonInstrumentation()
     ],
-    tracerProvider: tracerProvider,
+    tracerProvider: trace.getTracerProvider(),
   });
 }
