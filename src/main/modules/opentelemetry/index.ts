@@ -1,14 +1,15 @@
 import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from '@azure/monitor-opentelemetry';
-import { trace, ProxyTracerProvider } from '@opentelemetry/api';
+import { trace } from '@opentelemetry/api';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import { Resource } from '@opentelemetry/resources';
-import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { IncomingMessage } from 'http';
 import { RequestOptions } from 'https';
 import config from 'config';
 import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
+import { applyRequestTraceAttributesToSpan } from './requestTraceAttributes';
 
 export function initializeTelemetry() {
 
@@ -35,14 +36,18 @@ export function initializeTelemetry() {
         return true;
       }
       return false;
+    },
+    applyCustomAttributesOnSpan: (span, request) => {
+      applyRequestTraceAttributesToSpan(span, request);
     }
   };
 
-  const customResource = Resource.EMPTY;
   // ----------------------------------------
   // Setting role name and role instance
   // ----------------------------------------
-  customResource.attributes[SEMRESATTRS_SERVICE_NAME] = config.get('services.insightname');
+  const customResource = resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: config.get('services.insightname'),
+  });
 
   const options: AzureMonitorOpenTelemetryOptions = {
     azureMonitorExporterOptions: {
@@ -51,7 +56,7 @@ export function initializeTelemetry() {
     // Sampling could be configured here
     samplingRatio: 1.0,
     // Use custom Resource
-    resource: customResource as any,
+    resource: customResource,
     instrumentationOptions: {
       http: httpInstrumentationConfig,
       azureSdk: { enabled: true }
@@ -66,12 +71,11 @@ export function initializeTelemetry() {
 }
 
 function addOpenTelemetryInstrumentation() {
-  const tracerProvider = (trace.getTracerProvider() as ProxyTracerProvider).getDelegate();
   registerInstrumentations({
     instrumentations: [
       new ExpressInstrumentation(),
       new WinstonInstrumentation()
     ],
-    tracerProvider: tracerProvider,
+    tracerProvider: trace.getTracerProvider(),
   });
 }
