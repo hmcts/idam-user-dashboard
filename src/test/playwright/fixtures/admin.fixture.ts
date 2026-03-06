@@ -7,7 +7,7 @@ type AdminFixtures = {
 };
 
 export const test = base.extend<AdminFixtures>({
-  adminSession: [async ({ page, setupDao }, use, testInfo) => {
+  adminSession: [async ({ page, setupDao }, use) => {
     if (!process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET) {
       throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is required');
     }
