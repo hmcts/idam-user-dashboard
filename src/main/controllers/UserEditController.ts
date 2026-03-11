@@ -32,10 +32,10 @@ import { UserRoleAssignment } from '../interfaces/UserRoleAssignment';
 import config from 'config';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
-import { trace } from '@opentelemetry/api';
 import logger from '../modules/logging';
 import { ApiError } from '../interfaces/ApiError';
 import { mapApiErrorToPageError } from '../utils/v2Error';
+import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttributes';
 
 @autobind
 export class UserEditController extends RootController {
@@ -49,7 +49,7 @@ export class UserEditController extends RootController {
     await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
-        trace.getActiveSpan()?.setAttribute('edit_user_id', user.id);
+        setTelemetryAttribute(req, 'edit_user_id', user.id);
 
         const assignableRoles: string[] = req.idam_user_dashboard_session.user.assignableRoles;
 
