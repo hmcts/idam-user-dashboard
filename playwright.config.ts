@@ -14,7 +14,7 @@ export default defineConfig({
   },
   reporter: [
     ['list'],
-    ['allure-playwright', { resultsDir: 'playwright-report/allure' }],
+    ['allure-playwright', { resultsDir: 'playwright-report/allure-results' }],
   ],
   use: {
     baseURL,

@@ -6,7 +6,7 @@ export default defineConfig({
   outputDir: 'functional-output/cross-browser/reports',
   reporter: [
     ['list'],
-    ['allure-playwright', { resultsDir: 'functional-output/cross-browser/allure' }],
+    ['allure-playwright', { resultsDir: 'functional-output/cross-browser/allure-results' }],
   ],
   projects: [
     {

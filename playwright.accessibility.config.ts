@@ -7,6 +7,6 @@ export default defineConfig({
   outputDir: 'functional-output/accessibility-results',
   reporter: [
     ['list'],
-    ['allure-playwright', { resultsDir: 'functional-output/accessibility' }],
+    ['allure-playwright', { resultsDir: 'functional-output/accessibility/allure-results' }],
   ],
 });
