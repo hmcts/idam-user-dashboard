@@ -10,6 +10,7 @@ services:
   idam:
     url:
       public: 'https://idam-web-public.aat.platform.hmcts.net'
+      hmctsAccess: 'https://hmcts-access.aat.platform.hmcts.net'
       api: 'https://idam-api.aat.platform.hmcts.net'
       testingSupportApi: 'https://idam-testing-support-api.aat.platform.hmcts.net'
       dashboard: 'http://localhost:3100'
@@ -45,6 +46,7 @@ health:
   idam:
     url:
       public:
+      hmctsAccess:
       api:
 RBAC:
   access: 'idam-user-dashboard--access'
