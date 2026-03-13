@@ -16,7 +16,7 @@ async function runA11yAudit(page: Page): Promise<void> {
   expect(results.violations).toEqual([]);
 }
 
-test.describe('v2_accessibility_tests (Playwright migration)', () => {
+test.describe('accessibility_tests', () => {
   test('I am on manage user page', async ({ page, setupDao }) => {
     const testUser = await setupDao.createUser();
     await navigateToManageUser(page, testUser.email);

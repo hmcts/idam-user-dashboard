@@ -10,7 +10,7 @@ import {
 } from '../helpers/locators';
 import { navigateToEditUser } from '../helpers/navigation';
 
-test.describe('v2_edit_user (Playwright migration)', () => {
+test.describe('edit_user', () => {
   test('I as an admin should edit user details successfully', async ({ page, setupDao }) => {
     const testUser = await setupDao.createUser();
     await navigateToEditUser(page, testUser.id);

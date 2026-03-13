@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/admin.fixture';
 import { locateDataForTitle } from '../helpers/locators';
 import { goToManageUser } from '../helpers/navigation';
 
-test.describe('v2_edit_user_remove_sso (Playwright migration)', () => {
+test.describe('edit_user_remove_sso', () => {
   test('I as an admin can remove SSO successfully', async ({ page, setupDao }) => {
     const testUser = await setupDao.createUser({
       ssoId: faker.string.uuid(),

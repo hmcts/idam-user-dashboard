@@ -12,7 +12,7 @@ async function submitAndExpectProblem(page: Page): Promise<void> {
   await expect(page.locator('h2.govuk-error-summary__title')).toHaveText('There is a problem');
 }
 
-test.describe('v2_register_user (Playwright migration)', () => {
+test.describe('register_user', () => {
   test('I as an admin should be able to register support user', async ({ page, setupDao }) => {
     const registerForename = faker.person.firstName();
     const registerSurname = faker.person.lastName();

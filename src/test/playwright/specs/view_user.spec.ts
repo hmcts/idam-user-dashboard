@@ -5,7 +5,7 @@ import { goToManageUser, navigateToManageUser } from '../helpers/navigation';
 
 const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
 
-test.describe('v2_view_user (Playwright migration)', () => {
+test.describe('view_user', () => {
   test('view admin user details', async ({ page, setupDao }) => {
     const admin = setupDao.getAdminIdentity();
     await navigateToManageUser(page, admin.email);

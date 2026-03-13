@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/admin.fixture';
 import { locateDataForTitle } from '../helpers/locators';
 import { navigateToManageUser, navigateToSearchUser } from '../helpers/navigation';
 
-test.describe('v2_search_user (Playwright migration)', () => {
+test.describe('search_user', () => {
   test('I as an admin can see errors for invalid search values', async ({ page }) => {
     await navigateToSearchUser(page);
     await page.locator('[name="search"]').fill('email..@test.com');

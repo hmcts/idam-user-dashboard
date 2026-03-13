@@ -31,7 +31,7 @@ async function loginWithCredentials(page: Page, email: string, password: string)
   throw new Error(`Unexpected login heading "${heading}"`);
 }
 
-test.describe('v2_sign_in (Playwright migration)', () => {
+test.describe('sign_in', () => {
   test.beforeEach(async ({ setupDao }) => {
     await setupDao.setupAdmin();
   });

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { test, expect } from '../fixtures/admin.fixture';
 import { navigateToGenerateReport } from '../helpers/navigation';
 
-test.describe('v2_generate_report (Playwright migration)', () => {
+test.describe('generate_report', () => {
   test('I as an admin can see errors for invalid report values', async ({ page, setupDao }) => {
     const testRoleName = `iud-role-${faker.word.verb()}-${faker.word.noun()}`;
     await setupDao.createRole({ name: testRoleName });

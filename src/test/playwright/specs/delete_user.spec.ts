@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/admin.fixture';
 import { locateDataForTitle, locateStrongDataForTitle } from '../helpers/locators';
 import { goToManageUser } from '../helpers/navigation';
 
-test.describe('v2_delete_user (Playwright migration)', () => {
+test.describe('delete_user', () => {
   test('I as an admin can delete user successfully', async ({ page, setupDao }) => {
     const testUser = await setupDao.createUser();
     await goToManageUser(page, testUser.id);

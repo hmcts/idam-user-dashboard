@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/base.fixture';
 import { BuildInfoHelper } from '../helpers/build-info';
 import { clickAndExpectHeading, loginAs } from '../helpers/ui-auth';
 
-test.describe('v2_register_private_beta (Playwright migration)', () => {
+test.describe('register_private_beta', () => {
   test.beforeEach(async ({ setupDao }) => {
     await setupDao.setupAdmin();
   });

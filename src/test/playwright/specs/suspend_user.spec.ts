@@ -2,7 +2,7 @@ import { test, expect } from '../fixtures/admin.fixture';
 import { locateDataForTitle, locateStrongDataForTitle } from '../helpers/locators';
 import { goToManageUser } from '../helpers/navigation';
 
-test.describe('v2_suspend_user (Playwright migration)', () => {
+test.describe('suspend_user', () => {
   test('I as an admin can suspend user', async ({ page, setupDao }) => {
     const testUser = await setupDao.createUser();
     await goToManageUser(page, testUser.id);
