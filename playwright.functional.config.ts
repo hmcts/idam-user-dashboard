@@ -6,6 +6,6 @@ export default defineConfig({
   outputDir: 'functional-output/functional/reports',
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'functional-output/functional/allure', open: 'never' }],
+    ['allure-playwright', { resultsDir: 'functional-output/functional/allure-results' }],
   ],
 });
