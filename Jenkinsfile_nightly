@@ -81,7 +81,7 @@ try {
         alwaysLinkToLastBuild: true,
         keepAll              : true,
         reportDir            : "functional-output/accessibility",
-        reportFiles          : "all_results.html",
+        reportFiles          : "index.html",
         reportName           : "Accessibility Test Report"
       ]
 
