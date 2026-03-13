@@ -23,7 +23,7 @@
     "test:fullfunctional": "npm-run-all -scl playwright:install test:functional:pw test:functional:allure test:accessibility",
     "test:functional:pw": "playwright test --config=playwright.functional.config.ts",
     "test:functional:pw:list": "playwright test --config=playwright.functional.config.ts --list",
-    "test:functional:allure": "allure generate functional-output/functional/allure-results -c -o functional-output/functional/allure-report",
+    "test:functional:allure": "allure generate functional-output/functional/allure-results -c -o functional-output/functional/allure",
     "test:accessibility": "npm-run-all -scl test:accessibility:pw test:accessibility:allure",
     "test:accessibility:pw": "playwright test --config=playwright.accessibility.config.ts",
     "test:accessibility:allure": "allure generate functional-output/accessibility/allure-results -c -o functional-output/accessibility/allure-report",
