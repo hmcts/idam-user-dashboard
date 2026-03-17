@@ -5,6 +5,7 @@ const baseURL = normalizeTestUrl(process.env.TEST_URL || 'https://idam-user-dash
 
 export default defineConfig({
   testDir: './src/test/playwright/specs',
+  globalSetup: './src/test/playwright/global-setup.ts',
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,

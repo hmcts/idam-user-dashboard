@@ -1,11 +1,10 @@
+import { Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { test, expect } from '../fixtures/admin.fixture';
 import { BuildInfoHelper } from '../helpers/build-info';
 import { roleContainer } from '../helpers/locators';
 import { goToRegisterUser } from '../helpers/navigation';
 import { clickAndExpectHeading } from '../helpers/ui-auth';
-
-const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
 
 async function submitAndExpectProblem(page: Page): Promise<void> {
   await clickAndExpectHeading(page, 'Continue', 'Add new user email');
@@ -84,7 +83,8 @@ test.describe('register_user', () => {
     expect(invite.invitationStatus).toBe('PENDING');
   });
 
-  test('I as an admin should see validation errors for invalid values', async ({ page }) => {
+  test('I as an admin should see validation errors for invalid values', async ({ page, setupDao }) => {
+    const adminEmail = setupDao.getAdminIdentity().email;
     await goToRegisterUser(page);
     await page.locator('[name="email"]').fill('email..@test.com');
     await submitAndExpectProblem(page);
@@ -111,9 +111,9 @@ test.describe('register_user', () => {
     await expect(page.locator('body')).toContainText('You must enter an email address');
 
     await goToRegisterUser(page);
-    await page.locator('[name="email"]').fill(ADMIN_EMAIL);
+    await page.locator('[name="email"]').fill(adminEmail);
     await submitAndExpectProblem(page);
-    await expect(page.locator('body')).toContainText(`The email '${ADMIN_EMAIL}' already exists`);
+    await expect(page.locator('body')).toContainText(`The email '${adminEmail}' already exists`);
 
     await goToRegisterUser(page);
     await page.locator('[name="email"]').fill(faker.internet.email());

@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { clickAndExpectPage } from './resilient-actions';
 
 async function headingText(page: Page): Promise<string> {
   await expect(page.locator('h1')).toBeVisible();
@@ -37,25 +38,25 @@ export async function loginAs(page: Page, email: string, password: string): Prom
   if (currentHeading === 'Sign in') {
     await fillByLabelOrName(page, 'Email', 'email', email);
     await fillByLabelOrName(page, 'Password', 'password', password);
-    await page.getByRole('button', { name: 'Sign in' }).click();
-    await expect(page.locator('h1')).toHaveText('What do you want to do?');
+    await clickAndExpectPage(
+      page,
+      () => page.getByRole('button', { name: 'Sign in' }).click(),
+      { expectedHeading: 'What do you want to do?' }
+    );
     return;
   }
 
   if (currentHeading === 'Enter your email address') {
     await fillByLabelOrName(page, 'Email address', 'email', email);
-    await clickContinue(page);
-    await expect(page.locator('h1')).toHaveText('Enter your password');
+    await clickAndExpectPage(page, () => clickContinue(page), { expectedHeading: 'Enter your password' });
     await fillByLabelOrName(page, 'Password', 'password', password);
-    await clickContinue(page);
-    await expect(page.locator('h1')).toHaveText('What do you want to do?');
+    await clickAndExpectPage(page, () => clickContinue(page), { expectedHeading: 'What do you want to do?' });
     return;
   }
 
   if (currentHeading === 'Enter your password') {
     await fillByLabelOrName(page, 'Password', 'password', password);
-    await clickContinue(page);
-    await expect(page.locator('h1')).toHaveText('What do you want to do?');
+    await clickAndExpectPage(page, () => clickContinue(page), { expectedHeading: 'What do you want to do?' });
     return;
   }
 
@@ -64,12 +65,15 @@ export async function loginAs(page: Page, email: string, password: string): Prom
 
 export async function clickAndExpectHeading(page: Page, buttonText: string, heading: string): Promise<void> {
   const button: Locator = page.getByRole('button', { name: buttonText });
-  if (await button.count()) {
-    await button.first().click();
-  } else if (buttonText === 'Continue') {
-    await clickContinue(page);
-  } else {
+  await clickAndExpectPage(page, async () => {
+    if (await button.count()) {
+      await button.first().click();
+      return;
+    }
+    if (buttonText === 'Continue') {
+      await clickContinue(page);
+      return;
+    }
     throw new Error(`Button "${buttonText}" not found`);
-  }
-  await expect(page.locator('h1')).toHaveText(heading);
+  }, { expectedHeading: heading });
 }

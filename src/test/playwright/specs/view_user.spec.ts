@@ -3,13 +3,11 @@ import { test, expect } from '../fixtures/admin.fixture';
 import { locateDataForTitle, locateStrongDataForTitle } from '../helpers/locators';
 import { goToManageUser, navigateToManageUser } from '../helpers/navigation';
 
-const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
-
 test.describe('view_user', () => {
   test('view admin user details', async ({ page, setupDao }) => {
     const admin = setupDao.getAdminIdentity();
     await navigateToManageUser(page, admin.email);
-    await expect(locateDataForTitle(page, 'Email')).toContainText(ADMIN_EMAIL);
+    await expect(locateDataForTitle(page, 'Email')).toContainText(admin.email);
   });
 
   test('view test user details', async ({ page, setupDao }) => {
@@ -29,7 +27,7 @@ test.describe('view_user', () => {
     await goToManageUser(page, testUser.id);
     await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);
     await expect(locateDataForTitle(page, 'Identity Provider')).toContainText('idam-sso');
-    await expect(locateDataForTitle(page, 'IdP User ID')).toContainText(testUser.ssoId);
+    await expect(locateDataForTitle(page, 'IdP User ID')).toContainText(testUser.ssoId!);
     await expect(locateStrongDataForTitle(page, 'Account state')).toContainText(/active/i);
   });
 
@@ -41,7 +39,7 @@ test.describe('view_user', () => {
     await goToManageUser(page, testUser.id);
     await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);
     await expect(locateDataForTitle(page, 'Identity Provider')).toContainText('eJudiciary.net');
-    await expect(locateDataForTitle(page, 'eJudiciary User ID')).toContainText(testUser.ssoId);
+    await expect(locateDataForTitle(page, 'eJudiciary User ID')).toContainText(testUser.ssoId!);
     await expect(locateStrongDataForTitle(page, 'Account state')).toContainText(/active/i);
     await expect(page.locator('div.govuk-notification-banner')).toContainText('Please check with the eJudiciary support team to see if there are related accounts.');
   });

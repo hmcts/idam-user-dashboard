@@ -1,19 +1,22 @@
 import { expect } from '@playwright/test';
 import { test as base } from './base.fixture';
-import { loginAs } from '../helpers/ui-auth';
+import { getAdminEmailForProject, getStorageStatePath } from '../helpers/auth-state';
 
 type AdminFixtures = {
   adminSession: void;
 };
 
 export const test = base.extend<AdminFixtures>({
-  adminSession: [async ({ page, setupDao }, use) => {
+  storageState: async (_fixtures, use, testInfo) => {
+    await use(getStorageStatePath(testInfo.project.name));
+  },
+  adminSession: [async ({ page, setupDao }, use, testInfo) => {
     if (!process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET) {
       throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is required');
     }
-    await setupDao.setupAdmin();
-    const adminIdentity = setupDao.getAdminIdentity();
-    await loginAs(page, adminIdentity.email, adminIdentity.secret);
+    const adminEmail = getAdminEmailForProject(testInfo.project.name);
+    await setupDao.setupAdmin(adminEmail);
+    await page.goto('/');
     await expect(page.locator('h1')).toHaveText('What do you want to do?');
     await use();
   }, { auto: true }],

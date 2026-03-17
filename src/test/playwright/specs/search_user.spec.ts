@@ -48,7 +48,7 @@ test.describe('search_user', () => {
     await navigateToManageUser(page, testUser.id);
     await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);
 
-    await navigateToManageUser(page, testUser.ssoId);
+    await navigateToManageUser(page, testUser.ssoId!);
     await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);
   });
 

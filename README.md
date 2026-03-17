@@ -95,29 +95,37 @@ You can run unit tests by executing the following command:
 $ yarn test
 ```
 
-#### Note for functional and accessibility tests
+#### Note for Playwright functional, cross-browser and accessibility tests
 
-Before running the functional tests and accessibility tests, make sure that an instance of the app is running.
-By default, the tests will run against an instance hosted at https://localhost:3100,
-but this can be changed by setting the `TEST_URL` environment variable.
+Before running the Playwright suites, make sure an instance of the app is running.
+By default, the tests run against `https://idam-user-dashboard.aat.platform.hmcts.net/`,
+but this can be changed by setting `TEST_URL`.
 
-Due to a reliance on 3rd party services, you also need to set
-`LAUNCHDARKLY_SDK_KEY`
-`NOTIFY_API_KEY`
-`SMOKE_TEST_USER_USERNAME`
+The Playwright suites require these environment variables:
+`FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET`
 `SMOKE_TEST_USER_PASSWORD`
-environment variables accordingly.
+`TEST_HEADLESS` (optional, defaults to `true`)
 
 #### Run functional tests
 ```bash
-$ yarn test:functional:min    # Runs minimum functional tests (path-to-live)
-$ yarn test:functional:all    # Runs all functional tests (nightly)
+$ yarn test:functional
 ```
 
-#### Running accessibility tests:
-
+#### Run cross-browser tests
 ```bash
-$ yarn test:pa11y
+$ yarn test:crossbrowser
+```
+
+#### Run accessibility tests
+```bash
+$ yarn test:accessibility
+```
+
+#### Generate reports separately
+```bash
+$ yarn test:functional:allure
+$ yarn test:crossbrowser:allure
+$ yarn test:accessibility:report
 ```
 
 ## License

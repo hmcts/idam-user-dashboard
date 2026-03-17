@@ -2,7 +2,7 @@ import { APIRequestContext, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { BuildInfoHelper } from './build-info';
 
-const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
+const DEFAULT_ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
 const ADMIN_ROLE_NAME = 'iud-test-admin';
 const WORKER_ROLE_NAME = 'iud-test-worker';
 const ACCESS_ROLE_NAME = 'idam-user-dashboard--access';
@@ -81,11 +81,14 @@ export class SetupDao {
       throw new Error('Unable to initialise testing token');
     }
     this.testingToken = tokenBody.access_token;
-    return this.testingToken;
+    return this.testingToken!;
   }
 
-  async setupAdmin(): Promise<void> {
+  async setupAdmin(adminEmail = DEFAULT_ADMIN_EMAIL): Promise<void> {
     if (this.adminIdentity) {
+      if (this.adminIdentity.email !== adminEmail) {
+        throw new Error(`adminIdentity already initialised for ${this.adminIdentity.email}, cannot reuse for ${adminEmail}`);
+      }
       return;
     }
     await this.setupAdminRole();
@@ -93,14 +96,14 @@ export class SetupDao {
     const createRsp = await this.postWithBearer('/test/idam/users', {
       password: secret,
       user: {
-        email: ADMIN_EMAIL,
+        email: adminEmail,
         forename: 'admin',
         surname: 'test',
         roleNames: [ACCESS_ROLE_NAME, ADMIN_ROLE_NAME],
       },
     });
     await this.expectOkOrConflict(createRsp, 'setup admin user');
-    this.adminIdentity = { email: ADMIN_EMAIL, secret };
+    this.adminIdentity = { email: adminEmail, secret };
   }
 
   async setupAdminRole(): Promise<void> {
@@ -272,16 +275,24 @@ export class SetupDao {
 
   async getSingleInvite(email: string): Promise<Invitation> {
     const token = await this.getToken();
-    const rsp = await this.testingSupportApi.get(`/test/idam/invitations?email=${encodeURIComponent(email)}`, {
-      headers: {
-        Authorization: `bearer ${token}`,
-      },
-    });
-    await expect(rsp.ok(), `getSingleInvite request failed: ${rsp.status()} ${rsp.statusText()}`).toBeTruthy();
-    const invitations = await rsp.json();
-    const pendingInvites = invitations.filter(invitation => invitation.invitationStatus === 'PENDING');
-    expect(pendingInvites).toHaveLength(1);
-    return pendingInvites[0];
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      const rsp = await this.testingSupportApi.get(`/test/idam/invitations?email=${encodeURIComponent(email)}`, {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+      await expect(rsp.ok(), `getSingleInvite request failed: ${rsp.status()} ${rsp.statusText()}`).toBeTruthy();
+      const invitations = await rsp.json();
+      const pendingInvites = invitations.filter(invitation => invitation.invitationStatus === 'PENDING');
+      if (pendingInvites.length === 1) {
+        return pendingInvites[0];
+      }
+      if (attempt < 5) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    throw new Error(`Expected exactly one pending invite for ${email} after polling`);
   }
 
   private async postWithBearer(path: string, data: unknown) {
