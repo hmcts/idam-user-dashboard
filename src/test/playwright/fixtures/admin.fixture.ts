@@ -7,7 +7,8 @@ type AdminFixtures = {
 };
 
 export const test = base.extend<AdminFixtures>({
-  storageState: async (_fixtures, use, testInfo) => {
+  storageState: async ({ baseURL }, use, testInfo) => {
+    void baseURL;
     await use(getStorageStatePath(testInfo.project.name));
   },
   adminSession: [async ({ page, setupDao }, use, testInfo) => {

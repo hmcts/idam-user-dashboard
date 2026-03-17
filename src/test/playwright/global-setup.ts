@@ -32,7 +32,7 @@ async function createAdminStorageState(project: FullConfig['projects'][number]):
     throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is required');
   }
 
-  const browserName = String(project.use.browserName || '');
+  const browserName = String(project.use.browserName || project.use.defaultBrowserType || '');
   const browserType = getBrowserType(browserName);
   const browser = await browserType.launch({
     headless: typeof project.use.headless === 'boolean'
