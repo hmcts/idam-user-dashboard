@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20.18.0"
   },
   "scripts": {
     "start": "NODE_ENV=production ts-node -r tsconfig-paths/register src/main/server.ts",
@@ -45,7 +45,7 @@
     "@opentelemetry/instrumentation-winston": "^0.53.0",
     "@opentelemetry/resources": "^2.5.1",
     "@opentelemetry/semantic-conventions": "^1.40.0",
-    "@playwright/test": "^1.47.0",
+    "@playwright/test": "^1.58.2",
     "@types/config": "^3.3.5",
     "@types/cookie-parser": "^1.4.8",
     "@types/es6-promisify": "^6.0.4",
@@ -86,7 +86,7 @@
     "nunjucks": "^3.2.4",
     "obfuscate-mail": "^1.5.1",
     "openid-client": "^5.7.1",
-    "playwright-core": "^1.56.1",
+    "playwright-core": "^1.58.2",
     "require-directory": "^2.1.1",
     "sass": "^1.98.0",
     "sass-loader": "^14.2.1",
@@ -124,7 +124,7 @@
     "nodemon": "^3.1.10",
     "npm-run-all2": "^6.2.6",
     "pa11y": "^8.0.0",
-    "playwright": "^1.56.1",
+    "playwright": "^1.58.2",
     "rosie": "^2.1.1",
     "sass-loader": "^14.2.1",
     "sonar-scanner": "^3.1.0",

@@ -79,20 +79,20 @@ Two migration-sensitive behaviors were tightened during this audit:
 - [ ] `playwright-common` is used where it adds value, not just to maximise usage.
 - [x] Repo-specific test logic remains custom where `playwright-common` is not a good fit.
 - [ ] Any `playwright-common` runtime prerequisites are satisfied.
-- [ ] Any Playwright version compatibility requirements from `playwright-common` are satisfied.
-- [ ] Any Node version compatibility requirements from `playwright-common` are satisfied.
+- [x] Any Playwright version compatibility requirements from `playwright-common` are satisfied.
+- [x] Any Node version compatibility requirements from `playwright-common` are satisfied.
 
 #### Assessment
 
 Current usage: none.
 
-The local assessment copy reviewed was `/Users/sonny.lloyd/Desktop/playwright-common-1.1.2`.
+The local assessment copy reviewed was `Desktop/playwright-common-1.1.2`.
 
 Key compatibility constraints:
 
 - `@hmcts/playwright-common@1.1.2` requires Node `>=20.11.1`
 - `@hmcts/playwright-common@1.1.2` has peer dependencies on `@playwright/test` and `playwright-core` `^1.58.0`
-- This repo currently declares Node `>=14.0.0` and uses `@playwright/test` `^1.47.0` plus `playwright-core` `^1.56.1`
+- This repo now declares Node `^20.18.0` and uses `@playwright/test`, `playwright`, and `playwright-core` `^1.58.2`
 
 Candidate components reviewed:
 
@@ -113,13 +113,23 @@ Additional note:
 
 - `callWith429AwareRetry` was not present in the reviewed `1.1.2` source tree. The closest relevant utility in that version is `withRetry` plus `isRetryableError` in `src/utils/retry.utils.ts`.
 
-What would be required before adoption:
+Recommendation matrix:
 
-- Upgrade the repo runtime and CI to Node `>=20.11.1`
-- Upgrade `@playwright/test` and `playwright-core` to a compatible `^1.58.x` range
-- Revalidate browser installation, lockfile, and Jenkins image/runtime compatibility
-- Decide whether the initial adoption target is API retry utilities, logging/redaction, or accessibility helpers
-- Confirm that any adopted helper still fits the repo's current CI/reporting contract
+- Adopt first: `src/utils/retry.utils.ts`
+  This is the lowest-risk adoption target if the repo wants to use `playwright-common`. It can be applied to backend-facing polling or API retry boundaries such as invitation lookup or token/bootstrap calls without changing the current UI-flow helpers or Jenkins reporting contract.
+- Consider later: `src/logging/logger.ts` and `src/logging/redaction.ts`
+  These could improve structured logs around setup helpers, but they are optional and do not solve an existing migration gap.
+- Defer: `src/utils/axe.utils.ts`
+  It is compatible now, but it would require reshaping the current accessibility artifact strategy because this repo writes per-page JSON plus a consolidated HTML report under `functional-output/accessibility` for Jenkins publishing.
+- Do not adopt currently: `src/page-objects/pages/idam.po.ts` and `src/utils/idam.utils.ts`
+  They do not align cleanly with the current login journey or the repo's custom testing-support bootstrap behavior.
+
+What would still be required before adoption:
+
+- Install `@hmcts/playwright-common` and revalidate the lockfile in CI
+- Decide the first integration target explicitly, rather than importing multiple helpers at once
+- Keep the current accessibility reporting contract unless there is an agreed Jenkins/reporting change
+- Verify that any adopted helper actually reduces repo code or maintenance burden rather than just moving logic into a dependency
 
 ### Accessibility
 
