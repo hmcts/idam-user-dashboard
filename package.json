@@ -163,6 +163,7 @@
     "cookie": "^0.7.2",
     "cross-spawn": "^7.0.5",
     "@babel/helpers": "^7.26.10",
+    "basic-ftp": "^5.2.0",
     "glob": "^9.3.5",
     "superagent": ">=10.2.3",
     "on-headers": "^1.1.0",
@@ -173,6 +174,7 @@
     "lodash": "^4.17.23",
     "axios": "^1.13.5",
     "bn.js": "^5.2.3",
+    "flatted": "^3.4.0",
     "test-exclude": "^8.0.0",
     "minimatch": "^10.2.3"
   },
