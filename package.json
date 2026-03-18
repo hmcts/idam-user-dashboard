@@ -11,7 +11,7 @@
     "lint": "eslint . --ext .ts",
     "build": "yarn webpack --config webpack.config.js",
     "build:prod": "NODE_ENV=production yarn webpack --mode production --config webpack.config.js",
-    "playwright:install": "playwright install",
+    "playwright:install": "playwright install chromium firefox webkit",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:smoke": "jest -c jest.smoke.config.js",
