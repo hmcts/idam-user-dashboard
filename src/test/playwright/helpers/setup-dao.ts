@@ -1,6 +1,5 @@
 import { APIRequestContext, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-import { isRetryableError, withRetry } from '@hmcts/playwright-common';
 import { BuildInfoHelper } from './build-info';
 
 const DEFAULT_ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
@@ -62,6 +61,68 @@ class InviteNotReadyError extends Error {
     super(`Expected exactly one pending invite for ${email}`);
     this.name = 'InviteNotReadyError';
   }
+}
+
+function isRetryableError(error: unknown): boolean {
+  if (error && typeof error === 'object') {
+    const anyErr = error as { status?: unknown; code?: unknown; message?: unknown };
+    const status = anyErr.status ?? anyErr.code;
+    if (typeof status === 'number') {
+      return status === 429 || (status >= 500 && status <= 599);
+    }
+
+    const message = String(anyErr.message ?? '').toLowerCase();
+    return (
+      message.includes('econnreset')
+      || message.includes('etimedout')
+      || message.includes('timeout')
+      || message.includes('fetch failed')
+      || message.includes('network')
+    );
+  }
+
+  return false;
+}
+
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  attempts = 3,
+  baseMs = 200,
+  maxMs = 2_000,
+  maxElapsedMs = 15_000,
+  shouldRetry: (error: unknown) => boolean = () => true
+): Promise<T> {
+  let lastError: unknown;
+  const startedAt = Date.now();
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === attempts - 1 || !shouldRetry(error)) {
+        break;
+      }
+
+      const elapsedMs = Date.now() - startedAt;
+      if (elapsedMs >= maxElapsedMs) {
+        break;
+      }
+
+      const backoffMs = Math.min(baseMs * Math.pow(2, attempt), maxMs);
+      const retryAfterMs = error instanceof RetryableApiError ? error.retryAfterMs || 0 : 0;
+      const waitMs = Math.min(Math.max(backoffMs, retryAfterMs), maxElapsedMs - elapsedMs);
+
+      if (waitMs <= 0) {
+        break;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, waitMs));
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(`Retry failed: ${String(lastError)}`);
 }
 
 export class SetupDao {
