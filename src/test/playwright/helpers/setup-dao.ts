@@ -1,5 +1,6 @@
 import { APIRequestContext, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import { isRetryableError, withRetry } from '@hmcts/playwright-common';
 import { BuildInfoHelper } from './build-info';
 
 const DEFAULT_ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
@@ -44,6 +45,25 @@ type TestUser = {
   password: string;
 };
 
+class RetryableApiError extends Error {
+  status?: number;
+  retryAfterMs?: number;
+
+  constructor(message: string, status?: number, retryAfterMs?: number) {
+    super(message);
+    this.name = 'RetryableApiError';
+    this.status = status;
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
+class InviteNotReadyError extends Error {
+  constructor(email: string) {
+    super(`Expected exactly one pending invite for ${email}`);
+    this.name = 'InviteNotReadyError';
+  }
+}
+
 export class SetupDao {
   private readonly idamApi: APIRequestContext;
   private readonly testingSupportApi: APIRequestContext;
@@ -64,23 +84,38 @@ export class SetupDao {
     if (this.testingToken) {
       return this.testingToken;
     }
-    if (!this.clientSecret) {
+    const clientSecret = this.clientSecret;
+    if (!clientSecret) {
       throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is not set');
     }
-    const tokenRsp = await this.idamApi.post('/o/token', {
-      form: {
-        grant_type: 'client_credentials',
-        client_id: 'idam-functional-test-service',
-        client_secret: this.clientSecret,
-        scope: 'profile roles',
+    this.testingToken = await withRetry(
+      async () => {
+        const tokenRsp = await this.idamApi.post('/o/token', {
+          form: {
+            grant_type: 'client_credentials',
+            client_id: 'idam-functional-test-service',
+            client_secret: clientSecret,
+            scope: 'profile roles',
+          },
+        });
+
+        if (!tokenRsp.ok()) {
+          throw await this.toRetryableApiError(tokenRsp, 'Token request failed');
+        }
+
+        const tokenBody = await tokenRsp.json();
+        if (!tokenBody?.access_token) {
+          throw new Error('Unable to initialise testing token');
+        }
+
+        return tokenBody.access_token as string;
       },
-    });
-    await expect(tokenRsp.ok(), `Token request failed: ${tokenRsp.status()} ${tokenRsp.statusText()}`).toBeTruthy();
-    const tokenBody = await tokenRsp.json();
-    if (!tokenBody?.access_token) {
-      throw new Error('Unable to initialise testing token');
-    }
-    this.testingToken = tokenBody.access_token;
+      3,
+      200,
+      2_000,
+      15_000,
+      isRetryableError
+    );
     return this.testingToken!;
   }
 
@@ -275,24 +310,32 @@ export class SetupDao {
 
   async getSingleInvite(email: string): Promise<Invitation> {
     const token = await this.getToken();
-    for (let attempt = 1; attempt <= 5; attempt++) {
-      const rsp = await this.testingSupportApi.get(`/test/idam/invitations?email=${encodeURIComponent(email)}`, {
-        headers: {
-          Authorization: `bearer ${token}`,
-        },
-      });
-      await expect(rsp.ok(), `getSingleInvite request failed: ${rsp.status()} ${rsp.statusText()}`).toBeTruthy();
-      const invitations = await rsp.json();
-      const pendingInvites = invitations.filter(invitation => invitation.invitationStatus === 'PENDING');
-      if (pendingInvites.length === 1) {
-        return pendingInvites[0];
-      }
-      if (attempt < 5) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-    }
+    return withRetry(
+      async () => {
+        const rsp = await this.testingSupportApi.get(`/test/idam/invitations?email=${encodeURIComponent(email)}`, {
+          headers: {
+            Authorization: `bearer ${token}`,
+          },
+        });
 
-    throw new Error(`Expected exactly one pending invite for ${email} after polling`);
+        if (!rsp.ok()) {
+          throw await this.toRetryableApiError(rsp, 'getSingleInvite request failed');
+        }
+
+        const invitations = await rsp.json();
+        const pendingInvites = invitations.filter(invitation => invitation.invitationStatus === 'PENDING');
+        if (pendingInvites.length === 1) {
+          return pendingInvites[0];
+        }
+
+        throw new InviteNotReadyError(email);
+      },
+      5,
+      1_000,
+      2_000,
+      15_000,
+      error => error instanceof InviteNotReadyError || isRetryableError(error)
+    );
   }
 
   private async postWithBearer(path: string, data: unknown) {
@@ -312,5 +355,18 @@ export class SetupDao {
     }
     const body = await response.text();
     throw new Error(`${operation} failed with status ${status}: ${body}`);
+  }
+
+  private async toRetryableApiError(response, message: string): Promise<Error> {
+    const status = response.status();
+    const body = await response.text();
+    const retryAfterHeader = response.headers()['retry-after'];
+    const retryAfterMs = retryAfterHeader ? Number.parseInt(retryAfterHeader, 10) * 1_000 : undefined;
+
+    if (status === 429 || status >= 500) {
+      return new RetryableApiError(`${message}: ${status} ${body}`, status, retryAfterMs);
+    }
+
+    return new Error(`${message}: ${status} ${body}`);
   }
 }

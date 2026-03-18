@@ -75,16 +75,19 @@ Two migration-sensitive behaviors were tightened during this audit:
 
 ### `playwright-common` Adoption
 
-- [ ] The PR clearly lists which `playwright-common` components are being used.
-- [ ] `playwright-common` is used where it adds value, not just to maximise usage.
+- [x] The PR clearly lists which `playwright-common` components are being used.
+- [x] `playwright-common` is used where it adds value, not just to maximise usage.
 - [x] Repo-specific test logic remains custom where `playwright-common` is not a good fit.
-- [ ] Any `playwright-common` runtime prerequisites are satisfied.
+- [x] Any `playwright-common` runtime prerequisites are satisfied.
 - [x] Any Playwright version compatibility requirements from `playwright-common` are satisfied.
 - [x] Any Node version compatibility requirements from `playwright-common` are satisfied.
 
 #### Assessment
 
-Current usage: none.
+Current usage:
+
+- `withRetry`
+- `isRetryableError`
 
 The local assessment copy reviewed was `Desktop/playwright-common-1.1.2`.
 
@@ -113,10 +116,10 @@ Additional note:
 
 - `callWith429AwareRetry` was not present in the reviewed `1.1.2` source tree. The closest relevant utility in that version is `withRetry` plus `isRetryableError` in `src/utils/retry.utils.ts`.
 
-Recommendation matrix:
+Adopted scope:
 
-- Adopt first: `src/utils/retry.utils.ts`
-  This is the lowest-risk adoption target if the repo wants to use `playwright-common`. It can be applied to backend-facing polling or API retry boundaries such as invitation lookup or token/bootstrap calls without changing the current UI-flow helpers or Jenkins reporting contract.
+- `src/utils/retry.utils.ts`
+  Adopted in [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts) for token acquisition and invitation lookup polling. This keeps retry behavior on backend/setup boundaries only, which matches the existing migration checklist intent.
 - Consider later: `src/logging/logger.ts` and `src/logging/redaction.ts`
   These could improve structured logs around setup helpers, but they are optional and do not solve an existing migration gap.
 - Defer: `src/utils/axe.utils.ts`
@@ -126,7 +129,6 @@ Recommendation matrix:
 
 What would still be required before adoption:
 
-- Install `@hmcts/playwright-common` and revalidate the lockfile in CI
 - Decide the first integration target explicitly, rather than importing multiple helpers at once
 - Keep the current accessibility reporting contract unless there is an agreed Jenkins/reporting change
 - Verify that any adopted helper actually reduces repo code or maintenance burden rather than just moving logic into a dependency
