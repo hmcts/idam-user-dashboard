@@ -166,8 +166,8 @@ What would still be required before adoption:
 
 - [x] Local run instructions have been updated.
 - [ ] CI/runtime prerequisites have been updated.
-- [ ] Required environment variables are documented.
-- [ ] Any intentional differences from the Codecept suite are documented.
+- [x] Required environment variables are documented.
+- [x] Any intentional differences from the Codecept suite are documented.
 - [ ] Any remaining follow-up work is documented.
 
 ### Quality / Validation
@@ -215,10 +215,17 @@ What would still be required before adoption:
 - Application-specific navigation helpers and field locators
 - Accessibility result aggregation/report generation
 
+## Intentional Differences From The CodeceptJS Suite
+
+- Cross-browser execution no longer uses SauceLabs. The current Playwright implementation runs the repo-defined local Playwright project matrix in [`playwright.crossbrowser.config.ts`](../playwright.crossbrowser.config.ts) instead of the older remote SauceLabs combinations.
+- Admin authentication now uses Playwright `storageState` created during [`src/test/playwright/global-setup.ts`](../src/test/playwright/global-setup.ts) rather than CodeceptJS `autoLogin` on each scenario.
+- Cross-browser/admin-user isolation is implemented with project-specific admin identities and storage-state files via [`src/test/playwright/helpers/auth-state.ts`](../src/test/playwright/helpers/auth-state.ts), rather than the old Sauce/browser naming conventions.
+- Accessibility execution now uses Playwright plus Axe JSON capture and a generated HTML summary in [`src/test/accessibility/accessibility.spec.ts`](../src/test/accessibility/accessibility.spec.ts) and [`src/test/accessibility/generate-report.js`](../src/test/accessibility/generate-report.js), rather than the older Codecept accessibility helper flow.
+- Functional and cross-browser reporting still publish HTML reports, but Playwright startup failures now also produce a fallback HTML artifact through [`src/test/playwright/run-with-allure.js`](../src/test/playwright/run-with-allure.js) when Allure result files are never created.
+- Targeted retry handling is implemented locally in Playwright helpers such as [`src/test/playwright/helpers/resilient-actions.ts`](../src/test/playwright/helpers/resilient-actions.ts) and [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts), rather than reusing CodeceptJS retry mechanisms.
+- `playwright-common` was evaluated and intentionally not adopted. The repo keeps its retry, auth, accessibility, and setup behavior custom because the dependency did not provide enough value relative to the integration and maintenance cost for this suite.
+
 ## Known Gaps / Follow-up
 
 - Decide whether the reduced cross-browser matrix is the intended long-term replacement for the old SauceLabs coverage and document that decision.
-- Reintroduce explicit targeted handling for transient bad gateway or delayed page transitions if the environment still needs it.
 - Add PR or CI evidence showing successful functional, cross-browser, and accessibility runs.
-- Document required environment variables and runtime prerequisites more explicitly.
-- Document whether `playwright-common` was intentionally not adopted.

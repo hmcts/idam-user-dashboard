@@ -101,10 +101,27 @@ Before running the Playwright suites, make sure an instance of the app is runnin
 By default, the tests run against `https://idam-user-dashboard.aat.platform.hmcts.net/`,
 but this can be changed by setting `TEST_URL`.
 
-The Playwright suites require these environment variables:
-`FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET`
-`SMOKE_TEST_USER_PASSWORD`
-`TEST_HEADLESS` (optional, defaults to `true`)
+Playwright test environment variables:
+
+- Required for functional, cross-browser, and accessibility suites:
+  - `FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET`
+- Optional overrides for Playwright execution:
+  - `TEST_URL`
+    Defaults to `https://idam-user-dashboard.aat.platform.hmcts.net/`
+  - `TEST_HEADLESS`
+    Defaults to `true`
+  - `SMOKE_TEST_USER_PASSWORD`
+    Defaults to `Pa55word11` for test bootstrap if not provided
+  - `TEST_ADMIN_EMAIL`
+    Defaults to a generated `test...@admin.local` address per Playwright project
+  - `BRANCH_NAME` and `BUILD_NUMBER`
+    Used only to add build-specific suffixes to generated test data
+
+If you are running the application locally rather than targeting AAT, the app itself may also need:
+
+- `STRATEGIC_PUBLIC_URL`
+- `STRATEGIC_SERVICE_URL`
+- `TESTING_SUPPORT_URL`
 
 #### Run functional tests
 ```bash
