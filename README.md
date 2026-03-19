@@ -10,7 +10,7 @@ IdAM User Dashboard is to be the new and improved replacement for the [IdAM web-
 
 Running the application requires the following tools to be installed in your environment:
 
-  * [Node.js](https://nodejs.org/) v12.0.0 or later
+  * [Node.js](https://nodejs.org/) `20.18.0` (see `.nvmrc`)
   * [yarn](https://yarnpkg.com/)
   * [Docker](https://www.docker.com)
 
@@ -100,6 +100,12 @@ $ yarn test
 Before running the Playwright suites, make sure an instance of the app is running.
 By default, the tests run against `https://idam-user-dashboard.aat.platform.hmcts.net/`,
 but this can be changed by setting `TEST_URL`.
+
+Playwright runtime prerequisites:
+
+- Install browser binaries with `yarn playwright:install`
+- Ensure the target app, IDAM API, and testing support API are reachable from the machine running the suite
+- For AAT execution, make sure the required secrets are available in the environment or CI vault integration
 
 Playwright test environment variables:
 

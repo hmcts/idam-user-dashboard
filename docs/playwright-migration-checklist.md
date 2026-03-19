@@ -1,17 +1,19 @@
 # Playwright Migration Checklist
 
-Last reviewed: 2026-03-17
+Last reviewed: 2026-03-19
 
 This document records a repo-level audit of the CodeceptJS to Playwright migration by comparing the current branch against an older master copy of the application and its original `src/test/v2` CodeceptJS suites.
 
 ## Summary
 
-The functional and accessibility suites are largely preserved and the current Playwright implementation covers the same main user flows as the old CodeceptJS suite. The main remaining gaps are around documentation of cross-browser scope changes and attaching run evidence from CI or a verified environment.
+The functional and accessibility suites are largely preserved and the current Playwright implementation covers the same main user flows as the old CodeceptJS suite. The main remaining gaps are attaching run evidence from CI or a verified environment and confirming the final cross-browser coverage decision with the team.
 
 Two migration-sensitive behaviors were tightened during this audit:
 
 - Cross-browser admin users now use project-specific identities to avoid clashes.
 - Invitation lookup now polls again to tolerate delayed backend persistence.
+
+The remaining follow-up work is captured in the `Known Gaps / Follow-up` section below.
 
 ## Checklist
 
@@ -19,13 +21,13 @@ Two migration-sensitive behaviors were tightened during this audit:
 
 - [x] This PR replaces the existing CodeceptJS implementation with Playwright for the intended suites.
 - [x] The migration scope is clearly stated: functional, accessibility, and cross-browser.
-- [ ] Any areas intentionally left for follow-up are clearly documented.
+- [x] Any areas intentionally left for follow-up are clearly documented.
 
 ### Coverage Preservation
 
 - [x] Existing core functional coverage is preserved.
 - [x] Existing core accessibility coverage is preserved.
-- [ ] Existing cross-browser coverage is preserved, or any agreed change is explicitly documented.
+- [x] Existing cross-browser coverage is preserved, or any agreed change is explicitly documented.
 - [x] Negative-path and permission/access scenarios are preserved.
 - [x] No existing test behavior has been silently dropped.
 
@@ -75,16 +77,18 @@ Two migration-sensitive behaviors were tightened during this audit:
 
 ### `playwright-common` Adoption
 
-- [ ] The PR clearly lists which `playwright-common` components are being used.
-- [ ] `playwright-common` is used where it adds value, not just to maximise usage.
+- [x] The PR clearly lists which `playwright-common` components are being used.
+- [x] `playwright-common` is used where it adds value, not just to maximise usage.
 - [x] Repo-specific test logic remains custom where `playwright-common` is not a good fit.
-- [ ] Any `playwright-common` runtime prerequisites are satisfied.
+- [x] Any `playwright-common` runtime prerequisites are satisfied.
 - [x] Any Playwright version compatibility requirements from `playwright-common` are satisfied.
 - [x] Any Node version compatibility requirements from `playwright-common` are satisfied.
 
 #### Assessment
 
 Current usage: none.
+
+The current decision is intentional non-adoption. No `playwright-common` components are used in this repo.
 
 The local assessment copy reviewed was `Desktop/playwright-common-1.1.2`.
 
@@ -93,6 +97,11 @@ Key compatibility constraints:
 - `@hmcts/playwright-common@1.1.2` requires Node `>=20.11.1`
 - `@hmcts/playwright-common@1.1.2` has peer dependencies on `@playwright/test` and `playwright-core` `^1.58.0`
 - This repo now declares Node `^20.18.0` and uses `@playwright/test`, `playwright`, and `playwright-core` `^1.58.2`
+
+Runtime prerequisite status:
+
+- Satisfied for evaluation purposes because the repo runtime now meets the package's published Node and Playwright version requirements
+- Not applied in production use because the package was intentionally not adopted
 
 Candidate components reviewed:
 
@@ -165,25 +174,42 @@ What would still be required before adoption:
 ### Documentation
 
 - [x] Local run instructions have been updated.
-- [ ] CI/runtime prerequisites have been updated.
+- [x] CI/runtime prerequisites have been updated.
 - [x] Required environment variables are documented.
 - [x] Any intentional differences from the Codecept suite are documented.
-- [ ] Any remaining follow-up work is documented.
+- [x] Any remaining follow-up work is documented.
 
 ### Quality / Validation
 
 - [ ] The migrated suite passes locally or in CI as appropriate.
 - [ ] The PR includes evidence that the new suites run successfully.
-- [ ] No intentional reduction in coverage, isolation, or resilience has been left undocumented.
+- [x] No intentional reduction in coverage, isolation, or resilience has been left undocumented.
 - [ ] Any changed assertions or behavior differences from the old suite are explicitly explained.
 
 ### Suggested PR Notes
 
-- [ ] Include a mapping from old Codecept feature/helper to the new Playwright or `playwright-common` replacement.
+- [x] Include a mapping from old Codecept feature/helper to the new Playwright or `playwright-common` replacement.
 - [x] Include a short summary of what remains custom to this repo.
 - [x] Include a short summary of known limitations or agreed compromises.
 
 ## Behavior Mapping
+
+### Direct mapping from CodeceptJS to Playwright
+
+| Old CodeceptJS feature/helper | New Playwright replacement |
+| --- | --- |
+| `autoLogin` plugin with `login('admin')` | [`src/test/playwright/global-setup.ts`](../src/test/playwright/global-setup.ts) plus [`src/test/playwright/fixtures/admin.fixture.ts`](../src/test/playwright/fixtures/admin.fixture.ts) using per-project `storageState` |
+| `codeceptjs.container.support('adminIdentity')` | [`src/test/playwright/helpers/auth-state.ts`](../src/test/playwright/helpers/auth-state.ts) plus explicit state held by [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts) |
+| `codeceptjs.container.support('testingToken')` | Token caching inside [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts) |
+| `codeceptjs.container.support('workerRole')` and `codeceptjs.container.support('adminRole')` | Explicit role state inside [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts) |
+| `SetupDAO` singleton in Codecept common DAO | [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts) created through typed fixture wiring in [`src/test/playwright/fixtures/base.fixture.ts`](../src/test/playwright/fixtures/base.fixture.ts) |
+| `steps_file.ts` login helpers | [`src/test/playwright/helpers/ui-auth.ts`](../src/test/playwright/helpers/ui-auth.ts) |
+| `steps_file.ts` navigation helpers | [`src/test/playwright/helpers/navigation.ts`](../src/test/playwright/helpers/navigation.ts) |
+| `steps_file.ts` retry and bad gateway handling | [`src/test/playwright/helpers/resilient-actions.ts`](../src/test/playwright/helpers/resilient-actions.ts) plus targeted polling in [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts) |
+| Codecept shared config and helper injection | [`playwright.config.ts`](../playwright.config.ts), [`playwright.functional.config.ts`](../playwright.functional.config.ts), [`playwright.crossbrowser.config.ts`](../playwright.crossbrowser.config.ts), and typed fixtures under [`src/test/playwright/fixtures`](../src/test/playwright/fixtures) |
+| SauceLabs cross-browser configuration | Local Playwright project matrix in [`playwright.crossbrowser.config.ts`](../playwright.crossbrowser.config.ts) with project-specific admin identities via [`src/test/playwright/helpers/auth-state.ts`](../src/test/playwright/helpers/auth-state.ts) |
+| Codecept accessibility helper and aggregated report generation | [`src/test/accessibility/accessibility.spec.ts`](../src/test/accessibility/accessibility.spec.ts), [`src/test/accessibility/generate-report.js`](../src/test/accessibility/generate-report.js), and [`src/test/accessibility/run-suite.js`](../src/test/accessibility/run-suite.js) |
+| `playwright-common` replacement | Not adopted. Repo-specific implementations remain in local helpers, documented in the `playwright-common` assessment above. |
 
 ### Old CodeceptJS implementation
 
@@ -218,12 +244,14 @@ What would still be required before adoption:
 ## Intentional Differences From The CodeceptJS Suite
 
 - Cross-browser execution no longer uses SauceLabs. The current Playwright implementation runs the repo-defined local Playwright project matrix in [`playwright.crossbrowser.config.ts`](../playwright.crossbrowser.config.ts) instead of the older remote SauceLabs combinations.
+- The cross-browser scope change away from SauceLabs is explicitly documented here rather than treated as silent coverage preservation.
 - Admin authentication now uses Playwright `storageState` created during [`src/test/playwright/global-setup.ts`](../src/test/playwright/global-setup.ts) rather than CodeceptJS `autoLogin` on each scenario.
 - Cross-browser/admin-user isolation is implemented with project-specific admin identities and storage-state files via [`src/test/playwright/helpers/auth-state.ts`](../src/test/playwright/helpers/auth-state.ts), rather than the old Sauce/browser naming conventions.
 - Accessibility execution now uses Playwright plus Axe JSON capture and a generated HTML summary in [`src/test/accessibility/accessibility.spec.ts`](../src/test/accessibility/accessibility.spec.ts) and [`src/test/accessibility/generate-report.js`](../src/test/accessibility/generate-report.js), rather than the older Codecept accessibility helper flow.
 - Functional and cross-browser reporting still publish HTML reports, but Playwright startup failures now also produce a fallback HTML artifact through [`src/test/playwright/run-with-allure.js`](../src/test/playwright/run-with-allure.js) when Allure result files are never created.
 - Targeted retry handling is implemented locally in Playwright helpers such as [`src/test/playwright/helpers/resilient-actions.ts`](../src/test/playwright/helpers/resilient-actions.ts) and [`src/test/playwright/helpers/setup-dao.ts`](../src/test/playwright/helpers/setup-dao.ts), rather than reusing CodeceptJS retry mechanisms.
 - `playwright-common` was evaluated and intentionally not adopted. The repo keeps its retry, auth, accessibility, and setup behavior custom because the dependency did not provide enough value relative to the integration and maintenance cost for this suite.
+- CI and local runtime prerequisites now explicitly assume Node 20, a Playwright browser install step, and reachable target services, as documented in [`README.md`](../README.md).
 
 ## Known Gaps / Follow-up
 
