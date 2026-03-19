@@ -86,6 +86,7 @@ function main() {
     results: mergedResults,
     options: {
       outputDirPath: reportRoot,
+      outputDir: '.',
       reportFileName: 'index.html',
       projectKey: 'IDAM User Dashboard Accessibility',
       customSummary: buildSummary(entries),
