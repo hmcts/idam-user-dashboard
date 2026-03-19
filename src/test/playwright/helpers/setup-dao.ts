@@ -1,0 +1,433 @@
+import { APIRequestContext, expect } from '@playwright/test';
+import { faker } from '@faker-js/faker';
+import { BuildInfoHelper } from './build-info';
+
+const DEFAULT_ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
+const ADMIN_ROLE_NAME = 'iud-test-admin';
+const WORKER_ROLE_NAME = 'iud-test-worker';
+const ACCESS_ROLE_NAME = 'idam-user-dashboard--access';
+
+type Identity = { email: string; secret: string };
+type AdminRole = { name: string; assignableRoleNames: string[] };
+type WorkerRole = { name: string };
+type Invitation = { email: string; invitationType: string; invitationStatus: string };
+type UserOverrides = {
+  password?: string;
+  id?: string;
+  email?: string;
+  forename?: string;
+  surname?: string;
+  roleNames?: string[];
+  ssoId?: string;
+  ssoProvider?: string;
+  accountStatus?: string;
+  recordType?: string;
+};
+type ServiceOverrides = {
+  clientId?: string;
+  clientSecret?: string;
+  serviceLabel?: string;
+  description?: string;
+  redirectUris?: string[];
+  onboardingRoleNames?: string[];
+};
+type TestUser = {
+  id: string;
+  forename: string;
+  surname: string;
+  email: string;
+  roleNames: string[];
+  ssoId?: string;
+  ssoProvider?: string;
+  accountStatus?: string;
+  recordType?: string;
+  password: string;
+};
+
+class RetryableApiError extends Error {
+  status?: number;
+  retryAfterMs?: number;
+
+  constructor(message: string, status?: number, retryAfterMs?: number) {
+    super(message);
+    this.name = 'RetryableApiError';
+    this.status = status;
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
+class InviteNotReadyError extends Error {
+  constructor(email: string) {
+    super(`Expected exactly one pending invite for ${email}`);
+    this.name = 'InviteNotReadyError';
+  }
+}
+
+function isRetryableError(error: unknown): boolean {
+  if (error && typeof error === 'object') {
+    const anyErr = error as { status?: unknown; code?: unknown; message?: unknown };
+    const status = anyErr.status ?? anyErr.code;
+    if (typeof status === 'number') {
+      return status === 429 || (status >= 500 && status <= 599);
+    }
+
+    const message = String(anyErr.message ?? '').toLowerCase();
+    return (
+      message.includes('econnreset')
+      || message.includes('etimedout')
+      || message.includes('timeout')
+      || message.includes('fetch failed')
+      || message.includes('network')
+    );
+  }
+
+  return false;
+}
+
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  attempts = 3,
+  baseMs = 200,
+  maxMs = 2_000,
+  maxElapsedMs = 15_000,
+  shouldRetry: (error: unknown) => boolean = () => true
+): Promise<T> {
+  let lastError: unknown;
+  const startedAt = Date.now();
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === attempts - 1 || !shouldRetry(error)) {
+        break;
+      }
+
+      const elapsedMs = Date.now() - startedAt;
+      if (elapsedMs >= maxElapsedMs) {
+        break;
+      }
+
+      const backoffMs = Math.min(baseMs * Math.pow(2, attempt), maxMs);
+      const retryAfterMs = error instanceof RetryableApiError ? error.retryAfterMs || 0 : 0;
+      const waitMs = Math.min(Math.max(backoffMs, retryAfterMs), maxElapsedMs - elapsedMs);
+
+      if (waitMs <= 0) {
+        break;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, waitMs));
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(`Retry failed: ${String(lastError)}`);
+}
+
+export class SetupDao {
+  private readonly idamApi: APIRequestContext;
+  private readonly testingSupportApi: APIRequestContext;
+  private readonly clientSecret?: string;
+
+  private testingToken?: string;
+  private adminIdentity?: Identity;
+  private adminRole?: AdminRole;
+  private workerRole?: WorkerRole;
+
+  constructor(idamApi: APIRequestContext, testingSupportApi: APIRequestContext) {
+    this.idamApi = idamApi;
+    this.testingSupportApi = testingSupportApi;
+    this.clientSecret = process.env.FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET;
+  }
+
+  async getToken(): Promise<string> {
+    if (this.testingToken) {
+      return this.testingToken;
+    }
+    const clientSecret = this.clientSecret;
+    if (!clientSecret) {
+      throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is not set');
+    }
+    this.testingToken = await withRetry(
+      async () => {
+        const tokenRsp = await this.idamApi.post('/o/token', {
+          form: {
+            grant_type: 'client_credentials',
+            client_id: 'idam-functional-test-service',
+            client_secret: clientSecret,
+            scope: 'profile roles',
+          },
+        });
+
+        if (!tokenRsp.ok()) {
+          throw await this.toRetryableApiError(tokenRsp, 'Token request failed');
+        }
+
+        const tokenBody = await tokenRsp.json();
+        if (!tokenBody?.access_token) {
+          throw new Error('Unable to initialise testing token');
+        }
+
+        return tokenBody.access_token as string;
+      },
+      3,
+      200,
+      2_000,
+      15_000,
+      isRetryableError
+    );
+    return this.testingToken!;
+  }
+
+  async setupAdmin(adminEmail = DEFAULT_ADMIN_EMAIL): Promise<void> {
+    if (this.adminIdentity) {
+      if (this.adminIdentity.email !== adminEmail) {
+        throw new Error(`adminIdentity already initialised for ${this.adminIdentity.email}, cannot reuse for ${adminEmail}`);
+      }
+      return;
+    }
+    await this.setupAdminRole();
+    const secret = process.env.SMOKE_TEST_USER_PASSWORD || 'Pa55word11';
+    const createRsp = await this.postWithBearer('/test/idam/users', {
+      password: secret,
+      user: {
+        email: adminEmail,
+        forename: 'admin',
+        surname: 'test',
+        roleNames: [ACCESS_ROLE_NAME, ADMIN_ROLE_NAME],
+      },
+    });
+    await this.expectOkOrConflict(createRsp, 'setup admin user');
+    this.adminIdentity = { email: adminEmail, secret };
+  }
+
+  async setupAdminRole(): Promise<void> {
+    if (this.adminRole) {
+      return;
+    }
+    await this.setupWorkerRole();
+    const createRsp = await this.postWithBearer('/test/idam/roles', {
+      name: ADMIN_ROLE_NAME,
+      assignableRoleNames: [WORKER_ROLE_NAME],
+    });
+    await this.expectOkOrConflict(createRsp, 'setup admin role');
+    this.adminRole = {
+      name: ADMIN_ROLE_NAME,
+      assignableRoleNames: [WORKER_ROLE_NAME],
+    };
+  }
+
+  async setupWorkerRole(): Promise<void> {
+    if (this.workerRole) {
+      return;
+    }
+    const createRsp = await this.postWithBearer('/test/idam/roles', {
+      name: WORKER_ROLE_NAME,
+    });
+    await this.expectOkOrConflict(createRsp, 'setup worker role');
+    this.workerRole = { name: WORKER_ROLE_NAME };
+  }
+
+  getAdminIdentity(): Identity {
+    if (!this.adminIdentity) {
+      throw new Error('adminIdentity is not initialised. Run setupAdmin() first.');
+    }
+    return this.adminIdentity;
+  }
+
+  getWorkerRole(): WorkerRole {
+    if (!this.workerRole) {
+      throw new Error('workerRole is not initialised. Run setupWorkerRole() or setupAdminRole() first.');
+    }
+    return this.workerRole;
+  }
+
+  getAdminRole(): AdminRole {
+    if (!this.adminRole) {
+      throw new Error('adminRole is not initialised. Run setupAdminRole() first.');
+    }
+    return this.adminRole;
+  }
+
+  async createRole(role: { name: string; assignableRoleNames?: string[] }): Promise<void> {
+    const createRsp = await this.postWithBearer('/test/idam/roles', {
+      name: role.name,
+      assignableRoleNames: role.assignableRoleNames || [],
+    });
+    await this.expectOkOrConflict(createRsp, `create role ${role.name}`);
+  }
+
+  async createService(overrides: ServiceOverrides = {}) {
+    const clientId = overrides.clientId || `iud-service-${BuildInfoHelper.getBuildInfo(faker.word.verb())}-${faker.word.noun()}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const clientSecret = overrides.clientSecret || clientId;
+    const serviceLabel = overrides.serviceLabel || clientId;
+    const description = overrides.description || 'playwright-generated service';
+    const redirectUris = overrides.redirectUris || [`http://${clientId}`];
+    const onboardingRoleNames = overrides.onboardingRoleNames || [];
+
+    const rsp = await this.postWithBearer('/test/idam/services', {
+      clientId,
+      clientSecret,
+      serviceLabel,
+      description,
+      hmctsAccess: {
+        mfaRequired: true,
+        selfRegistrationAllowed: true,
+        postActivationRedirectUrl: 'http://postactivation',
+        onboardingRoleNames,
+      },
+      oauth2: {
+        redirectUris,
+        scopes: ['openid', 'profile', 'roles'],
+      },
+    });
+    await expect(rsp.ok(), `create service failed: ${rsp.status()} ${rsp.statusText()}`).toBeTruthy();
+    return {
+      clientId,
+      clientSecret,
+      serviceLabel,
+      description,
+      redirectUris,
+      onboardingRoleNames,
+    };
+  }
+
+  async createUser(overrides: UserOverrides = {}): Promise<TestUser> {
+    await this.setupWorkerRole();
+    const password = overrides.password || faker.internet.password({ prefix: 'T1a' });
+    const forename = overrides.forename || faker.person.firstName();
+    const surname = overrides.surname || faker.person.lastName();
+    const email = overrides.email || faker.internet.email({
+      firstName: forename,
+      lastName: surname,
+      provider: `iud.${BuildInfoHelper.getBuildInfo('test')}.local`,
+    }).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    const userPayload: Record<string, any> = {
+      forename,
+      surname,
+      email,
+      roleNames: overrides.roleNames || [WORKER_ROLE_NAME],
+      ...overrides,
+      password: undefined,
+    };
+
+    const createRsp = await this.postWithBearer('/test/idam/users', {
+      password,
+      user: userPayload,
+    });
+    await expect(createRsp.ok(), `create user failed: ${createRsp.status()} ${createRsp.statusText()}`).toBeTruthy();
+    const createBody = await createRsp.json();
+    const createdUser = createBody.user || createBody;
+    return {
+      id: createdUser.id || userPayload.id,
+      forename: createdUser.forename || forename,
+      surname: createdUser.surname || surname,
+      email: createdUser.email || email,
+      roleNames: createdUser.roleNames || userPayload.roleNames,
+      ssoId: createdUser.ssoId || userPayload.ssoId,
+      ssoProvider: createdUser.ssoProvider || userPayload.ssoProvider,
+      accountStatus: createdUser.accountStatus || userPayload.accountStatus,
+      recordType: createdUser.recordType || userPayload.recordType,
+      password,
+    };
+  }
+
+  async lockTestUser(email: string): Promise<void> {
+    if (!this.clientSecret) {
+      throw new Error('FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET is not set');
+    }
+    for (let i = 0; i < 5; i++) {
+      await this.idamApi.post('/o/token', {
+        form: {
+          grant_type: 'password',
+          client_id: 'idam-functional-test-service',
+          client_secret: this.clientSecret,
+          scope: 'profile roles',
+          username: email,
+          password: 'invalid',
+        },
+      });
+    }
+  }
+
+  async archiveExistingTestUser(user: TestUser): Promise<void> {
+    const token = await this.getToken();
+    const rsp = await this.testingSupportApi.put(`/test/idam/users/${user.id}`, {
+      headers: {
+        Authorization: `bearer ${token}`,
+      },
+      data: {
+        password: 'redundant',
+        user: {
+          ...user,
+          recordType: 'ARCHIVED',
+        },
+      },
+    });
+    await expect(rsp.ok(), `archive existing user failed: ${rsp.status()} ${rsp.statusText()}`).toBeTruthy();
+  }
+
+  async getSingleInvite(email: string): Promise<Invitation> {
+    const token = await this.getToken();
+    return withRetry(
+      async () => {
+        const rsp = await this.testingSupportApi.get(`/test/idam/invitations?email=${encodeURIComponent(email)}`, {
+          headers: {
+            Authorization: `bearer ${token}`,
+          },
+        });
+
+        if (!rsp.ok()) {
+          throw await this.toRetryableApiError(rsp, 'getSingleInvite request failed');
+        }
+
+        const invitations = await rsp.json();
+        const pendingInvites = invitations.filter(invitation => invitation.invitationStatus === 'PENDING');
+        if (pendingInvites.length === 1) {
+          return pendingInvites[0];
+        }
+
+        throw new InviteNotReadyError(email);
+      },
+      5,
+      1_000,
+      2_000,
+      15_000,
+      error => error instanceof InviteNotReadyError || isRetryableError(error)
+    );
+  }
+
+  private async postWithBearer(path: string, data: unknown) {
+    const token = await this.getToken();
+    return this.testingSupportApi.post(path, {
+      headers: {
+        Authorization: `bearer ${token}`,
+      },
+      data,
+    });
+  }
+
+  private async expectOkOrConflict(response, operation: string): Promise<void> {
+    const status = response.status();
+    if (status === 409 || response.ok()) {
+      return;
+    }
+    const body = await response.text();
+    throw new Error(`${operation} failed with status ${status}: ${body}`);
+  }
+
+  private async toRetryableApiError(response, message: string): Promise<Error> {
+    const status = response.status();
+    const body = await response.text();
+    const retryAfterHeader = response.headers()['retry-after'];
+    const retryAfterMs = retryAfterHeader ? Number.parseInt(retryAfterHeader, 10) * 1_000 : undefined;
+
+    if (status === 429 || status >= 500) {
+      return new RetryableApiError(`${message}: ${status} ${body}`, status, retryAfterMs);
+    }
+
+    return new Error(`${message}: ${status} ${body}`);
+  }
+}

@@ -10,7 +10,7 @@ IdAM User Dashboard is to be the new and improved replacement for the [IdAM web-
 
 Running the application requires the following tools to be installed in your environment:
 
-  * [Node.js](https://nodejs.org/) v12.0.0 or later
+  * [Node.js](https://nodejs.org/) `20.18.0` (see `.nvmrc`)
   * [yarn](https://yarnpkg.com/)
   * [Docker](https://www.docker.com)
 
@@ -95,29 +95,60 @@ You can run unit tests by executing the following command:
 $ yarn test
 ```
 
-#### Note for functional and accessibility tests
+#### Note for Playwright functional, cross-browser and accessibility tests
 
-Before running the functional tests and accessibility tests, make sure that an instance of the app is running.
-By default, the tests will run against an instance hosted at https://localhost:3100,
-but this can be changed by setting the `TEST_URL` environment variable.
+Before running the Playwright suites, make sure an instance of the app is running.
+By default, the tests run against `https://idam-user-dashboard.aat.platform.hmcts.net/`,
+but this can be changed by setting `TEST_URL`.
 
-Due to a reliance on 3rd party services, you also need to set
-`LAUNCHDARKLY_SDK_KEY`
-`NOTIFY_API_KEY`
-`SMOKE_TEST_USER_USERNAME`
-`SMOKE_TEST_USER_PASSWORD`
-environment variables accordingly.
+Playwright runtime prerequisites:
+
+- Install browser binaries with `yarn playwright:install`
+- Ensure the target app, IDAM API, and testing support API are reachable from the machine running the suite
+- For AAT execution, make sure the required secrets are available in the environment or CI vault integration
+
+Playwright test environment variables:
+
+- Required for functional, cross-browser, and accessibility suites:
+  - `FUNCTIONAL_TEST_SERVICE_CLIENT_SECRET`
+- Optional overrides for Playwright execution:
+  - `TEST_URL`
+    Defaults to `https://idam-user-dashboard.aat.platform.hmcts.net/`
+  - `TEST_HEADLESS`
+    Defaults to `true`
+  - `SMOKE_TEST_USER_PASSWORD`
+    Defaults to `Pa55word11` for test bootstrap if not provided
+  - `TEST_ADMIN_EMAIL`
+    Defaults to a generated `test...@admin.local` address per Playwright project
+  - `BRANCH_NAME` and `BUILD_NUMBER`
+    Used only to add build-specific suffixes to generated test data
+
+If you are running the application locally rather than targeting AAT, the app itself may also need:
+
+- `STRATEGIC_PUBLIC_URL`
+- `STRATEGIC_SERVICE_URL`
+- `TESTING_SUPPORT_URL`
 
 #### Run functional tests
 ```bash
-$ yarn test:functional:min    # Runs minimum functional tests (path-to-live)
-$ yarn test:functional:all    # Runs all functional tests (nightly)
+$ yarn test:functional
 ```
 
-#### Running accessibility tests:
-
+#### Run cross-browser tests
 ```bash
-$ yarn test:pa11y
+$ yarn test:crossbrowser
+```
+
+#### Run accessibility tests
+```bash
+$ yarn test:accessibility
+```
+
+#### Generate reports separately
+```bash
+$ yarn test:functional:allure
+$ yarn test:crossbrowser:allure
+$ yarn test:accessibility:report
 ```
 
 ## License
