@@ -180,5 +180,5 @@
     "test-exclude": "^8.0.0",
     "minimatch": "^10.2.3"
   },
-  "packageManager": "yarn@4.5.0"
+  "packageManager": "yarn@4.13.0"
 }
