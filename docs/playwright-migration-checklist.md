@@ -77,10 +77,10 @@ The remaining follow-up work is captured in the `Known Gaps / Follow-up` section
 
 ### `playwright-common` Adoption
 
-- [x] The PR clearly lists which `playwright-common` components are being used.
-- [x] `playwright-common` is used where it adds value, not just to maximise usage.
+- [ ] The PR clearly lists which `playwright-common` components are being used.
+- [ ] `playwright-common` is used where it adds value, not just to maximise usage.
 - [x] Repo-specific test logic remains custom where `playwright-common` is not a good fit.
-- [x] Any `playwright-common` runtime prerequisites are satisfied.
+- [ ] Any `playwright-common` runtime prerequisites are satisfied.
 - [x] Any Playwright version compatibility requirements from `playwright-common` are satisfied.
 - [x] Any Node version compatibility requirements from `playwright-common` are satisfied.
 
@@ -89,6 +89,7 @@ The remaining follow-up work is captured in the `Known Gaps / Follow-up` section
 Current usage: none.
 
 The current decision is intentional non-adoption. No `playwright-common` components are used in this repo.
+Although the repo was upgraded to compatible Node and Playwright versions, the package was not a good practical fit because it introduced unnecessary dependency overhead and an ESM/CommonJS integration problem for this test codebase.
 
 The local assessment copy reviewed was `Desktop/playwright-common-1.1.2`.
 
@@ -100,8 +101,8 @@ Key compatibility constraints:
 
 Runtime prerequisite status:
 
-- Satisfied for evaluation purposes because the repo runtime now meets the package's published Node and Playwright version requirements
-- Not applied in production use because the package was intentionally not adopted
+- Node and Playwright version prerequisites were met during evaluation
+- The package was still not adopted because the wider runtime/integration fit was not acceptable for this repo
 
 Candidate components reviewed:
 
