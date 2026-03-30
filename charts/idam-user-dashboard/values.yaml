@@ -10,7 +10,7 @@ nodejs:
   devcpuLimits: 500m
   aadIdentityName: idam
   ingressHost: idam-user-dashboard.{{ .Values.global.environment }}.platform.hmcts.net
-  image: 'hmctspublic.azurecr.io/idam/user-dashboard:latest'
+  image: 'hmctsprod.azurecr.io/idam/user-dashboard:latest'
   keyVaults:
     idam-idam:
       secrets:
