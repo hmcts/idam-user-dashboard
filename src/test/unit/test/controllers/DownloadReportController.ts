@@ -4,11 +4,14 @@ import { mockApi } from '../../utils/mockApi';
 import { DownloadReportController } from '../../../../main/controllers/DownloadReportController';
 import { User } from '../../../../main/interfaces/User';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import config from 'config';
 
+jest.mock('config');
 
 describe('Download report controller', () => {
   let req: any;
   let res: any;
+  let controller: DownloadReportController;
   const mockReportGenerator: any = {
     saveReportQueryRoles: jest.fn(),
     getReportQueryRoles: jest.fn(),
@@ -32,12 +35,28 @@ describe('Download report controller', () => {
       roles: [],
     },
   ] as User[];
-  const controller = new DownloadReportController(mockReportGenerator, mockApi as unknown as IdamAPI);
   const testToken = 'test-token';
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    mockReportGenerator.saveReportQueryRoles.mockReset();
+    mockReportGenerator.getReportQueryRoles.mockReset();
+    mockApi.getUsersWithRoles.mockReset();
     req = mockRequest();
     res = mockResponse();
+    (config.get as jest.Mock).mockImplementation((key: string) => {
+      switch (key) {
+      case 'reports.download.maxPages':
+        return 5;
+      case 'reports.download.pageSize':
+        return 2000;
+      default:
+        return undefined;
+      }
+    });
+    controller = new DownloadReportController(mockReportGenerator, mockApi as unknown as IdamAPI);
+    (controller as any).reportDownloadMaxPages = 5;
+    (controller as any).reportDownloadPageSize = 2000;
   });
 
   test('Should send report that exists', async () => {
@@ -45,7 +64,9 @@ describe('Download report controller', () => {
     req.idam_user_dashboard_session = {access_token: testToken};
 
     mockReportGenerator.getReportQueryRoles.mockResolvedValue(query);
-    mockApi.getUsersWithRoles.mockReturnValueOnce(users).mockReturnValue([]);
+    mockApi.getUsersWithRoles
+      .mockResolvedValueOnce({ users, hasNextPage: true })
+      .mockResolvedValueOnce({ users: [], hasNextPage: false });
 
     await controller.get(req, res);
 
@@ -57,6 +78,29 @@ describe('Download report controller', () => {
     expect(res.send).toHaveBeenCalledWith(fileData);
     expect(res.attachment).toHaveBeenCalled();
     expect(res.header).toHaveBeenCalledWith('Content-Type', 'text/csv');
+  });
+
+  test('Should mark report file as partial when total exceeds configured maximum', async () => {
+    req.params = { reportUUID: 'someUUID' };
+    req.idam_user_dashboard_session = {access_token: testToken};
+
+    const pagedUsers = Array.from({ length: 2000 }, (_, index) => ({
+      id: `${index}`,
+      forename: `test${index}`,
+      surname: 'partial',
+      email: `test${index}@test.email`,
+      active: true,
+      roles: ['caseworker'],
+    })) as User[];
+
+    mockReportGenerator.getReportQueryRoles.mockResolvedValue(['caseworker']);
+    mockApi.getUsersWithRoles
+      .mockResolvedValue({ users: pagedUsers, hasNextPage: true });
+
+    await controller.get(req, res);
+
+    expect(mockApi.getUsersWithRoles).toHaveBeenCalledTimes(5);
+    expect(res.attachment).toHaveBeenCalledWith(expect.stringMatching(/^user-report-.*-partial\.csv$/));
   });
 
   test('Should render view reports page with error if no data returns', async () => {

@@ -4,6 +4,7 @@ import {AuthedRequest} from '../interfaces/AuthedRequest';
 import {Response} from 'express';
 import {ReportsHandler} from '../app/reports/ReportsHandler';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
+import config from 'config';
 import {
   GENERATING_REPORT_END_OF_RESULTS,
   GENERATING_REPORT_ERROR,
@@ -14,6 +15,9 @@ import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class ViewReportController extends RootController {
+  private readonly reportDownloadRowLimit: number =
+    Number(config.get('reports.download.maxPages')) * Number(config.get('reports.download.pageSize'))
+
   constructor(
     private readonly reportGenerator: ReportsHandler,
     private readonly idamWrapper: IdamAPI,
@@ -40,9 +44,17 @@ export class ViewReportController extends RootController {
     try {
       const roles = (await this.reportGenerator.getReportQueryRoles(reportUUID));
       let reportData;
+      let hasNextPage = false;
 
       try {
-        reportData = (await this.idamWrapper.getUsersWithRoles(req.idam_user_dashboard_session.access_token, roles, 50, pageNo))
+        const response = await this.idamWrapper.getUsersWithRoles(
+          req.idam_user_dashboard_session.access_token,
+          roles,
+          50,
+          pageNo
+        );
+        hasNextPage = response.hasNextPage;
+        reportData = response.users
           .sort((a, b) => (a.forename.toLowerCase() > b.forename.toLowerCase()) ? 1 : -1);
       } catch (e) {
         return super.post(req, res, 'generate-report', {
@@ -56,7 +68,7 @@ export class ViewReportController extends RootController {
         if (pageNo == 0) {
           return super.post(req, res, 'view-report', {
             content: {
-              reportData, query: roles
+              reportData, query: roles, hasNextPage, reportDownloadRowLimit: this.reportDownloadRowLimit
             },
             error: {
               'body': {message: GENERATING_REPORT_NO_USERS_MATCHED}
@@ -65,7 +77,7 @@ export class ViewReportController extends RootController {
         } else {
           return super.post(req, res, 'view-report', {
             content: {
-              reportData, query: roles
+              reportData, query: roles, hasNextPage, reportDownloadRowLimit: this.reportDownloadRowLimit
             },
             error: {
               'body': {message: GENERATING_REPORT_END_OF_RESULTS}
@@ -76,7 +88,7 @@ export class ViewReportController extends RootController {
 
       return super.post(req, res, 'view-report', {
         content: {
-          reportUUID, reportData, query: roles
+          reportUUID, reportData, query: roles, hasNextPage, reportDownloadRowLimit: this.reportDownloadRowLimit
         },
       });
     } catch (e) {

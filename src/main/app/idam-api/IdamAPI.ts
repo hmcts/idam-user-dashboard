@@ -12,6 +12,11 @@ import { V2User } from '../../interfaces/V2User';
 import logger from '../../modules/logging';
 import { handleApiError } from '../../utils/v2Error';
 
+export interface UsersWithRolesResponse {
+  users: User[];
+  hasNextPage: boolean;
+}
+
 export class IdamAPI {
   constructor(
     private readonly idamApiAxios: AxiosInstance,
@@ -175,7 +180,7 @@ export class IdamAPI {
       });
   }
 
-  public getUsersWithRoles(token: string, roles: string[], size: number = 20, page: number = 0): Promise<User[]> {
+  public getUsersWithRoles(token: string, roles: string[], size: number = 20, page: number = 0): Promise<UsersWithRolesResponse> {
     let queryString = '';
     roles.forEach((role, index, roles) => {
       queryString += 'roles:' + role;
@@ -190,11 +195,24 @@ export class IdamAPI {
           headers: {Authorization: 'Bearer ' + token},
           timeout: 20000
         })
-      .then(results => results.data)
+      .then(results => ({
+        users: results.data,
+        hasNextPage: this.hasNextPage(results.headers?.link ?? results.headers?.Link)
+      }))
       .catch(error => {
         const errorMessage = 'Error getting all users with role from IDAM API';
         logger.error(`${error.stack || error}`);
         throw new Error(errorMessage);
       });
+  }
+
+  private hasNextPage(linkHeader: string | undefined): boolean {
+    if (!linkHeader) {
+      return false;
+    }
+
+    return linkHeader
+      .split(',')
+      .some(linkPart => linkPart.includes('rel="next"'));
   }
 }
