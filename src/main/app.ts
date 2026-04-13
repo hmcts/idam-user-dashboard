@@ -28,6 +28,7 @@ const { setupDev } = require('./development');
 
 export const app = express();
 app.locals.ENV = env;
+app.set('trust proxy', 1);
 
 logger.info('app logger is at level ' + logger.level);
 
