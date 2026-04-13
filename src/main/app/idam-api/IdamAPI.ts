@@ -9,13 +9,9 @@ import { SearchType } from '../../utils/SearchType';
 import { RoleDefinition } from '../../interfaces/RoleDefinition';
 import { ROLE_PERMISSION_ERROR } from '../../utils/error';
 import { V2User } from '../../interfaces/V2User';
+import { UsersWithRolesResponse } from '../../interfaces/UsersWithRolesResponse';
 import logger from '../../modules/logging';
 import { handleApiError } from '../../utils/v2Error';
-
-export interface UsersWithRolesResponse {
-  users: User[];
-  hasNextPage: boolean;
-}
 
 export class IdamAPI {
   constructor(
