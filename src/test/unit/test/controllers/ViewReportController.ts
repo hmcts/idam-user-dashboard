@@ -30,12 +30,12 @@ describe('Generate report controller', () => {
     jest.clearAllMocks();
     (config.get as jest.Mock).mockImplementation((key: string) => {
       switch (key) {
-      case 'reports.download.maxPages':
-        return 5;
-      case 'reports.download.pageSize':
-        return 2000;
-      default:
-        return undefined;
+        case 'reports.download.maxPages':
+          return 5;
+        case 'reports.download.pageSize':
+          return 2000;
+        default:
+          return undefined;
       }
     });
     req = mockRequest();

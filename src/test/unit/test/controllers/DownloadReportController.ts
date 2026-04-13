@@ -46,12 +46,12 @@ describe('Download report controller', () => {
     res = mockResponse();
     (config.get as jest.Mock).mockImplementation((key: string) => {
       switch (key) {
-      case 'reports.download.maxPages':
-        return 5;
-      case 'reports.download.pageSize':
-        return 2000;
-      default:
-        return undefined;
+        case 'reports.download.maxPages':
+          return 5;
+        case 'reports.download.pageSize':
+          return 2000;
+        default:
+          return undefined;
       }
     });
     controller = new DownloadReportController(mockReportGenerator, mockApi as unknown as IdamAPI);

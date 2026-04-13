@@ -16,7 +16,7 @@ import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 @autobind
 export class ViewReportController extends RootController {
   private readonly reportDownloadRowLimit: number =
-    Number(config.get('reports.download.maxPages')) * Number(config.get('reports.download.pageSize'))
+    Number(config.get('reports.download.maxPages')) * Number(config.get('reports.download.pageSize'));
 
   constructor(
     private readonly reportGenerator: ReportsHandler,
