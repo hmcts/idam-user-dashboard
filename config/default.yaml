@@ -68,3 +68,7 @@ accounts:
   status:
     lock:
       durationMinutes: 60
+reports:
+  download:
+    maxPages: 5
+    pageSize: 2000

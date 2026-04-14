@@ -52,6 +52,11 @@
           {{ govukButton({ text: "Download report (CSV)" }) }}
         </a>
 
+        {{ govukWarningText({
+          text: "Downloading the report can take some time, please do not refresh the page. Downloads are limited to " + content.reportDownloadRowLimit + " rows. If the report is larger than this, the downloaded file name will include the word partial.",
+          iconFallbackText: "Warning"
+        }) }}
+
         <script>
           document.addEventListener('DOMContentLoaded', function () {
             const currentURL = window.location.href;
@@ -127,6 +132,7 @@
       }) }}
 
       {% set isEmptyReport = content.reportData.length == 0 %}
+      {% set hasNextPage = content.hasNextPage if content.hasNextPage is defined else not isEmptyReport %}
 
       {{ govukPagination({
         previous: {
@@ -134,7 +140,7 @@
         },
         next: {
           href: "#"
-        } if not isEmptyReport,
+        } if hasNextPage,
         items: [ ]
       }) }}
 
@@ -158,7 +164,9 @@
                 previous.href = prevURL;
               }
             }
-            next.href = nextURL;
+            if (next) {
+              next.href = nextURL;
+            }
           });
       </script>
 
