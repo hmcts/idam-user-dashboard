@@ -6031,13 +6031,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.14":
-  version: 29.5.14
-  resolution: "@types/jest@npm:29.5.14"
+"@types/jest@npm:^30.0.0":
+  version: 30.0.0
+  resolution: "@types/jest@npm:30.0.0"
   dependencies:
-    expect: "npm:^29.0.0"
-    pretty-format: "npm:^29.0.0"
-  checksum: 10/59ec7a9c4688aae8ee529316c43853468b6034f453d08a2e1064b281af9c81234cec986be796288f1bbb29efe943bc950e70c8fa8faae1e460d50e3cf9760f9b
+    expect: "npm:^30.0.0"
+    pretty-format: "npm:^30.0.0"
+  checksum: 10/cdeaa924c68b5233d9ff92861a89e7042df2b0f197633729bcf3a31e65bd4e9426e751c5665b5ac2de0b222b33f100a5502da22aefce3d2c62931c715e88f209
   languageName: node
   linkType: hard
 
@@ -10436,7 +10436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@npm:30.3.0":
+"expect@npm:30.3.0, expect@npm:^30.0.0":
   version: 30.3.0
   resolution: "expect@npm:30.3.0"
   dependencies:
@@ -11814,7 +11814,7 @@ __metadata:
     "@types/express-serve-static-core": "npm:^4.19.6"
     "@types/express-session": "npm:^1.18.2"
     "@types/glob": "npm:^8.1.0"
-    "@types/jest": "npm:^29.5.14"
+    "@types/jest": "npm:^30.0.0"
     "@types/jest-when": "npm:^3.5.5"
     "@types/lodash": "npm:^4.17.23"
     "@types/mini-css-extract-plugin": "npm:^2.5.1"
@@ -16005,7 +16005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:30.3.0":
+"pretty-format@npm:30.3.0, pretty-format@npm:^30.0.0":
   version: 30.3.0
   resolution: "pretty-format@npm:30.3.0"
   dependencies:
