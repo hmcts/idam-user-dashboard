@@ -70,6 +70,32 @@ Scenario('I as an admin cannot save forged roles outside my role hierarchy', asy
   I.see('Status code: 403');
 });
 
+Scenario('I as an admin can only edit roles if I can manage them (Review)', async ({ I, setupDAO }) => {
+  const testRole = await I.haveRole();
+  const testUser = await I.haveUser({roleNames: [testRole.name]});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.uncheckOption('#hide-disabled');
+  I.scrollPageToBottom();
+
+  await I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
+  const testRoleDisabled = await I.grabDisabledElementStatus(I.locateInput('roles', testRole.name));
+  I.assertTrue(testRoleDisabled);
+  await I.dontSeeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
+
+  I.checkOption(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.seeCheckboxIsChecked(I.locateInput('roles', setupDAO.getWorkerRole().name));
+  await I.clickToExpectSuccess('Save');
+  I.see('User details updated successfully', locate('h3.govuk-notification-banner__heading'));
+
+  I.scrollPageToBottom();
+
+  await I.clickToNavigate('Return to user details', '/details', 'User Details');
+  I.see(setupDAO.getWorkerRole().name, I.locateDataForTitle('Assigned roles'));
+  I.dontSeeElement(locate('button').withText('Delete user'));
+});
+
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
   const testUser = await I.haveUser();
 
@@ -112,7 +138,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
 });
 
-Scenario('I as an admin can enable MFA', async ({ I, setupDAO }) => {
+Scenario('I as an admin can enable MFA (Review)', async ({ I, setupDAO }) => {
   const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled', setupDAO.getWorkerRole().name]});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
@@ -138,7 +164,7 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
   I.assertTrue(emailDisabled);
 });
 
-Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
+Scenario('I as an admin can filter roles (Review)', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-filter-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const adminRole = setupDAO.getAdminRole();
   const testUser = await I.haveUser({roleNames: [testRole.name, adminRole.name]});
@@ -173,7 +199,7 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
 
 });
 
-Scenario('I as an admin can add a filtered role and existing roles are unchanged', async ({ I, setupDAO }) => {
+Scenario('I as an admin can add a filtered role and existing roles are unchanged (Review)', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-user-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const workerRole = setupDAO.getWorkerRole();
   const testUser = await I.haveUser({roleNames: [testRole.name]});
@@ -210,7 +236,7 @@ Scenario('I as an admin can add a filtered role and existing roles are unchanged
 });
 
 
-Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO }) => {
+Scenario('I as an admin cannot edit the citizen attribute (Review)', async ({ I, setupDAO }) => {
   const testUser = await I.haveUser({roleNames: [setupDAO.getWorkerRole().name, 'citizen']});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
@@ -224,7 +250,7 @@ Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO
   I.assertTrue(citizenRoleDisabled);
 });
 
-Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict', async ({ I }) => {
+Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict (Review)', async ({ I }) => {
   const testUser = await I.haveUser({
     roleNames: ['caseworker', 'citizen'],
     ssoId: faker.string.uuid(),
