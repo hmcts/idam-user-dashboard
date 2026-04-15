@@ -5,6 +5,7 @@ import { AuthedRequest } from '../interfaces/AuthedRequest';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { User } from '../interfaces/User';
 import { AccountStatus, RecordType, V2User } from '../interfaces/V2User';
+import { constants as http } from 'http2';
 import {
   findDifferentElements,
   getObjectVariation,
@@ -36,6 +37,7 @@ import logger from '../modules/logging';
 import { ApiError } from '../interfaces/ApiError';
 import { mapApiErrorToPageError } from '../utils/v2Error';
 import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttributes';
+import { HTTPError } from '../app/errors/HttpError';
 
 @autobind
 export class UserEditController extends RootController {
@@ -49,6 +51,7 @@ export class UserEditController extends RootController {
     await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
+        this.assertUserIsManageable(req, user.roles);
         setTelemetryAttribute(req, 'edit_user_id', user.id);
 
         const assignableRoles: string[] = req.idam_user_dashboard_session.user.assignableRoles;
@@ -192,6 +195,8 @@ export class UserEditController extends RootController {
         finalRoles = v2User.roleNames;
       }
 
+      this.assertUserIsManageable(req, finalRoles);
+
       const updatedUser: V2User = {
         ...v2User,
         forename: changedFields.forename ?? v2User.forename,
@@ -215,6 +220,9 @@ export class UserEditController extends RootController {
         ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      }
       const apiErr = e as ApiError;
       logger.error('Exception saving user', apiErr);
       const error = mapApiErrorToPageError(apiErr, 'userEditForm');
@@ -331,5 +339,14 @@ export class UserEditController extends RootController {
 
   private isCaseworkerCitizen(isCitizen: boolean, roles: string[]) {
     return isCitizen && roles.includes(CASEWORKER_ROLE);
+  }
+
+  private assertUserIsManageable(req: AuthedRequest, roleNames: string[]) {
+    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+    const manageable = (roleNames || []).every(role => assignableRoles.includes(role));
+
+    if (!manageable) {
+      throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+    }
   }
 }

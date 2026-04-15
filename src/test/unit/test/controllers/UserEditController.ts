@@ -67,6 +67,12 @@ const setupPageContent = (user: any, roleAssignments: any) => {
   };
 };
 
+const expectForbidden = (req: any, res: any) => {
+  expect(req.next).toHaveBeenCalledTimes(1);
+  expect(req.next.mock.calls[0][0]).toEqual(expect.objectContaining({ status: 403 }));
+  expect(res.render).not.toHaveBeenCalled();
+};
+
 describe('User edit controller', () => {
   mockRootController();
 
@@ -84,7 +90,9 @@ describe('User edit controller', () => {
   const controller = new UserEditController(mockApi as unknown as IdamAPI);
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = mockRequest();
+    req.next = jest.fn();
     req.idam_user_dashboard_session = {access_token: testToken};
   });
 
@@ -147,6 +155,35 @@ describe('User edit controller', () => {
     });
 
   });
+
+  test('Should reject rendering the edit user page when target user roles are outside the role hierarchy', async () => {
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = setupPostData(testUser, 'edit');
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
+
+    expectForbidden(req, res);
+  });
+
+  test('Should reject saving when submitted roles exceed the role hierarchy', async () => {
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, res);
+
+    expect(mockApi.updateV2User).not.toHaveBeenCalled();
+    expectForbidden(req, res);
+  });
   
   test('Should render the edit user page after saving when user fields changed', async () => {
 
@@ -198,9 +235,9 @@ describe('User edit controller', () => {
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
       ...setupPostData(testUser, 'save'),
-      roles: ['IDAM_ADMIN_USER'],
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -222,7 +259,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -232,7 +269,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: expect.arrayContaining(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']),
+            roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
           }, 
           expectedRoleAssignments
         )
@@ -246,9 +283,9 @@ describe('User edit controller', () => {
     const testUser = setupV1User(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']);
     req.body = {
       ...setupPostData(testUser, 'save'),
-      roles: [],
+      roles: ['IDAM_SUPER_USER'],
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -270,7 +307,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -295,9 +332,9 @@ describe('User edit controller', () => {
     const testUser = setupV1User(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']);
     req.body = {
       ...setupPostData(testUser, 'save'),
-      roles: ['IDAM_TEST_USER'],
+      roles: ['IDAM_TEST_USER', 'IDAM_SUPER_USER'],
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_TEST_USER'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_TEST_USER', 'IDAM_SUPER_USER'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -318,13 +355,13 @@ describe('User edit controller', () => {
         assigned: false
       },
       {
-        name: 'IDAM_TEST_USER',
+        name: 'IDAM_SUPER_USER',
         assignable: true,
         assigned: true
       },
       {
-        name: 'IDAM_SUPER_USER',
-        assignable: false,
+        name: 'IDAM_TEST_USER',
+        assignable: true,
         assigned: true
       }
     ];
@@ -334,7 +371,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_TEST_USER']),
+            roles: ['IDAM_SUPER_USER', 'IDAM_TEST_USER'],
           }, 
           expectedRoleAssignments
         )
@@ -349,9 +386,9 @@ describe('User edit controller', () => {
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
       ...setupPostData(testUser, 'save'),
-      roles: ['IDAM_ADMIN_USER'],
+      roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ id: testUser.id, assignableRoles: ['IDAM_ADMIN_USER'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ id: testUser.id, assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'] } };
 
     when(mockApi.getAssignableRoles).calledWith(expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'])).mockReturnValueOnce(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
 
@@ -391,7 +428,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']),
+            roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
           }, 
           expectedRoleAssignments
         )
@@ -464,7 +501,7 @@ describe('User edit controller', () => {
       roles: ['IDAM_SUPER_USER'],
       multiFactorAuthentication: 'enabled'
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['idam-mfa-disabled'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER', 'idam-mfa-disabled'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -486,7 +523,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -515,7 +552,7 @@ describe('User edit controller', () => {
       ...setupPostData(testUser, 'save'),
       multiFactorAuthentication: undefined
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['idam-mfa-disabled'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER', 'idam-mfa-disabled'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -537,7 +574,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -567,7 +604,7 @@ describe('User edit controller', () => {
       roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
       multiFactorAuthentication: 'enabled'
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'idam-mfa-disabled'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER', 'idam-mfa-disabled'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -594,7 +631,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -604,7 +641,7 @@ describe('User edit controller', () => {
         ...setupPageContent(
           {
             ...testUser,
-            roles: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']),
+            roles: ['IDAM_ADMIN_USER', 'IDAM_SUPER_USER'],
             multiFactorAuthentication: true
           }, 
           expectedRoleAssignments
@@ -730,7 +767,7 @@ describe('User edit controller', () => {
       roles: ['IDAM_SUPER_USER'],
       isCitizen: 'enabled'
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER', 'citizen'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -752,7 +789,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -787,7 +824,7 @@ describe('User edit controller', () => {
       }, 'save'),
       isCitizen: undefined
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER', 'citizen'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -814,7 +851,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_SUPER_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -841,7 +878,7 @@ describe('User edit controller', () => {
 
     const testUser = setupV1User(['IDAM_ADMIN_USER']);
     req.body = req.body = setupPostData(testUser, 'edit');
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'citizen'] } };
 
     when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
@@ -856,7 +893,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_ADMIN_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
@@ -878,7 +915,7 @@ describe('User edit controller', () => {
       isCitizen: true
     };
     req.body = req.body = setupPostData(testUser, 'edit');
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: [] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['caseworker', 'citizen'] } };
 
     when(config.has).calledWith('providers.azure.internalName').mockReturnValue(true);
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
@@ -888,19 +925,22 @@ describe('User edit controller', () => {
     const expectedRoleAssignments = [
       {
         name: 'caseworker',
-        assignable: false,
+        assignable: true,
         assigned: true
       },
       {
         name: 'citizen',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
 
     expect(res.render).toHaveBeenLastCalledWith('edit-user', {
       content: {
-        ...setupPageContent(testUser, expectedRoleAssignments),
+        ...setupPageContent({
+          ...testUser,
+          roles: ['caseworker'],
+        }, expectedRoleAssignments),
         manageCitizenAttribute: true,
         showCitizenConflict: true,
       }
@@ -921,7 +961,7 @@ describe('User edit controller', () => {
       }, 'save'),
       isCitizen: undefined
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: [] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['caseworker', 'citizen'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -938,8 +978,13 @@ describe('User edit controller', () => {
     const expectedRoleAssignments = [
       {
         name: 'caseworker',
-        assignable: false,
+        assignable: true,
         assigned: true
+      },
+      {
+        name: 'citizen',
+        assignable: true,
+        assigned: false
       }
     ];
 
@@ -953,7 +998,7 @@ describe('User edit controller', () => {
           }, 
           expectedRoleAssignments,
         ),
-        manageCitizenAttribute: false,
+        manageCitizenAttribute: true,
         showCitizenConflict: false,
       },
       notification: 'User saved successfully'
@@ -974,7 +1019,7 @@ describe('User edit controller', () => {
       }, 'save'),
       isCitizen: undefined
     };
-    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['citizen'] } };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER', 'citizen'] } };
 
     when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
     when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
@@ -996,7 +1041,7 @@ describe('User edit controller', () => {
       },
       {
         name: 'IDAM_ADMIN_USER',
-        assignable: false,
+        assignable: true,
         assigned: true
       }
     ];
