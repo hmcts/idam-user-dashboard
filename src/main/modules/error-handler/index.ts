@@ -6,6 +6,7 @@ import logger from '../logging';
 import { isObjectEmpty } from '../../utils/utils';
 import { AuthedRequest } from 'interfaces/AuthedRequest';
 import { User } from 'interfaces/User';
+const obfuscate = require('obfuscate-mail');
 
 const NOT_FOUND = {
   title: 'Page not found',
@@ -33,6 +34,22 @@ const SERVER_ERROR = {
   suggestions: ['Please try again later.']
 };
 
+function getErrorLogContext(
+  error: Error,
+  req: AuthedRequest,
+  principal: Partial<User> | undefined,
+  errorUUID?: string
+): Record<string, string | number | undefined> {
+  return {
+    errorUUID,
+    errorName: error.name,
+    message: error.message,
+    principalId: principal?.id,
+    principalEmail: principal?.email ? obfuscate(principal.email) : undefined,
+    stack: error.stack,
+  };
+}
+
 export class ErrorHandler {
 
   public enableFor(app: Application): void {
@@ -50,31 +67,33 @@ export class ErrorHandler {
       res.locals.error = app.locals.ENV === 'development' ? error : {};
       let errorSummary: ErrorSummary;
       let errorUUID: string;
-      let user: Partial<User>;
+      let principal: Partial<User>;
       const status = error.status || 500;
     
       if(req.idam_user_dashboard_session) {
-        const sessionUser = req.idam_user_dashboard_session.user;
-        if(sessionUser && !isObjectEmpty(sessionUser)) {
-          user = sessionUser;
+        const sessionPrincipal = req.idam_user_dashboard_session.user;
+        if(sessionPrincipal && !isObjectEmpty(sessionPrincipal)) {
+          principal = sessionPrincipal;
         }
       }
 
       switch(status) {
         case http.HTTP_STATUS_UNAUTHORIZED:
           errorSummary = UNAUTHORIZED;
+          logger.warn('Handled HTTPError', getErrorLogContext(error, req, principal));
           break;
         case http.HTTP_STATUS_FORBIDDEN:
           errorSummary = FORBIDDEN;
+          logger.warn('Handled HTTPError', getErrorLogContext(error, req, principal));
           break;
         default:
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
-          logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
+          logger.error('Unhandled HTTPError', getErrorLogContext(error, req, principal, errorUUID));
       }
 
       res.status(status);
-      res.render('error.njk', {...errorSummary, status, errorUUID, user});
+      res.render('error.njk', {...errorSummary, status, errorUUID, user: principal});
     });
   }
 }
