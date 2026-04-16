@@ -86,8 +86,8 @@ describe('ErrorHandler', () => {
         message: 'Missing required role assignment',
         method: 'GET',
         url: '/admin/users?role=caseworker',
-        userId: '12345',
-        userEmail: 'operator@example.com',
+        principalId: '12345',
+        principalEmail: 'ope******r@***.com',
         stack: expect.stringContaining('HTTPError: Missing required role assignment'),
       })
     );
@@ -126,8 +126,8 @@ describe('ErrorHandler', () => {
         message: 'Downstream API timed out',
         method: 'GET',
         url: '/admin/users?role=caseworker',
-        userId: '12345',
-        userEmail: 'operator@example.com',
+        principalId: '12345',
+        principalEmail: 'ope******r@***.com',
         stack: expect.stringContaining('HTTPError: Downstream API timed out'),
       })
     );
