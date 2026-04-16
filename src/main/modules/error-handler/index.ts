@@ -33,6 +33,26 @@ const SERVER_ERROR = {
   suggestions: ['Please try again later.']
 };
 
+function getErrorLogContext(
+  error: Error,
+  req: AuthedRequest,
+  user: Partial<User> | undefined,
+  status: number,
+  errorUUID?: string
+): Record<string, string | number | undefined> {
+  return {
+    errorUUID,
+    errorName: error.name,
+    status,
+    message: error.message,
+    method: req.method,
+    url: req.originalUrl || req.url,
+    userId: user?.id,
+    userEmail: user?.email,
+    stack: error.stack,
+  };
+}
+
 export class ErrorHandler {
 
   public enableFor(app: Application): void {
@@ -63,14 +83,16 @@ export class ErrorHandler {
       switch(status) {
         case http.HTTP_STATUS_UNAUTHORIZED:
           errorSummary = UNAUTHORIZED;
+          logger.warn('Handled HTTPError', getErrorLogContext(error, req, user, status));
           break;
         case http.HTTP_STATUS_FORBIDDEN:
           errorSummary = FORBIDDEN;
+          logger.warn('Handled HTTPError', getErrorLogContext(error, req, user, status));
           break;
         default:
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
-          logger.error(`(logger) errorUUID: ${errorUUID} \n ${error.stack || error}`);
+          logger.error('Unhandled HTTPError', getErrorLogContext(error, req, user, status, errorUUID));
       }
 
       res.status(status);

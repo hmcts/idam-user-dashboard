@@ -3,6 +3,7 @@ import { InviteService } from '../../../../../main/app/invite-service/InviteServ
 import config from 'config';
 import { when } from 'jest-when';
 import { mockAxios } from '../../../utils/mockAxios';
+import { constants as http } from 'http2';
 
 jest.mock('config');
 
@@ -89,7 +90,10 @@ describe('InviteService', () => {
 
       (mockedAxios.post as jest.Mock).mockRejectedValue(true);
 
-      expect(inviteService.inviteUser(invite)).rejects.toThrow();
+      expect(inviteService.inviteUser(invite)).rejects.toMatchObject({
+        status: http.HTTP_STATUS_INTERNAL_SERVER_ERROR,
+        message: 'Error sending invite to IDAM API',
+      });
     });
   });
 });
