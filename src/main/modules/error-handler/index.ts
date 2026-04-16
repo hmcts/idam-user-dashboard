@@ -38,16 +38,12 @@ function getErrorLogContext(
   error: Error,
   req: AuthedRequest,
   principal: Partial<User> | undefined,
-  status: number,
   errorUUID?: string
 ): Record<string, string | number | undefined> {
   return {
     errorUUID,
     errorName: error.name,
-    status,
     message: error.message,
-    method: req.method,
-    url: req.originalUrl || req.url,
     principalId: principal?.id,
     principalEmail: principal?.email ? obfuscate(principal.email) : undefined,
     stack: error.stack,
@@ -84,16 +80,16 @@ export class ErrorHandler {
       switch(status) {
         case http.HTTP_STATUS_UNAUTHORIZED:
           errorSummary = UNAUTHORIZED;
-          logger.warn('Handled HTTPError', getErrorLogContext(error, req, principal, status));
+          logger.warn('Handled HTTPError', getErrorLogContext(error, req, principal));
           break;
         case http.HTTP_STATUS_FORBIDDEN:
           errorSummary = FORBIDDEN;
-          logger.warn('Handled HTTPError', getErrorLogContext(error, req, principal, status));
+          logger.warn('Handled HTTPError', getErrorLogContext(error, req, principal));
           break;
         default:
           errorSummary = SERVER_ERROR;
           errorUUID = uuid();
-          logger.error('Unhandled HTTPError', getErrorLogContext(error, req, principal, status, errorUUID));
+          logger.error('Unhandled HTTPError', getErrorLogContext(error, req, principal, errorUUID));
       }
 
       res.status(status);

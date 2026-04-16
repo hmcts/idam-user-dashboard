@@ -82,10 +82,7 @@ describe('ErrorHandler', () => {
       'Handled HTTPError',
       expect.objectContaining({
         errorName: 'HTTPError',
-        status: http.HTTP_STATUS_FORBIDDEN,
         message: 'Missing required role assignment',
-        method: 'GET',
-        url: '/admin/users?role=caseworker',
         principalId: '12345',
         principalEmail: 'ope******r@***.com',
         stack: expect.stringContaining('HTTPError: Missing required role assignment'),
@@ -122,10 +119,7 @@ describe('ErrorHandler', () => {
       expect.objectContaining({
         errorUUID: 'error-uuid-123',
         errorName: 'HTTPError',
-        status: http.HTTP_STATUS_INTERNAL_SERVER_ERROR,
         message: 'Downstream API timed out',
-        method: 'GET',
-        url: '/admin/users?role=caseworker',
         principalId: '12345',
         principalEmail: 'ope******r@***.com',
         stack: expect.stringContaining('HTTPError: Downstream API timed out'),
