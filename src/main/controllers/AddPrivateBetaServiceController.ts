@@ -12,6 +12,8 @@ import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import { constants as http } from 'http2';
+import { HTTPError } from '../app/errors/HttpError';
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
   constructor(
@@ -43,6 +45,7 @@ export class AddPrivateBetaServiceController extends RootController {
 
     const selectedService = allServices.find(service => service.label === fields.service);
     const rolesToAdd = await this.getRolesToRegisterUser(allServices, fields.service);
+    this.assertRolesAreAssignable(req, rolesToAdd);
 
     return this.inviteService.inviteUser({
       email: fields._email,
@@ -82,5 +85,14 @@ export class AddPrivateBetaServiceController extends RootController {
       .map(role => [role.id, role])
     );
     return rolesMap;
+  }
+
+  private assertRolesAreAssignable(req: AuthedRequest, roleNames: string[]) {
+    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+    const manageable = roleNames.every(role => assignableRoles.includes(role));
+
+    if (!manageable) {
+      throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+    }
   }
 }

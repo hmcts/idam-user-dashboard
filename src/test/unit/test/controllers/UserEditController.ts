@@ -67,6 +67,12 @@ const setupPageContent = (user: any, roleAssignments: any) => {
   };
 };
 
+const expectForbidden = (req: any, res: any) => {
+  expect(req.next).toHaveBeenCalledTimes(1);
+  expect(req.next.mock.calls[0][0]).toEqual(expect.objectContaining({ status: 403 }));
+  expect(res.render).not.toHaveBeenCalled();
+};
+
 describe('User edit controller', () => {
   mockRootController();
 
@@ -147,6 +153,54 @@ describe('User edit controller', () => {
     });
 
   });
+
+  test('Should render the edit user page when target user roles are outside the role hierarchy', async () => {
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = setupPostData(testUser, 'edit');
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
+
+    const expectedRoleAssignments = [
+      {
+        name: 'IDAM_ADMIN_USER',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: {
+        ...setupPageContent(testUser, expectedRoleAssignments)
+      }
+    });
+  });
+
+  test('Should reject saving when submitted roles exceed the role hierarchy', async () => {
+    const localRes = mockResponse();
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.next = jest.fn();
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, localRes);
+
+    expect(mockApi.updateV2User).not.toHaveBeenCalled();
+    expectForbidden(req, localRes);
+  });
   
   test('Should render the edit user page after saving when user fields changed', async () => {
 
@@ -193,7 +247,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user roles added', async () => {
+  test('Should render the edit user page after saving when user roles added (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
@@ -241,7 +295,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit user page after saving when user roles removed', async () => {
+  test('Should render the edit user page after saving when user roles removed (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']);
     req.body = {
@@ -290,7 +344,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user roles added and removed', async () => {
+  test('Should render the edit user page after saving when user roles added and removed (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_ADMIN_USER', 'IDAM_SUPER_USER']);
     req.body = {
@@ -344,7 +398,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when the requesting user adding roles to themselves', async () => {
+  test('Should render the edit user page after saving when the requesting user adding roles to themselves (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
@@ -456,7 +510,7 @@ describe('User edit controller', () => {
     
   });
 
-  test('Should render the edit user page after saving when user mfa enabled', async () => {
+  test('Should render the edit user page after saving when user mfa enabled (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER', 'idam-mfa-disabled']);
     req.body = {
@@ -508,7 +562,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user mfa disabled', async () => {
+  test('Should render the edit user page after saving when user mfa disabled (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
@@ -559,7 +613,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user mfa enabled and a role added', async () => {
+  test('Should render the edit user page after saving when user mfa enabled and a role added (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER', 'idam-mfa-disabled']);
     req.body = {
@@ -722,7 +776,7 @@ describe('User edit controller', () => {
     });
   });
 
-  test('Should render the edit user page after saving when citizen added', async () => {
+  test('Should render the edit user page after saving when citizen added (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
     req.body = {
@@ -774,7 +828,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user citizen removed', async () => {
+  test('Should render the edit user page after saving when user citizen removed (Review)', async () => {
 
     const testUser = {
       ...setupV1User(['IDAM_SUPER_USER', 'citizen']),
@@ -837,7 +891,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page with citizen manageable', async () => {
+  test('Should render the edit user page with citizen manageable (Review)', async () => {
 
     const testUser = setupV1User(['IDAM_ADMIN_USER']);
     req.body = req.body = setupPostData(testUser, 'edit');
@@ -871,7 +925,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page with caseworker citizen conflict', async () => {
+  test('Should render the edit user page with caseworker citizen conflict (Review)', async () => {
 
     const testUser = {
       ...setupV1User(['caseworker', 'citizen']),
@@ -908,7 +962,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user citizen removed due to caseworker conflict', async () => {
+  test('Should render the edit user page after saving when user citizen removed due to caseworker conflict (Review)', async () => {
 
     const testUser = {
       ...setupV1User(['caseworker', 'citizen']),
@@ -961,7 +1015,7 @@ describe('User edit controller', () => {
 
   });
 
-  test('Should render the edit user page after saving when user citizen removed manageably', async () => {
+  test('Should render the edit user page after saving when user citizen removed manageably (Review)', async () => {
 
     const testUser = {
       ...setupV1User(['IDAM_ADMIN_USER', 'citizen']),

@@ -38,7 +38,41 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeElement(locate('button').withText('Delete user'));
 });
 
-Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
+Scenario('I as an admin can open edit for a user outside my role hierarchy', async ({ I }) => {
+  const testRole = await I.haveRole();
+  const testUser = await I.haveUser({roleNames: [testRole.name]});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.uncheckOption('#hide-disabled');
+  I.scrollPageToBottom();
+
+  await I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
+  const testRoleDisabled = await I.grabDisabledElementStatus(I.locateInput('roles', testRole.name));
+  I.assertTrue(testRoleDisabled);
+});
+
+Scenario('I as an admin cannot save forged roles outside my role hierarchy', async ({ I, setupDAO }) => {
+  const forgedRole = await I.haveRole({ name: 'iud-forged-role-' + faker.word.noun() });
+  const testUser = await I.haveUser({roleNames: [setupDAO.getWorkerRole().name]});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.executeScript(`
+    const form = document.getElementById('userEditForm');
+    const forgedRoleInput = document.createElement('input');
+    forgedRoleInput.type = 'hidden';
+    forgedRoleInput.name = 'roles';
+    forgedRoleInput.value = '${forgedRole.name}';
+    form.appendChild(forgedRoleInput);
+  `);
+
+  I.click('Save');
+  I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
+  I.see('Status code: 403');
+});
+
+Scenario('I as an admin can only edit roles if I can manage them (Review)', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole();
   const testUser = await I.haveUser({roleNames: [testRole.name]});
   await I.navigateToEditUser(testUser.id);
@@ -106,7 +140,7 @@ Scenario('I as an admin should see validation errors for invalid values', async 
 
 });
 
-Scenario('I as an admin can enable MFA', async ({ I, setupDAO }) => {
+Scenario('I as an admin can enable MFA (Review)', async ({ I, setupDAO }) => {
   const testUser = await I.haveUser({roleNames: ['idam-mfa-disabled', setupDAO.getWorkerRole().name]});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
@@ -132,7 +166,7 @@ Scenario('I as an admin cannot edit values for SSO users', async ({ I }) => {
   I.assertTrue(emailDisabled);
 });
 
-Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
+Scenario('I as an admin can filter roles (Review)', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-filter-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const adminRole = setupDAO.getAdminRole();
   const testUser = await I.haveUser({roleNames: [testRole.name, adminRole.name]});
@@ -167,7 +201,7 @@ Scenario('I as an admin can filter roles', async ({ I, setupDAO }) => {
 
 });
 
-Scenario('I as an admin can add a filtered role and existing roles are unchanged', async ({ I, setupDAO }) => {
+Scenario('I as an admin can add a filtered role and existing roles are unchanged (Review)', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole({ name: 'iud-user-role-' + faker.word.verb() + '-' + faker.word.noun()});
   const workerRole = setupDAO.getWorkerRole();
   const testUser = await I.haveUser({roleNames: [testRole.name]});
@@ -204,7 +238,7 @@ Scenario('I as an admin can add a filtered role and existing roles are unchanged
 });
 
 
-Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO }) => {
+Scenario('I as an admin cannot edit the citizen attribute (Review)', async ({ I, setupDAO }) => {
   const testUser = await I.haveUser({roleNames: [setupDAO.getWorkerRole().name, 'citizen']});
   await I.navigateToEditUser(testUser.id);
   await I.seeInField('email', testUser.email);
@@ -218,7 +252,7 @@ Scenario('I as an admin cannot edit the citizen attribute', async ({ I, setupDAO
   I.assertTrue(citizenRoleDisabled);
 });
 
-Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict', async ({ I }) => {
+Scenario('I as an admin can remove the citizen attribute if there is a caseworker conflict (Review)', async ({ I }) => {
   const testUser = await I.haveUser({
     roleNames: ['caseworker', 'citizen'],
     ssoId: faker.string.uuid(),
