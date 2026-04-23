@@ -1,11 +1,16 @@
+const mockUuidV4 = jest.fn(() => 'report-uuid');
+
+jest.mock('uuid', () => ({
+  __esModule: true,
+  v4: () => mockUuidV4()
+}));
+
 import { ReportsHandler } from '../../../../../main/app/reports/ReportsHandler';
 import { fs } from 'memfs';
-import * as uuid from 'uuid';
 import config from 'config';
 import { when } from 'jest-when';
 
 jest.mock('memfs');
-jest.mock('uuid');
 jest.mock('config');
 const redisClientMock = {
   set: jest.fn((a, b, c, d, callback) => callback(null, true)),
@@ -16,13 +21,12 @@ jest.mock('ioredis', () => ({
 }));
 
 describe('Report handler', () => {
-  jest.spyOn(uuid, 'v4');
-
   const singleRole = [ 'IDAM_SUPER_USER' ];
   const multipleRoles = [ 'IDAM_SUPER_USER', 'IDAM_ADMIN_USER' ];
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUuidV4.mockReset();
   });
 
   describe('in memory store', () => {
@@ -35,7 +39,7 @@ describe('Report handler', () => {
         const reportUUID = '5';
 
         when(fs.promises.writeFile).mockResolvedValue();
-        when(uuid.v4).mockReturnValue(reportUUID);
+        mockUuidV4.mockReturnValue(reportUUID);
 
         const reportsHandler = new ReportsHandler();
 
@@ -47,7 +51,7 @@ describe('Report handler', () => {
         const reportUUID = '5';
 
         when(fs.promises.writeFile).mockResolvedValue();
-        when(uuid.v4).mockReturnValue(reportUUID);
+        mockUuidV4.mockReturnValue(reportUUID);
 
         const reportsHandler = new ReportsHandler();
 
@@ -58,7 +62,7 @@ describe('Report handler', () => {
       test('Return rejected promise when failing to write file', async () => {
         const reportUUID = '5';
 
-        when(uuid.v4).mockReturnValue(reportUUID);
+        mockUuidV4.mockReturnValue(reportUUID);
         when(fs.promises.writeFile).mockRejectedValue(false);
 
         const reportsHandler = new ReportsHandler();
@@ -106,7 +110,7 @@ describe('Report handler', () => {
       test('Saves report query with single user roles', async () => {
         const reportUUID = '5';
 
-        when(uuid.v4).mockReturnValue(reportUUID);
+        mockUuidV4.mockReturnValue(reportUUID);
 
         const reportsHandler = new ReportsHandler();
 
@@ -117,7 +121,7 @@ describe('Report handler', () => {
       test('Saves report query with multiple user roles', async () => {
         const reportUUID = '5';
 
-        when(uuid.v4).mockReturnValue(reportUUID);
+        mockUuidV4.mockReturnValue(reportUUID);
 
         const reportsHandler = new ReportsHandler();
 
@@ -128,7 +132,7 @@ describe('Report handler', () => {
       test('Return rejected promise when failing to add record to redis', async () => {
         const reportUUID = '5';
 
-        when(uuid.v4).mockReturnValue(reportUUID);
+        mockUuidV4.mockReturnValue(reportUUID);
         when(redisClientMock.set).mockImplementation((a, b, c, d, callback) => callback(true, null));
 
         const reportsHandler = new ReportsHandler();
