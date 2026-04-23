@@ -23,13 +23,13 @@ __metadata:
   linkType: hard
 
 "@axe-core/playwright@npm:^4.11.0":
-  version: 4.11.1
-  resolution: "@axe-core/playwright@npm:4.11.1"
+  version: 4.11.2
+  resolution: "@axe-core/playwright@npm:4.11.2"
   dependencies:
-    axe-core: "npm:~4.11.1"
+    axe-core: "npm:~4.11.3"
   peerDependencies:
     playwright-core: ">= 1.0.0"
-  checksum: 10/d2a0fce217fa415682c4730a0f82a5f3cf2b3081281ea4373f10aeb8a83417e84214e6bd75954a9ba3a23532e0afa0dad87cfcbfc88358170a50702266fad0cd
+  checksum: 10/3e4b3d75c56442dadc42717ab28167edcef8df1442bd3b51ddf25947d3be63ff08a2e3e1a382a04a681a1438f81d4685d099d093afa9abb0ec485b535df2a830
   languageName: node
   linkType: hard
 
@@ -394,21 +394,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:16.4.1":
-  version: 16.4.1
-  resolution: "@azure/msal-common@npm:16.4.1"
-  checksum: 10/0c9a0c06a3e52a7fe95fef9939124287df926a2c8dc613033a645dd4a15218d65b59b1b25b29fcc7ad0a7984e6d33cf7844e3489da182c54b3f8c4bd7caabb05
+"@azure/msal-common@npm:16.5.1":
+  version: 16.5.1
+  resolution: "@azure/msal-common@npm:16.5.1"
+  checksum: 10/c39fd7483edf01c3ca04c1f495943c55998759e6a49cfe64be24c7b2c74b8642653190df4610f49cfe71b1426aa0ee4d3da6e91240b1ddfb7765276d8fb79734
   languageName: node
   linkType: hard
 
 "@azure/msal-node@npm:>=2.9.2":
-  version: 5.1.2
-  resolution: "@azure/msal-node@npm:5.1.2"
+  version: 5.1.4
+  resolution: "@azure/msal-node@npm:5.1.4"
   dependencies:
-    "@azure/msal-common": "npm:16.4.1"
+    "@azure/msal-common": "npm:16.5.1"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10/23bf45220267762c9dc9b6cba9a1cdbf09d077487400d081fb96ef7e9e7402bb055026f41402a901764caa1828d992c5a4e420444611e9b31b1fb291724e3e93
+  checksum: 10/45e1f907e6f055688343f1986f3646efc3ec6d1ff847485c5068acb9ab222e06878a39b72780a414a7e8658b00f280299d106832137de1e559e99c84445d1c2d
   languageName: node
   linkType: hard
 
@@ -4055,31 +4055,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@launchdarkly/js-sdk-common@npm:2.24.0":
-  version: 2.24.0
-  resolution: "@launchdarkly/js-sdk-common@npm:2.24.0"
-  checksum: 10/f5ae269c3678fcbcb4b819700baf250c15a29b5cde9254dd6be8debfb45c56d234ab10dc98d17713005971a06d611f25bcc62333835714a7b0014175efb33e2d
+"@launchdarkly/js-sdk-common@npm:2.24.1":
+  version: 2.24.1
+  resolution: "@launchdarkly/js-sdk-common@npm:2.24.1"
+  checksum: 10/387b1d57ab6dd5045aaaccae3b182a34fb57ce2e487a2c2a6e3a65e7a9d7b2b856fd6ce24470046d0327aad90c3b41da3fa195d911b245654a9b603c380a8641
   languageName: node
   linkType: hard
 
-"@launchdarkly/js-server-sdk-common@npm:2.18.3":
-  version: 2.18.3
-  resolution: "@launchdarkly/js-server-sdk-common@npm:2.18.3"
+"@launchdarkly/js-server-sdk-common@npm:2.18.4":
+  version: 2.18.4
+  resolution: "@launchdarkly/js-server-sdk-common@npm:2.18.4"
   dependencies:
-    "@launchdarkly/js-sdk-common": "npm:2.24.0"
+    "@launchdarkly/js-sdk-common": "npm:2.24.1"
     semver: "npm:7.5.4"
-  checksum: 10/56599373dc6d1b5995fd396f0def50a80e29f8ed463b3a86be1db67b87270106e4945f59c06635bceb661466dac76983d7eeb6ec84a7aed92742f13771ce7a60
+  checksum: 10/03e12f71ccb7803dcf84bc3c4f09bf1be16a05b97dda41fbe1bb691d742a01989dd1cd60f919a78bcbaf125997dbbe52063c30a775dccab448c7538227241bfa
   languageName: node
   linkType: hard
 
 "@launchdarkly/node-server-sdk@npm:^9.10.9":
-  version: 9.10.10
-  resolution: "@launchdarkly/node-server-sdk@npm:9.10.10"
+  version: 9.10.11
+  resolution: "@launchdarkly/node-server-sdk@npm:9.10.11"
   dependencies:
-    "@launchdarkly/js-server-sdk-common": "npm:2.18.3"
+    "@launchdarkly/js-server-sdk-common": "npm:2.18.4"
     https-proxy-agent: "npm:^7.0.6"
     launchdarkly-eventsource: "npm:2.2.0"
-  checksum: 10/11b946e8e8f4c0801b1faa6739bf39f8c970321512a6539b584d51eff268f0fb64cc3081ba0213764051d05e3cc7ee130567613e73c87dd1f3aec42c65b18c2e
+  checksum: 10/c4a2cfddfc4d63a7f09f76ce7f7477d60954b870d3ba4b589988523d1ba00172777837c6b7b3ad64bd9418ca895529345c997d0c0cae7969d2552f09527278a3
   languageName: node
   linkType: hard
 
@@ -7462,7 +7462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.10.1, axe-core@npm:~4.11.1":
+"axe-core@npm:^4.10.1":
   version: 4.11.1
   resolution: "axe-core@npm:4.11.1"
   checksum: 10/bbc8e8959258a229b92fbaa73437050825579815051cac7b0fdbb6752946fea226e403bfeeef3d60d712477bdd4c01afdc8455f27c3d85e4251df88b032b6250
@@ -7473,6 +7473,13 @@ __metadata:
   version: 4.10.0
   resolution: "axe-core@npm:4.10.0"
   checksum: 10/6158489a7a704edc98bd30ed56243b8280c5203c60e095a2feb5bff95d9bf2ef10becfe359b1cbc8601338418999c26cf4eee704181dedbcb487f4d63a06d8d5
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:~4.11.3":
+  version: 4.11.3
+  resolution: "axe-core@npm:4.11.3"
+  checksum: 10/4ef64672117df20f040b245d78b5b38552497bd6a1a84222f8c6a07304e0a374a290504ccd76efc3d1ee3a17c8731a65b625a49bf6701c7bd16093a54fcd5b8d
   languageName: node
   linkType: hard
 
@@ -11864,7 +11871,7 @@ __metadata:
     tslint: "npm:6.1.3"
     typescript: "npm:^5.9.3"
     uuid: "npm:^10.0.0"
-    webpack: "npm:5.106.1"
+    webpack: "npm:5.106.2"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-middleware: "npm:^7.4.2"
     webpack-node-externals: "npm:^3.0.0"
@@ -13274,7 +13281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-parse-even-better-errors@npm:^2.3.0, json-parse-even-better-errors@npm:^2.3.1":
+"json-parse-even-better-errors@npm:^2.3.0":
   version: 2.3.1
   resolution: "json-parse-even-better-errors@npm:2.3.1"
   checksum: 10/5f3a99009ed5f2a5a67d06e2f298cc97bc86d462034173308156f15b43a6e850be8511dc204b9b94566305da2947f7d90289657237d210351a39059ff9d666cf
@@ -16127,9 +16134,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:^7.2.5, protobufjs@npm:^7.3.0":
-  version: 7.4.0
-  resolution: "protobufjs@npm:7.4.0"
+"protobufjs@npm:7.5.5":
+  version: 7.5.5
+  resolution: "protobufjs@npm:7.5.5"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -16143,7 +16150,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.0"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
-  checksum: 10/408423506610f70858d7593632f4a6aa4f05796c90fd632be9b9252457c795acc71aa6d3b54bb7f48a890141728fee4ca3906723ccea6c202ad71f21b3879b8b
+  checksum: 10/048898023a38d22f5fc9a1bcf0dcce5cfbcd37fb00753bd72283720eee7e2cb6055b23957542e5bcdc136379af66203a2ddb8d8c39d11f73169bacf07885fedd
   languageName: node
   linkType: hard
 
@@ -19017,9 +19024,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.106.1":
-  version: 5.106.1
-  resolution: "webpack@npm:5.106.1"
+"webpack@npm:5.106.2":
+  version: 5.106.2
+  resolution: "webpack@npm:5.106.2"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.8"
@@ -19037,9 +19044,8 @@ __metadata:
     events: "npm:^3.2.0"
     glob-to-regexp: "npm:^0.4.1"
     graceful-fs: "npm:^4.2.11"
-    json-parse-even-better-errors: "npm:^2.3.1"
     loader-runner: "npm:^4.3.1"
-    mime-types: "npm:^2.1.27"
+    mime-db: "npm:^1.54.0"
     neo-async: "npm:^2.6.2"
     schema-utils: "npm:^4.3.3"
     tapable: "npm:^2.3.0"
@@ -19051,7 +19057,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/f72b556872fd2855ded996011e279a20c90b8a9e82211b3afc414b3a73bc39cccb22066964b63ca32c07cbff796c6c4198cf7294c6b071115aeaecaa3469fd27
+  checksum: 10/524dcd7f07dfa993ab46c5ae2e302aeaa98bed760e40644f61544c1db67e5cd7be24016c8ee245895eda024020cfa58a953f1771a21028ac5d040adc92240e0f
   languageName: node
   linkType: hard
 
