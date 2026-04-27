@@ -92,7 +92,10 @@ export class AddPrivateBetaServiceController extends RootController {
     const manageable = roleNames.every(role => assignableRoles.includes(role));
 
     if (!manageable) {
-      throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot register private beta citizen because the invite includes roles you cannot assign'
+      );
     }
   }
 }

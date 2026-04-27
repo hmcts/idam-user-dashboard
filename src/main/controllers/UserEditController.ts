@@ -346,7 +346,10 @@ export class UserEditController extends RootController {
     const manageable = managedRoles.every(role => assignableRoles.includes(role));
 
     if (!manageable) {
-      throw new HTTPError(http.HTTP_STATUS_FORBIDDEN);
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot save user because the requested role changes include roles you cannot manage'
+      );
     }
   }
 }
