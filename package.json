@@ -60,7 +60,6 @@
     "@types/require-directory": "^2.1.7",
     "@types/serve-favicon": "^2.5.7",
     "@types/session-file-store": "^1.2.5",
-    "@types/uuid": "^9.0.8",
     "autobind-decorator": "^2.4.0",
     "awilix": "^11.0.4",
     "axe-playwright": "^2.0.3",
@@ -96,7 +95,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "uuid": "^10.0.0",
+    "uuid": "^14.0.0",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -176,6 +175,7 @@
     "@babel/helpers": "^7.26.10",
     "superagent": ">=10.2.3",
     "on-headers": "^1.1.0",
+    "uuid@npm:^8.3.0": "14.0.0",
     "js-yaml": "^4.1.1",
     "jsonwebtoken": "^9.0.3",
     "jws": "^4.0.1",
