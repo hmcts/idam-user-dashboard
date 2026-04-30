@@ -11,6 +11,12 @@ import {UserType} from '../../../../main/utils/UserType';
 import {InvitationTypes} from '../../../../main/app/invite-service/Invite';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
+const expectForbidden = (req: any, res: any) => {
+  expect(req.next).toHaveBeenCalledTimes(1);
+  expect(req.next.mock.calls[0][0]).toEqual(expect.objectContaining({ status: 403 }));
+  expect(res.render).not.toHaveBeenCalled();
+};
+
 describe('Add user roles controller', () => {
   let req: any;
   const res = mockResponse();
@@ -33,6 +39,7 @@ describe('Add user roles controller', () => {
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = mockRequest();
   });
 
@@ -49,7 +56,8 @@ describe('Add user roles controller', () => {
     req.body.roles = role;
     req.idam_user_dashboard_session = {
       user: {
-        id: 'some-user-id'
+        id: 'some-user-id',
+        assignableRoles: [role]
       }
     };
 
@@ -70,7 +78,8 @@ describe('Add user roles controller', () => {
     req.body.roles = roleArray;
     req.idam_user_dashboard_session = {
       user: {
-        id: 'some-user-id'
+        id: 'some-user-id',
+        assignableRoles: roleArray
       }
     };
 
@@ -90,7 +99,8 @@ describe('Add user roles controller', () => {
     req.body._usertype = UserType.Support;
     req.idam_user_dashboard_session = {
       user: {
-        id: 'some-user-id'
+        id: 'some-user-id',
+        assignableRoles: roleArray
       }
     };
 
@@ -117,7 +127,8 @@ describe('Add user roles controller', () => {
     req.body._userType = UserType.Professional;
     req.idam_user_dashboard_session = {
       user: {
-        id: 'some-user-id'
+        id: 'some-user-id',
+        assignableRoles: roleArray
       }
     };
 
@@ -180,5 +191,28 @@ describe('Add user roles controller', () => {
       content: expectedContent,
       error: expectedError
     });
+  });
+
+  test('Should reject the invite when the submitted roles include unassignable roles', async () => {
+    const localRes = mockResponse();
+    req.next = jest.fn();
+
+    req.body._email = email;
+    req.body._forename = forename;
+    req.body._surname = surname;
+    req.body._usertype = UserType.Professional;
+    req.body.roles = roleArray;
+    req.idam_user_dashboard_session = {
+      user: {
+        id: 'some-user-id',
+        assignableRoles: [roleArray[0]]
+      }
+    };
+
+    await controller.post(req, localRes);
+
+    expect(serviceProviderService.getService).not.toHaveBeenCalled();
+    expect(inviteService.inviteUser).not.toHaveBeenCalled();
+    expectForbidden(req, localRes);
   });
 });
