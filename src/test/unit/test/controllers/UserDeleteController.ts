@@ -8,6 +8,12 @@ import { USER_DETAILS_URL } from '../../../../main/utils/urls';
 import { mockApi } from '../../utils/mockApi';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
+const expectForbidden = (req: any, res: any) => {
+  expect(req.next).toHaveBeenCalledTimes(1);
+  expect(req.next.mock.calls[0][0]).toEqual(expect.objectContaining({ status: 403 }));
+  expect(res.render).not.toHaveBeenCalled();
+};
+
 describe('User delete controller', () => {
   mockRootController();
   let req: any;
@@ -16,8 +22,9 @@ describe('User delete controller', () => {
   const testToken = 'test-token';
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = mockRequest();
-    req.idam_user_dashboard_session = {access_token: testToken};
+    req.idam_user_dashboard_session = {access_token: testToken, user: { assignableRoles: ['IDAM_SUPER_USER'] }};
   });
 
   test('Should render the user delete page', async () => {
@@ -70,6 +77,49 @@ describe('User delete controller', () => {
 
     await controller.post(req, res);
     expect(res.redirect).toHaveBeenCalledWith(307, USER_DETAILS_URL.replace(':userUUID', '1'));
+  });
+
+  test('Should reject rendering the delete page when the user has unmanageable roles', async () => {
+    const localRes = mockResponse();
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_ADMIN_USER'],
+    };
+
+    req.next = jest.fn();
+    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: ['IDAM_SUPER_USER'] } };
+    req.body = { _userId: userData.id };
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+
+    await controller.post(req, localRes);
+
+    expectForbidden(req, localRes);
+  });
+
+  test('Should reject deleting when the user has unmanageable roles', async () => {
+    const localRes = mockResponse();
+    const userData = {
+      id: 1,
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@test.local',
+      active: true,
+      roles: ['IDAM_ADMIN_USER'],
+    };
+
+    req.next = jest.fn();
+    req.idam_user_dashboard_session = { access_token: testToken, user: { assignableRoles: ['IDAM_SUPER_USER'] } };
+    req.body = { _userId: userData.id, _action: 'confirm-delete', confirmDelete: 'true' };
+    when(mockApi.getUserById).calledWith(testToken, userData.id).mockReturnValue(Promise.resolve(userData));
+
+    await controller.post(req, localRes);
+
+    expect(mockApi.deleteUserById).not.toHaveBeenCalled();
+    expectForbidden(req, localRes);
   });
 
   test('Should render the delete user page with validation errors after confirming', async () => {

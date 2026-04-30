@@ -10,6 +10,9 @@ import {MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR} from '../utils/error';
 import {User} from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import {canManageRoles, loadUserAssignableRoles} from '../utils/roleUtils';
+import { constants as http } from 'http2';
+import { HTTPError } from '../app/errors/HttpError';
 
 @autobind
 export class UserDeleteController extends RootController {
@@ -19,9 +22,11 @@ export class UserDeleteController extends RootController {
   }
 
   @asyncError
-  public post(req: AuthedRequest, res: Response) {
+  public async post(req: AuthedRequest, res: Response) {
+    await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
+        this.assertUserIsManageable(req, user);
         switch (req.body.confirmDelete) {
           case 'true':
             return this.deleteUser(req, res, user);
@@ -55,5 +60,16 @@ export class UserDeleteController extends RootController {
     const errors: any = {};
     if (isEmpty(fields.confirmRadio)) errors.confirmRadio = {message: MISSING_OPTION_ERROR};
     return errors;
+  }
+
+  private assertUserIsManageable(req: AuthedRequest, user: User) {
+    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+
+    if (!canManageRoles(assignableRoles, user.roles)) {
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot delete user because they have roles you cannot manage'
+      );
+    }
   }
 }

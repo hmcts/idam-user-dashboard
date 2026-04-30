@@ -1,4 +1,5 @@
 import {
+  canManageRoles,
   constructAllRoleAssignments,
   constructUserRoleAssignments,
   processRoleBasedAttributes, rolesExist
@@ -179,6 +180,16 @@ describe('roleUtils', () => {
 
     test('Should return false if no role ID exists in the roles map', async () => {
       expect(rolesExist([role4, role5], rolesMap)).toBeFalsy();
+    });
+  });
+
+  describe('canManageRoles', () => {
+    test('Should return true when all target roles are assignable', async () => {
+      expect(canManageRoles(['role1', 'role2'], ['role2'])).toBeTruthy();
+    });
+
+    test('Should return false when any target role is not assignable', async () => {
+      expect(canManageRoles(['role1'], ['role1', 'role2'])).toBeFalsy();
     });
   });
 });
