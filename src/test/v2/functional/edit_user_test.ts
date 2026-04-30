@@ -38,6 +38,40 @@ Scenario('I as an admin should edit user details successfully',  async ({ I, set
   I.seeElement(locate('button').withText('Delete user'));
 });
 
+Scenario('I as an admin can open edit for a user outside my role hierarchy', async ({ I }) => {
+  const testRole = await I.haveRole();
+  const testUser = await I.haveUser({roleNames: [testRole.name]});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.uncheckOption('#hide-disabled');
+  I.scrollPageToBottom();
+
+  await I.seeCheckboxIsChecked(I.locateInput('roles', testRole.name));
+  const testRoleDisabled = await I.grabDisabledElementStatus(I.locateInput('roles', testRole.name));
+  I.assertTrue(testRoleDisabled);
+});
+
+Scenario('I as an admin cannot save forged roles outside my role hierarchy', async ({ I, setupDAO }) => {
+  const forgedRole = await I.haveRole({ name: 'iud-forged-role-' + faker.word.noun() });
+  const testUser = await I.haveUser({roleNames: [setupDAO.getWorkerRole().name]});
+  await I.navigateToEditUser(testUser.id);
+  await I.seeInField('email', testUser.email);
+
+  await I.executeScript(`
+    const form = document.getElementById('userEditForm');
+    const forgedRoleInput = document.createElement('input');
+    forgedRoleInput.type = 'hidden';
+    forgedRoleInput.name = 'roles';
+    forgedRoleInput.value = '${forgedRole.name}';
+    form.appendChild(forgedRoleInput);
+  `);
+
+  I.click('Save');
+  I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
+  I.see('Status code: 403');
+});
+
 Scenario('I as an admin can only edit roles if I can manage them', async ({ I, setupDAO }) => {
   const testRole = await I.haveRole();
   const testUser = await I.haveUser({roleNames: [testRole.name]});

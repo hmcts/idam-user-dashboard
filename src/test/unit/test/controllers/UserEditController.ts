@@ -67,6 +67,12 @@ const setupPageContent = (user: any, roleAssignments: any) => {
   };
 };
 
+const expectForbidden = (req: any, res: any) => {
+  expect(req.next).toHaveBeenCalledTimes(1);
+  expect(req.next.mock.calls[0][0]).toEqual(expect.objectContaining({ status: 403 }));
+  expect(res.render).not.toHaveBeenCalled();
+};
+
 describe('User edit controller', () => {
   mockRootController();
 
@@ -146,6 +152,54 @@ describe('User edit controller', () => {
       }
     });
 
+  });
+
+  test('Should render the edit user page when target user roles are outside the role hierarchy', async () => {
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.body = setupPostData(testUser, 'edit');
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_ADMIN_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+
+    await controller.post(req, res);
+
+    const expectedRoleAssignments = [
+      {
+        name: 'IDAM_ADMIN_USER',
+        assignable: true,
+        assigned: false
+      },
+      {
+        name: 'IDAM_SUPER_USER',
+        assignable: false,
+        assigned: true
+      }
+    ];
+
+    expect(res.render).toHaveBeenLastCalledWith('edit-user', {
+      content: {
+        ...setupPageContent(testUser, expectedRoleAssignments)
+      }
+    });
+  });
+
+  test('Should reject saving when submitted roles exceed the role hierarchy', async () => {
+    const localRes = mockResponse();
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    req.next = jest.fn();
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      roles: ['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'],
+    };
+    req.idam_user_dashboard_session = { access_token: testToken, user:{ assignableRoles: ['IDAM_SUPER_USER'] } };
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+
+    await controller.post(req, localRes);
+
+    expect(mockApi.updateV2User).not.toHaveBeenCalled();
+    expectForbidden(req, localRes);
   });
   
   test('Should render the edit user page after saving when user fields changed', async () => {
