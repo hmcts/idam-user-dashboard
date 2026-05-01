@@ -44,7 +44,8 @@ export class AddPrivateBetaServiceController extends RootController {
     }
 
     const selectedService = allServices.find(service => service.label === fields.service);
-    const rolesToAdd = await this.getRolesToRegisterUser(allServices, fields.service);
+    const rolesToAdd = await this.getRolesToRegisterUser(selectedService);
+    this.assertServiceHasOnboardingRoles(rolesToAdd);
     this.assertRolesAreAssignable(req, rolesToAdd);
 
     return this.inviteService.inviteUser({
@@ -67,9 +68,12 @@ export class AddPrivateBetaServiceController extends RootController {
       });
   }
 
-  private async getRolesToRegisterUser(allServices: Service[], serviceField: string): Promise<string[]> {
-    const selectedService = allServices.find(service => service.label === serviceField);
+  private async getRolesToRegisterUser(selectedService?: Service): Promise<string[]> {
     const rolesToAdd: string[] = [UserType.Citizen];
+    if (!selectedService?.onboardingRoles?.length) {
+      return rolesToAdd;
+    }
+
     const rolesMap = await this.getRolesMap();
 
     selectedService.onboardingRoles
@@ -95,6 +99,15 @@ export class AddPrivateBetaServiceController extends RootController {
       throw new HTTPError(
         http.HTTP_STATUS_FORBIDDEN,
         'Cannot register private beta citizen because the invite includes roles you cannot assign'
+      );
+    }
+  }
+
+  private assertServiceHasOnboardingRoles(roleNames: string[]) {
+    if (roleNames.length <= 1) {
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot register private beta citizen because the selected service has no onboarding roles'
       );
     }
   }
