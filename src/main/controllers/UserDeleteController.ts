@@ -7,12 +7,12 @@ import {USER_DETAILS_URL} from '../utils/urls';
 import {PageError} from '../interfaces/PageData';
 import {isEmpty} from '../utils/utils';
 import {MISSING_OPTION_ERROR, USER_DELETE_FAILED_ERROR} from '../utils/error';
-import {User} from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
-import {canManageRoles, loadUserAssignableRoles} from '../utils/roleUtils';
+import {canManageRoles, loadUserAssignableRoles, processMfaRoleV2} from '../utils/roleUtils';
 import { constants as http } from 'http2';
 import { HTTPError } from '../app/errors/HttpError';
+import { V2User } from '../interfaces/V2User';
 
 @autobind
 export class UserDeleteController extends RootController {
@@ -24,7 +24,7 @@ export class UserDeleteController extends RootController {
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     await loadUserAssignableRoles(req, this.idamWrapper);
-    return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
+    return this.idamWrapper.getUserV2ById(req.body._userId)
       .then(user => {
         this.assertUserIsManageable(req, user);
         switch (req.body.confirmDelete) {
@@ -45,7 +45,7 @@ export class UserDeleteController extends RootController {
       });
   }
 
-  private deleteUser(req: AuthedRequest, res: Response, user: User) {
+  private deleteUser(req: AuthedRequest, res: Response, user: V2User) {
     return this.idamWrapper.deleteUserById(req.body._userId)
       .then(() => {
         return super.post(req, res, 'delete-user-successful', {content: {user}});
@@ -62,10 +62,11 @@ export class UserDeleteController extends RootController {
     return errors;
   }
 
-  private assertUserIsManageable(req: AuthedRequest, user: User) {
+  private assertUserIsManageable(req: AuthedRequest, user: V2User) {
     const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+    processMfaRoleV2(user);
 
-    if (!canManageRoles(assignableRoles, user.roles)) {
+    if (!canManageRoles(assignableRoles, user.roleNames)) {
       throw new HTTPError(
         http.HTTP_STATUS_FORBIDDEN,
         'Cannot delete user because they have roles you cannot manage'
