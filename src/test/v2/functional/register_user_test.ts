@@ -60,6 +60,33 @@ Scenario('I as an admin should be able to register professional user', async ({ 
 
 });
 
+Scenario('I as an admin cannot register a user with forged unassignable roles', async ({ I }) => {
+  const forgedRole = await I.haveRole({ name: 'iud-forged-role-' + faker.word.noun() });
+  const registerForename = faker.person.firstName();
+  const registerSurname = faker.person.lastName();
+  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'iud.register.' + BuildInfoHelper.getBuildInfo() + '.local'});
+  await I.goToRegisterUser();
+  I.fillField('email', registerEmail);
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
+  I.fillField('#forename', registerForename);
+  I.fillField('#surname', registerSurname);
+  I.click('Professional');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user roles');
+
+  await I.executeScript(`
+    const form = document.getElementById('addUserRolesForm');
+    const forgedRoleInput = document.createElement('input');
+    forgedRoleInput.type = 'hidden';
+    forgedRoleInput.name = 'roles';
+    forgedRoleInput.value = '${forgedRole.name}';
+    form.appendChild(forgedRoleInput);
+  `);
+
+  I.click('Save');
+  I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
+  I.see('Status code: 403');
+});
+
 Scenario('I as an admin should see validation errors for invalid values', async ({ I }) => {
   await I.goToRegisterUser();
   I.fillField('email', 'email..@test.com');

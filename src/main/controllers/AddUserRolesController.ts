@@ -13,6 +13,8 @@ import {UserType} from '../utils/UserType';
 import {InvitationTypes} from '../app/invite-service/Invite';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import { constants as http } from 'http2';
+import { HTTPError } from '../app/errors/HttpError';
 @autobind
 export class AddUserRolesController extends RootController {
   constructor(
@@ -46,6 +48,8 @@ export class AddUserRolesController extends RootController {
     }
 
     const roles = fields.roles;
+    const requestedRoles = convertToArray(roles);
+    this.assertRolesAreAssignable(req, requestedRoles);
     const serviceInfo = await this.serviceProviderService.getService(config.get('services.idam.clientID'));
 
     if(fields._usertype === UserType.Support) {
@@ -53,7 +57,7 @@ export class AddUserRolesController extends RootController {
         email: fields._email,
         forename: fields._forename,
         surname: fields._surname,
-        activationRoleNames: convertToArray(roles),
+        activationRoleNames: requestedRoles,
         invitedBy: req.idam_user_dashboard_session.user.id,
         clientId: serviceInfo.clientId,
         successRedirect: serviceInfo.hmctsAccess.postActivationRedirectUrl
@@ -63,7 +67,7 @@ export class AddUserRolesController extends RootController {
         email: fields._email,
         forename: fields._forename,
         surname: fields._surname,
-        activationRoleNames: convertToArray(roles),
+        activationRoleNames: requestedRoles,
         invitedBy: req.idam_user_dashboard_session.user.id,
         clientId: serviceInfo.clientId
       });
@@ -73,5 +77,17 @@ export class AddUserRolesController extends RootController {
       this.inviteService.tryMatchAppointmentTypeByEmail(fields._email) === InvitationTypes.APPOINT;
     return super.post(req, res, 'add-user-completion',
       { content: { isAppointInvitationType: isAppointInvitationType }});
+  }
+
+  private assertRolesAreAssignable(req: AuthedRequest, roleNames: string[]) {
+    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+    const manageable = roleNames.every(role => assignableRoles.includes(role));
+
+    if (!manageable) {
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot create invite because the requested roles include roles you cannot assign'
+      );
+    }
   }
 }

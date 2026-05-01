@@ -12,7 +12,7 @@ import {RootController} from './RootController';
 import autobind from 'autobind-decorator';
 import {User} from '../interfaces/User';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import {loadUserAssignableRoles, processMfaRoleV2} from '../utils/roleUtils';
+import {canManageRoles, loadUserAssignableRoles, processMfaRoleV2} from '../utils/roleUtils';
 import config from 'config';
 import {AccountStatus, RecordType, V2User} from '../interfaces/V2User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
@@ -139,6 +139,6 @@ export class UserResultsController extends RootController {
   }
 
   private canManageUser(userA: User | Partial<User>, userB: V2User | Partial<V2User>): boolean {
-    return userB.roleNames.every(role => userA.assignableRoles.includes(role));
+    return canManageRoles(userA.assignableRoles, userB.roleNames);
   }
 }

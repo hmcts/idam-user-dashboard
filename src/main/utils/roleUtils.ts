@@ -75,6 +75,10 @@ export const determineUserNonAssignableRoles = (assignableRoles: string[], assig
   return nonAssignableRoles;
 };
 
+export const canManageRoles = (assignableRoles: string[] = [], roleNames: string[] = []): boolean => {
+  return roleNames.every(role => assignableRoles.includes(role));
+};
+
 export const processMfaRoleV2 = (user: V2User) => {
   // Set a specific field using the idam-mfa-disabled role and remove that role from the role list
   user.multiFactorAuthentication = !user.roleNames.includes(IDAM_MFA_DISABLED);
