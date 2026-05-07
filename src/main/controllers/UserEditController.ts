@@ -202,6 +202,11 @@ export class UserEditController extends RootController {
       };
 
       const savedUser = await this.idamWrapper.updateV2User(updatedUser);
+      if (req.idam_user_dashboard_session.user.id === _userId) {
+        req.idam_user_dashboard_session.user.roles = savedUser.roleNames;
+        req.idam_user_dashboard_session.user.email = savedUser.email;
+        delete req.idam_user_dashboard_session.user.assignableRoles;
+      }
 
       const v1View = this.convertToV1View(savedUser);
 
