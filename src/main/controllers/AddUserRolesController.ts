@@ -5,7 +5,7 @@ import {Response} from 'express';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import {convertToArray, hasProperty} from '../utils/utils';
 import {MISSING_ROLE_ASSIGNMENT_ERROR} from '../utils/error';
-import {constructAllRoleAssignments} from '../utils/roleUtils';
+import {constructAllRoleAssignments, loadUserAssignableRoles} from '../utils/roleUtils';
 import {InviteService} from '../app/invite-service/InviteService';
 import {ServiceProviderService} from '../app/service-provider-service/ServiceProviderService';
 import config from 'config';
@@ -29,10 +29,11 @@ export class AddUserRolesController extends RootController {
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
     const fields = req.body;
+    const assignableRoles = await loadUserAssignableRoles(req, this.idamWrapper);
 
     if (!hasProperty(req.body, 'roles')) {
       const allRoles = await this.idamWrapper.getAllV2Roles();
-      const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
+      const roleAssignment = constructAllRoleAssignments(allRoles, assignableRoles);
 
       const user = {
         email: fields._email,
@@ -49,7 +50,7 @@ export class AddUserRolesController extends RootController {
 
     const roles = fields.roles;
     const requestedRoles = convertToArray(roles);
-    this.assertRolesAreAssignable(req, requestedRoles);
+    this.assertRolesAreAssignable(assignableRoles, requestedRoles);
     const serviceInfo = await this.serviceProviderService.getService(config.get('services.idam.clientID'));
 
     if(fields._usertype === UserType.Support) {
@@ -79,8 +80,7 @@ export class AddUserRolesController extends RootController {
       { content: { isAppointInvitationType: isAppointInvitationType }});
   }
 
-  private assertRolesAreAssignable(req: AuthedRequest, roleNames: string[]) {
-    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+  private assertRolesAreAssignable(assignableRoles: string[], roleNames: string[]) {
     const manageable = roleNames.every(role => assignableRoles.includes(role));
 
     if (!manageable) {

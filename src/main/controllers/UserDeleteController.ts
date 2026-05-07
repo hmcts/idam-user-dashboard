@@ -23,10 +23,10 @@ export class UserDeleteController extends RootController {
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    await loadUserAssignableRoles(req, this.idamWrapper);
+    const assignableRoles = await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserV2ById(req.body._userId)
       .then(user => {
-        this.assertUserIsManageable(req, user);
+        this.assertUserIsManageable(assignableRoles, user);
         switch (req.body.confirmDelete) {
           case 'true':
             return this.deleteUser(req, res, user);
@@ -62,8 +62,7 @@ export class UserDeleteController extends RootController {
     return errors;
   }
 
-  private assertUserIsManageable(req: AuthedRequest, user: V2User) {
-    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+  private assertUserIsManageable(assignableRoles: string[], user: V2User) {
     processMfaRoleV2(user);
 
     if (!canManageRoles(assignableRoles, user.roleNames)) {

@@ -35,14 +35,14 @@ export class AddUserDetailsController extends RootController {
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    await loadUserAssignableRoles(req, this.idamWrapper);
+    const assignableRoles = await loadUserAssignableRoles(req, this.idamWrapper);
     if (hasProperty(req.body, 'email')) {
-      return await this.processNewUserEmail(req, res);
+      return await this.processNewUserEmail(req, res, assignableRoles);
     }
-    return await this.processNewUserDetails(req, res);
+    return await this.processNewUserDetails(req, res, assignableRoles);
   }
 
-  private async processNewUserEmail(req: AuthedRequest, res: Response) {
+  private async processNewUserEmail(req: AuthedRequest, res: Response, assignableRoles: string[]) {
     const email = req.body.email as string;
 
     if (isEmpty(email.trim())) {
@@ -57,7 +57,7 @@ export class AddUserDetailsController extends RootController {
       const allServices = await this.idamWrapper.getAllServices();
       const rolesMap = await this.getRolesMap();
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
-      const enablePrivateBeta = req.idam_user_dashboard_session.user.assignableRoles.includes(UserType.Citizen);
+      const enablePrivateBeta = assignableRoles.includes(UserType.Citizen);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
 
       return super.post(req, res, 'add-user-details', {
@@ -68,7 +68,7 @@ export class AddUserDetailsController extends RootController {
     return this.postError(req, res, duplicatedEmailError(email));
   }
 
-  private async processNewUserDetails(req: AuthedRequest, res: Response) {
+  private async processNewUserDetails(req: AuthedRequest, res: Response, assignableRoles: string[]) {
     const fields = req.body;
     Object.keys(fields).forEach(field => fields[field] = (typeof fields[field] === 'string') ? fields[field].trim(): fields[field]);
     const error = this.validateFields(fields);
@@ -79,7 +79,7 @@ export class AddUserDetailsController extends RootController {
     if (!isObjectEmpty(error)) {
       const hasPrivateBeta = hasPrivateBetaServices(allServices, rolesMap);
       const roleHint = hasPrivateBeta ? ROLE_HINT_WITH_PRIVATE_BETA : ROLE_HINT_WITHOUT_PRIVATE_BETA;
-      const enablePrivateBeta = req.idam_user_dashboard_session.user.assignableRoles.includes(UserType.Citizen);
+      const enablePrivateBeta = assignableRoles.includes(UserType.Citizen);
 
       return super.post(req, res, 'add-user-details', {
         content: { user: user, showPrivateBeta: hasPrivateBeta, enablePrivateBeta: enablePrivateBeta, roleHint: roleHint },
@@ -95,7 +95,7 @@ export class AddUserDetailsController extends RootController {
       }});
     } else {
       const allRoles = await this.idamWrapper.getAllV2Roles();
-      const roleAssignment = constructAllRoleAssignments(allRoles, req.idam_user_dashboard_session.user.assignableRoles);
+      const roleAssignment = constructAllRoleAssignments(allRoles, assignableRoles);
       return super.post(req, res, 'add-user-roles', { content: { user: user, roles: roleAssignment } });
     }
   }
