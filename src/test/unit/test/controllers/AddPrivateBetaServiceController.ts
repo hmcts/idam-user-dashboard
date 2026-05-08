@@ -209,4 +209,35 @@ describe('Add private beta service controller', () => {
     expect(inviteService.inviteUser).not.toHaveBeenCalled();
     expectForbidden(req, localRes);
   });
+
+  test('Should reject the invite when the selected service has no onboarding roles', async () => {
+    const localRes = mockResponse();
+    req.next = jest.fn();
+    when(mockApi.getAllServices).calledWith().mockReturnValue([
+      {
+        label: service2,
+        description: service2,
+        onboardingRoles: []
+      }
+    ]);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
+
+    req.body = {
+      _email: email,
+      _forename: forename,
+      _surname: surname,
+      service: service2,
+    };
+    req.idam_user_dashboard_session = {
+      user: {
+        id: 'some-user-id',
+        assignableRoles: ['citizen', privateBetaRoleName]
+      }
+    };
+
+    await controller.post(req, localRes);
+
+    expect(inviteService.inviteUser).not.toHaveBeenCalled();
+    expectForbidden(req, localRes);
+  });
 });

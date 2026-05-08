@@ -32,6 +32,27 @@ Scenario('I as an admin cannot delete user with unmanageable roles',  async ({ I
   I.dontSeeElement(locate('button').withText('Delete user'));
 });
 
+Scenario('I as an admin cannot open delete for user with unmanageable roles by crafted post',  async ({ I, setupDAO }) => {
+  const testRole = await I.haveRole();
+  const testUser = await I.haveUser({roleNames: [testRole.name, setupDAO.getWorkerRole().name]});
+  await I.goToManageUser(testUser.id);
+  I.see(testUser.email, I.locateDataForTitle('Email'));
+  I.dontSeeElement(locate('button').withText('Delete user'));
+
+  await I.executeScript(`
+    const form = document.querySelector('form[method="POST"]');
+    const deleteInput = document.createElement('input');
+    deleteInput.type = 'hidden';
+    deleteInput.name = '_action';
+    deleteInput.value = 'delete';
+    form.appendChild(deleteInput);
+    form.submit();
+  `);
+
+  I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
+  I.see('Status code: 403');
+});
+
 Scenario('I as an admin can delete archived user successfully',  async ({ I }) => {
   const testUser = await I.haveUser({recordType: 'ARCHIVED'});
   await I.goToManageUser(testUser.id);
