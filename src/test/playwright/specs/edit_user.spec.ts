@@ -42,6 +42,40 @@ test.describe('edit_user', () => {
     await expect(page.getByRole('button', { name: 'Delete user' })).toBeVisible();
   });
 
+  test('I as an admin can open edit for a user outside my role hierarchy', async ({ page, setupDao }) => {
+    const testRoleName = `iud-role-${faker.word.verb()}-${faker.word.noun()}`;
+    await setupDao.createRole({ name: testRoleName });
+    const testUser = await setupDao.createUser({ roleNames: [testRoleName] });
+
+    await navigateToEditUser(page, testUser.id);
+    await expect(page.locator('#email')).toHaveValue(testUser.email);
+
+    await page.locator('#hide-disabled').uncheck();
+    await expect(roleInput(page, testRoleName)).toBeChecked();
+    await expect(roleInput(page, testRoleName)).toBeDisabled();
+  });
+
+  test('I as an admin cannot save forged roles outside my role hierarchy', async ({ page, setupDao }) => {
+    const forgedRoleName = `iud-forged-role-${faker.word.noun()}`;
+    await setupDao.createRole({ name: forgedRoleName });
+    const testUser = await setupDao.createUser({ roleNames: [setupDao.getWorkerRole().name] });
+
+    await navigateToEditUser(page, testUser.id);
+    await expect(page.locator('#email')).toHaveValue(testUser.email);
+
+    await page.locator('#userEditForm').evaluate((form, roleName) => {
+      const forgedRoleInput = document.createElement('input');
+      forgedRoleInput.type = 'hidden';
+      forgedRoleInput.name = 'roles';
+      forgedRoleInput.value = roleName;
+      form.appendChild(forgedRoleInput);
+    }, forgedRoleName);
+
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.locator('h1')).toHaveText('Sorry, access to this resource is forbidden');
+    await expect(page.locator('body')).toContainText('Status code: 403');
+  });
+
   test('I as an admin can only edit roles if I can manage them', async ({ page, setupDao }) => {
     const testRoleName = `iud-role-${faker.word.verb()}-${faker.word.noun()}`;
     await setupDao.createRole({ name: testRoleName });
