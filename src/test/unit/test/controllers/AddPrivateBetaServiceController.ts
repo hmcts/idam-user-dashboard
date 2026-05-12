@@ -8,6 +8,12 @@ import { when } from 'jest-when';
 import { mockInviteService } from '../../utils/mockInviteService';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 
+const expectForbidden = (req: any, res: any) => {
+  expect(req.next).toHaveBeenCalledTimes(1);
+  expect(req.next.mock.calls[0][0]).toEqual(expect.objectContaining({ status: 403 }));
+  expect(res.render).not.toHaveBeenCalled();
+};
+
 describe('Add private beta service controller', () => {
   let req: any;
   const res = mockResponse();
@@ -59,6 +65,7 @@ describe('Add private beta service controller', () => {
   ];
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = mockRequest();
   });
 
@@ -75,7 +82,8 @@ describe('Add private beta service controller', () => {
     };
     req.idam_user_dashboard_session = {
       user: {
-        id: 'some-user-id'
+        id: 'some-user-id',
+        assignableRoles: ['citizen', privateBetaRoleName]
       }
     };
 
@@ -96,7 +104,8 @@ describe('Add private beta service controller', () => {
     };
     req.idam_user_dashboard_session = {
       user: {
-        id: 'some-user-id'
+        id: 'some-user-id',
+        assignableRoles: ['citizen', privateBetaRoleName]
       }
     };
 
@@ -168,5 +177,36 @@ describe('Add private beta service controller', () => {
       },
       error: { privateBeta : { message: MISSING_PRIVATE_BETA_SERVICE_ERROR } }
     });
+  });
+
+  test('Should reject the invite when the private beta service includes unassignable roles', async () => {
+    const localRes = mockResponse();
+    req.next = jest.fn();
+    when(mockApi.getAllServices).calledWith().mockReturnValue([
+      {
+        label: service2,
+        description: service2,
+        onboardingRoles: [otherRoleId1]
+      }
+    ]);
+    when(mockApi.getAllV2Roles).calledWith().mockReturnValue(allRoles);
+
+    req.body = {
+      _email: email,
+      _forename: forename,
+      _surname: surname,
+      service: service2,
+    };
+    req.idam_user_dashboard_session = {
+      user: {
+        id: 'some-user-id',
+        assignableRoles: ['citizen', privateBetaRoleName]
+      }
+    };
+
+    await controller.post(req, localRes);
+
+    expect(inviteService.inviteUser).not.toHaveBeenCalled();
+    expectForbidden(req, localRes);
   });
 });

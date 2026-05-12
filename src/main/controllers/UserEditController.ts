@@ -5,6 +5,7 @@ import { AuthedRequest } from '../interfaces/AuthedRequest';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { User } from '../interfaces/User';
 import { AccountStatus, RecordType, V2User } from '../interfaces/V2User';
+import { constants as http } from 'http2';
 import {
   findDifferentElements,
   getObjectVariation,
@@ -36,6 +37,7 @@ import logger from '../modules/logging';
 import { ApiError } from '../interfaces/ApiError';
 import { mapApiErrorToPageError } from '../utils/v2Error';
 import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttributes';
+import { HTTPError } from '../app/errors/HttpError';
 
 @autobind
 export class UserEditController extends RootController {
@@ -148,6 +150,8 @@ export class UserEditController extends RootController {
       citizenAdded ||
       citizenRemoved;
 
+    this.assertRoleChangesAreManageable(req, rolesAdded, rolesRemoved);
+
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
     if (isObjectEmpty(changedFields) && !rolesChanged) {
@@ -215,6 +219,9 @@ export class UserEditController extends RootController {
         ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      }
       const apiErr = e as ApiError;
       logger.error('Exception saving user', apiErr);
       const error = mapApiErrorToPageError(apiErr, 'userEditForm');
@@ -331,5 +338,18 @@ export class UserEditController extends RootController {
 
   private isCaseworkerCitizen(isCitizen: boolean, roles: string[]) {
     return isCitizen && roles.includes(CASEWORKER_ROLE);
+  }
+
+  private assertRoleChangesAreManageable(req: AuthedRequest, rolesAdded: string[], rolesRemoved: string[]) {
+    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+    const managedRoles = [...rolesAdded, ...rolesRemoved];
+    const manageable = managedRoles.every(role => assignableRoles.includes(role));
+
+    if (!manageable) {
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot save user because the requested role changes include roles you cannot manage'
+      );
+    }
   }
 }

@@ -35,8 +35,10 @@ export class InviteService {
         }
       )
       .catch(err => {
-        logger.error('Failed to send invite' + invitationType + ' invite  for email ' + obfuscate(invite.email));
-        throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, err);
+        logger.error(
+          'Failed to send ' + invitationType + ' invite for email ' + obfuscate(invite.email) + ': ' + (err.stack || err)
+        );
+        throw new HTTPError(http.HTTP_STATUS_INTERNAL_SERVER_ERROR, 'Error sending invite to IDAM API');
       });
   };
 
