@@ -1,5 +1,4 @@
-import { expect } from '@playwright/test';
-import { test as base } from './base.fixture';
+import { test as base, expect } from './base.fixture';
 import { getAdminEmailForProject, getStorageStatePath } from '../helpers/auth-state';
 
 type AdminFixtures = {

@@ -1,6 +1,7 @@
-import { APIRequestContext, expect } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { BuildInfoHelper } from './build-info';
+import { expect } from './expect';
 
 const DEFAULT_ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'testadmin@admin.local';
 const ADMIN_ROLE_NAME = 'iud-test-admin';

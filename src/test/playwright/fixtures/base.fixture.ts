@@ -1,4 +1,5 @@
-import { test as base, expect, request, APIRequestContext } from '@playwright/test';
+import { test as base, request, APIRequestContext } from '@playwright/test';
+import { expect } from '../helpers/expect';
 import { SetupDao } from '../helpers/setup-dao';
 
 const envConfig = require('config');

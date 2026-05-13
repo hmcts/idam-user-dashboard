@@ -1,4 +1,5 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+import { expect } from './expect';
 import { clickAndExpectPage } from './resilient-actions';
 
 async function headingText(page: Page): Promise<string> {
