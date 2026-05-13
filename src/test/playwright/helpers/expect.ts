@@ -11,9 +11,14 @@ function truncate(value: string): string {
   return `${value.slice(0, MAX_VALUE_LENGTH - 3)}...`;
 }
 
+function formatRegExp(value: RegExp): string {
+  const readableSource = value.source.replace(/\\\//g, '/');
+  return truncate(value.flags ? `${readableSource} (${value.flags})` : readableSource);
+}
+
 function formatValue(value: unknown): string {
   if (value instanceof RegExp) {
-    return value.toString();
+    return formatRegExp(value);
   }
   if (typeof value === 'string') {
     return `"${truncate(value)}"`;
