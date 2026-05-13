@@ -9,6 +9,7 @@ export default defineConfig({
     ['./src/test/playwright/reporters/detailed-allure-reporter.js', {
       resultsDir: 'functional-output/functional/allure-results',
       suiteTitle: false,
+      collapseSingleProjectSuites: true,
     }],
   ],
 });
