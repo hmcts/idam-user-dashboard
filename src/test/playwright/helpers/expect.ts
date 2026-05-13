@@ -59,6 +59,18 @@ function describeTarget(actual: unknown): string {
   return truncate(target);
 }
 
+function isPlaywrightLocatorTarget(actual: unknown): boolean {
+  return /^(locator|getBy[A-Za-z]*|frameLocator)\(/.test(String(actual));
+}
+
+function describeTargetSuffix(actual: unknown): string {
+  if (isPlaywrightLocatorTarget(actual)) {
+    return ' at';
+  }
+
+  return ` at ${describeTarget(actual)}`;
+}
+
 function describeExpected(matcherName: string, args: unknown[]): string {
   if (args.length === 0) {
     return '';
@@ -77,7 +89,7 @@ function describeExpected(matcherName: string, args: unknown[]): string {
 
 function buildMessage(matcherName: string, actual: unknown, args: unknown[], isNot: boolean): string {
   const negation = isNot ? 'not ' : '';
-  return `${negation}${matcherName}${describeExpected(matcherName, args)} at ${describeTarget(actual)}`;
+  return `${negation}${matcherName}${describeExpected(matcherName, args)}${describeTargetSuffix(actual)}`;
 }
 
 function wrapMatchers(assertion: unknown, actual: unknown, factory: ExpectFactory, isNot = false): unknown {
