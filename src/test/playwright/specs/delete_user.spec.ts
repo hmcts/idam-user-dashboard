@@ -12,7 +12,7 @@ test.describe('delete_user', () => {
 
     await page.getByRole('button', { name: 'Delete user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to delete');
-    await page.locator('#confirmRadio').check();
+    await page.getByLabel('Yes', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User deleted successfully');
 
@@ -47,7 +47,7 @@ test.describe('delete_user', () => {
 
     await page.getByRole('button', { name: 'Delete user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to delete');
-    await page.locator('#confirmRadio').check();
+    await page.getByLabel('Yes', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User deleted successfully');
 
@@ -70,7 +70,7 @@ test.describe('delete_user', () => {
 
     await page.getByRole('button', { name: 'Delete user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to delete');
-    await page.locator('#confirmRadio-2').check();
+    await page.getByLabel('No', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User Details');
     await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);

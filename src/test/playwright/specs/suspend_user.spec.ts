@@ -11,7 +11,7 @@ test.describe('suspend_user', () => {
     await expect(page.getByRole('button', { name: 'Suspend user' })).toBeVisible();
     await page.getByRole('button', { name: 'Suspend user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to suspend');
-    await page.locator('#confirmSuspendRadio').check();
+    await page.getByLabel('Yes', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User suspended successfully');
     await page.getByRole('button', { name: 'Return to user details' }).click();
@@ -27,7 +27,7 @@ test.describe('suspend_user', () => {
     await expect(page.getByRole('button', { name: 'Suspend user' })).toBeVisible();
     await page.getByRole('button', { name: 'Suspend user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to suspend');
-    await page.locator('#confirmSuspendRadio-2').check();
+    await page.getByLabel('No', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User Details');
     await expect(locateStrongDataForTitle(page, 'Account state')).toContainText(/active/i);
@@ -41,7 +41,7 @@ test.describe('suspend_user', () => {
     await expect(page.getByRole('button', { name: 'Unsuspend user' })).toBeVisible();
     await page.getByRole('button', { name: 'Unsuspend user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to unsuspend');
-    await page.locator('#confirmUnSuspendRadio').check();
+    await page.getByLabel('Yes', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User unsuspended successfully');
     await page.getByRole('button', { name: 'Return to user details' }).click();
@@ -57,7 +57,7 @@ test.describe('suspend_user', () => {
     await expect(page.getByRole('button', { name: 'Unsuspend user' })).toBeVisible();
     await page.getByRole('button', { name: 'Unsuspend user' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to unsuspend');
-    await page.locator('#confirmUnSuspendRadio-2').check();
+    await page.getByLabel('No', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User Details');
     await expect(locateStrongDataForTitle(page, 'Account state')).toContainText(/suspended/i);

@@ -17,7 +17,7 @@ test.describe('edit_user_remove_sso', () => {
     await expect(page.getByRole('button', { name: 'Remove SSO' })).toBeVisible();
     await page.getByRole('button', { name: 'Remove SSO' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to remove single sign-on');
-    await page.locator('#confirmRadio').check();
+    await page.getByLabel('Yes', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('Single sign-on removed successfully');
 
@@ -41,7 +41,7 @@ test.describe('edit_user_remove_sso', () => {
     await expect(page.getByRole('button', { name: 'Remove SSO' })).toBeVisible();
     await page.getByRole('button', { name: 'Remove SSO' }).click();
     await expect(page.locator('h1')).toContainText('Are you sure you want to remove single sign-on');
-    await page.locator('#confirmRadio-2').check();
+    await page.getByLabel('No', { exact: true }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.locator('h1')).toHaveText('User Details');
     await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);
