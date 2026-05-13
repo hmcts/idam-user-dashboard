@@ -16135,9 +16135,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:7.5.7":
-  version: 7.5.7
-  resolution: "protobufjs@npm:7.5.7"
+"protobufjs@npm:7.5.8":
+  version: 7.5.8
+  resolution: "protobufjs@npm:7.5.8"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -16151,7 +16151,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.1"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
-  checksum: 10/283c24ca23c9d37f2a612416cd73cb1202d2232199b7b7cfad8d64d83482d0176ba1fa49073e556d52eab41c1a89ef5d31c9db38472085457eb91de651628f26
+  checksum: 10/2beb69b88a5c0a8420d0d5934f2358d417ecd6446f4c0d7c8a9ba5fc0e62ec1631938c0ab083258c14f15b87d39d559b49b398779638df57b2f3a3238cc0be1c
   languageName: node
   linkType: hard
 
