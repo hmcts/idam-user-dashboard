@@ -15,7 +15,10 @@ export default defineConfig({
   },
   reporter: [
     ['list'],
-    ['./src/test/playwright/reporters/detailed-allure-reporter.js', { resultsDir: 'playwright-report/allure-results' }],
+    ['./src/test/playwright/reporters/detailed-allure-reporter.js', {
+      resultsDir: 'playwright-report/allure-results',
+      suiteTitle: false,
+    }],
   ],
   use: {
     baseURL,
