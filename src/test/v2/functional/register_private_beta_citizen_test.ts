@@ -40,3 +40,31 @@ Scenario('I as an admin should be able to register private beta citizen', async 
   await I.assertEqual(invite.invitationStatus, 'PENDING');
 
 });
+
+Scenario('I as an admin cannot register private beta citizen with unassignable service roles', async ({ I }) => {
+  const forbiddenPrivateBetaRole = await I.haveRole();
+  const forbiddenPrivateBetaService = await I.haveService({onboardingRoleNames: [forbiddenPrivateBetaRole.name]});
+  const privateBetaAdminRole = await I.haveRole({assignableRoleNames: ['citizen']});
+
+  const betaAdmin = await I.haveUser({
+    roleNames: [privateBetaAdminRole.name, 'idam-user-dashboard--access']
+  });
+  I.loginAs(betaAdmin.email, betaAdmin.password);
+
+  const registerForename = faker.person.firstName();
+  const registerSurname = faker.person.lastName();
+  const registerEmail = faker.internet.email({firstName : registerForename, lastName : registerSurname, provider: 'iud.register.' + BuildInfoHelper.getBuildInfo() + '.local'});
+  await I.goToRegisterUser();
+  I.fillField('email', registerEmail);
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add new user details');
+  I.fillField('#forename', registerForename);
+  I.fillField('#surname', registerSurname);
+  I.click('Private Beta Citizen');
+  await I.clickToNavigateWithNoRetry('Continue', '/user/add/details', 'Add a new user');
+  I.see('Please select a service you would want to associate with the private beta citizen');
+  I.selectOption('#service', forbiddenPrivateBetaService.clientId);
+
+  I.click('Save');
+  I.seeAfterClick('Sorry, access to this resource is forbidden', 'h1');
+  I.see('Status code: 403');
+});

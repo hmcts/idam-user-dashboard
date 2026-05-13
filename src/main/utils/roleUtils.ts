@@ -10,16 +10,18 @@ export const IDAM_MFA_DISABLED = 'idam-mfa-disabled';
 export const CITIZEN_ROLE = 'citizen';
 export const CASEWORKER_ROLE = 'caseworker';
 
-export const loadUserAssignableRoles = (req: AuthedRequest, idamWrapper: IdamAPI) : Promise<void> => {
-  if (!req.idam_user_dashboard_session.user.assignableRoles) {
-    return idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles)
-      .then((assignableRoles: string[]) => {
-        req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
-      })
-      .catch((err: any) => {
-        logger.error('Failed to get assignable roles', err);
-        throw err;
-      });
+export const loadUserAssignableRoles = async (req: AuthedRequest, idamWrapper: IdamAPI) : Promise<string[]> => {
+  if (req.idam_user_dashboard_session.user.assignableRoles) {
+    return req.idam_user_dashboard_session.user.assignableRoles;
+  }
+
+  try {
+    const assignableRoles = await idamWrapper.getAssignableRoles(req.idam_user_dashboard_session.user.roles);
+    req.idam_user_dashboard_session.user.assignableRoles = assignableRoles;
+    return assignableRoles;
+  } catch (err: any) {
+    logger.error('Failed to get assignable roles', err);
+    throw err;
   }
 };
 
@@ -73,6 +75,10 @@ export const constructUserRoleAssignments = (assignableRoleNames: string[], assi
 export const determineUserNonAssignableRoles = (assignableRoles: string[], assignedRoles: string[]): string[] => {
   const nonAssignableRoles = assignedRoles.filter(r => !assignableRoles.includes(r));
   return nonAssignableRoles;
+};
+
+export const canManageRoles = (assignableRoles: string[] = [], roleNames: string[] = []): boolean => {
+  return roleNames.every(role => assignableRoles.includes(role));
 };
 
 export const processMfaRoleV2 = (user: V2User) => {

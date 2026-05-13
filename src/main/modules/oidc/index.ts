@@ -23,6 +23,8 @@ export class OidcMiddleware {
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly accessRole: string = config.get('RBAC.access');
   private readonly sessionCookieName: string = config.get('session.cookie.name');
+  private readonly env: string = process.env.NODE_ENV || 'development';
+  private readonly secureCookies: boolean = this.env !== 'development';
 
   public enableFor(app: Application): void {
     app.get('/callback', (req, res, next) => {
@@ -49,6 +51,8 @@ export class OidcMiddleware {
         rollingDuration: 20 * 60,
         cookie: {
           httpOnly: true,
+          sameSite: 'Lax',
+          secure: this.secureCookies,
         },
         rolling: true,
         store: this.getSessionStore(app)

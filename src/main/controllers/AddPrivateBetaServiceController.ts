@@ -6,12 +6,15 @@ import asyncError from '../modules/error-handler/asyncErrorDecorator';
 import { hasProperty, isEmpty } from '../utils/utils';
 import { MISSING_PRIVATE_BETA_SERVICE_ERROR } from '../utils/error';
 import { getServicesForSelect } from '../utils/serviceUtils';
+import { loadUserAssignableRoles } from '../utils/roleUtils';
 import { UserType } from '../utils/UserType';
 import { Service } from '../interfaces/Service';
 import { V2Role } from '../interfaces/V2Role';
 import { InviteService } from '../app/invite-service/InviteService';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import { constants as http } from 'http2';
+import { HTTPError } from '../app/errors/HttpError';
 @autobind
 export class AddPrivateBetaServiceController extends RootController {
   constructor(
@@ -41,8 +44,11 @@ export class AddPrivateBetaServiceController extends RootController {
       });
     }
 
+    const assignableRoles = await loadUserAssignableRoles(req, this.idamWrapper);
     const selectedService = allServices.find(service => service.label === fields.service);
-    const rolesToAdd = await this.getRolesToRegisterUser(allServices, fields.service);
+    const rolesToAdd = await this.getRolesToRegisterUser(selectedService);
+    this.assertServiceHasOnboardingRoles(rolesToAdd);
+    this.assertRolesAreAssignable(assignableRoles, rolesToAdd);
 
     return this.inviteService.inviteUser({
       email: fields._email,
@@ -64,9 +70,12 @@ export class AddPrivateBetaServiceController extends RootController {
       });
   }
 
-  private async getRolesToRegisterUser(allServices: Service[], serviceField: string): Promise<string[]> {
-    const selectedService = allServices.find(service => service.label === serviceField);
+  private async getRolesToRegisterUser(selectedService?: Service): Promise<string[]> {
     const rolesToAdd: string[] = [UserType.Citizen];
+    if (!selectedService?.onboardingRoles?.length) {
+      return rolesToAdd;
+    }
+
     const rolesMap = await this.getRolesMap();
 
     selectedService.onboardingRoles
@@ -82,5 +91,25 @@ export class AddPrivateBetaServiceController extends RootController {
       .map(role => [role.id, role])
     );
     return rolesMap;
+  }
+
+  private assertRolesAreAssignable(assignableRoles: string[], roleNames: string[]) {
+    const manageable = roleNames.every(role => assignableRoles.includes(role));
+
+    if (!manageable) {
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot register private beta citizen because the invite includes roles you cannot assign'
+      );
+    }
+  }
+
+  private assertServiceHasOnboardingRoles(roleNames: string[]) {
+    if (roleNames.length <= 1) {
+      throw new HTTPError(
+        http.HTTP_STATUS_FORBIDDEN,
+        'Cannot register private beta citizen because the selected service has no onboarding roles'
+      );
+    }
   }
 }

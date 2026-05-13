@@ -8,6 +8,8 @@ import config from 'config';
 export class AppSession {
   private readonly sessionSecret: string = config.get('session.secret');
   private readonly cookieName: string = config.get('session.appCookie.name');
+  private readonly env: string = process.env.NODE_ENV || 'development';
+  private readonly secureCookies: boolean = this.env !== 'development';
 
   public enableFor(app: Application): void {
     const store = this.createSessionStore(app);
@@ -22,7 +24,8 @@ export class AppSession {
         store,
         cookie: {
           httpOnly: true,
-          sameSite: 'lax'
+          sameSite: 'lax',
+          secure: this.secureCookies
         },
       })
     );

@@ -416,7 +416,10 @@ describe('IdamAPI', () => {
       
       const api = new IdamAPI(mockAxios, mockAxios);
 
-      expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual(results.data);
+      expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual({
+        users: results.data,
+        hasNextPage: false
+      });
       expect(mockAxios.get).toHaveBeenCalledWith(expectedAxiosCall, {
         'headers': {
           Authorization: 'Bearer test-token'
@@ -451,7 +454,10 @@ describe('IdamAPI', () => {
       
       const api = new IdamAPI(mockAxios, mockAxios);
 
-      expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual(results.data);
+      expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual({
+        users: results.data,
+        hasNextPage: false
+      });
       expect(mockAxios.get).toHaveBeenCalledWith(expectedAxiosCall, {
         'headers': {
           Authorization: 'Bearer test-token'
@@ -467,6 +473,54 @@ describe('IdamAPI', () => {
       const api = new IdamAPI(mockAxios, mockAxios);
 
       await expect(api.getUsersWithRoles(testToken, roles)).rejects.toThrow();
+    });
+
+    test('Should detect when a next page is present in the link header', async () => {
+      const roles = ['caseworker'];
+      const results = {
+        data: [{
+          id: testUserId,
+          forename: 'test',
+          surname: 'test',
+          email: testEmail,
+          active: true,
+          roles: ['caseworker'],
+        }],
+        headers: {
+          link: '<http://localhost/api/v1/users?page=1>; rel="next", <http://localhost/api/v1/users?page=9>; rel="last"'
+        }
+      };
+
+      const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
+      const api = new IdamAPI(mockAxios, mockAxios);
+
+      await expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual({
+        users: results.data,
+        hasNextPage: true
+      });
+    });
+
+    test('Should handle a missing link header', async () => {
+      const roles = ['caseworker'];
+      const results = {
+        data: [{
+          id: testUserId,
+          forename: 'test',
+          surname: 'test',
+          email: testEmail,
+          active: true,
+          roles: ['caseworker'],
+        }],
+        headers: {}
+      };
+
+      const mockAxios: any = { get: jest.fn().mockResolvedValue(results) };
+      const api = new IdamAPI(mockAxios, mockAxios);
+
+      await expect(api.getUsersWithRoles(testToken, roles)).resolves.toEqual({
+        users: results.data,
+        hasNextPage: false
+      });
     });
   });
 });
