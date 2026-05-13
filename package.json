@@ -75,7 +75,7 @@
     "express-openid-connect": "^2.18.1",
     "express-session": "^1.18.2",
     "glob": "^11.1.0",
-    "govuk-frontend": "5.10.0",
+    "govuk-frontend": "5.14.0",
     "helmet": "^7.2.0",
     "ioredis": "^5.6.1",
     "jest-when": "^3.7.0",
