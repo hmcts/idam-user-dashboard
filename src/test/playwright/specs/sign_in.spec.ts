@@ -44,7 +44,8 @@ test.describe('sign_in', () => {
     await expect(page.locator('body')).not.toContainText('Status code: 403');
     await expect(page.locator('body')).not.toContainText('Status code: 400');
     const cookies = await context.cookies();
-    expect(cookies.some((cookie) => cookie.name === 'idam_user_dashboard_session')).toBeTruthy();
+    const cookieNames = cookies.map((cookie) => cookie.name);
+    expect(cookieNames, 'session cookie is set after admin login').toContain('idam_user_dashboard_session');
   });
 
   test('login as user without access', async ({ page, setupDao, context }) => {
@@ -53,12 +54,13 @@ test.describe('sign_in', () => {
     await expect(page.locator('h1')).toHaveText('Sorry, access to this resource is forbidden');
     await expect(page.locator('body')).toContainText('Status code: 403');
     const cookies = await context.cookies();
-    expect(cookies.some((cookie) => cookie.name === 'idam_user_dashboard_session')).toBeTruthy();
+    const cookieNames = cookies.map((cookie) => cookie.name);
+    expect(cookieNames, 'session cookie is set after forbidden login').toContain('idam_user_dashboard_session');
   });
 
   test('Redirect back to login on the callback url when required OIDC parameters are missing', async ({ page }) => {
     await page.goto('/callback');
     await page.waitForTimeout(1000);
-    expect(page.url().includes('/callback')).toBeFalsy();
+    expect(page.url().includes('/callback'), 'callback URL redirects away when OIDC parameters are missing').toBeFalsy();
   });
 });

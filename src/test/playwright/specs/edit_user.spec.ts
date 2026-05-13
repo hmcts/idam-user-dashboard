@@ -183,7 +183,9 @@ test.describe('edit_user', () => {
 
     const roleValues = await page.locator('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']')
       .evaluateAll((nodes) => nodes.map((node) => (node as HTMLInputElement).value));
-    roleValues.forEach((value) => expect(value.startsWith('iud-filter-role-')).toBeTruthy());
+    roleValues.forEach((value) => {
+      expect(value, `visible role ${value} matches the role filter`).toMatch(/^iud-filter-role-/);
+    });
   });
 
   test('I as an admin can add a filtered role and existing roles are unchanged', async ({ page, setupDao }) => {

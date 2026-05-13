@@ -176,9 +176,9 @@ test.describe('register_user', () => {
 
     const visibleRoleCheckboxes = page.locator('//div[@class=\'govuk-checkboxes__item\' and not(@hidden)]/input[@name=\'roles\']');
     const roleValues = await visibleRoleCheckboxes.evaluateAll((elements) => elements.map((el) => (el as HTMLInputElement).value));
-    expect(roleValues.length).toBeGreaterThan(0);
+    expect(roleValues, 'filtered role search returns visible roles').not.toHaveLength(0);
     roleValues.forEach((roleValue) => {
-      expect(roleValue.startsWith('iud-filter-role-')).toBeTruthy();
+      expect(roleValue, `visible role ${roleValue} matches the role filter`).toMatch(/^iud-filter-role-/);
     });
   });
 });

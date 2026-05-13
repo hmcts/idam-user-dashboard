@@ -48,10 +48,10 @@ test.describe('generate_report', () => {
     const names = await page.locator('table > tbody > tr > *:nth-child(2)').allTextContents();
     const namesBeforeSorting = names.map((name) => name.toLowerCase());
     const namesAfterSorting = [...namesBeforeSorting].sort();
-    expect(namesBeforeSorting).toEqual(namesAfterSorting);
+    expect(namesBeforeSorting, 'generated report names are sorted ascending').toEqual(namesAfterSorting);
 
     const emails = await page.locator('table > tbody > tr > *:nth-child(3)').allTextContents();
-    expect(emails).toContain(activeUser.email);
-    expect(emails).not.toContain(archivedUser.email);
+    expect(emails, `generated report includes active user ${activeUser.email}`).toContain(activeUser.email);
+    expect(emails, `generated report excludes archived user ${archivedUser.email}`).not.toContain(archivedUser.email);
   });
 });
