@@ -38,6 +38,29 @@ test.describe('delete_user', () => {
     await expect(page.getByRole('button', { name: 'Delete user' })).toHaveCount(0);
   });
 
+  test('I as an admin cannot open delete for user with unmanageable roles by crafted post', async ({ page, setupDao }) => {
+    const unmanagedRoleName = `iud-role-${faker.word.verb()}-${faker.word.noun()}`;
+    await setupDao.createRole({ name: unmanagedRoleName });
+    const workerRoleName = setupDao.getWorkerRole().name;
+    const testUser = await setupDao.createUser({ roleNames: [unmanagedRoleName, workerRoleName] });
+
+    await goToManageUser(page, testUser.id);
+    await expect(locateDataForTitle(page, 'Email')).toContainText(testUser.email);
+    await expect(page.getByRole('button', { name: 'Delete user' })).toHaveCount(0);
+
+    await page.locator('form[method="POST"]').evaluate((form) => {
+      const deleteInput = document.createElement('input');
+      deleteInput.type = 'hidden';
+      deleteInput.name = '_action';
+      deleteInput.value = 'delete';
+      form.appendChild(deleteInput);
+      (form as HTMLFormElement).submit();
+    });
+
+    await expect(page.locator('h1')).toHaveText('Sorry, access to this resource is forbidden');
+    await expect(page.locator('body')).toContainText('Status code: 403');
+  });
+
   test('I as an admin can delete archived user successfully', async ({ page, setupDao }) => {
     const testUser = await setupDao.createUser({ recordType: 'ARCHIVED' });
     await goToManageUser(page, testUser.id);

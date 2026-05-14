@@ -83,6 +83,38 @@ test.describe('register_user', () => {
     expect(invite.invitationStatus).toBe('PENDING');
   });
 
+  test('I as an admin cannot register a user with forged unassignable roles', async ({ page, setupDao }) => {
+    const forgedRoleName = `iud-forged-role-${faker.word.noun()}`;
+    await setupDao.createRole({ name: forgedRoleName });
+    const registerForename = faker.person.firstName();
+    const registerSurname = faker.person.lastName();
+    const registerEmail = faker.internet.email({
+      firstName: registerForename,
+      lastName: registerSurname,
+      provider: `iud.register.${BuildInfoHelper.getBuildInfo()}.local`,
+    });
+
+    await goToRegisterUser(page);
+    await page.locator('[name="email"]').fill(registerEmail);
+    await clickAndExpectHeading(page, 'Continue', 'Add new user details');
+
+    await page.locator('#forename').fill(registerForename);
+    await page.locator('#surname').fill(registerSurname);
+    await page.getByLabel('Professional', { exact: true }).click();
+    await clickAndExpectHeading(page, 'Continue', 'Add new user roles');
+
+    await page.locator('#addUserRolesForm').evaluate((form, roleName) => {
+      const forgedRoleInput = document.createElement('input');
+      forgedRoleInput.type = 'hidden';
+      forgedRoleInput.name = 'roles';
+      forgedRoleInput.value = roleName;
+      form.appendChild(forgedRoleInput);
+    }, forgedRoleName);
+
+    await clickAndExpectHeading(page, 'Save', 'Sorry, access to this resource is forbidden');
+    await expect(page.locator('body')).toContainText('Status code: 403');
+  });
+
   test('I as an admin should see validation errors for invalid values', async ({ page, setupDao }) => {
     const adminEmail = setupDao.getAdminIdentity().email;
     await goToRegisterUser(page);
