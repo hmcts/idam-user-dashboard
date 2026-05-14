@@ -48,31 +48,29 @@ export class UserEditController extends RootController {
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    await loadUserAssignableRoles(req, this.idamWrapper);
+    const assignableRoles = await loadUserAssignableRoles(req, this.idamWrapper);
     return this.idamWrapper.getUserById(req.idam_user_dashboard_session.access_token, req.body._userId)
       .then(user => {
         setTelemetryAttribute(req, 'edit_user_id', user.id);
-
-        const assignableRoles: string[] = req.idam_user_dashboard_session.user.assignableRoles;
 
         const roleAssignments = constructUserRoleAssignments(assignableRoles, user.roles);
         processRoleBasedAttributes(user);
 
         if(req.body._action === 'save') {
-          return this.saveUser(req, res, user, roleAssignments);
+          return this.saveUser(req, res, user, roleAssignments, assignableRoles);
         }
 
-        return super.post(req, res, 'edit-user', {content: this.editUserContent(req, user, roleAssignments)});
+        return super.post(req, res, 'edit-user', {content: this.editUserContent(user, roleAssignments, assignableRoles)});
       });
   }
 
-  private editUserContent(req: AuthedRequest, user: any, roleAssignments: any) {
+  private editUserContent(user: any, roleAssignments: any, assignableRoles: string[]) {
     return {
       user,
       roles: roleAssignments,
-      showMfa: this.canShowMfa(req.idam_user_dashboard_session.user.assignableRoles),
+      showMfa: this.canShowMfa(assignableRoles),
       ...(user.ssoProvider) && { mfaMessage: this.generateMFAMessage(user.ssoProvider) },
-      manageCitizenAttribute: this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles),
+      manageCitizenAttribute: this.isCaseworkerCitizen(user.isCitizen, user.roles) || this.canManageCitizen(assignableRoles),
       showCitizenConflict: this.isCaseworkerCitizen(user.isCitizen, user.roles)
     };
   }
@@ -81,7 +79,8 @@ export class UserEditController extends RootController {
     req: AuthedRequest,
     res: Response,
     user: User,
-    roleAssignments: UserRoleAssignment[]
+    roleAssignments: UserRoleAssignment[],
+    assignableRoles: string[]
   ) {
     const {_userId, ...editedUser } = req.body;
 
@@ -109,7 +108,7 @@ export class UserEditController extends RootController {
       (r) => r !== IDAM_MFA_DISABLED && r !== CITIZEN_ROLE
     );
     const newRoleList = this.getUserRolesAfterUpdate(
-      req,
+      assignableRoles,
       originalRolesWithAttributeRolesRemoved,
       editedRoles
     );
@@ -122,9 +121,7 @@ export class UserEditController extends RootController {
         ? findDifferentElements(originalRolesWithAttributeRolesRemoved, newRoleList)
         : originalRolesWithAttributeRolesRemoved;
 
-    const mfaAssignable = this.canShowMfa(
-      req.idam_user_dashboard_session.user.assignableRoles
-    );
+    const mfaAssignable = this.canShowMfa(assignableRoles);
     const { mfaAdded, mfaRemoved } = this.wasMfaAddedOrRemoved(
       user,
       mfaAssignable,
@@ -134,7 +131,7 @@ export class UserEditController extends RootController {
 
     const citizenAssignable =
       this.isCaseworkerCitizen(user.isCitizen, user.roles) ||
-      this.canManageCitizen(req.idam_user_dashboard_session.user.assignableRoles);
+      this.canManageCitizen(assignableRoles);
     const { citizenAdded, citizenRemoved } = this.wasCitizenAddedOrRemoved(
       user,
       citizenAssignable,
@@ -150,12 +147,12 @@ export class UserEditController extends RootController {
       citizenAdded ||
       citizenRemoved;
 
-    this.assertRoleChangesAreManageable(req, rolesAdded, rolesRemoved);
+    this.assertRoleChangesAreManageable(assignableRoles, rolesAdded, rolesRemoved);
 
     const changedFields = this.comparePartialUsers(originalFields, editedFields);
 
     if (isObjectEmpty(changedFields) && !rolesChanged) {
-      return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments);
+      return this.userWasNotChangedErrorMessage(req, res, user, roleAssignments, assignableRoles);
     }
 
     Object.keys(changedFields).forEach(
@@ -165,7 +162,7 @@ export class UserEditController extends RootController {
     const error = this.validateFields(changedFields);
     if (!isObjectEmpty(error)) {
       return super.post(req, res, 'edit-user', {
-        content: this.editUserContent(req, { ...user, ...changedFields }, roleAssignments),
+        content: this.editUserContent({ ...user, ...changedFields }, roleAssignments, assignableRoles),
         error,
       });
     }
@@ -205,17 +202,23 @@ export class UserEditController extends RootController {
       };
 
       const savedUser = await this.idamWrapper.updateV2User(updatedUser);
+      if (req.idam_user_dashboard_session.user.id === _userId) {
+        req.idam_user_dashboard_session.user.roles = savedUser.roleNames;
+        req.idam_user_dashboard_session.user.email = savedUser.email;
+        delete req.idam_user_dashboard_session.user.assignableRoles;
+      }
 
       const v1View = this.convertToV1View(savedUser);
 
       roleAssignments = await this.reconstructRoleAssignments(
         req,
         _userId,
-        v1View.roles
+        v1View.roles,
+        assignableRoles
       );
 
       return super.post(req, res, 'edit-user', {
-        content: this.editUserContent(req, v1View, roleAssignments),
+        content: this.editUserContent(v1View, roleAssignments, assignableRoles),
         ...{ notification: 'User saved successfully' }
       });
     } catch (e) {
@@ -226,7 +229,7 @@ export class UserEditController extends RootController {
       logger.error('Exception saving user', apiErr);
       const error = mapApiErrorToPageError(apiErr, 'userEditForm');
       return super.post(req, res, 'edit-user', {
-        content: this.editUserContent(req, user, roleAssignments),
+        content: this.editUserContent(user, roleAssignments, assignableRoles),
         error,
       });
     }
@@ -257,10 +260,16 @@ export class UserEditController extends RootController {
     };
   }
 
-  private userWasNotChangedErrorMessage(req: AuthedRequest, res: Response, user: User, roleAssignments: UserRoleAssignment[]) {
+  private userWasNotChangedErrorMessage(
+    req: AuthedRequest,
+    res: Response,
+    user: User,
+    roleAssignments: UserRoleAssignment[],
+    assignableRoles: string[]
+  ) {
     const error = {userEditForm: {message: USER_UPDATE_NO_CHANGE_ERROR}};
     return super.post(req, res, 'edit-user', {
-      content: this.editUserContent(req, user, roleAssignments),
+      content: this.editUserContent(user, roleAssignments, assignableRoles),
       error
     });
   }
@@ -301,8 +310,8 @@ export class UserEditController extends RootController {
     return errors;
   }
 
-  private getUserRolesAfterUpdate(req: AuthedRequest, originalRoles: string[], editedRoles: string[]): string[] {
-    const nonAssignableRoles = determineUserNonAssignableRoles(req.idam_user_dashboard_session.user.assignableRoles, originalRoles);
+  private getUserRolesAfterUpdate(assignableRoles: string[], originalRoles: string[], editedRoles: string[]): string[] {
+    const nonAssignableRoles = determineUserNonAssignableRoles(assignableRoles, originalRoles);
 
     const arr1 = Array.isArray(nonAssignableRoles) ? nonAssignableRoles : [];
     const arr2 = Array.isArray(editedRoles) ? editedRoles : [];
@@ -310,14 +319,19 @@ export class UserEditController extends RootController {
     
   }
 
-  private async reconstructRoleAssignments(req: AuthedRequest, userId: string, newRoles: string[]): Promise<UserRoleAssignment[]> {
+  private async reconstructRoleAssignments(
+    req: AuthedRequest,
+    userId: string,
+    newRoles: string[],
+    assignableRoles: string[]
+  ): Promise<UserRoleAssignment[]> {
     // if the users are editing their owned roles, we need to get the users' new assignable roles again as these might have changed
     // after their roles are updated
     if (req.idam_user_dashboard_session.user.id === userId) {
       const newAssignableRoles = await this.idamWrapper.getAssignableRoles(newRoles);
       return constructUserRoleAssignments(newAssignableRoles, newRoles);
     }
-    return constructUserRoleAssignments(req.idam_user_dashboard_session.user.assignableRoles, newRoles);
+    return constructUserRoleAssignments(assignableRoles, newRoles);
   }
 
   private generateMFAMessage(ssoProvider: string): string {
@@ -340,8 +354,7 @@ export class UserEditController extends RootController {
     return isCitizen && roles.includes(CASEWORKER_ROLE);
   }
 
-  private assertRoleChangesAreManageable(req: AuthedRequest, rolesAdded: string[], rolesRemoved: string[]) {
-    const assignableRoles = req.idam_user_dashboard_session.user.assignableRoles || [];
+  private assertRoleChangesAreManageable(assignableRoles: string[], rolesAdded: string[], rolesRemoved: string[]) {
     const managedRoles = [...rolesAdded, ...rolesRemoved];
     const manageable = managedRoles.every(role => assignableRoles.includes(role));
 

@@ -454,6 +454,46 @@ describe('User edit controller', () => {
     });
   });
 
+  test('Should refresh the session user roles and email after the requesting user edits themselves', async () => {
+    const testUser = setupV1User(['IDAM_SUPER_USER']);
+    const updatedEmail = 'updated-email@test.local';
+
+    req.body = {
+      ...setupPostData(testUser, 'save'),
+      email: updatedEmail,
+      roles: ['IDAM_ADMIN_USER'],
+    };
+    req.idam_user_dashboard_session = {
+      access_token: testToken,
+      user: {
+        id: testUser.id,
+        email: testUser.email,
+        roles: ['IDAM_SUPER_USER'],
+        assignableRoles: ['IDAM_ADMIN_USER']
+      }
+    };
+
+    when(mockApi.getAssignableRoles)
+      .calledWith(expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']))
+      .mockReturnValueOnce(Promise.resolve(['IDAM_ADMIN_USER', 'IDAM_TEST_USER']));
+
+    when(mockApi.getUserById).calledWith(testToken, req.body._userId).mockReturnValue(Promise.resolve(testUser));
+    when(mockApi.getUserV2ById).calledWith(req.body._userId).mockReturnValue(Promise.resolve(convertToV2User(testUser)));
+    when(mockApi.updateV2User)
+      .calledWith({
+        ...convertToV2User(testUser),
+        email: updatedEmail,
+        roleNames: expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER'])
+      })
+      .mockImplementation(async (v2User) => v2User);
+
+    await controller.post(req, res);
+
+    expect(req.idam_user_dashboard_session.user.roles).toEqual(expect.arrayContaining(['IDAM_SUPER_USER', 'IDAM_ADMIN_USER']));
+    expect(req.idam_user_dashboard_session.user.email).toBe(updatedEmail);
+    expect(req.idam_user_dashboard_session.user.assignableRoles).toBeUndefined();
+  });
+
   test('Should render the edit user page after saving when both user fields and roles changed', async () => {
 
     const testUser = setupV1User(['IDAM_SUPER_USER']);
