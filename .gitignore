@@ -26,6 +26,8 @@ functional-output/
 src/main/views/govuk
 test-output/
 coverage/
+playwright-report/
+test-results/
 
 # Yarn 3 files
 .pnp.*

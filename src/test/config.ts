@@ -19,41 +19,4 @@ export const config = {
   },
   TestHeadlessBrowser: process.env.TEST_HEADLESS ? process.env.TEST_HEADLESS === 'true' : true,
   WaitForTimeout: 60008,
-  helpers: {},
-  plugins: {
-    retryFailedStep: {
-      enabled: false,
-      retries: 1,
-    },
-    autoDelay: {
-      enabled: true
-    },
-    retryTo: {
-      enabled: true
-    },
-    allure: {
-      enabled: true,
-      require: '@codeceptjs/allure-legacy'
-    },
-  }
 };
-
-config.helpers = {
-  Playwright: {
-    url: config.TEST_URL,
-    show: !config.TestHeadlessBrowser,
-    browser: 'chromium',
-    waitForTimeout: 60001,
-    waitForAction: 500,
-    timeout: 20002,
-    waitForNavigation: 'networkidle0',
-    ignoreHTTPSErrors: true,
-  },
-  TestingSupportApiHelper: {
-    require: '../functional/shared/helpers/testingSupportApiHelper.ts',
-  },
-  FeatureFlagHelper: {
-    require: '../functional/shared/helpers/featureFlagHelper.ts'
-  }
-};
-
