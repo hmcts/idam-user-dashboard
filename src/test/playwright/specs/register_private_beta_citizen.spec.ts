@@ -4,10 +4,6 @@ import { BuildInfoHelper } from '../helpers/build-info';
 import { clickAndExpectHeading, loginAs } from '../helpers/ui-auth';
 
 test.describe('register_private_beta', () => {
-  test.beforeEach(async ({ setupDao }) => {
-    await setupDao.setupAdmin();
-  });
-
   test('I as an admin should be able to register private beta citizen', async ({ page, setupDao }) => {
     const privateBetaRoleName = `iud-role-${BuildInfoHelper.getBuildInfo(faker.word.verb())}-${faker.word.noun()}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     await setupDao.createRole({ name: privateBetaRoleName });

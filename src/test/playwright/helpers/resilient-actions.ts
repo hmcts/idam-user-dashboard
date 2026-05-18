@@ -63,6 +63,8 @@ export async function clickAndExpectPage(
         await options.retryAction();
         continue;
       }
+
+      break;
     }
   }
 

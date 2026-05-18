@@ -32,11 +32,8 @@ async function loginWithCredentials(page: Page, email: string, password: string)
 }
 
 test.describe('sign_in', () => {
-  test.beforeEach(async ({ setupDao }) => {
-    await setupDao.setupAdmin();
-  });
-
   test('login as admin successfully', async ({ page, setupDao, context }) => {
+    await setupDao.setupAdmin();
     const admin = setupDao.getAdminIdentity();
     await loginAs(page, admin.email, admin.secret);
     await expect(page.locator('h1')).toHaveText('What do you want to do?');
@@ -60,7 +57,7 @@ test.describe('sign_in', () => {
 
   test('Redirect back to login on the callback url when required OIDC parameters are missing', async ({ page }) => {
     await page.goto('/callback');
-    await page.waitForTimeout(1000);
-    expect(page.url().includes('/callback'), 'callback URL redirects away when OIDC parameters are missing').toBeFalsy();
+    await expect(page, 'callback URL redirects away when OIDC parameters are missing')
+      .not.toHaveURL(/\/callback(?:[/?#]|$)/);
   });
 });
