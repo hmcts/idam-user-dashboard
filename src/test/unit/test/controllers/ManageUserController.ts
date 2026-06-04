@@ -11,12 +11,18 @@ import {
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import { mockInviteService } from '../../utils/mockInviteService';
+import { INVITATION_EMAIL_SEARCH_RESULTS_URL } from '../../../../main/utils/urls';
+import { InvitationStatus, InvitationTypes } from '../../../../main/app/invite-service/Invite';
+import { mockInvitationSearchStore } from '../../utils/mockInvitationSearchStore';
 
 describe('Manage user controller', () => {
   mockRootController();
   let req: any;
   const res = mockResponse();
-  const controller = new ManageUserController(mockApi as unknown as IdamAPI);
+  const inviteService = mockInviteService();
+  const invitationSearchStore = mockInvitationSearchStore();
+  const controller = new ManageUserController(mockApi as unknown as IdamAPI, inviteService, invitationSearchStore);
   const email = 'john.smith@test.com';
   const userId = '123';
   const userId2 = '234';
@@ -24,6 +30,7 @@ describe('Manage user controller', () => {
   const testToken = 'test-token';
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = mockRequest();
     req.idam_user_dashboard_session = {access_token: testToken};
   });
@@ -38,7 +45,30 @@ describe('Manage user controller', () => {
 
     req.body.search = email;
     await controller.post(req, res);
+    expect(inviteService.searchInvitationByEmail).toHaveBeenCalledWith(email);
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
+  });
+
+  test('Should redirect to the invitation placeholder page when searching with an email that has invitations', async () => {
+    const invitation = {
+      id: 'invitation-id',
+      invitationType: InvitationTypes.INVITE,
+      invitationStatus: InvitationStatus.PENDING,
+      userId: userId,
+      email: email,
+      createDate: '2026-06-02T10:00:00Z'
+    };
+    when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue([]);
+    when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue([invitation]);
+    when(invitationSearchStore.save).calledWith(email).mockResolvedValue('invitation-search-id');
+
+    req.body.search = email;
+    await controller.post(req, res);
+    expect(invitationSearchStore.save).toHaveBeenCalledWith(email);
+    expect(res.redirect).toHaveBeenCalledWith(
+      303,
+      INVITATION_EMAIL_SEARCH_RESULTS_URL.replace(':invitationSearchId', 'invitation-search-id')
+    );
   });
 
   test('Should render the manage user page when searching with a non-existent ID', async () => {

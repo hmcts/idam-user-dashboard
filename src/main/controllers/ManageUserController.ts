@@ -10,10 +10,12 @@ import {
   NO_USER_MATCHES_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../utils/error';
-import { USER_DETAILS_URL } from '../utils/urls';
+import { INVITATION_EMAIL_SEARCH_RESULTS_URL, USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
+import { InviteService } from '../app/invite-service/InviteService';
+import { InvitationSearchStore } from '../app/invite-service/InvitationSearchStore';
 const obfuscate = require('obfuscate-mail');
 import logger from '../modules/logging';
 import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttributes';
@@ -21,7 +23,12 @@ import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttr
 @autobind
 export class ManageUserController extends RootController {
 
-  constructor(private readonly idamWrapper: IdamAPI, protected featureFlags?: FeatureFlags) {
+  constructor(
+    private readonly idamWrapper: IdamAPI,
+    private readonly inviteService: InviteService,
+    private readonly invitationSearchStore: InvitationSearchStore,
+    protected featureFlags?: FeatureFlags
+  ) {
     super(featureFlags);
   }
 
@@ -44,6 +51,14 @@ export class ManageUserController extends RootController {
       if (users.length === 1) {
         this.setTraceAttribute(req, 'match_user_id', users[0].id);
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
+      }
+      if (users.length === 0 && possiblyEmail(input)) {
+        const invitations = await this.inviteService.searchInvitationByEmail(input);
+        this.setTraceAttribute(req, 'invitation_match_count', invitations.length);
+        if (invitations.length > 0) {
+          const invitationSearchId = await this.invitationSearchStore.save(input);
+          return res.redirect(303, INVITATION_EMAIL_SEARCH_RESULTS_URL.replace(':invitationSearchId', invitationSearchId));
+        }
       }
       logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);

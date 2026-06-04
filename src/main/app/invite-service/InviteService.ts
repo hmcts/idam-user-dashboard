@@ -1,6 +1,6 @@
 import {constants as http} from 'http2';
 import {AuthorizedAxios} from '../authorized-axios/AuthorizedAxios';
-import {InvitationTypes, Invite} from './Invite';
+import {InvitationTypes, Invite, Invitation} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
 import logger from '../../modules/logging';
@@ -71,6 +71,25 @@ export class InviteService {
       const found = entries.find(([, val]) => val === matchedValue);
       return found ? InvitationTypes[found[0]] : undefined;
     }
+  }
+
+  public searchInvitationByEmail(email: string): Promise<Invitation[]> {
+    const invitationSearchPath = `/api/v2/invitations-by-user-email/${encodeURIComponent(email)}`;
+    const invitationSearchUrl = this.idamApiAxios.getUri({url: invitationSearchPath});
+    logger.info('Searching invitations by email from IDAM API URL ' + this.obfuscateEmailInUrl(invitationSearchUrl, email));
+
+    return this.idamApiAxios
+      .get(invitationSearchPath)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error searching for invitation by email from IDAM API';
+        logger.error(`${error.stack || error} for query ${obfuscate(email)} at ${this.obfuscateEmailInUrl(invitationSearchUrl, email)} (logger.error)`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
+  private obfuscateEmailInUrl(url: string, email: string): string {
+    return url.replace(encodeURIComponent(email), encodeURIComponent(obfuscate(email)));
   }
 
 }
