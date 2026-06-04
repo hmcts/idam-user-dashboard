@@ -6,7 +6,6 @@ import {
   EDIT_USER_URL,
   USER_DELETE_URL,
   HOME_URL,
-  INVITATION_EMAIL_SEARCH_RESULTS_URL,
   MANAGER_USER_URL,
   USER_ACTIONS_URL,
   USER_DETAILS_URL,
@@ -39,7 +38,6 @@ export default function(app: Application): void {
   app.post(ADD_PRIVATE_BETA_SERVICE_URL, featureFlags.toggleRoute(BETA_ADD), featureFlags.toggleRoute(GAMMA_PRIVATE_BETA), app.locals.container.cradle.addPrivateBetaServiceController.post);
   app.get(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.get);
   app.post(MANAGER_USER_URL, app.locals.container.cradle.manageUserController.post);
-  app.get(INVITATION_EMAIL_SEARCH_RESULTS_URL, app.locals.container.cradle.invitationController.searchByEmailGet);
   app.get(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.get);
   app.post(USER_DETAILS_URL, app.locals.container.cradle.userResultsController.post);
   app.post(USER_ACTIONS_URL, app.locals.container.cradle.userActionsController.post);

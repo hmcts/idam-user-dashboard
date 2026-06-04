@@ -25,9 +25,6 @@ import { ServiceProviderService } from '../../app/service-provider-service/Servi
 import { ViewReportController } from '../../controllers/ViewReportController';
 import axios from 'axios';
 import { IdamAPI } from '../../app/idam-api/IdamAPI';
-import { InvitationController } from '../../controllers/InvitationController';
-import { ExpiringStoreFactory } from '../../app/store/ExpiringStoreFactory';
-import { InvitationSearchStore } from '../../app/invite-service/InvitationSearchStore';
 /**
  * Sets up the dependency injection container
  */
@@ -38,8 +35,6 @@ export class Container {
       exposeErrors: asValue(app.locals.env === 'development'),
       featureFlags: asValue(new FeatureFlags(new LaunchDarkly())),
       reportGenerator: asValue(new ReportsHandler()),
-      expiringStore: asValue(ExpiringStoreFactory.create()),
-      invitationSearchTtlSeconds: asValue(5 * 60),
       idamApiAxios: asValue(
         new AuthorizedAxios({
           baseURL: config.get('services.idam.url.api'),
@@ -59,7 +54,6 @@ export class Container {
       ),
       idamWrapper: asClass(IdamAPI),
       inviteService: asClass(InviteService),
-      invitationSearchStore: asClass(InvitationSearchStore),
       serviceProviderService: asClass(ServiceProviderService),
       userOptionController: asClass(UserOptionController),
       addUserController: asClass(AddUserController),
@@ -68,7 +62,6 @@ export class Container {
       userSsoController: asClass(UserRemoveSsoController),
       addPrivateBetaServiceController: asClass(AddPrivateBetaServiceController),
       manageUserController: asClass(ManageUserController),
-      invitationController: asClass(InvitationController),
       userEditController: asClass(UserEditController),
       userResultsController: asClass(UserResultsController),
       userActionsController: asClass(UserActionsController),

@@ -3,19 +3,19 @@ import { Response } from 'express';
 import { RootController } from './RootController';
 import autobind from 'autobind-decorator';
 import asyncError from '../modules/error-handler/asyncErrorDecorator';
-import { isEmpty, isValidEmailFormat, possiblyEmail } from '../utils/utils';
+import { convertISODateTimeToUTCFormat, isEmpty, isValidEmailFormat, possiblyEmail } from '../utils/utils';
 import {
   INVALID_EMAIL_FORMAT_ERROR,
   MISSING_INPUT_ERROR,
   NO_USER_MATCHES_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../utils/error';
-import { INVITATION_EMAIL_SEARCH_RESULTS_URL, USER_DETAILS_URL } from '../utils/urls';
+import { USER_DETAILS_URL } from '../utils/urls';
 import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import { InviteService } from '../app/invite-service/InviteService';
-import { InvitationSearchStore } from '../app/invite-service/InvitationSearchStore';
+import { Invitation } from '../app/invite-service/Invite';
 const obfuscate = require('obfuscate-mail');
 import logger from '../modules/logging';
 import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttributes';
@@ -26,7 +26,6 @@ export class ManageUserController extends RootController {
   constructor(
     private readonly idamWrapper: IdamAPI,
     private readonly inviteService: InviteService,
-    private readonly invitationSearchStore: InvitationSearchStore,
     protected featureFlags?: FeatureFlags
   ) {
     super(featureFlags);
@@ -56,8 +55,14 @@ export class ManageUserController extends RootController {
         const invitations = await this.inviteService.searchInvitationByEmail(input);
         this.setTraceAttribute(req, 'invitation_match_count', invitations.length);
         if (invitations.length > 0) {
-          const invitationSearchId = await this.invitationSearchStore.save(input);
-          return res.redirect(303, INVITATION_EMAIL_SEARCH_RESULTS_URL.replace(':invitationSearchId', invitationSearchId));
+          const preparedInvitations = this.prepareInvitations(invitations);
+          return super.post(req, res, 'invitation-results', {
+            content: {
+              email: input,
+              invitationCount: preparedInvitations.length,
+              invitations: preparedInvitations
+            }
+          });
         }
       }
       logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
@@ -94,5 +99,21 @@ export class ManageUserController extends RootController {
 
   private setTraceAttribute(req: AuthedRequest, attrName : string, attrValue : any) {
     setTelemetryAttribute(req, attrName, attrValue);
+  }
+
+  private prepareInvitations(invitations: Invitation[]): Invitation[] {
+    return invitations
+      .slice()
+      .sort((a, b) => this.getTime(b.createDate) - this.getTime(a.createDate))
+      .map(invitation => ({
+        ...invitation,
+        createDate: convertISODateTimeToUTCFormat(invitation.createDate),
+        lastModified: invitation.lastModified ? convertISODateTimeToUTCFormat(invitation.lastModified) : undefined
+      }));
+  }
+
+  private getTime(date: string): number {
+    const time = new Date(date).getTime();
+    return Number.isNaN(time) ? 0 : time;
   }
 }

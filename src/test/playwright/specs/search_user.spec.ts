@@ -100,7 +100,7 @@ test.describe('search_user', () => {
       () => page.getByRole('button', { name: 'Search' }).click(),
       {
         expectedHeading: 'Invitation results',
-        expectedUrl: /\/user\/invitations\/email\/[0-9a-f-]+/,
+        expectedUrl: /\/user\/manage/,
       }
     );
 
