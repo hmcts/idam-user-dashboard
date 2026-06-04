@@ -76,7 +76,6 @@ export class InviteService {
   public searchInvitationByEmail(email: string): Promise<Invitation[]> {
     const invitationSearchPath = `/api/v2/invitations-by-user-email/${encodeURIComponent(email)}`;
     const invitationSearchUrl = this.idamApiAxios.getUri({url: invitationSearchPath});
-    logger.info('Searching invitations by email from IDAM API URL ' + this.obfuscateEmailInUrl(invitationSearchUrl, email));
 
     return this.idamApiAxios
       .get(invitationSearchPath)
