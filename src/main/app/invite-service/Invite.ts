@@ -12,29 +12,27 @@ export enum InvitationStatus {
   REVOKED = 'REVOKED',
 }
 
-export interface Invite {
+interface InviteDetails {
   email: string;
-  forename: string;
-  surname: string;
   activationRoleNames?: string[];
   invitedBy?: string;
   clientId?: string;
   successRedirect?: string;
 }
 
-export interface Invitation {
+export interface Invite extends InviteDetails {
+  forename: string;
+  surname: string;
+}
+
+export interface Invitation extends InviteDetails {
   id: string;
   invitationType: InvitationTypes;
   invitationStatus: InvitationStatus;
   userId: string;
-  email: string;
   createDate: string;
 
   forename?: string;
   surname?: string;
-  activationRoleNames?: string[];
-  clientId?: string;
-  successRedirect?: string;
-  invitedBy?: string;
   lastModified?: string;
 }
