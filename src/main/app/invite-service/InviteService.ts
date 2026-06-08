@@ -1,6 +1,6 @@
 import {constants as http} from 'http2';
 import {AuthorizedAxios} from '../authorized-axios/AuthorizedAxios';
-import {InvitationTypes, Invite, Invitation} from './Invite';
+import {InvitationTypes, CreateInvitation, Invitation} from './Invite';
 import config from 'config';
 import {HTTPError} from '../errors/HttpError';
 import logger from '../../modules/logging';
@@ -17,7 +17,7 @@ export class InviteService {
 
   private sendInvite = (
     invitationType: InvitationTypes,
-    invite: Invite,
+    invite: CreateInvitation,
     language: string
   ) => {
     return this.idamApiAxios
@@ -42,7 +42,7 @@ export class InviteService {
       });
   };
 
-  public inviteUser = (invite: Invite, language = 'en') => {
+  public inviteUser = (invite: CreateInvitation, language = 'en') => {
     const matchedInvitationType = this.tryMatchAppointmentTypeByEmail(invite.email);
     if (matchedInvitationType) {
       return this.sendInvite(matchedInvitationType, invite, language);

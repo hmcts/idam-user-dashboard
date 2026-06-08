@@ -20,7 +20,7 @@ interface InviteDetails {
   successRedirect?: string;
 }
 
-export interface Invite extends InviteDetails {
+export interface CreateInvitation extends InviteDetails {
   forename: string;
   surname: string;
 }
