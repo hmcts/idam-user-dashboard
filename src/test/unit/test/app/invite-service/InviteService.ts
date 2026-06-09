@@ -1,4 +1,4 @@
-import { Invite } from '../../../../../main/app/invite-service/Invite';
+import { CreateInvitation } from '../../../../../main/app/invite-service/Invite';
 import { InviteService } from '../../../../../main/app/invite-service/InviteService';
 import config from 'config';
 import { when } from 'jest-when';
@@ -16,7 +16,7 @@ describe('InviteService', () => {
 
   describe('inviteUser', () => {
     test('Should resolve if no error from axios', () => {
-      const invite: Invite = {
+      const invite: CreateInvitation = {
         email: 'dummy@hmcts.net',
         forename: 'FORENAME',
         surname: 'SURNAME',
@@ -29,7 +29,7 @@ describe('InviteService', () => {
     });
 
     test('Should pass all data into axios request', () => {
-      const invite: Invite = {
+      const invite: CreateInvitation = {
         email: 'dummy@hmcts.net',
         forename: 'FORENAME',
         surname: 'SURNAME',
@@ -55,7 +55,7 @@ describe('InviteService', () => {
     });
 
     test('Should pass all data into axios request for appointed user', () => {
-      const invite: Invite = {
+      const invite: CreateInvitation = {
         email: 'dummy@ejudiciary.net',
         forename: 'FORENAME',
         surname: 'SURNAME',
@@ -81,7 +81,7 @@ describe('InviteService', () => {
     });
 
     test('Should throw INTERNAL_SERVER_ERROR if error from axios', () => {
-      const invite: Invite = {
+      const invite: CreateInvitation = {
         email: 'dummy@hmcts.net',
         forename: 'FORENAME',
         surname: 'SURNAME',

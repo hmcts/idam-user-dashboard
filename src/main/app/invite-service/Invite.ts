@@ -5,12 +5,34 @@ export enum InvitationTypes {
   REACTIVATE = 'REACTIVATE',
 }
 
-export interface Invite {
+export enum InvitationStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  EXPIRED = 'EXPIRED',
+  REVOKED = 'REVOKED',
+}
+
+interface InviteDetails {
   email: string;
-  forename: string;
-  surname: string;
   activationRoleNames?: string[];
   invitedBy?: string;
   clientId?: string;
   successRedirect?: string;
+}
+
+export interface CreateInvitation extends InviteDetails {
+  forename: string;
+  surname: string;
+}
+
+export interface Invitation extends InviteDetails {
+  id: string;
+  invitationType: InvitationTypes;
+  invitationStatus: InvitationStatus;
+  userId: string;
+  createDate: string;
+
+  forename?: string;
+  surname?: string;
+  lastModified?: string;
 }

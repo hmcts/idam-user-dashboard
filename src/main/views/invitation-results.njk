@@ -1,0 +1,133 @@
+{% from "dist/govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "dist/govuk/components/tag/macro.njk" import govukTag %}
+{% from "dist/govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "macros/breadcrumb.njk" import breadcrumb %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  Invitation results - IDAM User Dashboard - GOV.UK
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ breadcrumb([
+    ['Manage user', urls.MANAGER_USER_URL],
+    ['Invitation results']
+  ]) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">Invitation results</h1>
+
+      {{ govukNotificationBanner({
+        text: "This email address has invitation records, but no established user account was found. The user will appear in user search after the invitation process is completed and the account is created."
+      }) }}
+
+      {% set invitationCount = content.invitationCount if content.invitationCount is defined else content.invitations.length %}
+      <p class="govuk-body-l govuk-!-font-weight-bold govuk-!-margin-bottom-1">
+        {{ invitationCount }} invitation{% if invitationCount != 1 %}s{% endif %} found for {{ content.email }}
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-6">Sorted by newest invitation first.</p>
+
+      {% for invitation in content.invitations %}
+        {% set statusClass = "" %}
+        {% if invitation.invitationStatus == "ACCEPTED" %}
+          {% set statusClass = "govuk-tag--green" %}
+        {% elif invitation.invitationStatus == "EXPIRED" %}
+          {% set statusClass = "govuk-tag--grey" %}
+        {% elif invitation.invitationStatus == "REVOKED" %}
+          {% set statusClass = "govuk-tag--red" %}
+        {% endif %}
+
+        {% set activationRolesHtml %}
+          {% if invitation.activationRoleNames and invitation.activationRoleNames.length %}
+            {% for roleName in invitation.activationRoleNames %}
+              {{ roleName }}{% if not loop.last %}<br>{% endif %}
+            {% endfor %}
+          {% else %}
+            -
+          {% endif %}
+        {% endset %}
+
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">Invitation {{ loop.index }}</h2>
+            <div class="govuk-summary-card__actions">
+              {{ govukTag({
+                text: invitation.invitationStatus,
+                classes: statusClass
+              }) }}
+              {{ govukTag({
+                text: invitation.invitationType,
+                classes: "govuk-tag--grey govuk-!-margin-left-2"
+              }) }}
+            </div>
+          </div>
+
+          <div class="govuk-summary-card__content">
+            {{ govukSummaryList({
+              classes: "govuk-!-margin-bottom-0",
+              rows: [
+                {
+                  key: { text: "Invitation ID" },
+                  value: { text: invitation.id or "-" }
+                },
+                {
+                  key: { text: "Invitation type" },
+                  value: { text: invitation.invitationType or "-" }
+                },
+                {
+                  key: { text: "Invitation status" },
+                  value: { text: invitation.invitationStatus or "-" }
+                },
+                {
+                  key: { text: "User ID" },
+                  value: { text: invitation.userId or "-" }
+                },
+                {
+                  key: { text: "Email" },
+                  value: { text: invitation.email or "-" }
+                },
+                {
+                  key: { text: "First name" },
+                  value: { text: invitation.forename or "-" }
+                },
+                {
+                  key: { text: "Last name" },
+                  value: { text: invitation.surname or "-" }
+                },
+                {
+                  key: { text: "Activation roles" },
+                  value: { html: activationRolesHtml | trim }
+                },
+                {
+                  key: { text: "Client ID" },
+                  value: { text: invitation.clientId or "-" }
+                },
+                {
+                  key: { text: "Success redirect" },
+                  value: { text: invitation.successRedirect or "-" }
+                },
+                {
+                  key: { text: "Invited by" },
+                  value: { text: invitation.invitedBy or "-" }
+                },
+                {
+                  key: { text: "Created" },
+                  value: { text: invitation.createDate or "-" }
+                },
+                {
+                  key: { text: "Last modified" },
+                  value: { text: invitation.lastModified or "-" }
+                }
+              ]
+            }) }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
