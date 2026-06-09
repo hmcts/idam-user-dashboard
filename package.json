@@ -98,7 +98,7 @@
     "winston": "^3.19.0"
   },
   "devDependencies": {
-    "@babel/core": "7.29.0",
+    "@babel/core": "7.29.7",
     "@babel/eslint-parser": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
     "@faker-js/faker": "^10.0.0",
