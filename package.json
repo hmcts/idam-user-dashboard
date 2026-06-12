@@ -71,7 +71,7 @@
     "date-fns": "^3.6.0",
     "express": "^4.22.0",
     "express-nunjucks": "^3.1.2",
-    "express-openid-connect": "^2.18.1",
+    "express-openid-connect": "^2.20.2",
     "express-session": "^1.18.2",
     "glob": "^11.1.0",
     "govuk-frontend": "5.14.0",
@@ -183,7 +183,8 @@
     "bn.js": "^5.2.3",
     "flatted": "^3.4.0",
     "test-exclude": "^8.0.0",
-    "minimatch": "^10.2.3"
+    "minimatch": "^10.2.3",
+    "joi": ">=18.2.1"
   },
   "packageManager": "yarn@4.13.0"
 }
