@@ -183,7 +183,8 @@
     "bn.js": "^5.2.3",
     "flatted": "^3.4.0",
     "test-exclude": "^8.0.0",
-    "minimatch": "^10.2.3"
+    "minimatch": "^10.2.3",
+    "joi": ">=18.2.1"
   },
   "packageManager": "yarn@4.13.0"
 }
