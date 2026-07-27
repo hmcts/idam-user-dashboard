@@ -1,8 +1,16 @@
-# Working agreement
+# Agents.md
+
+## Overview
+
+idam-user-dashboard is a frontend admin application for user account management.
+The UI sits on top of idam-api which provides the backend endpoints.
+
+## Workflow
 
 - Plan code changes and summarise them for confirmation before applying them.
 - Preserve unrelated worktree changes.
 - Keep `package.json` and `yarn.lock` synchronized.
+- Keep this file up to date when project conventions, known dependency constraints, or technical debt change.
 
 ## Dependency vulnerabilities
 
