@@ -357,7 +357,9 @@ function copyIfPresent(source, destination) {
 function createScenario(projectRoot, manifest, resolutionKey) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'check-yarn-resolution-'))
   const scenarioManifest = structuredClone(manifest)
-  delete scenarioManifest.resolutions[resolutionKey]
+  if (resolutionKey !== null) {
+    delete scenarioManifest.resolutions[resolutionKey]
+  }
 
   writeJson(path.join(directory, 'package.json'), scenarioManifest)
   copyIfPresent(
@@ -861,18 +863,24 @@ if (require.main === module) {
 module.exports = {
   assessNaturalVersions,
   auditFindings,
+  auditScenario,
   changedDeclaredDependencies,
   compareVersions,
+  createScenario,
+  checkResolution,
   directParentsFromWhy,
   findingIdentity,
   findingsForPackage,
   formatResult,
   latestVersionFromInfo,
+  locateYarn,
   newFindings,
   packageNameFromLocator,
   packageNameFromResolutionKey,
   parseComparableVersion,
   parseArguments,
+  parseJsonLines,
+  runYarn,
   selectResolutionKeys,
   shouldTryResolutionUpdate,
   versionsFromWhy,
