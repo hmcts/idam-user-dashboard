@@ -15,6 +15,7 @@ const {
   parseComparableVersion,
   parseArguments,
   selectResolutionKeys,
+  shouldTryResolutionUpdate,
   versionsFromWhy,
 } = require('./check-resolutions.cjs')
 
@@ -92,6 +93,22 @@ test('detects advisories introduced by a candidate graph', () => {
   }
 
   assert.deepEqual(newFindings([existing], [existing, introduced]), [introduced])
+})
+
+test('rechecks an override when its installed version is vulnerable', () => {
+  const vulnerableOverride = {
+    value: 'js-yaml',
+    children: {
+      ID: 1,
+      Issue: 'Existing vulnerability',
+    },
+  }
+
+  assert.equal(
+    shouldTryResolutionUpdate('js-yaml', [vulnerableOverride], []),
+    true
+  )
+  assert.equal(shouldTryResolutionUpdate('js-yaml', [], []), false)
 })
 
 test('finds direct declared parents and natural package versions', () => {

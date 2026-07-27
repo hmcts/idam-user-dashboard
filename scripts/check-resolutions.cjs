@@ -130,6 +130,15 @@ function findingsForPackage(findings, packageName) {
   return findings.filter(finding => finding.value === packageName)
 }
 
+function shouldTryResolutionUpdate(
+  packageName,
+  baselineFindings,
+  candidateFindings
+) {
+  return findingsForPackage(baselineFindings, packageName).length > 0
+    || findingsForPackage(candidateFindings, packageName).length > 0
+}
+
 function findingIdentity(finding) {
   return [
     finding.value,
@@ -515,6 +524,7 @@ function tryParentUpgrades({
 }
 
 function tryResolutionUpdate({
+  baselineFindings,
   currentValue,
   directory,
   manifest,
@@ -542,7 +552,8 @@ function tryResolutionUpdate({
   try {
     installScenario(yarn, directory)
     const findings = auditScenario(yarn, directory, production)
-    if (findingsForPackage(findings, packageName).length === 0) {
+    if (findingsForPackage(findings, packageName).length === 0
+      && newFindings(baselineFindings, findings).length === 0) {
       return latestVersion
     }
   } catch {
@@ -625,27 +636,19 @@ function checkResolution({
       }
     }
 
-    if (packageFindings.length === 0) {
-      return {
-        classification: 'still-required',
-        currentValue,
-        naturalVersions: tree.versions,
-        packageName,
-        parents: tree.directParents,
-        reason: versionAssessment.reason,
-        resolutionKey,
-      }
-    }
-
-    const updatedResolution = tryResolutionUpdate({
-      currentValue,
-      directory: scenario.directory,
-      manifest,
-      packageName,
-      production: options.production,
-      resolutionKey,
-      yarn,
-    })
+    const updatedResolution =
+      shouldTryResolutionUpdate(packageName, baselineFindings, findings)
+        ? tryResolutionUpdate({
+          baselineFindings,
+          currentValue,
+          directory: scenario.directory,
+          manifest,
+          packageName,
+          production: options.production,
+          resolutionKey,
+          yarn,
+        })
+        : null
 
     if (updatedResolution) {
       return {
@@ -656,6 +659,18 @@ function checkResolution({
         resolutionKey,
         suggestedValue: updatedResolution,
         vulnerabilities: packageFindings.map(finding => finding.children),
+      }
+    }
+
+    if (packageFindings.length === 0) {
+      return {
+        classification: 'still-required',
+        currentValue,
+        naturalVersions: tree.versions,
+        packageName,
+        parents: tree.directParents,
+        reason: versionAssessment.reason,
+        resolutionKey,
       }
     }
 
@@ -836,5 +851,6 @@ module.exports = {
   parseComparableVersion,
   parseArguments,
   selectResolutionKeys,
+  shouldTryResolutionUpdate,
   versionsFromWhy,
 }
