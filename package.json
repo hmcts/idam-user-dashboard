@@ -14,6 +14,7 @@
     "playwright:install": "playwright install chromium firefox webkit",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "typecheck": "tsc --project tsconfig.production.json",
     "test:smoke": "jest -c jest.smoke.config.js",
     "test:crossbrowser": "npm-run-all -scl playwright:install test:crossbrowser:pw test:crossbrowser:allure",
     "test:crossbrowser:pw": "node ./src/test/playwright/run-with-allure.js playwright.crossbrowser.config.ts functional-output/cross-browser/allure-results functional-output/cross-browser/allure \"Cross Browser Test Report\"",
@@ -31,7 +32,7 @@
     "test:a11y": "echo 'nope' && exit 0",
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
-    "cichecks": "yarn && npm-run-all -pl build lint test"
+    "cichecks": "yarn && npm-run-all -pl build lint typecheck test"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.11.0",
@@ -145,6 +146,8 @@
     "path-to-regexp": "^3.3.0",
     "serve-static": "^2.1.0",
     "uuid@npm:^8.3.0": "14.0.0",
+    "@types/express": "^4.17.21",
+    "@types/express-serve-static-core": "^4.19.8",
     "@opentelemetry/core": "2.8.0",
     "js-yaml": "5.2.2",
     "diff": "^8.0.3",

@@ -283,6 +283,25 @@ function assessNaturalVersions(resolutionValue, naturalVersions) {
     compareVersions(parseComparableVersion(version), floor) < 0
   )
 
+  const higherMajorVersions = naturalVersions.filter(
+    version => parseComparableVersion(version).major > floor.major
+  )
+  const explicitlyAllowsHigherMajor =
+    /^(?:npm:)?(?:>=|>|\*)/u.test(String(resolutionValue).trim())
+
+  if (lowerVersions.length === 0
+    && higherMajorVersions.length > 0
+    && !explicitlyAllowsHigherMajor) {
+    return {
+      acceptable: false,
+      floor: floor.version,
+      higherMajorVersions,
+      lowerVersions: [],
+      reason: `removal would introduce a higher major than ${floor.version}: ${higherMajorVersions.join(', ')}`,
+      reviewRequired: true,
+    }
+  }
+
   return {
     acceptable: lowerVersions.length === 0,
     floor: floor.version,
@@ -664,7 +683,9 @@ function checkResolution({
 
     if (packageFindings.length === 0) {
       return {
-        classification: 'still-required',
+        classification: versionAssessment.reviewRequired
+          ? 'manual-review'
+          : 'still-required',
         currentValue,
         naturalVersions: tree.versions,
         packageName,
@@ -715,6 +736,8 @@ function formatResult(result) {
     }
     case 'update-resolution':
       return `↑ ${identity}\n  update resolution to ${result.suggestedValue}`
+    case 'manual-review':
+      return `? ${identity}\n  manual review required; ${result.reason}; parents: ${result.parents.join(', ') || 'unknown'}`
     case 'still-required':
       return `● ${identity}\n  still required${result.reason ? `; ${result.reason}` : ''}; parents: ${result.parents.join(', ') || 'unknown'}`
     case 'error':
@@ -822,7 +845,7 @@ function main() {
 
   const hasErrors = results.some(result => result.classification === 'error')
   const hasChanges = results.some(result =>
-    ['removable', 'upgrade-parent', 'update-resolution']
+    ['removable', 'upgrade-parent', 'update-resolution', 'manual-review']
       .includes(result.classification)
   )
 

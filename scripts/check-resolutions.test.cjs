@@ -176,8 +176,19 @@ test('rejects removal when any natural version is below the floor', () => {
 
 test('accepts equal, newer, or absent natural versions', () => {
   assert.equal(assessNaturalVersions('^5.2.3', ['5.2.3']).acceptable, true)
-  assert.equal(assessNaturalVersions('^5.2.3', ['6.0.0']).acceptable, true)
   assert.equal(assessNaturalVersions('^5.2.3', []).acceptable, true)
+})
+
+test('requires review before introducing a higher major', () => {
+  const assessment = assessNaturalVersions('^4.17.21', ['5.0.6'])
+
+  assert.equal(assessment.acceptable, false)
+  assert.equal(assessment.reviewRequired, true)
+  assert.deepEqual(assessment.higherMajorVersions, ['5.0.6'])
+})
+
+test('allows a higher major when the resolution explicitly does', () => {
+  assert.equal(assessNaturalVersions('>=4.17.21', ['5.0.6']).acceptable, true)
 })
 
 test('handles unparseable versions conservatively', () => {
