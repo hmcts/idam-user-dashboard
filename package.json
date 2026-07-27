@@ -27,6 +27,7 @@
     "test:accessibility": "node ./src/test/accessibility/run-suite.js",
     "test:accessibility:pw": "playwright test --config=playwright.accessibility.config.ts",
     "test:accessibility:report": "node ./src/test/accessibility/generate-report.js",
+    "check:resolutions": "node scripts/check-resolutions.cjs",
     "test:a11y": "echo 'nope' && exit 0",
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
@@ -35,7 +36,7 @@
   "dependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@azure/monitor-opentelemetry": "1.18.2",
-    "@hmcts/info-provider": "^1.3.0",
+    "@hmcts/info-provider": "^1.4.0",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.2.0",
     "@launchdarkly/node-server-sdk": "^9.10.9",
