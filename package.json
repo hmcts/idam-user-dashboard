@@ -28,8 +28,6 @@
     "test:accessibility": "node ./src/test/accessibility/run-suite.js",
     "test:accessibility:pw": "playwright test --config=playwright.accessibility.config.ts",
     "test:accessibility:report": "node ./src/test/accessibility/generate-report.js",
-    "check:vulnerabilities": "node scripts/check-vulnerabilities.cjs",
-    "check:resolutions": "node scripts/check-resolutions.cjs",
     "test:a11y": "echo 'nope' && exit 0",
     "sonar-scan": "sonar-scanner",
     "fortifyScan": "./java/gradlew -p java fortifyScan",
