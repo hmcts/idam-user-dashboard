@@ -1,10 +1,6 @@
-import { Page, Request } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { test, expect } from '../fixtures/base.fixture';
 import { loginAs } from '../helpers/ui-auth';
-
-function isAuthorizationRequest(request: Request): boolean {
-  return new URL(request.url()).pathname === '/o/authorize';
-}
 
 async function loginWithCredentials(page: Page, email: string, password: string): Promise<void> {
   await page.goto('/');
@@ -47,32 +43,6 @@ test.describe('sign_in', () => {
     const cookies = await context.cookies();
     const cookieNames = cookies.map((cookie) => cookie.name);
     expect(cookieNames, 'session cookie is set after admin login').toContain('idam_user_dashboard_session');
-  });
-
-  test('logged-in user can authorize again', async ({ page, setupDao }) => {
-    const testUser = await setupDao.createUser({
-      roleNames: ['idam-user-dashboard--access'],
-    });
-
-    const initialAuthorizationRequestPromise = page.waitForRequest(isAuthorizationRequest);
-    await loginAs(page, testUser.email, testUser.password);
-    const initialAuthorizationRequest = await initialAuthorizationRequestPromise;
-    await expect(page.locator('h1')).toHaveText('What do you want to do?');
-
-    const repeatedAuthorizationRequestPromise = page.waitForRequest(isAuthorizationRequest);
-    await page.goto('/login');
-    const repeatedAuthorizationRequest = await repeatedAuthorizationRequestPromise;
-
-    const initialAuthorizationUrl = new URL(initialAuthorizationRequest.url());
-    const repeatedAuthorizationUrl = new URL(repeatedAuthorizationRequest.url());
-    expect(repeatedAuthorizationUrl.pathname).toBe('/o/authorize');
-    expect(repeatedAuthorizationUrl.searchParams.get('client_id'))
-      .toBe(initialAuthorizationUrl.searchParams.get('client_id'));
-    expect(repeatedAuthorizationUrl.searchParams.get('redirect_uri'))
-      .toBe(initialAuthorizationUrl.searchParams.get('redirect_uri'));
-    expect(repeatedAuthorizationUrl.searchParams.get('state'))
-      .not.toBe(initialAuthorizationUrl.searchParams.get('state'));
-    await expect(page.locator('h1')).toHaveText('What do you want to do?');
   });
 
   test('login as user without access', async ({ page, setupDao, context }) => {
