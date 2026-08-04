@@ -69,6 +69,13 @@
           }) }}
         {% endcall %}
 
+        {% set ssoEmailHint = 'The email address for this user is managed by their identity provider, it cannot be updated within IDAM.' %}
+        {% if content.user.ssoProvider === 'azure' %}
+          {% set ssoEmailHint = "This user's email address is managed by their identity provider and cannot be changed in IDAM. If the email address needs to be updated, it must be changed in eJudiciary. The updated email address will be synchronised automatically the next time the user signs in." %}
+        {% elif content.user.ssoProvider === 'moj' %}
+          {% set ssoEmailHint = "This user's email address is managed by their identity provider and cannot be changed in IDAM. If the email address needs to be updated, it must be changed in justice.gov.uk. The updated email address will be synchronised automatically the next time the user signs in." %}
+        {% endif %}
+
         {{ govukInput({
           label: {
             text: "Email"
@@ -77,7 +84,7 @@
           id: "email",
           value: content.user.email,
           hint: {
-            text: 'The email address for this user is managed by their identity provider, it cannot be updated within IDAM.'
+            text: ssoEmailHint
           } if content.user.ssoProvider,
           attributes: {
             disabled: true
