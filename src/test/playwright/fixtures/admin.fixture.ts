@@ -16,7 +16,7 @@ export const test = base.extend<AdminFixtures>({
     }
     const adminEmail = getAdminEmailForProject(testInfo.project.name);
     await setupDao.setupAdmin(adminEmail);
-    await page.goto('/');
+    await page.goto('/login');
     await expect(page.locator('h1')).toHaveText('What do you want to do?');
     await use();
   }, { auto: true }],
