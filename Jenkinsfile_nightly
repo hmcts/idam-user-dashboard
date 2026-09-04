@@ -21,6 +21,7 @@ def type = "nodejs"
 def product = "idam"
 def component = "user-dashboard"
 def urlExclusions = params.ZAP_URL_EXCLUSIONS
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def secrets = [
   "idam-idam-${params.ENVIRONMENT}": [
@@ -56,11 +57,6 @@ try {
     if (!params.skipFullFunctionalTests) {
       enableFullFunctionalTest()
     }
-    if (!params.skipCrossBrowserTest) {
-      enableCrossBrowserTest()
-    }
-
-
     afterAlways('fortify-scan') {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
@@ -88,17 +84,27 @@ try {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/functional/reports/**/*'
     }
 
-    afterAlways('crossBrowserTest') {
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "functional-output/cross-browser/allure",
-        reportFiles          : "index.html",
-        reportName           : "Cross Browser Test Report"
-      ]
+    if (!params.skipCrossBrowserTest) {
+      afterAlways('DependencyCheckNightly') {
+        stage('crossBrowserTest') {
+          try {
+            yarnBuilder.yarn('test:crossbrowser')
+          } catch (err) {
+            unstable(message: "${STAGE_NAME} is unstable: " + err.toString())
+          } finally {
+            publishHTML target: [
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/cross-browser/allure",
+              reportFiles          : "index.html",
+              reportName           : "Cross Browser Test Report"
+            ]
 
-      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/cross-browser/reports/**/*'
+            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/cross-browser/reports/**/*'
+          }
+        }
+      }
     }
   }
 } catch (err) {
