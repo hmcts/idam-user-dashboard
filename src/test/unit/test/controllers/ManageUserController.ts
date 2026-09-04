@@ -46,6 +46,17 @@ describe('Manage user controller', () => {
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
   });
 
+  test('Should trim spaces around an email entered in the search box', async () => {
+    when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue([]);
+
+    req.body.search = `  ${email}  `;
+    await controller.post(req, res);
+
+    expect(mockApi.searchUsersByEmail).toHaveBeenCalledWith(testToken, email);
+    expect(inviteService.searchInvitationByEmail).toHaveBeenCalledWith(email);
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + email } } });
+  });
+
   test('Should render the invitation results page when searching with an email that has invitations', async () => {
     const olderInvitation = {
       id: 'older-invitation-id',
@@ -96,6 +107,18 @@ describe('Manage user controller', () => {
 
     req.body.search = userId;
     await controller.post(req, res);
+    expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
+  });
+
+  test('Should trim spaces around a user ID entered in the search box', async () => {
+    when(mockApi.getUserById).calledWith(testToken, userId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
+
+    req.body.search = `  ${userId}  `;
+    await controller.post(req, res);
+
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userId);
+    expect(mockApi.searchUsersBySsoId).toHaveBeenCalledWith(testToken, userId);
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
 
