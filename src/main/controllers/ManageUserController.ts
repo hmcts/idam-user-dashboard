@@ -37,9 +37,11 @@ export class ManageUserController extends RootController {
 
   @asyncError
   public async post(req: AuthedRequest, res: Response) {
-    const input: string = req.body.search || req.body._userId || '';
+    const input: string = req.body.search !== undefined
+      ? (req.body.search || '').trim()
+      : req.body._userId || '';
     this.setTraceAttribute(req, 'search_term', possiblyEmail(input) ? obfuscate(input) : input);
-    if (isEmpty(input.trim())) {
+    if (isEmpty(input)) {
       return this.postError(req, res, MISSING_INPUT_ERROR);
     }
 
