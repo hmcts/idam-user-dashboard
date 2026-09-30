@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import session from 'express-session';
-import RedisStore from 'connect-redis';
+import { RedisStore } from 'connect-redis';
 import FileStoreFactory from 'session-file-store';
 import { Redis } from 'ioredis';
 import config from 'config';
