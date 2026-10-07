@@ -42,6 +42,14 @@ Do not force an unsupported transitive major override. The current
 `glob@10.5.0` deprecation is retained in `yarn-audit-known-issues` because the
 latest Jest reporters still require that range; recheck it when Jest updates.
 
+As of 2026-10-07, the production audit also reports `braces@3.0.3` through
+`micromatch` and `http-cache-semantics@4.1.1` through
+`express-openid-connect` → `openid-client` → `got` → `cacheable-request`. The
+current GitHub advisories list no patched release for either package, so these
+two findings are recorded in the narrow audit baseline until an upstream fix
+or a supported dependency path without them is available. They remain security
+debt; recheck the advisories and remove the baseline entries once resolved.
+
 After dependency changes, run:
 
 ```bash
