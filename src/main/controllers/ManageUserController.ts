@@ -59,13 +59,14 @@ export class ManageUserController extends RootController {
           if (!isValidEmailFormat(email)) {
             return this.postError(req, res, PENDING_USER_EMAIL_ERROR);
           }
-          return this.postInvitationResults(req, res, email, PENDING_USER_NO_INVITATIONS_ERROR);
+          return this.postInvitationResults(req, res, { email }, PENDING_USER_NO_INVITATIONS_ERROR);
         }
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', user.id));
       }
       logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
-      if (users.length === 0 && possiblyEmail(input)) {
-        return this.postInvitationResults(req, res, input, NO_USER_MATCHES_ERROR + input);
+      if (users.length === 0) {
+        const search = possiblyEmail(input) ? { email: input } : { userId: input };
+        return this.postInvitationResults(req, res, search, NO_USER_MATCHES_ERROR + input);
       }
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
@@ -90,8 +91,15 @@ export class ManageUserController extends RootController {
       });
   }
 
-  private async postInvitationResults(req: AuthedRequest, res: Response, email: string, noInvitationsError: string) {
-    const invitations = await this.inviteService.searchInvitationByEmail(email);
+  private async postInvitationResults(
+    req: AuthedRequest,
+    res: Response,
+    search: { email: string } | { userId: string },
+    noInvitationsError: string
+  ) {
+    const invitations = 'email' in search
+      ? await this.inviteService.searchInvitationByEmail(search.email)
+      : await this.inviteService.searchInvitationByUserId(search.userId);
     this.setTraceAttribute(req, 'invitation_match_count', invitations.length);
     if (invitations.length === 0) {
       return this.postError(req, res, noInvitationsError);
@@ -99,7 +107,7 @@ export class ManageUserController extends RootController {
     const preparedInvitations = this.prepareInvitations(invitations);
     return super.post(req, res, 'invitation-results', {
       content: {
-        email,
+        ...search,
         invitationCount: preparedInvitations.length,
         invitations: preparedInvitations
       }

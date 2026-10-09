@@ -36,6 +36,8 @@ describe('Manage user controller', () => {
     mockApi.searchUsersBySsoId.mockReset();
     jest.mocked(inviteService.searchInvitationByEmail).mockReset();
     jest.mocked(inviteService.searchInvitationByEmail).mockResolvedValue([]);
+    jest.mocked(inviteService.searchInvitationByUserId).mockReset();
+    jest.mocked(inviteService.searchInvitationByUserId).mockResolvedValue([]);
     req = mockRequest();
     req.idam_user_dashboard_session = {access_token: testToken};
   });
@@ -115,6 +117,8 @@ describe('Manage user controller', () => {
 
     req.body.search = userId;
     await controller.post(req, res);
+    expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
+    expect(inviteService.searchInvitationByEmail).not.toHaveBeenCalled();
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
   });
 
@@ -127,7 +131,79 @@ describe('Manage user controller', () => {
 
     expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userId);
     expect(mockApi.searchUsersBySsoId).toHaveBeenCalledWith(testToken, userId);
+    expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: NO_USER_MATCHES_ERROR + userId } } });
+  });
+
+  test('Should find the same invitations by email and then by their user ID when no user exists', async () => {
+    const olderInvitation = {
+      id: 'older-invitation-id',
+      invitationType: InvitationTypes.INVITE,
+      invitationStatus: InvitationStatus.EXPIRED,
+      userId,
+      email,
+      createDate: '2026-06-02T10:00:00Z'
+    };
+    const newerInvitation = {
+      ...olderInvitation,
+      id: 'newer-invitation-id',
+      invitationStatus: InvitationStatus.PENDING,
+      createDate: '2026-06-03T10:00:00Z',
+      lastModified: '2026-06-03T10:30:00Z'
+    };
+    const invitations = [olderInvitation, newerInvitation];
+    const preparedInvitations = [
+      {
+        ...newerInvitation,
+        createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
+        lastModified: 'Wed, 03 Jun 2026 10:30:00 GMT'
+      },
+      {
+        ...olderInvitation,
+        createDate: 'Tue, 02 Jun 2026 10:00:00 GMT',
+        lastModified: undefined
+      }
+    ];
+    when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue([]);
+    when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue(invitations);
+    when(mockApi.getUserById).calledWith(testToken, userId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
+    when(inviteService.searchInvitationByUserId).calledWith(userId).mockResolvedValue(invitations);
+
+    req.body.search = email;
+    await controller.post(req, res);
+    expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
+      content: { email, invitationCount: 2, invitations: preparedInvitations }
+    });
+    expect(inviteService.searchInvitationByUserId).not.toHaveBeenCalled();
+
+    req.body.search = olderInvitation.userId;
+    await controller.post(req, res);
+
+    expect(mockApi.getUserById).toHaveBeenCalledWith(testToken, userId);
+    expect(mockApi.searchUsersBySsoId).toHaveBeenCalledWith(testToken, userId);
+    expect(inviteService.searchInvitationByUserId).toHaveBeenCalledTimes(1);
+    expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
+    expect(res.render).toHaveBeenCalledTimes(2);
+    expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
+      content: { userId, invitationCount: 2, invitations: preparedInvitations }
+    });
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  test('Should pass user ID invitation lookup failures to the error handler', async () => {
+    const error = new Error('Invitation lookup failed');
+    when(mockApi.getUserById).calledWith(testToken, userId).mockRejectedValue('');
+    when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
+    when(inviteService.searchInvitationByUserId).calledWith(userId).mockRejectedValue(error);
+    req.body.search = userId;
+    req.next = jest.fn();
+
+    await controller.post(req, res);
+
+    expect(req.next).toHaveBeenCalledWith(error);
+    expect(res.render).not.toHaveBeenCalled();
+    expect(res.redirect).not.toHaveBeenCalled();
   });
 
   test('Should render the manage user page when more than one emails matches the search input', async () => {
@@ -175,6 +251,7 @@ describe('Manage user controller', () => {
     req.body._userId = testuserid;
     await controller.post(req, res);
     expect(res.redirect).toHaveBeenCalledWith(307, '/user/' + testuserid + '/details');
+    expect(inviteService.searchInvitationByUserId).not.toHaveBeenCalled();
   });
 
   test('Should render the manage user page for one email that matches the search input', async () => {
@@ -225,6 +302,7 @@ describe('Manage user controller', () => {
     req.body.search = ssoId;
     await controller.post(req, res);
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
+    expect(inviteService.searchInvitationByUserId).not.toHaveBeenCalled();
   });
 
   describe.each([
@@ -281,6 +359,7 @@ describe('Manage user controller', () => {
         }
       });
       expect(res.redirect).not.toHaveBeenCalled();
+      expect(inviteService.searchInvitationByUserId).not.toHaveBeenCalled();
       if (searchType === 'user ID') {
         expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
       }
@@ -304,6 +383,7 @@ describe('Manage user controller', () => {
 
       expect(res.redirect).toHaveBeenCalledWith(307, '/user/' + userId + '/details');
       expect(inviteService.searchInvitationByEmail).not.toHaveBeenCalled();
+      expect(inviteService.searchInvitationByUserId).not.toHaveBeenCalled();
       expect(res.render).not.toHaveBeenCalled();
     });
   });
