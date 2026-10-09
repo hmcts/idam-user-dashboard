@@ -87,6 +87,19 @@ export class InviteService {
       });
   }
 
+  public searchInvitationByUserId(userId: string): Promise<Invitation[]> {
+    const invitationSearchPath = `/api/v2/invitations-by-user-id/${encodeURIComponent(userId)}`;
+
+    return this.idamApiAxios
+      .get(invitationSearchPath)
+      .then(results => results.data)
+      .catch(error => {
+        const errorMessage = 'Error searching for invitation by user ID from IDAM API';
+        logger.error(`${error.stack || error} for user ID ${userId} at ${invitationSearchPath} (logger.error)`);
+        return Promise.reject(errorMessage);
+      });
+  }
+
   private obfuscateEmailInUrl(url: string, email: string): string {
     return url.replace(encodeURIComponent(email), encodeURIComponent(obfuscate(email)));
   }

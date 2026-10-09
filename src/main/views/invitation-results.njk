@@ -22,13 +22,14 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Invitation results</h1>
 
+      {% set searchDescription = "This email address" if content.email else "This user ID" %}
       {{ govukNotificationBanner({
-        text: "This email address has invitation records, but no established user account was found. The user will appear in user search after the invitation process is completed and the account is created."
+        text: searchDescription + " has invitation records, but no established user account was found. The user will appear in user search after the invitation process is completed and the account is created."
       }) }}
 
       {% set invitationCount = content.invitationCount if content.invitationCount is defined else content.invitations.length %}
       <p class="govuk-body-l govuk-!-font-weight-bold govuk-!-margin-bottom-1">
-        {{ invitationCount }} invitation{% if invitationCount != 1 %}s{% endif %} found for {{ content.email }}
+        {{ invitationCount }} invitation{% if invitationCount != 1 %}s{% endif %} found for {{ content.email or content.userId }}
       </p>
       <p class="govuk-body govuk-!-margin-bottom-6">Sorted by newest invitation first.</p>
 

@@ -67,7 +67,7 @@ test.describe('search_user', () => {
     await expect(locateDataForTitle(page, 'Email')).not.toContainText(ssoUser.email);
   });
 
-  test('I as an admin can see invitation results when an email has invitations but no established user account', async ({ page, setupDao }) => {
+  test('I as an admin can find invitations by email and then by their user ID without an established account', async ({ page, setupDao }) => {
     const registerForename = faker.person.firstName();
     const registerSurname = faker.person.lastName();
     const registerEmail = faker.internet.email({
@@ -117,5 +117,24 @@ test.describe('search_user', () => {
     await expect(locateDataForTitle(page, 'First name')).toContainText(registerForename);
     await expect(locateDataForTitle(page, 'Last name')).toContainText(registerSurname);
     await expect(locateDataForTitle(page, 'Activation roles')).toContainText(workerRoleName);
+
+    const invitationUserId = (await locateDataForTitle(page, 'User ID').innerText()).trim();
+    expect(invitationUserId).not.toBe('-');
+    expect(invitationUserId).not.toBe('');
+
+    await navigateToSearchUser(page);
+    await page.locator('[name="search"]').fill(invitationUserId);
+    await clickAndExpectPage(
+      page,
+      () => page.getByRole('button', { name: 'Search' }).click(),
+      {
+        expectedHeading: 'Invitation results',
+        expectedUrl: /\/user\/manage/,
+      }
+    );
+
+    await expect(locateDataForTitle(page, 'Invitation ID')).toContainText(invite.id);
+    await expect(locateDataForTitle(page, 'User ID')).toContainText(invitationUserId);
+    await expect(locateDataForTitle(page, 'Email')).toContainText(registerEmail);
   });
 });
