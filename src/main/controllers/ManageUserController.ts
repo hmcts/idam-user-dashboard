@@ -8,7 +8,6 @@ import {
   INVALID_EMAIL_FORMAT_ERROR,
   MISSING_INPUT_ERROR,
   NO_USER_MATCHES_ERROR,
-  PENDING_USER_EMAIL_ERROR,
   PENDING_USER_NO_INVITATIONS_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../utils/error';
@@ -56,10 +55,8 @@ export class ManageUserController extends RootController {
         this.setTraceAttribute(req, 'match_user_id', user.id);
         if (user.pending === true) {
           const email = (user.email || '').trim();
-          if (!isValidEmailFormat(email)) {
-            return this.postError(req, res, PENDING_USER_EMAIL_ERROR);
-          }
-          return this.postInvitationResults(req, res, { email }, PENDING_USER_NO_INVITATIONS_ERROR);
+          const search = isValidEmailFormat(email) ? { email } : { userId: user.id };
+          return this.postInvitationResults(req, res, search, PENDING_USER_NO_INVITATIONS_ERROR);
         }
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', user.id));
       }

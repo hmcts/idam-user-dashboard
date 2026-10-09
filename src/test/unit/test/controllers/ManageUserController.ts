@@ -8,14 +8,13 @@ import {
   INVALID_EMAIL_FORMAT_ERROR,
   MISSING_INPUT_ERROR,
   NO_USER_MATCHES_ERROR,
-  PENDING_USER_EMAIL_ERROR,
   PENDING_USER_NO_INVITATIONS_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
 import { User } from '../../../../main/interfaces/User';
 import { mockInviteService } from '../../utils/mockInviteService';
-import { InvitationStatus, InvitationTypes } from '../../../../main/app/invite-service/Invite';
+import { Invitation, InvitationStatus, InvitationTypes } from '../../../../main/app/invite-service/Invite';
 
 describe('Manage user controller', () => {
   mockRootController();
@@ -310,7 +309,7 @@ describe('Manage user controller', () => {
     { searchType: 'SSO ID', input: ssoId },
     { searchType: 'email', input: email }
   ])('Account found by $searchType', ({ searchType, input }) => {
-    let user: Pick<User, 'id' | 'email' | 'active' | 'pending'>;
+    let user: Pick<User, 'id' | 'active' | 'pending'> & { email?: string };
 
     beforeEach(() => {
       user = {
@@ -376,6 +375,37 @@ describe('Manage user controller', () => {
       expect(res.redirect).not.toHaveBeenCalled();
     });
 
+    test('Should find invitations using the resolved user ID when a pending user has no email', async () => {
+      delete user.email;
+      const invitation = {
+        id: 'pending-invitation-id',
+        invitationType: InvitationTypes.INVITE,
+        invitationStatus: InvitationStatus.PENDING,
+        userId,
+        email,
+        createDate: '2026-06-03T10:00:00Z'
+      };
+      when(inviteService.searchInvitationByUserId).calledWith(userId).mockResolvedValue([invitation]);
+
+      await controller.post(req, res);
+
+      expect(inviteService.searchInvitationByUserId).toHaveBeenCalledTimes(1);
+      expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
+      expect(inviteService.searchInvitationByEmail).not.toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalledWith('invitation-results', {
+        content: {
+          userId,
+          invitationCount: 1,
+          invitations: [{
+            ...invitation,
+            createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
+            lastModified: undefined
+          }]
+        }
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+
     test('Should still redirect an inactive account that is not pending to user details', async () => {
       user.pending = false;
 
@@ -388,7 +418,7 @@ describe('Manage user controller', () => {
     });
   });
 
-  test.each([undefined, '', '   ', 'not-an-email'])('Should show an error for a pending account with an unusable email: %s', async returnedEmail => {
+  test.each([undefined, null, '', '   ', 'not-an-email'])('Should check invitations by user ID for a pending account with an unusable email: %s', async returnedEmail => {
     when(mockApi.getUserById).calledWith(testToken, userId).mockResolvedValue({
       id: userId,
       email: returnedEmail,
@@ -400,10 +430,71 @@ describe('Manage user controller', () => {
     await controller.post(req, res);
 
     expect(res.render).toHaveBeenCalledWith('manage-user', {
-      error: { search: { message: PENDING_USER_EMAIL_ERROR } }
+      error: { search: { message: PENDING_USER_NO_INVITATIONS_ERROR } }
     });
+    expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
     expect(inviteService.searchInvitationByEmail).not.toHaveBeenCalled();
     expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  test('Should find invitations by email and then by user ID with the minimal v1 pending user response', async () => {
+    const invitation = {
+      id: 'pending-invitation-id',
+      invitationType: InvitationTypes.INVITE,
+      invitationStatus: InvitationStatus.PENDING,
+      userId,
+      email,
+      createDate: '2026-06-03T10:00:00Z'
+    };
+    const preparedInvitations: Invitation[] = [{
+      ...invitation,
+      createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
+      lastModified: undefined
+    }];
+    when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue([]);
+    when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue([invitation]);
+    when(mockApi.getUserById).calledWith(testToken, userId).mockResolvedValue({
+      id: userId,
+      active: false,
+      pending: true
+    });
+    when(inviteService.searchInvitationByUserId).calledWith(userId).mockResolvedValue([invitation]);
+
+    req.body.search = email;
+    await controller.post(req, res);
+    expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
+      content: { email, invitationCount: 1, invitations: preparedInvitations }
+    });
+
+    req.body.search = invitation.userId;
+    await controller.post(req, res);
+
+    expect(res.render).toHaveBeenCalledTimes(2);
+    expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
+      content: { userId, invitationCount: 1, invitations: preparedInvitations }
+    });
+    expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
+    expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  test('Should pass invitation lookup failures to the error handler for a pending user without an email', async () => {
+    const error = new Error('Invitation lookup failed');
+    when(mockApi.getUserById).calledWith(testToken, userId).mockResolvedValue({
+      id: userId,
+      active: false,
+      pending: true
+    });
+    when(inviteService.searchInvitationByUserId).calledWith(userId).mockRejectedValue(error);
+    req.body.search = userId;
+    req.next = jest.fn();
+
+    await controller.post(req, res);
+
+    expect(req.next).toHaveBeenCalledWith(error);
+    expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
+    expect(res.render).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
