@@ -8,9 +8,12 @@ import {
   INVALID_EMAIL_FORMAT_ERROR,
   MISSING_INPUT_ERROR,
   NO_USER_MATCHES_ERROR,
+  PENDING_USER_EMAIL_ERROR,
+  PENDING_USER_NO_INVITATIONS_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../../../../main/utils/error';
 import { IdamAPI } from '../../../../main/app/idam-api/IdamAPI';
+import { User } from '../../../../main/interfaces/User';
 import { mockInviteService } from '../../utils/mockInviteService';
 import { InvitationStatus, InvitationTypes } from '../../../../main/app/invite-service/Invite';
 
@@ -28,6 +31,11 @@ describe('Manage user controller', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockApi.getUserById.mockReset();
+    mockApi.searchUsersByEmail.mockReset();
+    mockApi.searchUsersBySsoId.mockReset();
+    jest.mocked(inviteService.searchInvitationByEmail).mockReset();
+    jest.mocked(inviteService.searchInvitationByEmail).mockResolvedValue([]);
     req = mockRequest();
     req.idam_user_dashboard_session = {access_token: testToken};
   });
@@ -217,6 +225,144 @@ describe('Manage user controller', () => {
     req.body.search = ssoId;
     await controller.post(req, res);
     expect(res.render).toHaveBeenCalledWith('manage-user', { error: { search: { message: TOO_MANY_USERS_ERROR + ssoId } } });
+  });
+
+  describe.each([
+    { searchType: 'user ID', input: userId },
+    { searchType: 'SSO ID', input: ssoId },
+    { searchType: 'email', input: email }
+  ])('Account found by $searchType', ({ searchType, input }) => {
+    let user: Pick<User, 'id' | 'email' | 'active' | 'pending'>;
+
+    beforeEach(() => {
+      user = {
+        id: userId,
+        email,
+        active: false,
+        pending: true
+      };
+      req.body.search = input;
+
+      if (searchType === 'email') {
+        when(mockApi.searchUsersByEmail).calledWith(testToken, input).mockResolvedValue([user]);
+      } else if (searchType === 'SSO ID') {
+        when(mockApi.getUserById).calledWith(testToken, input).mockRejectedValue('');
+        when(mockApi.searchUsersBySsoId).calledWith(testToken, input).mockResolvedValue([user]);
+      } else {
+        when(mockApi.getUserById).calledWith(testToken, input).mockResolvedValue(user);
+      }
+    });
+
+    test('Should show invitations for a pending account using the returned email', async () => {
+      const invitation = {
+        id: 'pending-invitation-id',
+        invitationType: InvitationTypes.INVITE,
+        invitationStatus: InvitationStatus.PENDING,
+        userId,
+        email,
+        createDate: '2026-06-03T10:00:00Z'
+      };
+      when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue([invitation]);
+
+      await controller.post(req, res);
+
+      expect(inviteService.searchInvitationByEmail).toHaveBeenCalledTimes(1);
+      expect(inviteService.searchInvitationByEmail).toHaveBeenCalledWith(email);
+      expect(res.render).toHaveBeenCalledTimes(1);
+      expect(res.render).toHaveBeenCalledWith('invitation-results', {
+        content: {
+          email,
+          invitationCount: 1,
+          invitations: [{
+            ...invitation,
+            createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
+            lastModified: undefined
+          }]
+        }
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+      if (searchType === 'user ID') {
+        expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
+      }
+    });
+
+    test('Should show a pending registration message when no invitations exist', async () => {
+      await controller.post(req, res);
+
+      expect(inviteService.searchInvitationByEmail).toHaveBeenCalledWith(email);
+      expect(res.render).toHaveBeenCalledTimes(1);
+      expect(res.render).toHaveBeenCalledWith('manage-user', {
+        error: { search: { message: PENDING_USER_NO_INVITATIONS_ERROR } }
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    test('Should still redirect an inactive account that is not pending to user details', async () => {
+      user.pending = false;
+
+      await controller.post(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith(307, '/user/' + userId + '/details');
+      expect(inviteService.searchInvitationByEmail).not.toHaveBeenCalled();
+      expect(res.render).not.toHaveBeenCalled();
+    });
+  });
+
+  test.each([undefined, '', '   ', 'not-an-email'])('Should show an error for a pending account with an unusable email: %s', async returnedEmail => {
+    when(mockApi.getUserById).calledWith(testToken, userId).mockResolvedValue({
+      id: userId,
+      email: returnedEmail,
+      active: false,
+      pending: true
+    });
+    req.body.search = userId;
+
+    await controller.post(req, res);
+
+    expect(res.render).toHaveBeenCalledWith('manage-user', {
+      error: { search: { message: PENDING_USER_EMAIL_ERROR } }
+    });
+    expect(inviteService.searchInvitationByEmail).not.toHaveBeenCalled();
+    expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  test('Should trim the returned email for a pending account selected by user ID', async () => {
+    when(mockApi.getUserById).calledWith(testToken, userId).mockResolvedValue({
+      id: userId,
+      email: `  ${email}  `,
+      active: false,
+      pending: true
+    });
+    req.body._userId = userId;
+
+    await controller.post(req, res);
+
+    expect(inviteService.searchInvitationByEmail).toHaveBeenCalledWith(email);
+    expect(res.render).toHaveBeenCalledWith('manage-user', {
+      error: { search: { message: PENDING_USER_NO_INVITATIONS_ERROR } }
+    });
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  test('Should pass invitation lookup failures to the error handler without redirecting a pending account', async () => {
+    const error = new Error('Invitation lookup failed');
+    when(mockApi.getUserById).calledWith(testToken, userId).mockResolvedValue({
+      id: userId,
+      email,
+      active: false,
+      pending: true
+    });
+    when(inviteService.searchInvitationByEmail).calledWith(email).mockRejectedValue(error);
+    req.body.search = userId;
+    req.next = jest.fn();
+
+    await controller.post(req, res);
+
+    expect(req.next).toHaveBeenCalledWith(error);
+    expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();
+    expect(res.redirect).not.toHaveBeenCalled();
+    expect(res.render).not.toHaveBeenCalled();
   });
 
   test('Should render the manage user page with error when searching with empty input', async () => {

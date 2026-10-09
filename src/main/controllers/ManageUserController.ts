@@ -8,6 +8,8 @@ import {
   INVALID_EMAIL_FORMAT_ERROR,
   MISSING_INPUT_ERROR,
   NO_USER_MATCHES_ERROR,
+  PENDING_USER_EMAIL_ERROR,
+  PENDING_USER_NO_INVITATIONS_ERROR,
   TOO_MANY_USERS_ERROR
 } from '../utils/error';
 import { USER_DETAILS_URL } from '../utils/urls';
@@ -50,24 +52,21 @@ export class ManageUserController extends RootController {
 
     if (users) {
       if (users.length === 1) {
-        this.setTraceAttribute(req, 'match_user_id', users[0].id);
-        return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', users[0].id));
-      }
-      if (users.length === 0 && possiblyEmail(input)) {
-        const invitations = await this.inviteService.searchInvitationByEmail(input);
-        this.setTraceAttribute(req, 'invitation_match_count', invitations.length);
-        if (invitations.length > 0) {
-          const preparedInvitations = this.prepareInvitations(invitations);
-          return super.post(req, res, 'invitation-results', {
-            content: {
-              email: input,
-              invitationCount: preparedInvitations.length,
-              invitations: preparedInvitations
-            }
-          });
+        const user = users[0];
+        this.setTraceAttribute(req, 'match_user_id', user.id);
+        if (user.pending === true) {
+          const email = (user.email || '').trim();
+          if (!isValidEmailFormat(email)) {
+            return this.postError(req, res, PENDING_USER_EMAIL_ERROR);
+          }
+          return this.postInvitationResults(req, res, email, PENDING_USER_NO_INVITATIONS_ERROR);
         }
+        return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', user.id));
       }
       logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
+      if (users.length === 0 && possiblyEmail(input)) {
+        return this.postInvitationResults(req, res, input, NO_USER_MATCHES_ERROR + input);
+      }
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
   }
@@ -89,6 +88,22 @@ export class ManageUserController extends RootController {
       .catch(() => {
         return this.idamWrapper.searchUsersBySsoId(req.idam_user_dashboard_session.access_token, input);
       });
+  }
+
+  private async postInvitationResults(req: AuthedRequest, res: Response, email: string, noInvitationsError: string) {
+    const invitations = await this.inviteService.searchInvitationByEmail(email);
+    this.setTraceAttribute(req, 'invitation_match_count', invitations.length);
+    if (invitations.length === 0) {
+      return this.postError(req, res, noInvitationsError);
+    }
+    const preparedInvitations = this.prepareInvitations(invitations);
+    return super.post(req, res, 'invitation-results', {
+      content: {
+        email,
+        invitationCount: preparedInvitations.length,
+        invitations: preparedInvitations
+      }
+    });
   }
 
   private postError(req: AuthedRequest, res: Response, errorMessage: string) {
