@@ -8,7 +8,7 @@ describe('Invitation results view', () => {
     path.join(__dirname, '../../../../../node_modules/govuk-frontend')
   ]), { autoescape: true });
   const template = '{% extends "invitation-results.njk" %}{% block head %}{% endblock %}{% block bodyEnd %}{% endblock %}';
-  const removalMessage = 'The user account has most likely been removed.';
+  const removalMessage = 'The user account may have been deleted.';
   const registrationMessage = 'The user will appear in user search after the invitation process is completed and the account is created.';
   const invitation = {
     id: 'test-invitation-id',

@@ -23,7 +23,7 @@
       <h1 class="govuk-heading-l">Invitation results</h1>
 
       {% set searchDescription = "This email address" if content.email else "This user ID" %}
-      {% set notificationMessage = "An invitation has been accepted, but no established user account was found. The user account has most likely been removed." if content.userLikelyRemoved else searchDescription + " has invitation records, but no established user account was found. The user will appear in user search after the invitation process is completed and the account is created." %}
+    {% set notificationMessage = "An invitation has been accepted, but no established user account was found. The user account may have been deleted." if content.userLikelyRemoved else searchDescription + " has invitation records, but no established user account was found. The user will appear in user search after the invitation process is completed and the account is created." %}
       {{ govukNotificationBanner({
         text: notificationMessage
       }) }}
