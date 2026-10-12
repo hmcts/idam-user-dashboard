@@ -1,4 +1,4 @@
-import { CreateInvitation } from '../../../../../main/app/invite-service/Invite';
+import { CreateInvitation, InvitationStatus, InvitationTypes } from '../../../../../main/app/invite-service/Invite';
 import { InviteService } from '../../../../../main/app/invite-service/InviteService';
 import config from 'config';
 import { when } from 'jest-when';
@@ -94,6 +94,51 @@ describe('InviteService', () => {
         status: http.HTTP_STATUS_INTERNAL_SERVER_ERROR,
         message: 'Error sending invite to IDAM API',
       });
+    });
+  });
+
+  describe('searchInvitationByUserId', () => {
+    const userId = 'test-user-id';
+
+    beforeEach(() => {
+      (mockedAxios.get as jest.Mock).mockReset();
+    });
+
+    test('Should return invitations from the user ID endpoint', async () => {
+      const invitations = [{
+        id: 'test-invitation-id',
+        userId,
+        email: 'dummy@hmcts.net',
+        invitationType: InvitationTypes.INVITE,
+        invitationStatus: InvitationStatus.PENDING,
+        createDate: '2026-06-03T10:00:00Z'
+      }];
+      (mockedAxios.get as jest.Mock).mockResolvedValue({ data: invitations });
+
+      await expect(inviteService.searchInvitationByUserId(userId)).resolves.toEqual(invitations);
+      expect(mockedAxios.get).toHaveBeenCalledWith('/api/v2/invitations-by-user-id/test-user-id');
+    });
+
+    test('Should preserve empty results when no invitations match', async () => {
+      (mockedAxios.get as jest.Mock).mockResolvedValue({ data: [] });
+
+      await expect(inviteService.searchInvitationByUserId(userId)).resolves.toEqual([]);
+    });
+
+    test('Should encode the user ID as a path segment', async () => {
+      (mockedAxios.get as jest.Mock).mockResolvedValue({ data: [] });
+
+      await inviteService.searchInvitationByUserId('user/id?value=1');
+
+      expect(mockedAxios.get).toHaveBeenCalledWith('/api/v2/invitations-by-user-id/user%2Fid%3Fvalue%3D1');
+    });
+
+    test('Should reject API failures instead of reporting no invitations', async () => {
+      (mockedAxios.get as jest.Mock).mockRejectedValue(new Error('Invitation lookup failed'));
+
+      await expect(inviteService.searchInvitationByUserId(userId)).rejects.toBe(
+        'Error searching for invitation by user ID from IDAM API'
+      );
     });
   });
 });
