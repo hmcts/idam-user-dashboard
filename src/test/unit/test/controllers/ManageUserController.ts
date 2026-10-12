@@ -94,6 +94,7 @@ describe('Manage user controller', () => {
       content: {
         email,
         invitationCount: 2,
+        userLikelyRemoved: false,
         invitations: [
           {
             ...newerInvitation,
@@ -172,7 +173,7 @@ describe('Manage user controller', () => {
     req.body.search = email;
     await controller.post(req, res);
     expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
-      content: { email, invitationCount: 2, invitations: preparedInvitations }
+      content: { email, invitationCount: 2, userLikelyRemoved: false, invitations: preparedInvitations }
     });
     expect(inviteService.searchInvitationByUserId).not.toHaveBeenCalled();
 
@@ -185,7 +186,7 @@ describe('Manage user controller', () => {
     expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
     expect(res.render).toHaveBeenCalledTimes(2);
     expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
-      content: { userId, invitationCount: 2, invitations: preparedInvitations }
+      content: { userId, invitationCount: 2, userLikelyRemoved: false, invitations: preparedInvitations }
     });
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -203,6 +204,73 @@ describe('Manage user controller', () => {
     expect(req.next).toHaveBeenCalledWith(error);
     expect(res.render).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  describe.each([
+    { searchType: 'email', input: email },
+    { searchType: 'user ID', input: userId }
+  ])('Invitations found without a user by $searchType', ({ searchType, input }) => {
+    const invitation: Invitation = {
+      id: 'test-invitation-id',
+      invitationType: InvitationTypes.INVITE,
+      invitationStatus: InvitationStatus.PENDING,
+      userId,
+      email,
+      createDate: '2026-06-03T10:00:00Z'
+    };
+
+    beforeEach(() => {
+      req.body.search = input;
+      when(mockApi.searchUsersByEmail).calledWith(testToken, email).mockResolvedValue([]);
+      when(mockApi.getUserById).calledWith(testToken, userId).mockRejectedValue('');
+      when(mockApi.searchUsersBySsoId).calledWith(testToken, userId).mockResolvedValue([]);
+    });
+
+    test.each([
+      { status: InvitationStatus.ACCEPTED, userLikelyRemoved: true },
+      { status: InvitationStatus.PENDING, userLikelyRemoved: false },
+      { status: InvitationStatus.EXPIRED, userLikelyRemoved: false },
+      { status: InvitationStatus.REVOKED, userLikelyRemoved: false }
+    ])('Should set likely removal to $userLikelyRemoved for a $status invitation', async ({ status, userLikelyRemoved }) => {
+      const invitations = [{ ...invitation, invitationStatus: status }];
+      when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue(invitations);
+      when(inviteService.searchInvitationByUserId).calledWith(userId).mockResolvedValue(invitations);
+
+      await controller.post(req, res);
+
+      expect(res.render).toHaveBeenCalledWith('invitation-results', {
+        content: {
+          ...(searchType === 'email' ? { email } : { userId }),
+          invitationCount: 1,
+          userLikelyRemoved,
+          invitations: [{
+            ...invitation,
+            invitationStatus: status,
+            createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
+            lastModified: undefined
+          }]
+        }
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    test('Should flag likely removal when an older accepted invitation is mixed with a pending invitation', async () => {
+      const invitations = [invitation, {
+        ...invitation,
+        id: 'accepted-invitation-id',
+        invitationStatus: InvitationStatus.ACCEPTED,
+        createDate: '2026-06-02T10:00:00Z'
+      }];
+      when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue(invitations);
+      when(inviteService.searchInvitationByUserId).calledWith(userId).mockResolvedValue(invitations);
+
+      await controller.post(req, res);
+
+      expect(res.render).toHaveBeenCalledWith('invitation-results', {
+        content: expect.objectContaining({ invitationCount: 2, userLikelyRemoved: true })
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
   });
 
   test('Should render the manage user page when more than one emails matches the search input', async () => {
@@ -350,6 +418,7 @@ describe('Manage user controller', () => {
         content: {
           email,
           invitationCount: 1,
+          userLikelyRemoved: false,
           invitations: [{
             ...invitation,
             createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
@@ -396,12 +465,32 @@ describe('Manage user controller', () => {
         content: {
           userId,
           invitationCount: 1,
+          userLikelyRemoved: false,
           invitations: [{
             ...invitation,
             createDate: 'Wed, 03 Jun 2026 10:00:00 GMT',
             lastModified: undefined
           }]
         }
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    test('Should not flag a matched pending user as removed when an accepted invitation exists', async () => {
+      const invitation: Invitation = {
+        id: 'accepted-invitation-id',
+        invitationType: InvitationTypes.INVITE,
+        invitationStatus: InvitationStatus.ACCEPTED,
+        userId,
+        email,
+        createDate: '2026-06-03T10:00:00Z'
+      };
+      when(inviteService.searchInvitationByEmail).calledWith(email).mockResolvedValue([invitation]);
+
+      await controller.post(req, res);
+
+      expect(res.render).toHaveBeenCalledWith('invitation-results', {
+        content: expect.objectContaining({ userLikelyRemoved: false })
       });
       expect(res.redirect).not.toHaveBeenCalled();
     });
@@ -464,7 +553,7 @@ describe('Manage user controller', () => {
     req.body.search = email;
     await controller.post(req, res);
     expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
-      content: { email, invitationCount: 1, invitations: preparedInvitations }
+      content: { email, invitationCount: 1, userLikelyRemoved: false, invitations: preparedInvitations }
     });
 
     req.body.search = invitation.userId;
@@ -472,7 +561,7 @@ describe('Manage user controller', () => {
 
     expect(res.render).toHaveBeenCalledTimes(2);
     expect(res.render).toHaveBeenLastCalledWith('invitation-results', {
-      content: { userId, invitationCount: 1, invitations: preparedInvitations }
+      content: { userId, invitationCount: 1, userLikelyRemoved: false, invitations: preparedInvitations }
     });
     expect(inviteService.searchInvitationByUserId).toHaveBeenCalledWith(userId);
     expect(mockApi.searchUsersBySsoId).not.toHaveBeenCalled();

@@ -16,7 +16,7 @@ import { User } from '../interfaces/User';
 import { IdamAPI } from '../app/idam-api/IdamAPI';
 import { FeatureFlags } from '../app/feature-flags/FeatureFlags';
 import { InviteService } from '../app/invite-service/InviteService';
-import { Invitation } from '../app/invite-service/Invite';
+import { Invitation, InvitationStatus } from '../app/invite-service/Invite';
 const obfuscate = require('obfuscate-mail');
 import logger from '../modules/logging';
 import { setTelemetryAttribute } from '../modules/opentelemetry/requestTraceAttributes';
@@ -56,14 +56,20 @@ export class ManageUserController extends RootController {
         if (user.pending === true) {
           const email = (user.email || '').trim();
           const search = isValidEmailFormat(email) ? { email } : { userId: user.id };
-          return this.postInvitationResults(req, res, search, PENDING_USER_NO_INVITATIONS_ERROR);
+          return this.postInvitationResults(req, res, search, {
+            noInvitationsError: PENDING_USER_NO_INVITATIONS_ERROR,
+            userNotFound: false
+          });
         }
         return res.redirect(307, USER_DETAILS_URL.replace(':userUUID', user.id));
       }
       logger.info('ManageUserController.post, found ' + users.length + ' result(s) for input ' + (possiblyEmail(input) ? obfuscate(input) : input));
       if (users.length === 0) {
         const search = possiblyEmail(input) ? { email: input } : { userId: input };
-        return this.postInvitationResults(req, res, search, NO_USER_MATCHES_ERROR + input);
+        return this.postInvitationResults(req, res, search, {
+          noInvitationsError: NO_USER_MATCHES_ERROR + input,
+          userNotFound: true
+        });
       }
       return this.postError(req, res, (users.length > 1 ? TOO_MANY_USERS_ERROR : NO_USER_MATCHES_ERROR) + input);
     }
@@ -92,20 +98,21 @@ export class ManageUserController extends RootController {
     req: AuthedRequest,
     res: Response,
     search: { email: string } | { userId: string },
-    noInvitationsError: string
+    options: { noInvitationsError: string; userNotFound: boolean }
   ) {
     const invitations = 'email' in search
       ? await this.inviteService.searchInvitationByEmail(search.email)
       : await this.inviteService.searchInvitationByUserId(search.userId);
     this.setTraceAttribute(req, 'invitation_match_count', invitations.length);
     if (invitations.length === 0) {
-      return this.postError(req, res, noInvitationsError);
+      return this.postError(req, res, options.noInvitationsError);
     }
     const preparedInvitations = this.prepareInvitations(invitations);
     return super.post(req, res, 'invitation-results', {
       content: {
         ...search,
         invitationCount: preparedInvitations.length,
+        userLikelyRemoved: options.userNotFound && invitations.some(invitation => invitation.invitationStatus === InvitationStatus.ACCEPTED),
         invitations: preparedInvitations
       }
     });
