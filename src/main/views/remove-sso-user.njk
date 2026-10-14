@@ -7,7 +7,7 @@
 
 {% extends "template.njk" %}
 
-{% block beforeContent %}
+{% block containerStart %}
   {{ super() }}
   {{ breadcrumb([
     ['Manage users', urls.MANAGER_USERS_URL],

@@ -1,6 +1,8 @@
+@use "govuk-frontend/dist/govuk" as *;
+
 input.govuk-input[type="text"]:disabled {
-  background-color: #f3f2f1;
-  border-color: #f3f2f1;
+  background-color: govuk-colour("black", $variant: "tint-95");
+  border-color: govuk-colour("black", $variant: "tint-95");
 }
 
 button {
@@ -13,7 +15,7 @@ button {
 
   &.govuk-link[type="submit"] {
     background: none;
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
     border: none;
     padding: 0;
     font: inherit;
