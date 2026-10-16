@@ -1,10 +1,26 @@
 {% extends "dist/govuk/template.njk" %}
+{% from "dist/govuk/components/generic-header/macro.njk" import govukGenericHeader %}
+{% from "dist/govuk/macros/logo.njk" import govukLogo %}
 {% from "dist/govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "dist/govuk/components/footer/macro.njk" import govukFooter %}
 {% from "dist/govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% block head %}
   {% include "webpack/css.njk" %}
+{% endblock %}
+
+{% block govukHeader %}
+  {% set logoContent %}
+    {{ govukLogo({
+      classes: "govuk-header__logotype",
+      ariaLabelText: "GOV.UK"
+    }) }}
+  {% endset %}
+  {{ govukGenericHeader({
+    url: "https://www.gov.uk/",
+    logoHtml: logoContent,
+    classes: "app-header"
+  }) }}
 {% endblock %}
 
 {% block govukServiceNavigation %}

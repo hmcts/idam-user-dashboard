@@ -37,12 +37,20 @@ describe('Shared page template', () => {
     expect(html).not.toContain('<script>alert("user")</script>');
   });
 
-  test('Keeps one header and footer landmark and preserves footer links', () => {
+  test('Renders the GOV.UK logo in the Generic header and preserves page landmarks and footer links', () => {
     const html = env.renderString(template, { urls });
+    const header = html.match(/<header\b[\s\S]*?<\/header>/)?.[0];
 
     expect(html.match(/<header\b/g)).toHaveLength(1);
     expect(html.match(/<footer\b/g)).toHaveLength(1);
-    expect(html).toContain('govuk-header__homepage-link');
+    expect(header).toContain('govuk-generic-header__homepage-link');
+    expect(header).toContain('href="https://www.gov.uk/"');
+    expect(header).toContain('govuk-header__logotype');
+    expect(header).toContain('aria-label="GOV.UK"');
+    expect(header).toContain('<title>GOV.UK</title>');
+    expect(header).toContain('govuk-logo-dot');
+    expect(header).not.toContain('HM Courts &amp; Tribunals Service');
+    expect(header).not.toContain('app-header--black');
     expect(html).toContain('href="/accessibility-statement"');
     expect(html).toContain('Accessibility statement');
     expect(html).toContain('href="/assets/manifest.json"');

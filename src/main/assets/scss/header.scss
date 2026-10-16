@@ -1,5 +1,9 @@
 @use "govuk-frontend/dist/govuk" as *;
 
+.app-header {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .app-service-navigation__account {
   min-width: 0;
 

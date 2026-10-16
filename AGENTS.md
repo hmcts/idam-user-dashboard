@@ -14,7 +14,15 @@ The UI sits on top of idam-api which provides the backend endpoints.
 
 ## GOV.UK Frontend
 
-The application uses `govuk-frontend@6.5.1` with refreshed GOV.UK branding.
+The application uses `govuk-frontend@6.5.1`. Override the `govukHeader` template
+block with `govukGenericHeader`, using its default black background. This service
+explicitly retains the GOV.UK crown and wordmark, supplied through `logoHtml`
+using `govukLogo` from `dist/govuk/macros/logo.njk`. The logo links to GOV.UK;
+the dashboard name in Service navigation links to the application homepage.
+`govukLogo` is an internal upstream macro, so recheck its contract and the logo
+rendering tests when upgrading GOV.UK Frontend. This is a service-specific use
+of the Generic header, with existing GOV.UK page branding retained.
+
 Use Sass modules (`@use`) and Sass Loader's modern API. Each local Sass module
 using GOV.UK functions or mixins needs its own module import; use
 `govuk-functional-colour` for functional colours and `govuk-colour` for palette
