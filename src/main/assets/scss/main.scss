@@ -1,7 +1,7 @@
-@import '/node_modules/govuk-frontend';
+@use "govuk-frontend/dist/govuk";
 
-@import "./header";
-@import "./inputs";
-@import "./button";
-@import "./roleList";
-@import "./table";
+@use "./header";
+@use "./inputs";
+@use "./button";
+@use "./roleList";
+@use "./table";

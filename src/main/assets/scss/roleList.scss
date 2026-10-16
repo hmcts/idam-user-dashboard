@@ -1,5 +1,7 @@
-$track-background: #f1f1f1;
-$thumb-background: #888;
+@use "govuk-frontend/dist/govuk" as *;
+
+$track-background: govuk-colour("black", $variant: "tint-95");
+$thumb-background: govuk-colour("black", $variant: "tint-50");
 $checkbox-padding: 40px;
 
 .role-list {
