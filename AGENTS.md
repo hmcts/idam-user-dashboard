@@ -59,6 +59,14 @@ versions too, so the finding is recorded in the narrow audit baseline until
 Azure publishes a dependency update. Recheck this entry when Azure Monitor
 removes the dependency.
 
+The same Azure Monitor dependency tree also reports deprecations for
+`@opentelemetry/sdk-trace-node@2.10.0`,
+`@opentelemetry/sdk-trace-base@2.5.0`, and
+`@opentelemetry/propagator-jaeger@2.11.0`, through
+`@opentelemetry/sdk-node@0.221.0` and `@opentelemetry/sdk-trace-web@2.5.0`.
+These are recorded in the same narrow baseline until the upstream Azure and
+OpenTelemetry packages remove the deprecated dependencies.
+
 After dependency changes, run:
 
 ```bash
