@@ -50,6 +50,15 @@ two findings are recorded in the narrow audit baseline until an upstream fix
 or a supported dependency path without them is available. They remain security
 debt; recheck the advisories and remove the baseline entries once resolved.
 
+As of 2026-10-21, the production audit also reports the deprecation of
+`@opentelemetry/sdk-trace-web@2.5.0`, required by
+`@azure/opentelemetry-instrumentation-azure-sdk@1.1.0-beta.1` through
+`@azure/monitor-opentelemetry@1.20.1`. The current supported Azure Monitor
+release still requires this package and the deprecation applies to newer 2.x
+versions too, so the finding is recorded in the narrow audit baseline until
+Azure publishes a dependency update. Recheck this entry when Azure Monitor
+removes the dependency.
+
 After dependency changes, run:
 
 ```bash
