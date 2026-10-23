@@ -3,17 +3,19 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const rootExport = require.resolve('govuk-frontend');
 const root = path.resolve(rootExport, '..');
-const sass = path.resolve(root, 'all.scss');
+const sass = path.resolve(root, 'index.scss');
 const javascript = path.resolve(root, 'all.mjs');
 const components = path.resolve(root, 'components');
 const assets = path.resolve(root, 'assets');
 const images = path.resolve(assets, 'images');
 const fonts = path.resolve(assets, 'fonts');
+const manifest = path.resolve(assets, 'manifest.json');
 
 const copyGovukTemplateAssets = new CopyWebpackPlugin({
   patterns: [
     { from: images, to: 'assets/images' },
-    { from: fonts, to: 'assets/fonts' }
+    { from: fonts, to: 'assets/fonts' },
+    { from: manifest, to: 'assets/manifest.json' }
   ],
 });
 
