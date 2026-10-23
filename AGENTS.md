@@ -5,6 +5,12 @@
 idam-user-dashboard is a frontend admin application for user account management.
 The UI sits on top of idam-api which provides the backend endpoints.
 
+## Node.js runtime
+
+Local development and CI use Node.js `24.22.1` (see `.nvmrc`). The supported
+runtime range is `^24.22.1`, keeping the application on patched Node.js 24.x
+releases. Node.js `24.22.1` includes the fix for `CVE-2026-111497`.
+
 ## Workflow
 
 - Plan code changes and summarise them for confirmation before applying them.

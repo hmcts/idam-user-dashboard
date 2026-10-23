@@ -97,7 +97,7 @@ Key compatibility constraints:
 
 - `@hmcts/playwright-common@1.1.2` requires Node `>=20.11.1`
 - `@hmcts/playwright-common@1.1.2` has peer dependencies on `@playwright/test` and `playwright-core` `^1.58.0`
-- This repo now declares Node `^20.18.0` and uses `@playwright/test`, `playwright`, and `playwright-core` `^1.58.2`
+- This repo now declares Node `^24.22.1` and uses `@playwright/test`, `playwright`, and `playwright-core` `^1.58.2`
 - The Playwright test TypeScript config in [`src/test/playwright/tsconfig.json`](../src/test/playwright/tsconfig.json) still uses `"module": "commonjs"`
 - `@hmcts/playwright-common` publishes modern ESM modules, so using it cleanly would require either an ESM migration for the test layer or a runtime interop workaround
 
