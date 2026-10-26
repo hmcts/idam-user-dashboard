@@ -48,13 +48,23 @@ Do not force an unsupported transitive major override. The current
 `glob@10.5.0` deprecation is retained in `yarn-audit-known-issues` because the
 latest Jest reporters still require that range; recheck it when Jest updates.
 
-As of 2026-10-07, the production audit also reports `braces@3.0.3` through
-`micromatch` and `http-cache-semantics@4.1.1` through
-`express-openid-connect` → `openid-client` → `got` → `cacheable-request`. The
-current GitHub advisories list no patched release for either package, so these
-two findings are recorded in the narrow audit baseline until an upstream fix
-or a supported dependency path without them is available. They remain security
-debt; recheck the advisories and remove the baseline entries once resolved.
+The former `braces@3.0.3` advisory was withdrawn on 2026-10-23. Its audit
+baseline entry and resolution were removed after confirming the supported
+dependency ranges still resolve to `braces@3.0.3`.
+
+As of 2026-10-26, the production audit continues to report
+`http-cache-semantics@4.1.1` through `express-openid-connect` → `openid-client`
+→ `got` → `cacheable-request`. The current GitHub advisory lists no patched
+release, so this finding remains in the narrow audit baseline until an upstream
+fix or a supported dependency path without it is available.
+
+As of 2026-10-26, the production audit reports `@azure/msal-node@6.0.0` through
+`@azure/identity`. The latest stable `@azure/identity@4.14.0` and beta
+`@azure/identity@4.15.0-beta.1` still require the vulnerable MSAL 6.x range,
+while the patched MSAL release is 7.1.0. The application does not directly use
+the affected authorization-code flow, and forcing the unsupported transitive
+major is prohibited, so the finding is recorded in the narrow audit baseline.
+Recheck it when Azure Identity supports MSAL 7.1.0 or later.
 
 As of 2026-10-21, the production audit also reports the deprecation of
 `@opentelemetry/sdk-trace-web@2.5.0`, required by
