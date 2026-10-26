@@ -10,7 +10,7 @@ IdAM User Dashboard is to be the new and improved replacement for the [IdAM web-
 
 Running the application requires the following tools to be installed in your environment:
 
-  * [Node.js](https://nodejs.org/) `20.18.0` (see `.nvmrc`)
+  * [Node.js](https://nodejs.org/) `24.22.1` (see `.nvmrc`)
   * [yarn](https://yarnpkg.com/)
   * [Docker](https://www.docker.com)
 

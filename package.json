@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=24.15.0"
+    "node": "^24.22.1"
   },
   "scripts": {
     "start": "NODE_ENV=production ts-node -r tsconfig-paths/register src/main/server.ts",
@@ -150,8 +150,8 @@
     "picomatch@npm:^4.0.2": "4.0.7",
     "picomatch@npm:^4.0.3": "4.0.7",
     "path-to-regexp": "^3.3.0",
-    "qs@npm:^6.14.1": "6.16.0",
-    "qs@npm:~6.15.1": "6.16.0",
+    "qs@npm:^6.14.1": "6.16.1",
+    "qs@npm:~6.15.1": "6.16.1",
     "serve-static": "^2.1.0",
     "source-map-js": "1.2.2",
     "uuid@npm:^8.3.0": "14.0.2",

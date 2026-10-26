@@ -5,6 +5,12 @@
 idam-user-dashboard is a frontend admin application for user account management.
 The UI sits on top of idam-api which provides the backend endpoints.
 
+## Node.js runtime
+
+Local development and CI use Node.js `24.22.1` (see `.nvmrc`). The supported
+runtime range is `^24.22.1`, keeping the application on patched Node.js 24.x
+releases. Node.js `24.22.1` includes the fix for `CVE-2026-111497`.
+
 ## Workflow
 
 - Plan code changes and summarise them for confirmation before applying them.
@@ -78,6 +84,23 @@ current GitHub advisories list no patched release for either package, so these
 two findings are recorded in the narrow audit baseline until an upstream fix
 or a supported dependency path without them is available. They remain security
 debt; recheck the advisories and remove the baseline entries once resolved.
+
+As of 2026-10-21, the production audit also reports the deprecation of
+`@opentelemetry/sdk-trace-web@2.5.0`, required by
+`@azure/opentelemetry-instrumentation-azure-sdk@1.1.0-beta.1` through
+`@azure/monitor-opentelemetry@1.20.1`. The current supported Azure Monitor
+release still requires this package and the deprecation applies to newer 2.x
+versions too, so the finding is recorded in the narrow audit baseline until
+Azure publishes a dependency update. Recheck this entry when Azure Monitor
+removes the dependency.
+
+The same Azure Monitor dependency tree also reports deprecations for
+`@opentelemetry/sdk-trace-node@2.10.0`,
+`@opentelemetry/sdk-trace-base@2.5.0`, and
+`@opentelemetry/propagator-jaeger@2.11.0`, through
+`@opentelemetry/sdk-node@0.221.0` and `@opentelemetry/sdk-trace-web@2.5.0`.
+These are recorded in the same narrow baseline until the upstream Azure and
+OpenTelemetry packages remove the deprecated dependencies.
 
 After dependency changes, run:
 
