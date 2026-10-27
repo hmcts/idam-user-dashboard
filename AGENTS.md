@@ -18,6 +18,35 @@ releases. Node.js `24.22.1` includes the fix for `CVE-2026-111497`.
 - Keep `package.json` and `yarn.lock` synchronized.
 - Keep this file up to date when project conventions, known dependency constraints, or technical debt change.
 
+## GOV.UK Frontend
+
+The application uses `govuk-frontend@6.5.1`. Override the `govukHeader` template
+block with `govukGenericHeader`, using its default black background. This service
+explicitly retains the GOV.UK crown and wordmark, supplied through `logoHtml`
+using `govukLogo` from `dist/govuk/macros/logo.njk`. The logo links to GOV.UK;
+the dashboard name in Service navigation links to the application homepage.
+`govukLogo` is an internal upstream macro, so recheck its contract and the logo
+rendering tests when upgrading GOV.UK Frontend. This is a service-specific use
+of the Generic header, with existing GOV.UK page branding retained.
+
+Use Sass modules (`@use`) and Sass Loader's modern API. Each local Sass module
+using GOV.UK functions or mixins needs its own module import; use
+`govuk-functional-colour` for functional colours and `govuk-colour` for palette
+colours.
+
+Nunjucks loaders include the package root, so template imports use `dist/govuk/`
+paths. Service/account navigation belongs in the `govukServiceNavigation` block,
+the phase banner in `headerEnd`, breadcrumbs in `containerStart`, and footer
+customisation in `govukFooter`. The build copies images, fonts and `manifest.json`.
+
+Production CSP hashes must match rendered inline scripts. The shared-template
+unit tests cover the GOV.UK support script and report scripts. Update the relevant
+hash and tests when changing those scripts; do not allow arbitrary inline scripts.
+
+The existing report-table layout hides tables at widths of 900px or less.
+Use `display: none` there so hidden content cannot cause horizontal overflow.
+A mobile report-table redesign remains a separate improvement.
+
 ## Dependency vulnerabilities
 
 Audit production dependencies recursively before changing resolutions:
@@ -94,6 +123,4 @@ yarn lint
 yarn test --runInBand
 ```
 
-The Sass output from GOV.UK Frontend currently contains deprecation warnings;
-warnings alone do not indicate a failed build. Local development serves plain
-HTTP at `http://localhost:3100`.
+Local development serves plain HTTP at `http://localhost:3100`.

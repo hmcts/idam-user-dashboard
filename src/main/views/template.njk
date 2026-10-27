@@ -1,5 +1,7 @@
 {% extends "dist/govuk/template.njk" %}
-{% from "dist/govuk/components/header/macro.njk" import govukHeader %}
+{% from "dist/govuk/components/generic-header/macro.njk" import govukGenericHeader %}
+{% from "dist/govuk/macros/logo.njk" import govukLogo %}
+{% from "dist/govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "dist/govuk/components/footer/macro.njk" import govukFooter %}
 {% from "dist/govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
@@ -7,10 +9,26 @@
   {% include "webpack/css.njk" %}
 {% endblock %}
 
-{% block header %}
-  {{ govukHeader({
+{% block govukHeader %}
+  {% set logoContent %}
+    {{ govukLogo({
+      classes: "govuk-header__logotype",
+      ariaLabelText: "GOV.UK"
+    }) }}
+  {% endset %}
+  {{ govukGenericHeader({
+    url: "/",
+    logoHtml: logoContent,
+    classes: "app-header"
+  }) }}
+{% endblock %}
+
+{% block govukServiceNavigation %}
+  {{ govukServiceNavigation({
     serviceName: "IDAM User Dashboard",
     serviceUrl: "/",
+    navigationLabel: "Account",
+    navigationClasses: "app-service-navigation__account",
     navigation: [
       { text: user.name } if user,
       { text: 'Sign out' if user else 'Sign in', href: "/logout" if user else "/login"}
@@ -18,18 +36,16 @@
   }) }}
 {% endblock %}
 
-{% block beforeContent %}
-  <div role="region" aria-labelledby="phaseBannerHeading">
-    {{ govukPhaseBanner({
-      tag: {
-        text: "beta"
-      },
-      html: 'This is a new service – your <a class="govuk-link" href="https://github.com/hmcts/idam-user-dashboard/issues">feedback</a> will help us to improve it.'
-    }) }}
-  </div>
+{% block headerEnd %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: 'This is a new service – your <a class="govuk-link" href="https://github.com/hmcts/idam-user-dashboard/issues">feedback</a> will help us to improve it.'
+  }) }}
 {% endblock %}
 
-{% block footer %}
+{% block govukFooter %}
   {{ govukFooter({
     meta: {
       items: [

@@ -1,4 +1,19 @@
-.govuk-header nav {
-  float: right;
-  margin: 0;
+@use "govuk-frontend/dist/govuk" as *;
+
+.app-header {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.app-service-navigation__account {
+  min-width: 0;
+
+  .govuk-service-navigation__text {
+    overflow-wrap: anywhere;
+  }
+
+  @include govuk-media-query($from: tablet) {
+    .govuk-service-navigation__list {
+      justify-content: flex-end;
+    }
+  }
 }
