@@ -81,6 +81,13 @@ The former `braces@3.0.3` advisory was withdrawn on 2026-10-23. Its audit
 baseline entry and resolution were removed after confirming the supported
 dependency ranges still resolve to `braces@3.0.3`.
 
+As of 2026-10-28, the production audit reports `deepmerge@4.3.1` through
+`jest-config@30.4.2`. The advisory has no patched release, and the latest
+`jest-config@30.5.2` still requires `deepmerge@^4.3.1`. The dependency is used
+by test configuration rather than application runtime code, so the finding is
+recorded in the narrow audit baseline. Recheck it when Deepmerge publishes a
+patched release or Jest removes the dependency.
+
 As of 2026-10-26, the production audit continues to report
 `http-cache-semantics@4.1.1` through `express-openid-connect` → `openid-client`
 → `got` → `cacheable-request`. The current GitHub advisory lists no patched
