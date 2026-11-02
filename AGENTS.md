@@ -73,9 +73,26 @@ Express 4 types; the `@types/express` and
 `@types/express-serve-static-core` resolutions prevent incompatible Express 5
 types from entering transitive middleware declarations.
 
-Do not force an unsupported transitive major override. The current
-`glob@10.5.0` deprecation is retained in `yarn-audit-known-issues` because the
-latest Jest reporters still require that range; recheck it when Jest updates.
+Do not force an unsupported transitive major override.
+
+As of 2026-11-02, the production audit reports glob cancellation bypass
+(GHSA-3g3m-2fjr-6pw4) in versions 10.5.0, 11.1.0 and 13.0.6, and minimatch
+pattern amplification (GHSA-g3hv-75wg-m249) in 10.2.6. The fixes require
+glob 14.0.2 and minimatch 11.0.1 respectively. Latest `@jest/reporters@30.5.2`
+and `test-exclude@8.0.0` still require glob ^13.0.6; test-exclude also requires
+minimatch ^10.2.2. These findings are narrowly recorded in the audit baseline
+pending supported dependency upgrades. Do not force the fixed majors through
+global resolutions. Application route discovery uses a fixed startup glob
+without cancellation or user-supplied patterns. Recheck these exceptions when
+upstream dependencies support the patched majors. The obsolete glob 10.5.0
+deprecation baseline entry was removed.
+
+Joi is pinned to 18.3.1 to fix GHSA-4528-x5fx-h6hg. This preserves the existing
+Joi 18 major-version exception over express-openid-connect's Joi 17 range;
+removing it would downgrade Joi. The exact pin replaces the unbounded >=18.2.1
+resolution. Recheck it when express-openid-connect supports Joi 18 or later.
+The inspected OpenID Connect configuration validation does not use the affected
+`string().email({ multiple: true })` rule.
 
 The former `braces@3.0.3` advisory was withdrawn on 2026-10-23. Its audit
 baseline entry and resolution were removed after confirming the supported
@@ -88,11 +105,9 @@ by test configuration rather than application runtime code, so the finding is
 recorded in the narrow audit baseline. Recheck it when Deepmerge publishes a
 patched release or Jest removes the dependency.
 
-As of 2026-10-26, the production audit continues to report
-`http-cache-semantics@4.1.1` through `express-openid-connect` → `openid-client`
-→ `got` → `cacheable-request`. The current GitHub advisory lists no patched
-release, so this finding remains in the narrow audit baseline until an upstream
-fix or a supported dependency path without it is available.
+The former `http-cache-semantics@4.1.1` advisory (GHSA-ch52-4w7c-c8xp) was
+withdrawn on 2026-10-28 because it was not a valid vulnerability. Its obsolete
+audit baseline entry was removed on 2026-11-02.
 
 As of 2026-10-26, the production audit reports `@azure/msal-node@6.0.0` through
 `@azure/identity`. The latest stable `@azure/identity@4.14.0` and beta
