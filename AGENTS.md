@@ -75,17 +75,29 @@ types from entering transitive middleware declarations.
 
 Do not force an unsupported transitive major override.
 
-As of 2026-11-02, the production audit reports glob cancellation bypass
-(GHSA-3g3m-2fjr-6pw4) in versions 10.5.0, 11.1.0 and 13.0.6, and minimatch
-pattern amplification (GHSA-g3hv-75wg-m249) in 10.2.6. The fixes require
-glob 14.0.2 and minimatch 11.0.1 respectively. Latest `@jest/reporters@30.5.2`
-and `test-exclude@8.0.0` still require glob ^13.0.6; test-exclude also requires
-minimatch ^10.2.2. These findings are narrowly recorded in the audit baseline
-pending supported dependency upgrades. Do not force the fixed majors through
-global resolutions. Application route discovery uses a fixed startup glob
-without cancellation or user-supplied patterns. Recheck these exceptions when
-upstream dependencies support the patched majors. The obsolete glob 10.5.0
-deprecation baseline entry was removed.
+As of 2026-11-05, the application's direct glob dependency is ^14.0.3,
+resolving to glob 14.0.3 and its supported minimatch 11.0.4 dependency. This
+resolves the production glob cancellation bypass (GHSA-3g3m-2fjr-6pw4) and
+minimatch pattern amplification (GHSA-g3hv-75wg-m249) findings; their production
+audit baseline entries were removed. Application route discovery uses a fixed
+startup glob without cancellation or user-supplied patterns.
+
+The former global minimatch resolution is now scoped to the existing legacy
+request ranges, preserving their resolved 10.2.6 version without downgrades.
+These retain the pre-existing major-version exceptions for older tooling while
+allowing glob 14 to use its supported minimatch 11 range. Do not extend these
+exceptions or force minimatch 11 into unsupported tooling ranges. Recheck the
+scoped resolutions as upstream dependencies upgrade.
+
+Jest helpers, Playwright/axe test tooling and npm-run-all2 belong in
+`devDependencies`. Moving these out of production dependencies removed the
+Jest/coverage glob 10.5.0 and 13.0.6 paths from the production audit. Latest
+`@jest/reporters@30.5.2` and `test-exclude@8.0.0` still require glob ^13.0.6;
+test-exclude also requires minimatch ^10.2.2, so development dependencies retain
+these findings pending supported upgrades. The Dockerfile currently installs
+development dependencies into the runtime image; production audit scope does
+not imply that those packages are absent from the deployed image. Runtime-image
+pruning remains a separate improvement.
 
 Joi is pinned to 18.3.1 to fix GHSA-4528-x5fx-h6hg. This preserves the existing
 Joi 18 major-version exception over express-openid-connect's Joi 17 range;
@@ -98,24 +110,21 @@ The former `braces@3.0.3` advisory was withdrawn on 2026-10-23. Its audit
 baseline entry and resolution were removed after confirming the supported
 dependency ranges still resolve to `braces@3.0.3`.
 
-As of 2026-10-28, the production audit reports `deepmerge@4.3.1` through
-`jest-config@30.4.2`. The advisory has no patched release, and the latest
-`jest-config@30.5.2` still requires `deepmerge@^4.3.1`. The dependency is used
-by test configuration rather than application runtime code, so the finding is
-recorded in the narrow audit baseline. Recheck it when Deepmerge publishes a
-patched release or Jest removes the dependency.
+As of 2026-11-05, Deepmerge through Jest configuration is no longer reachable
+from production dependencies, and its production audit baseline entry was removed.
+The development dependency finding remains: `deepmerge@4.3.1` has no patched
+release documented here, and the inspected `jest-config@30.5.2` still requires
+`deepmerge@^4.3.1`. Recheck when Deepmerge publishes a patched release or Jest
+removes the dependency.
 
 The former `http-cache-semantics@4.1.1` advisory (GHSA-ch52-4w7c-c8xp) was
 withdrawn on 2026-10-28 because it was not a valid vulnerability. Its obsolete
 audit baseline entry was removed on 2026-11-02.
 
-As of 2026-10-26, the production audit reports `@azure/msal-node@6.0.0` through
-`@azure/identity`. The latest stable `@azure/identity@4.14.0` and beta
-`@azure/identity@4.15.0-beta.1` still require the vulnerable MSAL 6.x range,
-while the patched MSAL release is 7.1.0. The application does not directly use
-the affected authorization-code flow, and forcing the unsupported transitive
-major is prohibited, so the finding is recorded in the narrow audit baseline.
-Recheck it when Azure Identity supports MSAL 7.1.0 or later.
+As of 2026-11-05, `@azure/identity@4.14.1` supports `@azure/msal-node@^7.1.0`.
+The lockfile refresh within the existing Azure Identity dependency ranges resolves
+MSAL Node to 7.2.0, fixing GHSA-xcx6-jx8p-x3h5 without a transitive major override.
+The MSAL production audit baseline entry was removed after confirming resolution.
 
 As of 2026-10-21, the production audit also reports the deprecation of
 `@opentelemetry/sdk-trace-web@2.5.0`, required by
@@ -132,7 +141,12 @@ The same Azure Monitor dependency tree also reports deprecations for
 `@opentelemetry/propagator-jaeger@2.11.0`, through
 `@opentelemetry/sdk-node@0.221.0` and `@opentelemetry/sdk-trace-web@2.5.0`.
 These are recorded in the same narrow baseline until the upstream Azure and
-OpenTelemetry packages remove the deprecated dependencies.
+OpenTelemetry packages remove the deprecated dependencies. Rechecked on
+2026-11-05: Azure Monitor 1.20.1 still requires the OpenTelemetry 2.x trace
+packages and SDK Node ^0.221.0. The latest 2.12.0 trace packages and Jaeger
+propagator remain deprecated. SDK Node 0.300.0 uses the replacement SDK Trace
+3.0.0 and removes Jaeger, but is outside Azure Monitor's supported ranges; do
+not force that migration through resolutions.
 
 After dependency changes, run:
 
