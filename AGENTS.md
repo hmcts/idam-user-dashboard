@@ -121,13 +121,10 @@ The former `http-cache-semantics@4.1.1` advisory (GHSA-ch52-4w7c-c8xp) was
 withdrawn on 2026-10-28 because it was not a valid vulnerability. Its obsolete
 audit baseline entry was removed on 2026-11-02.
 
-As of 2026-10-26, the production audit reports `@azure/msal-node@6.0.0` through
-`@azure/identity`. The latest stable `@azure/identity@4.14.0` and beta
-`@azure/identity@4.15.0-beta.1` still require the vulnerable MSAL 6.x range,
-while the patched MSAL release is 7.1.0. The application does not directly use
-the affected authorization-code flow, and forcing the unsupported transitive
-major is prohibited, so the finding is recorded in the narrow audit baseline.
-Recheck it when Azure Identity supports MSAL 7.1.0 or later.
+As of 2026-11-05, `@azure/identity@4.14.1` supports `@azure/msal-node@^7.1.0`.
+The lockfile refresh within the existing Azure Identity dependency ranges resolves
+MSAL Node to 7.2.0, fixing GHSA-xcx6-jx8p-x3h5 without a transitive major override.
+The MSAL production audit baseline entry was removed after confirming resolution.
 
 As of 2026-10-21, the production audit also reports the deprecation of
 `@opentelemetry/sdk-trace-web@2.5.0`, required by
@@ -144,7 +141,12 @@ The same Azure Monitor dependency tree also reports deprecations for
 `@opentelemetry/propagator-jaeger@2.11.0`, through
 `@opentelemetry/sdk-node@0.221.0` and `@opentelemetry/sdk-trace-web@2.5.0`.
 These are recorded in the same narrow baseline until the upstream Azure and
-OpenTelemetry packages remove the deprecated dependencies.
+OpenTelemetry packages remove the deprecated dependencies. Rechecked on
+2026-11-05: Azure Monitor 1.20.1 still requires the OpenTelemetry 2.x trace
+packages and SDK Node ^0.221.0. The latest 2.12.0 trace packages and Jaeger
+propagator remain deprecated. SDK Node 0.300.0 uses the replacement SDK Trace
+3.0.0 and removes Jaeger, but is outside Azure Monitor's supported ranges; do
+not force that migration through resolutions.
 
 After dependency changes, run:
 
