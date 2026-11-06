@@ -170,7 +170,7 @@
     "minimatch@npm:^3.1.2": "^10.2.3",
     "minimatch@npm:^9.0.0": "^10.2.3",
     "minimatch@npm:^9.0.4": "^10.2.3",
-    "joi": "18.3.1",
+    "joi": "18.3.2",
     "@opentelemetry/propagator-jaeger": "2.11.0"
   },
   "packageManager": "yarn@4.13.0"
