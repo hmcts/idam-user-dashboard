@@ -145,6 +145,12 @@ $ yarn test:accessibility
 ```
 
 #### Generate reports separately
+
+Functional and cross-browser test commands generate their Allure reports automatically.
+Each run clears its previous Allure results and report, and produces a diagnostic
+HTML report if startup, the test process, or report generation fails. To regenerate
+an Allure report manually from existing test results, use:
+
 ```bash
 $ yarn test:functional:allure
 $ yarn test:crossbrowser:allure

@@ -16,7 +16,7 @@
     "test:coverage": "jest --coverage",
     "typecheck": "tsc --project tsconfig.production.json",
     "test:smoke": "jest -c jest.smoke.config.js",
-    "test:crossbrowser": "npm-run-all -scl playwright:install test:crossbrowser:pw test:crossbrowser:allure",
+    "test:crossbrowser": "npm-run-all -scl playwright:install test:crossbrowser:pw",
     "test:crossbrowser:pw": "node ./src/test/playwright/run-with-allure.js playwright.crossbrowser.config.ts functional-output/cross-browser/allure-results functional-output/cross-browser/allure \"Cross Browser Test Report\"",
     "test:crossbrowser:pw:list": "playwright test --config=playwright.crossbrowser.config.ts --list",
     "test:crossbrowser:allure": "allure generate functional-output/cross-browser/allure-results -c -o functional-output/cross-browser/allure",
@@ -138,6 +138,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "resolutions": {
+    "@azure/monitor-opentelemetry/@opentelemetry/instrumentation-http": "0.222.0",
     "axe-html-reporter": ">=2.2.11",
     "node-gyp@npm:latest": "13.0.2",
     "proxy-addr": "2.0.8",
