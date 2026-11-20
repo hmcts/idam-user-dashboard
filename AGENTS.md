@@ -18,6 +18,17 @@ releases. Node.js `24.22.1` includes the fix for `CVE-2026-111497`.
 - Keep `package.json` and `yarn.lock` synchronized.
 - Keep this file up to date when project conventions, known dependency constraints, or technical debt change.
 
+## Playwright reporting
+
+Functional and cross-browser suites use `src/test/playwright/run-with-allure.js`
+to clear their generated Allure results and report directories before each run,
+generate Allure once, and preserve test exit codes. Startup failures, process
+errors or termination, and report-generation failures produce a diagnostic HTML
+report at the existing Jenkins report location. Metadata files alone do not count
+as test results. Do not add a separate Allure generation step to either suite's
+execution script: it can overwrite the diagnostic report. The `*:allure` scripts
+are available for manually regenerating reports from existing results.
+
 ## GOV.UK Frontend
 
 The application uses `govuk-frontend@6.5.1`. Override the `govukHeader` template
@@ -125,6 +136,14 @@ As of 2026-11-05, `@azure/identity@4.14.1` supports `@azure/msal-node@^7.1.0`.
 The lockfile refresh within the existing Azure Identity dependency ranges resolves
 MSAL Node to 7.2.0, fixing GHSA-xcx6-jx8p-x3h5 without a transitive major override.
 The MSAL production audit baseline entry was removed after confirming resolution.
+
+As of 2026-11-20, Azure Monitor 1.20.1 and the latest stable 1.21.0 still require
+`@opentelemetry/instrumentation-http@^0.221.0`, which is affected by
+GHSA-3v2p-hm54-8qcq. The resolution scoped to Azure Monitor pins HTTP
+instrumentation to the minimum patched version, 0.222.0. This is a temporary
+exception to Azure's declared range; keep it scoped and recheck it when Azure
+Monitor supports a patched version. The application's direct HTTP instrumentation
+dependency already uses the patched `^0.222.0` range.
 
 As of 2026-10-21, the production audit also reports the deprecation of
 `@opentelemetry/sdk-trace-web@2.5.0`, required by

@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { expect } from './expect';
 import { clickAndExpectPage } from './resilient-actions';
 
@@ -65,16 +65,11 @@ export async function loginAs(page: Page, email: string, password: string): Prom
 }
 
 export async function clickAndExpectHeading(page: Page, buttonText: string, heading: string): Promise<void> {
-  const button: Locator = page.getByRole('button', { name: buttonText });
   await clickAndExpectPage(page, async () => {
-    if (await button.count()) {
-      await button.first().click();
-      return;
-    }
     if (buttonText === 'Continue') {
       await clickContinue(page);
       return;
     }
-    throw new Error(`Button "${buttonText}" not found`);
+    await page.getByRole('button', { name: buttonText }).first().click();
   }, { expectedHeading: heading });
 }
